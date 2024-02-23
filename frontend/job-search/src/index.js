@@ -6,6 +6,8 @@ import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+
+  //todo: add user context and query provider
   <React.StrictMode>
     <App />
   </React.StrictMode>

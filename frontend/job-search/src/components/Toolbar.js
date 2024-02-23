@@ -31,6 +31,9 @@ export default function ButtonAppBar() {
           <Button color="inherit" component={Link} to="/login">
             Logout
           </Button>
+          <Button color="inherit" component={Link} to="/register">
+            Register
+          </Button>
           
         
         </Toolbar>

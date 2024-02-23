@@ -4,7 +4,7 @@ const CV = () => {
 
   return (
     <div>
-      <h2>CV</h2>
+      <h2>CV Form Page</h2>
     </div>
   );
 };

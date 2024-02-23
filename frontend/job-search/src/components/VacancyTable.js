@@ -44,6 +44,13 @@ const vacancyData = [
     vacancyId:5
     
 },
+{
+    jobFamily: 'Backend development',
+    yearsOfExperience: 100,
+    salary: 98765543,
+    vacancyId:6
+    
+},
 ]
 
 export default function VacancyTable({props}) {
@@ -87,7 +94,7 @@ export default function VacancyTable({props}) {
         },
         {
             id: 'applyButton', 
-            header: 'Apply',
+            header: 'Status',
             Cell: ({ row }) => (
                 <Button variant="contained" color="primary" onClick={() => handleApply(row.original)}>
                     Apply
@@ -116,10 +123,11 @@ export default function VacancyTable({props}) {
         hiddenColumns:['id'],
         enableColumnOrdering: true, //enable some features
         enableRowSelection: false,
-        enablePagination: false, //disable a default feature
+        enablePagination: true, //disable a default feature
         onRowSelectionChange: setRowSelection, //hoist internal state to your own state (optional)
         state: { rowSelection }, //manage your own state, pass it back to the table (optional)
         initialState: { columnVisibility: { vacancyId: false } },
+        //enableHiding:false
     });
 
     const someEventHandler = () => {
