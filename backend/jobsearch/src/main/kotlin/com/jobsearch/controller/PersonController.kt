@@ -23,7 +23,7 @@ class PersonController(val personService: PersonService) {
     }
 
     @PutMapping("{id}")
-    fun retrieveAllPersons(@PathVariable("id") personId: Int, @RequestBody personDTO: PersonDTO): PersonDTO {
+    fun updatePerson(@PathVariable("id") personId: Int, @RequestBody personDTO: PersonDTO): PersonDTO {
         return personService.updatePerson(personId, personDTO)
     }
 
