@@ -12,4 +12,9 @@ data class User (
     var lastName: String,
     var password: String,
     var email: String
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", nullable = false)
+    var role: Role
+
 )
