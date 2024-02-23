@@ -1,13 +1,15 @@
 //todo: add endpoints
 
 
-const path="api/v1"
+const path="api/v1/"
+const port="8080/"
+const base_url="http://localhost:"+port
+
 
 
 export const ENDPOINTS = {
-    getSkills: 'candidate',
-    MANAGER: 'manager',
-    ADMIN: 'admin',
+    getSkills: base_url+path+'skills',
+
   };
 
 
