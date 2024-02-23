@@ -3,7 +3,7 @@ package com.jobsearch.entity
 import jakarta.persistence.*
 
 @Entity
-@Table(name="Skill")
+@Table(name="skill")
 data class Skill (
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
