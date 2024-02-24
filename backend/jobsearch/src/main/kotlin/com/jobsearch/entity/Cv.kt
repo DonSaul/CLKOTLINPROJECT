@@ -1,5 +1,14 @@
 package com.jobsearch.entity
 
+import jakarta.persistence.*
 
-class Cv {
-}
+@Entity
+@Table(name="cvs")
+data class Cv(
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Int? = null,
+    val yearsOfExperience: Int,
+    val salaryExpectation: Int,
+    val education: String
+)
