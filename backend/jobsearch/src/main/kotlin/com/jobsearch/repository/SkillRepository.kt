@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 
 interface SkillRepository :JpaRepository<Skill,Int> {
-
+    fun findByName(name: String): Skill?
 
 }

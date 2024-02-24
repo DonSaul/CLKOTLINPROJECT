@@ -1,0 +1,28 @@
+--Hard coded skills
+INSERT INTO skill (skill_id, name) VALUES (1, 'Java') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (2, 'Python') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (3, 'JavaScript') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (4, 'C#') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (5, 'React') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (6, 'Angular') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (7, 'Node.js') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (8, 'Spring Boot') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (9, 'Django') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (10, 'SQL') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (11, 'MongoDB') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (12, 'AWS') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (13, 'Docker') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (14, 'Kubernetes') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (15, 'Git') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (16, 'Cybersecurity') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (17, 'HTML') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (18, 'CSS') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (19, 'TypeScript') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (20, 'RESTful API') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (21, 'GraphQL') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (22, 'Jenkins') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (23, 'Redux') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (24, 'Firebase') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (25, 'CI/CD') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (26, 'Kotlin') ON CONFLICT DO NOTHING;
+INSERT INTO skill (skill_id, name) VALUES (27, 'C++') ON CONFLICT DO NOTHING;
