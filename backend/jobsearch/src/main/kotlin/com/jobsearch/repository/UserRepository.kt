@@ -3,6 +3,6 @@ package com.jobsearch.repository
 import com.jobsearch.entity.User
 import org.springframework.data.jpa.repository.JpaRepository
 
-interface UserRepository : CrudRepository<User, Int>{
+interface UserRepository : JpaRepository<User, Int>{
 
 }

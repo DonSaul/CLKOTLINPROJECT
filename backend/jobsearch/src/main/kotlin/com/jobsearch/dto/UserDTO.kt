@@ -1,9 +1,10 @@
 package com.jobsearch.dto
 
-data class UserDTO {
-    val lastName: String,
-    val firstName: String,
-    val password: String,
-    val email: String,
-    val roleId: Int
-}
+data class UserDTO(
+    val id : Long? = null,
+    val firstName : String,
+    val lastName : String,
+    val email : String,
+    val password : String,
+    val role : Int
+)

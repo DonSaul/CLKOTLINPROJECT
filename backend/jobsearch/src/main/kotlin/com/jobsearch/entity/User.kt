@@ -7,11 +7,11 @@ import jakarta.persistence.*
 data class User (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Int? = null,
+    val id: Long? = null,
     var firstName: String,
     var lastName: String,
     var password: String,
-    var email: String
+    var email: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", nullable = false)

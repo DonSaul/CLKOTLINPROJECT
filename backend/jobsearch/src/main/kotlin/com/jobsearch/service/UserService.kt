@@ -49,7 +49,7 @@ class UserService(
     }
 
     fun updateUser(userId: Long, userDTO: UserDTO): UserDTO {
-        val user = userRepository.findById(userId)
+        val user = userRepository.findById(userId.toInt())
             .orElseThrow { NoSuchElementException("No user found with id $userId") }
 
         user.apply {
