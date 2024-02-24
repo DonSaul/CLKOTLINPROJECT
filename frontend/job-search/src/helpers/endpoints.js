@@ -10,5 +10,6 @@ export const ENDPOINTS = {
   register: createUrl("register"),
   getSkills: createUrl("skills"),
   submitCV:createUrl("PUT-CV-ENDPOINT-HERE"),
-  login: createUrl("login")
+  login: createUrl("login"),
+  getJobFamilies: createUrl("job-family")
 };
