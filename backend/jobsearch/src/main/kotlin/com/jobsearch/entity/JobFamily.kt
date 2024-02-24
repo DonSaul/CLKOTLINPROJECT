@@ -8,5 +8,6 @@ class JobFamily(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int?,
-    val name: String,
+    @Column(unique = true)
+    var name: String,
 )
