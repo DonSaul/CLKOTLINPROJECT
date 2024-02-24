@@ -1,18 +1,21 @@
 package com.jobsearch.entity
 
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 
 @Entity
 @Table(name="project")
 data class Project (
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val projectId:Int?=null,
-        val name:String,
-        val description:String
+        var projectId:Int?=null,
+        var name:String,
+        var description:String,
 
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "cv_id")
+        var cv: Cv,
+
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "job_family_id")
+        var jobFamily: JobFamily
 )
