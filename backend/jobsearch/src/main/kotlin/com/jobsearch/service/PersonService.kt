@@ -11,7 +11,7 @@ class PersonService(
 ) {
     fun createPerson(personDTO: PersonDTO): PersonDTO {
         val personEntity = personDTO.let {
-            Person(id=null, firstName = it.firstName, lastName = it.lastName)
+            Person(id = null, firstName = it.firstName, lastName = it.lastName)
         }
         val newPerson = personRepository.save(personEntity)
 
