@@ -40,9 +40,9 @@ const CV = () => {
 
 
   //Notification test
- // const [snackbarOpen, setSnackbarOpen] = useState(false);
- // const [snackbarMessage, setSnackbarMessage] = useState('');
-//  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  // const [snackbarOpen, setSnackbarOpen] = useState(false);
+  // const [snackbarMessage, setSnackbarMessage] = useState('');
+  //  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
 
 
@@ -101,6 +101,20 @@ const CV = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    //Quick fix for empty values
+    if (
+      !yearsOfExperience ||
+      !salaryExpectations ||
+      !education ||
+      projects.some(project => !project.name || !project.description || !project.jobFamily) ||
+      selectedSkillsArray.length === 0
+    ) {
+      console.log('Validation failed');
+      return;
+    }
+
+
+
     console.log('Form submitted:', { yearsOfExperience, salaryExpectations, education, projects });
     console.log("skills", selectedSkillsArray);
 
@@ -115,7 +129,7 @@ const CV = () => {
 
     const formData = {
       yearsOfExperience,
-      salaryExpectation:salaryExpectations,
+      salaryExpectation: salaryExpectations,
       education,
       longSkillString,
       projects,
@@ -196,12 +210,12 @@ const CV = () => {
                 margin="normal"
               />
               <Autocomplete
-            options={jobFamilies || []}
-            getOptionLabel={(option) => option.name || ''}
-            value={project.jobFamily || null} 
-            onChange={(e, newValue) => handleProjectChange(index, 'jobFamily', newValue)}
-            renderInput={(params) => <TextField {...params} label={`Select Job Family for Project`} />}
-          />
+                options={jobFamilies || []}
+                getOptionLabel={(option) => option.name || ''}
+                value={project.jobFamily || null}
+                onChange={(e, newValue) => handleProjectChange(index, 'jobFamily', newValue)}
+                renderInput={(params) => <TextField {...params} label={`Select Job Family for Project`} />}
+              />
 
               {projects.length > 1 && (
                 <Button onClick={() => removeProjectField(index)} variant="outlined" color="secondary">
@@ -292,7 +306,7 @@ const CV = () => {
 
       </CardContainer>
 
-{/*
+      {/*
 
   <SnackbarNotification
         open={snackbarOpen}
@@ -303,7 +317,7 @@ const CV = () => {
 
 
 */}
-    
+
     </div>
   );
 };
