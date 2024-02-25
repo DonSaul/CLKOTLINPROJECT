@@ -17,6 +17,7 @@ class CvService(
 
     @Transactional
     fun createCv(cvDTO: CvRequestDTO): CvResponseDTO {
+
         val cv = cvDTO.let {
             Cv(
                 id = null,
@@ -27,6 +28,7 @@ class CvService(
                 skills = mutableSetOf()
             )
         }
+
 
         // Adding projects to CV
         cvDTO.projects.forEach { projectDTO ->
