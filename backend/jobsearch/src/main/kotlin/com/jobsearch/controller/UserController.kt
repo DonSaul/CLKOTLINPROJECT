@@ -1,7 +1,6 @@
 package com.jobsearch.controller
 
 import com.jobsearch.dto.UserDTO
-import com.jobsearch.entity.User
 import com.jobsearch.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -12,13 +11,13 @@ import org.springframework.web.bind.annotation.*
 class UserController(private val userService: UserService) {
 
     @PostMapping("/create")
-    fun addUser(@RequestBody userDTO: UserDTO): ResponseEntity<User> {
+    fun addUser(@RequestBody userDTO: UserDTO): ResponseEntity<UserDTO> {
         val user = userService.createUser(userDTO)
         return ResponseEntity(user, HttpStatus.CREATED)
     }
 
     @GetMapping("/{userId}")
-    fun retrieveUser(@PathVariable userId: Long): ResponseEntity<UserDTO> {
+    fun retrieveUser(@PathVariable userId: Int): ResponseEntity<UserDTO> {
         val user = userService.retrieveUser(userId)
         return ResponseEntity(user, HttpStatus.OK)
     }
@@ -30,13 +29,13 @@ class UserController(private val userService: UserService) {
     }
 
     @PutMapping("/{userId}")
-    fun updateUser(@PathVariable userId: Long, @RequestBody userDTO: UserDTO): ResponseEntity<UserDTO> {
+    fun updateUser(@PathVariable userId: Int, @RequestBody userDTO: UserDTO): ResponseEntity<UserDTO> {
         val updatedUser = userService.updateUser(userId, userDTO)
         return ResponseEntity(updatedUser, HttpStatus.OK)
     }
 
     @DeleteMapping("/{userId}")
-    fun deleteUser(@PathVariable userId: Long): ResponseEntity<String> {
+    fun deleteUser(@PathVariable userId: Int): ResponseEntity<String> {
         val result = userService.deleteUser(userId)
         return ResponseEntity(result, HttpStatus.OK)
     }
