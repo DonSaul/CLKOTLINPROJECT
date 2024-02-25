@@ -115,7 +115,7 @@ const CV = () => {
 
     const formData = {
       yearsOfExperience,
-      salaryExpectations,
+      salaryExpectation:salaryExpectations,
       education,
       longSkillString,
       projects,
@@ -282,7 +282,7 @@ const CV = () => {
 
 
           <Button type="submit" variant="contained" color="primary">
-            Submit
+            Save CV
           </Button>
 
         </form>
