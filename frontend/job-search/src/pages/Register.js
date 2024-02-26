@@ -1,15 +1,13 @@
 // Register.js
-import React from 'react';
+import React, { useState } from 'react';
+import RegisterForm from '../components/RegisterForm';
 
 const Register = () => {
-
-
-
-  return (
-    <div>
-      <h2>Register Page</h2>
-    </div>
-  );
+    return(
+        <div>
+            <RegisterForm></RegisterForm>
+        </div>
+    );
 };
 
 export default Register;
