@@ -1,4 +1,5 @@
 import { useMutation } from  'react-query';
+import { useQuery } from 'react-query';
 import { ENDPOINTS } from "../helpers/endpoints";
 
 
@@ -29,3 +30,17 @@ export const useCV = () => {
       },
     });
   };
+
+//get cv of user
+  const fetchCV = async (id) => {
+    const response = await fetch(`${ENDPOINTS.submitCV}/${id}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch cv');
+    }
+    return response.json();
+  };
+  
+  export const useGetCurrentUserCv = (id) => {
+    return useQuery(['getCv',id],()=> fetchCV(id));
+  };
+  
