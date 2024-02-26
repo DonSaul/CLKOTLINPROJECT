@@ -18,7 +18,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 class SecurityConfig{
-
     @Bean
     @Throws(Exception::class)
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
@@ -27,8 +26,14 @@ class SecurityConfig{
             .authorizeHttpRequests{ authRequests ->
                 authRequests
                     .requestMatchers("/api/v1/users/**").permitAll()
+                    .requestMatchers("/api/v1/cvs/**").permitAll()
+                    .requestMatchers("/api/v1/skills/**").permitAll()
+                    .requestMatchers("/api/v1/vacancy/**").permitAll()
+                    .requestMatchers("/api/v1/job-family/**").permitAll()
                     .anyRequest().authenticated()
             }
+            .formLogin(Customizer.withDefaults())
             .build()
     }
+
 }
