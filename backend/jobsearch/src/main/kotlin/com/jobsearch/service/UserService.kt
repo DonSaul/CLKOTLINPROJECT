@@ -6,33 +6,35 @@ import com.jobsearch.repository.UserRepository
 import org.springframework.stereotype.Service
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserService @Autowired constructor(
     private val userRepository: UserRepository,
-    private val passwordEncoder: PasswordEncoder
-) {
 
+) {
+    @Transactional
     fun createUser(userDTO: UserDTO): UserDTO {
-        val encodedPassword = passwordEncoder.encode(userDTO.password)
+
 
         val userEntity = User(
-            lastName = userDTO.lastName,
             firstName = userDTO.firstName,
-            password = encodedPassword,
+            lastName = userDTO.lastName,
+            password = userDTO.password,
             email = userDTO.email,
         )
 
         val newUser = userRepository.save(userEntity)
 
-        return UserDTO(newUser.id!!, newUser.lastName, newUser.firstName, newUser.email, newUser.password)
+        return UserDTO(newUser.id!!, newUser.firstName,newUser.lastName, newUser.email, newUser.password)
     }
+    @Transactional
     fun retrieveUser(userId: Int): UserDTO {
         val user = userRepository.findById(userId)
             .orElseThrow { NoSuchElementException("No user found with id $userId") }
 
         return user.let {
-            UserDTO(it.id!!, it.lastName, it.firstName, it.email, it.password)
+            UserDTO(it.id!!, it.firstName, it.lastName, it.email, it.password)
         }
     }
 
@@ -40,7 +42,7 @@ class UserService @Autowired constructor(
         val users = userRepository.findAll()
 
         return users.map { user ->
-            UserDTO(user.id!!, user.lastName, user.firstName, user.email, user.password)
+            UserDTO(user.id!!,  user.firstName,user.lastName, user.email, user.password)
         }
     }
 
@@ -49,16 +51,16 @@ class UserService @Autowired constructor(
             .orElseThrow { NoSuchElementException("No user found with id $userId") }
 
         user.apply {
-            lastName = userDTO.lastName
             firstName = userDTO.firstName
-            password = passwordEncoder.encode(userDTO.password)
+            lastName = userDTO.lastName
+            password = userDTO.password
             email = userDTO.email
         }
 
         val updatedUser = userRepository.save(user)
 
         return updatedUser.let {
-            UserDTO(it.id!!, it.lastName, it.firstName, it.email, it.password)
+            UserDTO(it.id!!, it.firstName, it.lastName, it.email, it.password)
         }
     }
 

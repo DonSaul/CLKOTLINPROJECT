@@ -1,4 +1,8 @@
 package com.jobsearch.entity
 
-class Role {
-}
+import jakarta.persistence.*
+
+
+class Role (
+
+)

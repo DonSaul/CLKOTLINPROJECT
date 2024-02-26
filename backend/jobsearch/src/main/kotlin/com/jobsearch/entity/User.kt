@@ -2,9 +2,11 @@ package com.jobsearch.entity
 
 import jakarta.persistence.*
 
+
+
 @Entity
-@Table(name="Users")
-data class User (
+@Table(name="users")
+class User (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int? = null,
