@@ -1,11 +1,13 @@
 package com.jobsearch.entity
+
 import jakarta.persistence.*
+
 @Entity
-@Table(name = "Roles")
-data class Role (
+@Table(name = "job_family")
+class JobFamily(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val roleId : Int?,
-    var name: String
-
-    )
+    val id: Int?,
+    @Column(unique = true)
+    var name: String,
+)

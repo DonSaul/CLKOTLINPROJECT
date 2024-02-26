@@ -3,13 +3,21 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { queryClient } from './helpers/queryClient';
+import { QueryClientProvider } from 'react-query';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 
   //todo: add user context and query provider
   <React.StrictMode>
-    <App />
+   
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
+    
+    
+    
   </React.StrictMode>
 );
 

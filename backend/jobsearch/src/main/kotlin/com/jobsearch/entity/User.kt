@@ -1,21 +1,19 @@
 package com.jobsearch.entity
+
 import jakarta.persistence.*
 
+
+
 @Entity
-@Table(name = "users")
-class User(
+@Table(name="users")
+class User (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null,
-
-    var username: String,
+    val id: Int? = null,
+    var firstName: String,
+    var lastName: String,
     var password: String,
+    var email: String,
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "user_roles",
-        joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")],
-        inverseJoinColumns = [JoinColumn(name = "role_id", referencedColumnName = "id")]
-    )
-    var roles: Set<Role> = HashSet()
+
 )

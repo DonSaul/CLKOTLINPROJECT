@@ -19,6 +19,7 @@ class SkillService (val skillRepository: SkillRepository){
     }
 
     fun createSkill(skillDTO: SkillDTO): SkillDTO {
+
         val skillEntity = skillDTO.let {
             Skill(skillId  =null, name = it.name)
         }
