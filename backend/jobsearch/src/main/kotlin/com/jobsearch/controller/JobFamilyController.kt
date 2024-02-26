@@ -2,7 +2,6 @@ package com.jobsearch.controller
 
 import com.jobsearch.dto.JobFamilyDto
 import com.jobsearch.service.JobFamilyService
-import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -15,7 +14,7 @@ class JobFamilyController(
 ) {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createJobFamily(@RequestBody @Valid jobFamilyDto: JobFamilyDto): JobFamilyDto {
+    fun createJobFamily(@RequestBody jobFamilyDto: JobFamilyDto): JobFamilyDto {
         return jobFamilyService.createJobFamily(jobFamilyDto)
     }
 

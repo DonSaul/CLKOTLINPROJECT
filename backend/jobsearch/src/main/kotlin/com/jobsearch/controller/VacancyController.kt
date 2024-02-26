@@ -40,4 +40,19 @@ class VacancyController(
         return vacancyService.deleteVacancy(vacancyId)
     }
 
+    @GetMapping("/search")
+    @ResponseBody
+    fun searchVacancies(
+        @RequestParam(required = false) salary: Int?,
+        @RequestParam(required = false) jobFamilyId: Int?,
+        @RequestParam(required = false) yearsOfExperience: Int?
+    ): List<VacancyDto> {
+        return when {
+            salary != null -> vacancyService.findBySalaryExpectation(salary)
+            jobFamilyId != null -> vacancyService.findVacanciesByJobFamily(jobFamilyId)
+            yearsOfExperience != null -> vacancyService.findVacanciesByYearsOfExperience(yearsOfExperience)
+            else -> throw IllegalArgumentException("Debe proporcionar al menos uno de los parámetros: salary o jobFamilyId")
+        }
+
+    }
 }

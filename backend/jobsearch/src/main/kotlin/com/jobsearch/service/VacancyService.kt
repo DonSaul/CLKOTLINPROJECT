@@ -3,6 +3,7 @@ package com.jobsearch.service
 import com.jobsearch.dto.VacancyDto
 import com.jobsearch.entity.Vacancy
 import com.jobsearch.repository.VacancyRepository
+import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 
 @Service
@@ -15,53 +16,25 @@ class VacancyService(
             .orElseThrow { NoSuchElementException("No vacancy found with id ${vacancyDto.jobFamilyId}") }
 
         val vacancyEntity = vacancyDto.let {
-            Vacancy(it.id, it.name, it.companyName, it.salaryExpectation, it.description, selectedJobFamily)
+            Vacancy(it.id, it.name, it.companyName, it.salaryExpectation, it.yearsOfExperience, it.description, selectedJobFamily)
         }
         val newVacancy = vacancyRepository.save(vacancyEntity)
 
-        return newVacancy.let {
-            VacancyDto(
-                it.id,
-                it.name,
-                it.companyName,
-                it.salaryExpectation,
-                it.description,
-                it.jobFamily.id,
-                it.jobFamily.name
-            )
-        }
+        return mapToVacancyDto(newVacancy)
     }
 
     fun retrieveVacancy(vacancyId: Int): VacancyDto {
         val vacancy = vacancyRepository.findById(vacancyId)
             .orElseThrow { NoSuchElementException("No vacancy found with id $vacancyId") }
 
-        return vacancy.let {
-            VacancyDto(
-                it.id,
-                it.name,
-                it.companyName,
-                it.salaryExpectation,
-                it.description,
-                it.jobFamily.id,
-                it.jobFamily.name
-            )
-        }
+        return mapToVacancyDto(vacancy)
     }
 
     fun retrieveAllVacancy(): List<VacancyDto> {
         val persons = vacancyRepository.findAll()
 
         return persons.map {
-            VacancyDto(
-                it.id,
-                it.name,
-                it.companyName,
-                it.salaryExpectation,
-                it.description,
-                it.jobFamily.id,
-                it.jobFamily.name
-            )
+            mapToVacancyDto(it)
         }
     }
 
@@ -79,19 +52,7 @@ class VacancyService(
         vacancy.jobFamily = selectedJobFamily
 
         val updatedVacancy = vacancyRepository.save(vacancy)
-        return updatedVacancy.let {
-            VacancyDto(
-                it.id,
-                it.name,
-                it.companyName,
-                it.salaryExpectation,
-                it.description,
-                it.jobFamily.id,
-                it.jobFamily.name
-            )
-        }
-
-
+        return mapToVacancyDto(updatedVacancy)
     }
 
     fun deleteVacancy(vacancyId: Int): String {
@@ -102,4 +63,42 @@ class VacancyService(
         return "Vacancy deleted successfully"
     }
 
+    @Transactional
+    fun findVacanciesByJobFamily(jobFamilyId: Int): List<VacancyDto> {
+        val vacancies = vacancyRepository.findByJobFamilyId(jobFamilyId)
+        return vacancies.map {
+            mapToVacancyDto(it)
+        }
+    }
+
+    @Transactional
+    fun findBySalaryExpectation(salary: Int): List<VacancyDto> {
+        val vacancies = vacancyRepository.findBySalaryExpectation(salary)
+        return vacancies.map {
+            mapToVacancyDto(it)
+        }
+    }
+
+    @Transactional
+    fun findVacanciesByYearsOfExperience(yearsOfExperience: Int): List<VacancyDto> {
+        val vacancies = vacancyRepository.findByYearsOfExperience(yearsOfExperience)
+        return vacancies.map {
+            mapToVacancyDto(it)
+        }
+    }
+
+    fun mapToVacancyDto(vacancy: Vacancy): VacancyDto {
+        return vacancy.let {
+            VacancyDto(
+                it.id,
+                it.name,
+                it.companyName,
+                it.salaryExpectation,
+                it.yearsOfExperience,
+                it.description,
+                it.jobFamily.id,
+                it.jobFamily.name
+            )
+        }
+    }
 }
