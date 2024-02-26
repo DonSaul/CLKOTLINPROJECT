@@ -51,8 +51,7 @@ class VacancyController(
             salary != null -> vacancyService.findBySalaryExpectation(salary)
             jobFamilyId != null -> vacancyService.findVacanciesByJobFamily(jobFamilyId)
             yearsOfExperience != null -> vacancyService.findVacanciesByYearsOfExperience(yearsOfExperience)
-            else -> throw IllegalArgumentException("Debe proporcionar al menos uno de los parámetros: salary o jobFamilyId")
+            else -> throw IllegalArgumentException("Must add one of the following paramateres: salary, jobFamilyId, yearsOfExperience")
         }
-
     }
 }
