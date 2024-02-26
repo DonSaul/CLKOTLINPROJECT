@@ -11,16 +11,16 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class UserService @Autowired constructor(
     private val userRepository: UserRepository,
-
+    private val passwordEncoder: PasswordEncoder
 ) {
     @Transactional
     fun createUser(userDTO: UserDTO): UserDTO {
-
+        val encodedPassword = passwordEncoder.encode(userDTO.password)
 
         val userEntity = User(
             firstName = userDTO.firstName,
             lastName = userDTO.lastName,
-            password = userDTO.password,
+            password = encodedPassword,
             email = userDTO.email,
         )
 
@@ -53,7 +53,9 @@ class UserService @Autowired constructor(
         user.apply {
             firstName = userDTO.firstName
             lastName = userDTO.lastName
-            password = userDTO.password
+            if (userDTO.password.isNotEmpty()) {
+                password = passwordEncoder.encode(userDTO.password)
+            }
             email = userDTO.email
         }
 
