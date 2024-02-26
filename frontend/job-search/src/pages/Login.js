@@ -5,12 +5,36 @@ import Button from '@mui/material/Button';
 import CardContainer from '../components/CardContainer';
 import {Typography} from '@mui/material';
 import { Link } from 'react-router-dom';
+import { useLogin } from '../hooks/useLogin';
+
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
+
+
+
+  const { mutate, isError, isSuccess } = useLogin();
+
+  const handleSubmit =async (e) => {
+    e.preventDefault();
+
     console.log('Logging in with:', username, password);
+
+
+    let formData={
+      username,
+      password
+    }
+
+    try {
+      await mutate(formData);
+   
+    } catch (error) {
+
+    }
+
+
   };
 
 
@@ -19,7 +43,8 @@ const Login = () => {
     <div>
       <CardContainer width='xs'>
       <h2>Login</h2>
-      <form>
+      <form onSubmit={handleSubmit}>
+
         <TextField
           label="Username"
           type="text"
@@ -27,6 +52,7 @@ const Login = () => {
           onChange={(e) => setUsername(e.target.value)}
           fullWidth
           margin="normal"
+          required
         />
         <TextField
           label="Password"
@@ -35,12 +61,13 @@ const Login = () => {
           onChange={(e) => setPassword(e.target.value)}
           fullWidth
           margin="normal"
+          required
         />
         <Button
-          type="button"
+          type="submit"
           variant="contained"
           color="primary"
-          onClick={handleLogin}
+          //onClick={handleSubmit}
           //fullWidth
         >
           Login

@@ -9,6 +9,9 @@ const createUrl = (path) => {
 export const ENDPOINTS = {
   register: createUrl("register"),
   getSkills: createUrl("skills"),
-  submitCV:createUrl("PUT-CV-ENDPOINT-HERE"),
-  login: createUrl("login")
+  submitCV:createUrl("cvs"),
+  login: createUrl("login"),
+  getJobFamilies: createUrl("job-family"),
+  users:createUrl("users"),
+  vacancy:createUrl("vacancy")
 };

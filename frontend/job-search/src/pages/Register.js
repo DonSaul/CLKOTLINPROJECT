@@ -1,15 +1,18 @@
 // Register.js
-import React from 'react';
+import React, { useState } from 'react';
+import RegisterForm from '../components/RegisterForm';
+import CardContainer from '../components/CardContainer';
 
 const Register = () => {
+    return (
+        <div>
+            <CardContainer width='xs'>
 
+                <RegisterForm></RegisterForm>
+            </CardContainer>
 
-
-  return (
-    <div>
-      <h2>Register Page</h2>
-    </div>
-  );
+        </div>
+    );
 };
 
 export default Register;
