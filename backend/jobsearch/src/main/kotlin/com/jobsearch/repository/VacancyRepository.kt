@@ -5,11 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
 interface VacancyRepository: JpaRepository<Vacancy, Int> {
-    @Query(value = "SELECT * FROM vacancy WHERE job_family_id = ?1", nativeQuery = true)
-    fun findByJobFamilyId(jobFamilyId: Int): List<Vacancy>
-    @Query(value = "SELECT * FROM vacancy WHERE salary_expectation >= ?1", nativeQuery = true)
-    fun findBySalaryExpectation(salary: Int): List<Vacancy>
-
-    @Query(value = "SELECT * FROM vacancy WHERE years_of_experience >= ?1", nativeQuery = true)
-    fun findByYearsOfExperience(yearsOfExperience: Int): List<Vacancy>
+    @Query("SELECT v FROM Vacancy v WHERE " +
+            "(:salary IS NULL OR v.salaryExpectation >= :salary) " +
+            "AND (:jobFamilyId IS NULL OR v.jobFamily.id = :jobFamilyId) " +
+            "AND (:yearsOfExperience IS NULL OR v.yearsOfExperience >= :yearsOfExperience)")
+    fun findVacanciesByFilters(salary: Int?, jobFamilyId: Int?, yearsOfExperience: Int?): List<Vacancy>
 }

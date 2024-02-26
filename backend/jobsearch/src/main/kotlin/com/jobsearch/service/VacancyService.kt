@@ -64,24 +64,8 @@ class VacancyService(
     }
 
     @Transactional
-    fun findVacanciesByJobFamily(jobFamilyId: Int): List<VacancyDto> {
-        val vacancies = vacancyRepository.findByJobFamilyId(jobFamilyId)
-        return vacancies.map {
-            mapToVacancyDto(it)
-        }
-    }
-
-    @Transactional
-    fun findBySalaryExpectation(salary: Int): List<VacancyDto> {
-        val vacancies = vacancyRepository.findBySalaryExpectation(salary)
-        return vacancies.map {
-            mapToVacancyDto(it)
-        }
-    }
-
-    @Transactional
-    fun findVacanciesByYearsOfExperience(yearsOfExperience: Int): List<VacancyDto> {
-        val vacancies = vacancyRepository.findByYearsOfExperience(yearsOfExperience)
+    fun findVacanciesByFilter(salary: Int?, jobFamilyId: Int?, yearsOfExperience: Int?): List<VacancyDto> {
+        val vacancies = vacancyRepository.findVacanciesByFilters(salary, jobFamilyId, yearsOfExperience)
         return vacancies.map {
             mapToVacancyDto(it)
         }
@@ -101,4 +85,5 @@ class VacancyService(
             )
         }
     }
+
 }
