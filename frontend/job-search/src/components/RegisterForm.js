@@ -6,6 +6,7 @@ import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Typography from '@mui/material/Typography';
+import { useRegister } from '../hooks/useRegister';
 
 const RegisterForm = () => {
 
@@ -15,14 +16,39 @@ const RegisterForm = () => {
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('Candidate');
     const [termsAccepted, setTermsAccepted] = useState(false);
+
+    const { mutate, isError, isSuccess } = useRegister();
+
+
     
     const handleRoleChange = (selectedRole) => {
         setRole(selectedRole);
       };
     
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();    
         console.log('Form submitted:', { firstName, lastName, email, password, role, termsAccepted });
+
+
+        const formData = {
+          firstName,
+          lastName,
+          email,
+          password,
+          role,
+          termsAccepted
+        };
+    
+        try {
+          await mutate(formData);
+    
+        } catch (error) {
+    
+   
+        }
+
+
+
       };
     
     return (
