@@ -20,7 +20,7 @@ class AuthService(
 
     fun register(userDto: UserDTO) {
         val user = User(
-            username = userDto.username,
+            email = userDto.email,
             password = passwordEncoder.encode(userDto.password),
             roles = setOf(Role(name = "ROLE_USER"))
         )
@@ -39,7 +39,7 @@ class AuthService(
         val authorities = user.roles.map { SimpleGrantedAuthority(it.name) }
 
         return org.springframework.security.core.userdetails.User
-            .withUsername(user.username)
+            .withUsername(user.email)
             .password(user.password)
             .authorities(authorities)
             .build()
