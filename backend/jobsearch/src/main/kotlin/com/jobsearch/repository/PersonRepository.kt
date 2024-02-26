@@ -1,6 +1,7 @@
 package com.jobsearch.repository
 
-import com.jobsearch.entity.Cv
+import com.jobsearch.entity.Person
 import org.springframework.data.jpa.repository.JpaRepository
 
-interface CvRepository: JpaRepository<Cv, Int>
+interface PersonRepository: JpaRepository<Person, Int> {
+}
