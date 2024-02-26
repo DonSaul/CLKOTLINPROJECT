@@ -21,10 +21,9 @@ class SecurityConfig : SecurityConfigurerAdapter<DefaultSecurityFilterChain, Htt
     override fun configure(httpSecurity: HttpSecurity) {
         httpSecurity
             .authorizeRequests()
-            .antMatchers("/api/v1/auth/register").permitAll()
+            .requestMatchers("/api/v1/auth/register").permitAll()
             .anyRequest().authenticated()
             .and()
-            .httpBasic()
     }
 
     @Autowired
