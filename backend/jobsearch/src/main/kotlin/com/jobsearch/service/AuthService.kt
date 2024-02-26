@@ -4,7 +4,7 @@ import com.jobsearch.dto.UserDTO
 import com.jobsearch.entity.Role
 import com.jobsearch.entity.User
 import com.jobsearch.repository.UserRepository
-import org.springframework.security.core.GrantedAuthority
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -13,13 +13,16 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
-class AuthService(private val userRepository: UserRepository, private val passwordEncoder: PasswordEncoder) {
+class AuthService(
+    private val userRepository: UserRepository,
+    @Autowired private val passwordEncoder: PasswordEncoder
+) : UserDetailsService {
 
     fun register(userDto: UserDTO) {
         val user = User(
             username = userDto.username,
             password = passwordEncoder.encode(userDto.password),
-            roles = setOf(Role(name = "ROLE_USER")) // asumimos que todos los usuarios nuevos son usuarios normales
+            roles = setOf(Role(name = "ROLE_USER"))
         )
         userRepository.save(user)
     }
@@ -28,7 +31,17 @@ class AuthService(private val userRepository: UserRepository, private val passwo
         return userRepository.findByUsername(username).orElse(null)
     }
 
-    fun getEncoder(): PasswordEncoder {
-        return passwordEncoder
+
+    override fun loadUserByUsername(username: String): UserDetails {
+        val user = userRepository.findByUsername(username)
+            .orElseThrow { UsernameNotFoundException("User not found.") }
+
+        val authorities = user.roles.map { SimpleGrantedAuthority(it.name) }
+
+        return org.springframework.security.core.userdetails.User
+            .withUsername(user.username)
+            .password(user.password)
+            .authorities(authorities)
+            .build()
     }
 }

@@ -7,14 +7,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 
 @SpringBootApplication
-class JobsearchApplication
+class JobsearchApplication {
+	@Bean
+	fun passwordEncoder(): PasswordEncoder {
+		return BCryptPasswordEncoder()
+	}
+}
 
 fun main(args: Array<String>) {
 	runApplication<JobsearchApplication>(*args)
 }
 
-@Bean
-fun passwordEncoder(): PasswordEncoder {
-	return BCryptPasswordEncoder()
-}
 

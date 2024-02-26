@@ -7,18 +7,15 @@ function App() {
   return (
     <div className="App">
 
-      
 
 
-        
+      <RouterWrapper />
 
-        <RouterWrapper/>
-      
- 
-        
-     
+
+
     </div>
   );
 }
 
 export default App;
+ 
