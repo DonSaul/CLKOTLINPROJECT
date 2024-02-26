@@ -44,3 +44,6 @@ INSERT INTO job_family (id, name) VALUES (7, 'Sales') ON CONFLICT DO NOTHING;
 INSERT INTO job_family (id, name) VALUES (8, 'Education') ON CONFLICT DO NOTHING;
 INSERT INTO job_family (id, name) VALUES (9, 'Art and Design') ON CONFLICT DO NOTHING;
 INSERT INTO job_family (id, name) VALUES (10, 'Legal') ON CONFLICT DO NOTHING;
+
+--Hard coded user
+INSERT INTO users (id,email,first_name,last_name,password) VALUES (1, 'saul@gmail.com','Saul','Olguin','1234') ON CONFLICT DO NOTHING;

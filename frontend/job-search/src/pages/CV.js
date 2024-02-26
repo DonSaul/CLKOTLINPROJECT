@@ -13,9 +13,18 @@ import { useCV } from '../hooks/useCV';
 import { Box } from '@mui/material';
 import { Typography } from '@mui/material';
 import useJobFamily from '../hooks/useJobFamily';
+import { useGetCurrentUserCv } from '../hooks/useCV';
+import IdTester from '../components/IdTester';
 
 import SnackbarNotification from '../components/SnackbarNotification';
 const CV = () => {
+
+  //Current user send id, when available
+  const [id, setId] = useState(10); 
+  const [hasFetchedData, setHasFetchedData] = useState(false);
+  const { data: cvData, error: cvError, isLoading: isCvLoading } = useGetCurrentUserCv(id);
+
+
   //Standard data cv
   const [yearsOfExperience, setYearsOfExperience] = useState('');
   const [salaryExpectations, setSalaryExpectations] = useState('');
@@ -45,6 +54,20 @@ const CV = () => {
   //  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
 
+
+
+  //Fill with the user data
+  useEffect(() => {
+    // Set initial state based on cvData when available
+    if (cvData) {
+      setYearsOfExperience(cvData.yearsOfExperience);
+      setSalaryExpectations(cvData.salaryExpectation);
+      setEducation(cvData.education);
+      setProjects(cvData.projects || [{ name: '', description: '' }]);
+     
+      setSelectedSkillsArray(cvData.skills || []);
+    }
+  }, [cvData,hasFetchedData]);
 
   useEffect(() => {
     if (skills && selectedSkillsArray.length > 0) {
@@ -92,6 +115,7 @@ const CV = () => {
   const handleSnackbarClose = () => {
     //setSnackbarOpen(false);
   };
+
 
 
 
@@ -163,6 +187,11 @@ const CV = () => {
       <CardContainer>
         <h1>Curriculum</h1>
 
+        <IdTester
+        defaultId={id}
+        setId={setId}
+      />
+
         <h2>General</h2>
         <form onSubmit={handleSubmit}>
           <TextField
@@ -213,6 +242,7 @@ const CV = () => {
                 options={jobFamilies || []}
                 getOptionLabel={(option) => option.name || ''}
                 value={project.jobFamily || null}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
                 onChange={(e, newValue) => handleProjectChange(index, 'jobFamily', newValue)}
                 renderInput={(params) => <TextField {...params} label={`Select Job Family for Project`} />}
               />
