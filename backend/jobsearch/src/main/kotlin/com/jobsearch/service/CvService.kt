@@ -36,9 +36,9 @@ class CvService(
             jobFamily?.let {
                 cv.projects?.add(
                     Project(
+                        cv = cv,
                         name = projectDTO.name,
                         description = projectDTO.description,
-                        cv = cv,
                         jobFamily = it
                     )
                 )
@@ -79,11 +79,15 @@ class CvService(
         val cv = cvRepository.findById(cvId)
             .orElseThrow { NoSuchElementException("No CV found with id $cvId") }
 
-        cv.yearsOfExperience = cvDTO.yearsOfExperience
-        cv.salaryExpectation = cvDTO.salaryExpectation
-        cv.education = cvDTO.education
+        // Updating attributes
+        cv.apply {
+            yearsOfExperience = cvDTO.yearsOfExperience
+            salaryExpectation = cvDTO.salaryExpectation
+            education = cvDTO.education
+        }
 
         // Updating projects
+
         // Removing projects from the CV that are not in the request
         cv.projects?.removeIf { project -> !cvDTO.projects.any { it.projectId == project.projectId } }
 
