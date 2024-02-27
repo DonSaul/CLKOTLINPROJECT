@@ -3,8 +3,8 @@ package com.jobsearch.entity
 import jakarta.persistence.*
 
 @Entity
-@Table(name="users")
-class User (
+@Table(name = "users")
+class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int? = null,
@@ -15,5 +15,5 @@ class User (
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
-    var role: Role,
+    var role: Role? = null
 )
