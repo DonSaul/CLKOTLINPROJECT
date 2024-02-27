@@ -1,5 +1,6 @@
 package com.jobsearch.config
 
+import com.jobsearch.jwt.JwtAuthenticationFilter
 import com.jobsearch.service.AuthService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
@@ -25,6 +27,10 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
     @Autowired
     lateinit var passwordEncoder: PasswordEncoder
 
+    @Autowired
+    lateinit var jwtAuthenticationFilter: JwtAuthenticationFilter
+
+
     @Bean
     @Throws(Exception::class)
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
@@ -32,14 +38,15 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
             .csrf { csrf -> csrf.disable() }
             .authorizeHttpRequests{ authRequests ->
                 authRequests
-                    .requestMatchers("/api/v1/users/**").permitAll()
-                    .requestMatchers("/api/v1/cvs/**").permitAll()
-                    .requestMatchers("/api/v1/skills/**").permitAll()
-                    .requestMatchers("/api/v1/vacancy/**").permitAll()
-                    .requestMatchers("/api/v1/job-family/**").permitAll()
                     .requestMatchers("/api/v1/auth/**").permitAll()
+                    .requestMatchers("/api/v1/users/**").authenticated()
+                    .requestMatchers("/api/v1/cvs/**").authenticated()
+                    .requestMatchers("/api/v1/skills/**").authenticated()
+                    .requestMatchers("/api/v1/vacancy/**").authenticated()
+                    .requestMatchers("/api/v1/job-family/**").authenticated()
                     .anyRequest().authenticated()
             }
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
             .build()
     }
 
