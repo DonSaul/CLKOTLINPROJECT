@@ -53,7 +53,7 @@ const vacancyData = [
 },
 ]
 
-export default function VacancyTable({props}) {
+export default function VacancyTable({dataFromQuery}) {
     const columns = useMemo(
         () => [
         {
@@ -75,16 +75,20 @@ export default function VacancyTable({props}) {
     const columnsVacancies = useMemo(
         () => [
         {
-            accessorKey: 'jobFamily', //simple recommended way to define a column
+            accessorKey: 'jobFamilyName',
             header: 'Category',
         },
         {
-            accessorKey: 'yearsOfExperience', //simple recommended way to define a column
+            accessorKey: 'name', 
+            header: 'Category',
+        },
+        {
+            accessorKey: 'yearsOfExperience',
             header: 'Years of experience',
 
         },
         {
-            accessorKey: 'salary', //simple recommended way to define a column
+            accessorKey: 'salaryExpectation', 
             header: 'Salary',
         },
         {
@@ -119,10 +123,13 @@ export default function VacancyTable({props}) {
 
     const table = useMaterialReactTable({
         columns:columnsVacancies,
-        data:vacancyData,
+        data:dataFromQuery?  dataFromQuery: vacancyData,
         hiddenColumns:['id'],
-        enableColumnOrdering: true, //enable some features
+        enableGlobalFilter: false,
+        enableColumnFilters:false,
+        //enableColumnOrdering: true, //enable some features
         enableRowSelection: false,
+        enableHiding:false,
         enablePagination: true, //disable a default feature
         onRowSelectionChange: setRowSelection, //hoist internal state to your own state (optional)
         state: { rowSelection }, //manage your own state, pass it back to the table (optional)

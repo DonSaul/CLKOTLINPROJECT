@@ -13,5 +13,6 @@ export const ENDPOINTS = {
   login: createUrl("login"),
   getJobFamilies: createUrl("job-family"),
   users:createUrl("users"),
-  vacancy:createUrl("vacancy")
+  vacancy:createUrl("vacancy"),
+  searchVacancies:createUrl("vacancy/search")
 };
