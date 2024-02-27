@@ -2,8 +2,6 @@ package com.jobsearch.entity
 
 import jakarta.persistence.*
 
-
-
 @Entity
 @Table(name="users")
 class User (
@@ -15,5 +13,7 @@ class User (
     var password: String,
     var email: String,
 
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id")
+    var role: Role,
 )

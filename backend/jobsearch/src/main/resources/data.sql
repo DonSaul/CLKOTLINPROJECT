@@ -28,9 +28,9 @@ INSERT INTO skill (skill_id, name) VALUES (26, 'Kotlin') ON CONFLICT DO NOTHING;
 INSERT INTO skill (skill_id, name) VALUES (27, 'C++') ON CONFLICT DO NOTHING;
 
 --Roles
-INSERT INTO roles (role_id, name) VALUES (1, 'candidate') ON CONFLICT DO NOTHING;
-INSERT INTO roles (role_id, name) VALUES (2, 'manager') ON CONFLICT DO NOTHING;
-INSERT INTO roles (role_id, name) VALUES (3, 'admin') ON CONFLICT DO NOTHING;
+INSERT INTO roles (id, name) VALUES (1, 'candidate') ON CONFLICT DO NOTHING;
+INSERT INTO roles (id, name) VALUES (2, 'manager') ON CONFLICT DO NOTHING;
+INSERT INTO roles (id, name) VALUES (3, 'admin') ON CONFLICT DO NOTHING;
 
 
 --Job categories , families
