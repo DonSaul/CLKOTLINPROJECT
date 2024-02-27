@@ -87,6 +87,7 @@ class CvService(
         }
 
         // Updating projects
+
         // Removing projects from the CV that are not in the request
         cv.projects?.removeIf { project -> !cvDTO.projects.any { it.projectId == project.projectId } }
 
