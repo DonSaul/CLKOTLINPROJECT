@@ -14,7 +14,7 @@ class StatusService(val statusRepository: StatusRepository) {
         val newStatus = statusRepository.save(statusEntity)
 
         return newStatus.let {
-            StatusDTO(it.statusId!!, it.name)
+            StatusDTO(it.statusId, it.name)
         }
     }
 
