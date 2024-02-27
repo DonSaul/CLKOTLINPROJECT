@@ -1,12 +1,11 @@
 package com.jobsearch.service
 
-import JwtProvider
 import com.jobsearch.dto.UserDTO
 import com.jobsearch.entity.User
+import com.jobsearch.jwt.JwtProvider
 import com.jobsearch.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.BadCredentialsException
-import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -17,10 +16,13 @@ import org.springframework.stereotype.Service
 class AuthService(
     private val userRepository: UserRepository,
     val userService: UserService,
-    @Autowired private val passwordEncoder: PasswordEncoder,
-    @Autowired private val jwtProvider: JwtProvider
 ) : UserDetailsService {
 
+    @Autowired
+    private lateinit var passwordEncoder: PasswordEncoder
+
+    @Autowired
+    private lateinit var jwtProvider: JwtProvider
     fun register(userDto: UserDTO) {
         userDto.password = passwordEncoder.encode(userDto.password)
         userService.createUser(userDto)

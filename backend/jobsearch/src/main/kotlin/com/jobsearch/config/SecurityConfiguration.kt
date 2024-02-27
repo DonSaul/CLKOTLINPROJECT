@@ -24,10 +24,6 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
 
     @Autowired
     lateinit var passwordEncoder: PasswordEncoder
-//    @Bean
-//    fun passwordEncoder(): PasswordEncoder {
-//        return BCryptPasswordEncoder()
-//    }
 
     @Bean
     @Throws(Exception::class)
@@ -61,5 +57,4 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
             }
         })
     }
-
 }

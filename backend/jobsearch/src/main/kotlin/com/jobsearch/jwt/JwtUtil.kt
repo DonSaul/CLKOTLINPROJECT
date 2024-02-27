@@ -1,4 +1,4 @@
-import io.jsonwebtoken.Claims
+package com.jobsearch.jwt
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Value
