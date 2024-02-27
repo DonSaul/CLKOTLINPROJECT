@@ -1,24 +1,28 @@
 package com.jobsearch.config
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.Customizer
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer.AuthorizationManagerRequestMatcherRegistry
-import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer
-import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer
-import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.core.userdetails.User
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
-class SecurityConfig{
+class SecurityConfig(private val userDetailsService: UserDetailsService) {
+
+    @Autowired
+    private lateinit var authService: AuthService
     @Bean
     fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
@@ -40,5 +44,20 @@ class SecurityConfig{
             }
             .formLogin(Customizer.withDefaults())
             .build()
+    }
+
+    @Autowired
+    fun configureGlobal(auth: AuthenticationManagerBuilder) {
+        auth.userDetailsService(UserDetailsService { username ->
+            val user = authService.findByUsername(username)
+            if (user) {
+                User.withUsername(user.email)
+                    .password(passwordEncoder().encode(user.password))
+                    .roles(*user.roles.map { role -> role.name }.toTypedArray())
+                    .build()
+            } else {
+                throw UsernameNotFoundException("User not found.")
+            }
+        }).passwordEncoder(passwordEncoder())
     }
 }
