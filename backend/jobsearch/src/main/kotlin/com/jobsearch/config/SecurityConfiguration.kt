@@ -1,5 +1,6 @@
 package com.jobsearch.config
 
+import com.jobsearch.service.AuthService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -50,14 +51,15 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
     fun configureGlobal(auth: AuthenticationManagerBuilder) {
         auth.userDetailsService(UserDetailsService { username ->
             val user = authService.findByUsername(username)
-            if (user) {
+            if (user != null) {
                 User.withUsername(user.email)
                     .password(passwordEncoder().encode(user.password))
-                    .roles(user.roles.first().name)
+                    .roles(user.role?.name)
                     .build()
             } else {
                 throw UsernameNotFoundException("User not found.")
             }
         }).passwordEncoder(passwordEncoder())
     }
+
 }
