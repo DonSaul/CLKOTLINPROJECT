@@ -20,6 +20,14 @@ class SkillService (val skillRepository: SkillRepository){
 
     fun createSkill(skillDTO: SkillDTO): SkillDTO {
 
+        val existingSkill = skillRepository.findByName(skillDTO.name)
+
+        if (existingSkill != null) {
+
+            return SkillDTO(existingSkill.skillId!!, existingSkill.name)
+        }
+
+
         val skillEntity = skillDTO.let {
             Skill(skillId  =null, name = it.name)
         }
