@@ -29,7 +29,6 @@ class CvService(
             )
         }
 
-
         // Adding projects to CV
         cvDTO.projects.forEach { projectDTO ->
             val jobFamily = jobFamilyRepository.findById(projectDTO.jobFamilyId).orElse(null)
@@ -46,7 +45,7 @@ class CvService(
             }
         }
 
-        val skillIds = cvDTO.longSkillString.split(",").map { it.toInt() }
+        val skillIds = cvDTO.longSkillString.split(",").map { it.toInt() }.toSet()
 
         // Adding skills to CV
         skillIds.forEach { skillId ->
@@ -58,24 +57,7 @@ class CvService(
 
         val newCv = cvRepository.save(cv)
 
-        return CvResponseDTO(
-            newCv.id!!,
-            newCv.yearsOfExperience,
-            newCv.salaryExpectation,
-            newCv.education,
-            projects = newCv.projects?.map { project ->
-                ProjectResponseDTO(
-                    projectId = project.projectId!!,
-                    name = project.name,
-                    description = project.description,
-                    jobFamily = JobFamilyDto(
-                        id = project.jobFamily.id!!,
-                        name = project.jobFamily.name
-                    )
-                )
-            }?.toSet() ?: setOf(),
-            skills = newCv.skills?.map { SkillDTO(it.skillId!!, it.name) }?.toSet() ?: setOf()
-        )
+        return mapToCvResponseDTO(newCv)
     }
 
 
@@ -83,49 +65,13 @@ class CvService(
         val cv = cvRepository.findById(cvId)
             .orElseThrow { NoSuchElementException("No CV found with id $cvId") }
 
-        return CvResponseDTO(
-            cv.id!!,
-            cv.yearsOfExperience,
-            cv.salaryExpectation,
-            cv.education,
-            projects = cv.projects?.map { project ->
-                ProjectResponseDTO(
-                    projectId = project.projectId!!,
-                    name = project.name,
-                    description = project.description,
-                    jobFamily = JobFamilyDto(
-                        id = project.jobFamily.id!!,
-                        name = project.jobFamily.name
-                    )
-                )
-            }?.toSet() ?: setOf(),
-            skills = cv.skills?.map { SkillDTO(it.skillId!!, it.name) }?.toSet() ?: setOf()
-        )
+        return mapToCvResponseDTO(cv)
     }
 
     fun retrieveAllCvs(): List<CvResponseDTO> {
         val cvs = cvRepository.findAll()
 
-        return cvs.map {
-            CvResponseDTO(
-                it.id!!,
-                it.yearsOfExperience,
-                it.salaryExpectation,
-                it.education,
-                projects = it.projects?.map { project ->
-                    ProjectResponseDTO(
-                        projectId = project.projectId!!,
-                        name = project.name,
-                        description = project.description,
-                        jobFamily = JobFamilyDto(
-                            id = project.jobFamily.id!!, // Asegúrate de que jobFamily no sea nulo
-                            name = project.jobFamily.name // Asume que JobFamily tiene un campo name
-                        )
-                    )
-                }?.toSet() ?: setOf(),
-                skills = it.skills?.map { SkillDTO(it.skillId!!, it.name) }?.toSet() ?: setOf()
-            )
-        }
+        return cvs.map { mapToCvResponseDTO(it) }
     }
 
     @Transactional
@@ -137,17 +83,53 @@ class CvService(
         cv.salaryExpectation = cvDTO.salaryExpectation
         cv.education = cvDTO.education
 
+        // Updating projects
+        // Removing projects from the CV that are not in the request
+        cv.projects?.removeIf { project -> !cvDTO.projects.any { it.projectId == project.projectId } }
+
+        cvDTO.projects.forEach { dto ->
+            val existingProject = cv.projects?.find { it.projectId == dto.projectId }
+
+            if (existingProject != null) {
+                // If project exists, the properties are updated
+                existingProject.apply {
+                    name = dto.name
+                    description = dto.description
+                    jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
+                        .orElseThrow { NoSuchElementException("No JobFamily found with id ${dto.jobFamilyId}") }
+                }
+            } else {
+                // If project doesn't exist, a new one is created and added to the CV
+                val newProject = Project(
+                    cv = cv,
+                    name = dto.name,
+                    description = dto.description,
+                    jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
+                        .orElseThrow { NoSuchElementException("No JobFamily found with id ${dto.jobFamilyId}") }
+                )
+                cv.projects?.add(newProject)
+            }
+        }
+
+        // Updating skills
+        val skillIds = cvDTO.longSkillString.split(",").map { it.toInt() }.toSet()
+
+        // Getting current skills from the CV
+        val currentSkillIds = cv.skills?.map { it.skillId!! }?.toSet() ?: emptySet()
+
+        // Removing skills from the CV that are not in the request
+        cv.skills?.removeIf { skill -> skill.skillId !in skillIds }
+
+        // Adding new skills to the CV
+        skillIds.filterNot { it in currentSkillIds }.forEach { id ->
+            skillRepository.findById(id).ifPresent { cv.skills?.add(it) }
+        }
+
         val updatedCv = cvRepository.save(cv)
 
-        return updatedCv.let {
-            CvResponseDTO(
-                it.id!!,
-                it.yearsOfExperience,
-                it.salaryExpectation,
-                it.education
-            )
-        }
+        return mapToCvResponseDTO(updatedCv)
     }
+
 
     fun deleteCv(cvId: Int): String {
         val cv = cvRepository.findById(cvId)
@@ -157,4 +139,31 @@ class CvService(
 
         return "Cv deleted successfully"
     }
+
+    private fun mapToCvResponseDTO(cv: Cv): CvResponseDTO {
+        return CvResponseDTO(
+            id = cv.id!!,
+            yearsOfExperience = cv.yearsOfExperience,
+            salaryExpectation = cv.salaryExpectation,
+            education = cv.education,
+            projects = cv.projects?.map { project ->
+                ProjectResponseDTO(
+                    projectId = project.projectId!!,
+                    name = project.name,
+                    description = project.description,
+                    jobFamily = JobFamilyDto(
+                        id = project.jobFamily.id!!,
+                        name = project.jobFamily.name
+                    )
+                )
+            }?.toSet() ?: emptySet(),
+            skills = cv.skills?.map { skill ->
+                SkillDTO(
+                    skillId = skill.skillId!!,
+                    name = skill.name
+                )
+            }?.toSet() ?: emptySet()
+        )
+    }
+
 }
