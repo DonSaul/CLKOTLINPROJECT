@@ -17,5 +17,3 @@ class JobsearchApplication {
 fun main(args: Array<String>) {
 	runApplication<JobsearchApplication>(*args)
 }
-
-
