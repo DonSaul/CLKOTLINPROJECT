@@ -31,7 +31,7 @@ class UserService @Autowired constructor(
 
 
         return UserDTO(newUser.id, newUser.firstName, newUser.lastName, newUser.email, newUser.password,
-            newUser.role.id!!
+            newUser.role!!.id!!
         )
 
 
@@ -42,7 +42,7 @@ class UserService @Autowired constructor(
             .orElseThrow { NoSuchElementException("No user found with id $userId") }
 
         return user.let {
-            UserDTO(it.id!!, it.firstName, it.lastName, it.email, it.password, it.role.id!!)
+            UserDTO(it.id!!, it.firstName, it.lastName, it.email, it.password, it.role!!.id)
         }
     }
     @Transactional
@@ -51,7 +51,7 @@ class UserService @Autowired constructor(
 
 
         return users.map { user ->
-            UserDTO(user.id!!,  user.firstName,user.lastName, user.email, user.password, user.role.id!!)
+            UserDTO(user.id!!,  user.firstName,user.lastName, user.email, user.password, user.role!!.id)
         }
     }
     @Transactional
@@ -71,7 +71,7 @@ class UserService @Autowired constructor(
         val updatedUser = userRepository.save(user)
 
         return updatedUser.let {
-            UserDTO(it.id!!, it.firstName, it.lastName, it.email, it.password, it.role.id!!)
+            UserDTO(it.id!!, it.firstName, it.lastName, it.email, it.password, it.role!!.id)
         }
     }
     @Transactional
