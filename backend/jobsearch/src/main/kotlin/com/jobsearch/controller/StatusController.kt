@@ -5,7 +5,7 @@ import com.jobsearch.service.StatusService
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/v1/status")
+@RequestMapping("/api/v1/application-status")
 class StatusController(val statusService: StatusService) {
     @PostMapping
     fun createStatus(@RequestBody statusDTO: StatusDTO): StatusDTO {

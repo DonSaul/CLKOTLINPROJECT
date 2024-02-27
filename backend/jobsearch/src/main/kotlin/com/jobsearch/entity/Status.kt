@@ -3,7 +3,7 @@ package com.jobsearch.entity
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "status")
+@Table(name = "application_status")
 data class Status(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
