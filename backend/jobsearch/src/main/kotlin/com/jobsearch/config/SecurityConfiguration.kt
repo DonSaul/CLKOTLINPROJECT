@@ -53,7 +53,7 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
             if (user) {
                 User.withUsername(user.email)
                     .password(passwordEncoder().encode(user.password))
-                    .roles(*user.roles.map { role -> role.name }.toTypedArray())
+                    .roles(user.roles.first().name)
                     .build()
             } else {
                 throw UsernameNotFoundException("User not found.")
