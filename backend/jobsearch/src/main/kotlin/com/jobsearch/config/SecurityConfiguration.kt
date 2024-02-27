@@ -1,9 +1,9 @@
 package com.jobsearch.config
 
+import com.jobsearch.service.AuthService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
@@ -23,6 +23,7 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
 
     @Autowired
     private lateinit var authService: AuthService
+
     @Bean
     fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
@@ -50,10 +51,10 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
     fun configureGlobal(auth: AuthenticationManagerBuilder) {
         auth.userDetailsService(UserDetailsService { username ->
             val user = authService.findByUsername(username)
-            if (user) {
-                User.withUsername(user.email)
+            if (user != null) {
+                User.withUsername(user!!.email)
                     .password(passwordEncoder().encode(user.password))
-                    .roles(user.roles.first().name)
+                    .roles(user.role.name)
                     .build()
             } else {
                 throw UsernameNotFoundException("User not found.")
