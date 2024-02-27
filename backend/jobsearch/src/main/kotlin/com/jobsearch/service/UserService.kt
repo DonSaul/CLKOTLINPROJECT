@@ -4,9 +4,9 @@ import com.jobsearch.dto.UserDTO
 import com.jobsearch.entity.User
 import com.jobsearch.repository.RoleRepository
 import com.jobsearch.repository.UserRepository
-import org.springframework.stereotype.Service
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
@@ -38,7 +38,7 @@ class UserService @Autowired constructor(
     }
     @Transactional
     fun retrieveUser(userId: Int): UserDTO {
-        val user = userRepository.findById(userId)
+        val user = userRepository.findById(userId.toLong())
             .orElseThrow { NoSuchElementException("No user found with id $userId") }
 
         return user.let {
@@ -56,7 +56,7 @@ class UserService @Autowired constructor(
     }
     @Transactional
     fun updateUser(userId: Int, userDTO: UserDTO): UserDTO {
-        val user = userRepository.findById(userId)
+        val user = userRepository.findById(userId.toLong())
             .orElseThrow { NoSuchElementException("No user found with id $userId") }
 
         user.apply {
@@ -76,7 +76,7 @@ class UserService @Autowired constructor(
     }
     @Transactional
     fun deleteUser(userId: Int): String {
-        val user = userRepository.findById(userId)
+        val user = userRepository.findById(userId.toLong())
             .orElseThrow { NoSuchElementException("No user found with id $userId") }
 
         userRepository.delete(user)

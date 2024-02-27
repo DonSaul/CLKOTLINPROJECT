@@ -4,7 +4,6 @@ import com.jobsearch.service.AuthService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
@@ -13,7 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 
@@ -24,10 +22,13 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
 
     @Autowired
     private lateinit var authService: AuthService
-    @Bean
-    fun passwordEncoder(): PasswordEncoder {
-        return BCryptPasswordEncoder()
-    }
+
+    @Autowired
+    lateinit var passwordEncoder: PasswordEncoder
+//    @Bean
+//    fun passwordEncoder(): PasswordEncoder {
+//        return BCryptPasswordEncoder()
+//    }
 
     @Bean
     @Throws(Exception::class)
@@ -53,13 +54,18 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
             val user = authService.findByUsername(username)
             if (user != null) {
                 User.withUsername(user.email)
+<<<<<<< HEAD
                     .password(passwordEncoder().encode(user.password))
                     .roles(user.role?.name)
+=======
+                    .password(passwordEncoder.encode(user.password))
+                    .roles(user.role.name)
+>>>>>>> 4dd1ef476ba91d25a5982a06b6457735780f9f47
                     .build()
             } else {
                 throw UsernameNotFoundException("User not found.")
             }
-        }).passwordEncoder(passwordEncoder())
+        })
     }
 
 }
