@@ -36,9 +36,9 @@ class CvService(
             jobFamily?.let {
                 cv.projects?.add(
                     Project(
+                        cv = cv,
                         name = projectDTO.name,
                         description = projectDTO.description,
-                        cv = cv,
                         jobFamily = it
                     )
                 )
