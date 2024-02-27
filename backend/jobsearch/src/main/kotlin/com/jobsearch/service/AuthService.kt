@@ -20,9 +20,11 @@ class AuthService(
 
     fun register(userDto: UserDTO) {
         val user = User(
+            firstName = userDto.firstName,
+            lastName = userDto.lastName,
             email = userDto.email,
             password = passwordEncoder.encode(userDto.password),
-            roles = setOf(Role(name = "ROLE_USER"))
+            role = Role(name = "ROLE_USER")
         )
         userRepository.save(user)
     }
@@ -36,7 +38,7 @@ class AuthService(
         val user = userRepository.findByUsername(username)
             .orElseThrow { UsernameNotFoundException("User not found.") }
 
-        val authorities = user.roles.map { SimpleGrantedAuthority(it.name) }
+        val authorities = user.role?.name?.let { SimpleGrantedAuthority(it) }
 
         return org.springframework.security.core.userdetails.User
             .withUsername(user.email)

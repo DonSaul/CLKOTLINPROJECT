@@ -44,7 +44,7 @@ class SecurityConfig(securedEnabled: Boolean = true, jsr250Enabled: Boolean = tr
             val user = authService.findByUsername(username)
             if (user != null) {
                 withUsername(user.email).password(passwordEncoder.encode(user.password))
-                    .roles(*user.roles.map { it.name }.toTypedArray()).build()
+                    .roles(*user.role.name { role.name }.toTypedArray()).build()
             } else {
                 throw UsernameNotFoundException("User not found.")
             }
