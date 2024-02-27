@@ -54,13 +54,8 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
             val user = authService.findByUsername(username)
             if (user != null) {
                 User.withUsername(user.email)
-<<<<<<< HEAD
-                    .password(passwordEncoder().encode(user.password))
-                    .roles(user.role?.name)
-=======
                     .password(passwordEncoder.encode(user.password))
                     .roles(user.role.name)
->>>>>>> 4dd1ef476ba91d25a5982a06b6457735780f9f47
                     .build()
             } else {
                 throw UsernameNotFoundException("User not found.")
