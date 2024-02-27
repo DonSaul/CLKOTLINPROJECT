@@ -7,6 +7,6 @@ data class UserDTO(
     val firstName: String,
     val lastName: String,
     val email: String,
-    val password: String,
+    var password: String,
     val roleId: Int?
 )
