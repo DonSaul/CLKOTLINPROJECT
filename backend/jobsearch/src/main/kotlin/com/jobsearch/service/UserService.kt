@@ -31,7 +31,11 @@ class UserService @Autowired constructor(
 
 
         return UserDTO(newUser.id, newUser.firstName, newUser.lastName, newUser.email, newUser.password,
+<<<<<<< HEAD
             newUser.role?.id!!
+=======
+            newUser.role!!.id!!
+>>>>>>> 3638edbfdc0935abb4a5307aede1193df40b824f
         )
 
 
@@ -42,7 +46,11 @@ class UserService @Autowired constructor(
             .orElseThrow { NoSuchElementException("No user found with id $userId") }
 
         return user.let {
+<<<<<<< HEAD
             UserDTO(it.id!!, it.firstName, it.lastName, it.email, it.password, it.role?.id!!)
+=======
+            UserDTO(it.id!!, it.firstName, it.lastName, it.email, it.password, it.role!!.id)
+>>>>>>> 3638edbfdc0935abb4a5307aede1193df40b824f
         }
     }
     @Transactional
@@ -51,7 +59,11 @@ class UserService @Autowired constructor(
 
 
         return users.map { user ->
+<<<<<<< HEAD
             UserDTO(user.id!!,  user.firstName,user.lastName, user.email, user.password, user.role?.id!!)
+=======
+            UserDTO(user.id!!,  user.firstName,user.lastName, user.email, user.password, user.role!!.id)
+>>>>>>> 3638edbfdc0935abb4a5307aede1193df40b824f
         }
     }
     @Transactional
@@ -71,7 +83,11 @@ class UserService @Autowired constructor(
         val updatedUser = userRepository.save(user)
 
         return updatedUser.let {
+<<<<<<< HEAD
             UserDTO(it.id!!, it.firstName, it.lastName, it.email, it.password, it.role?.id!!)
+=======
+            UserDTO(it.id!!, it.firstName, it.lastName, it.email, it.password, it.role!!.id)
+>>>>>>> 3638edbfdc0935abb4a5307aede1193df40b824f
         }
     }
     @Transactional
