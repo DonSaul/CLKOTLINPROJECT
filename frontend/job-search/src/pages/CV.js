@@ -145,10 +145,13 @@ const CV = () => {
     let longSkillString = selectedSkillsArray.map(skill => skill.skillId).join(",")
     console.log("Skill long string: ", longSkillString);
 
+    console.log("projects",projects);
+
     const formattedProjects = projects.map(project => ({
       name: project.name,
       description: project.description,
       jobFamilyId: project?.jobFamily?.id,
+      projectId:project?.projectId
     }));
 
     const formData = {
@@ -156,7 +159,6 @@ const CV = () => {
       salaryExpectation: salaryExpectations,
       education,
       longSkillString,
-      projects,
       projects: formattedProjects
     };
 
@@ -201,6 +203,7 @@ const CV = () => {
             onChange={(e) => setYearsOfExperience(e.target.value)}
             fullWidth
             margin="normal"
+            required
           />
           <TextField
             label="Education"
@@ -209,6 +212,7 @@ const CV = () => {
             onChange={(e) => setEducation(e.target.value)}
             fullWidth
             margin="normal"
+            required
           />
 
           <TextField
@@ -218,6 +222,7 @@ const CV = () => {
             onChange={(e) => setSalaryExpectations(e.target.value)}
             fullWidth
             margin="normal"
+            required
           />
 
 
@@ -230,6 +235,7 @@ const CV = () => {
                 onChange={(e) => handleProjectChange(index, 'name', e.target.value)}
                 fullWidth
                 margin="normal"
+                required
               />
               <TextField
                 label={`Project ${index + 1} Description`}
@@ -237,6 +243,7 @@ const CV = () => {
                 onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
                 fullWidth
                 margin="normal"
+                required
               />
               <Autocomplete
                 options={jobFamilies || []}
