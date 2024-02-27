@@ -40,4 +40,14 @@ class VacancyController(
         return vacancyService.deleteVacancy(vacancyId)
     }
 
+    @GetMapping("/search")
+    fun searchVacancies(
+        @RequestParam(required = false) salary: Int?,
+        @RequestParam(required = false) jobFamilyId: Int?,
+        @RequestParam(required = false) yearsOfExperience: Int?
+    ): List<VacancyDto> {
+
+        return vacancyService.findVacanciesByFilter(salary, jobFamilyId, yearsOfExperience)
+
+    }
 }

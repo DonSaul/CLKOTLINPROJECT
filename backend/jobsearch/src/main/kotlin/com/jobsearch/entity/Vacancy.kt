@@ -11,6 +11,7 @@ data class Vacancy(
     var name: String,
     var companyName: String,
     var salaryExpectation: Int,
+    val yearsOfExperience: Int,
     @Lob  // To create a value of type TEXT on db
     var description: String,
 
