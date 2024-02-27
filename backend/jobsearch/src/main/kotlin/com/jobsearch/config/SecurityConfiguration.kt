@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 
@@ -24,10 +23,12 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
     @Autowired
     private lateinit var authService: AuthService
 
-    @Bean
-    fun passwordEncoder(): PasswordEncoder {
-        return BCryptPasswordEncoder()
-    }
+    @Autowired
+    lateinit var passwordEncoder: PasswordEncoder
+//    @Bean
+//    fun passwordEncoder(): PasswordEncoder {
+//        return BCryptPasswordEncoder()
+//    }
 
     @Bean
     @Throws(Exception::class)
@@ -52,13 +53,13 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
         auth.userDetailsService(UserDetailsService { username ->
             val user = authService.findByUsername(username)
             if (user != null) {
-                User.withUsername(user!!.email)
-                    .password(passwordEncoder().encode(user.password))
+                User.withUsername(user.email)
+                    .password(passwordEncoder.encode(user.password))
                     .roles(user.role.name)
                     .build()
             } else {
                 throw UsernameNotFoundException("User not found.")
             }
-        }).passwordEncoder(passwordEncoder())
+        })
     }
 }
