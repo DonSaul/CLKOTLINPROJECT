@@ -24,8 +24,9 @@ class AuthService(
     @Autowired
     private lateinit var jwtProvider: JwtProvider
     fun register(userDto: UserDTO) {
-        userDto.password = passwordEncoder.encode(userDto.password)
+
         userService.createUser(userDto)
+
     }
 
 

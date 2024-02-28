@@ -41,9 +41,9 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
                     .requestMatchers("/api/v1/auth/**").permitAll()
                     .requestMatchers("/api/v1/users/**").authenticated()
                     .requestMatchers("/api/v1/cvs/**").authenticated()
-                    .requestMatchers("/api/v1/skills/**").authenticated()
-                    .requestMatchers("/api/v1/vacancy/**").authenticated()
-                    .requestMatchers("/api/v1/job-family/**").authenticated()
+                    .requestMatchers("/api/v1/skills/**").permitAll()
+                    .requestMatchers("/api/v1/vacancy/**").permitAll()
+                    .requestMatchers("/api/v1/job-family/**").permitAll()
                     .anyRequest().authenticated()
             }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
@@ -56,7 +56,7 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
             val user = authService.findByUsername(username)
             if (user != null) {
                 User.withUsername(user.email)
-                    .password(passwordEncoder.encode(user.password))
+                    .password(user.password)
                     .roles(user.role?.name)
                     .build()
             } else {
