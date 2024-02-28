@@ -13,14 +13,14 @@ class ApplicationService(
     private val applicationRepository: ApplicationRepository,
     private val userRepository: UserRepository,
     private val cvRepository: CvRepository,
-    private val vacancyRepository: VacancyRepository
+    private val vacancyRepository: VacancyRepository,
+    private val userService: UserService
 ) {
 
 
     fun createApplication(applicationDTO: ApplicationDTO): ApplicationDTO {
 
-        val candidate = userRepository.findById(applicationDTO.userId.toLong())
-            .orElseThrow { NoSuchElementException("User not found with ID: ${applicationDTO.userId}") }
+        val candidate = userService.retrieveAuthenticatedUser()
 
         val cv = cvRepository.findById(applicationDTO.cvId)
             .orElseThrow { NoSuchElementException("Cv not found with ID: ${applicationDTO.cvId}") }
