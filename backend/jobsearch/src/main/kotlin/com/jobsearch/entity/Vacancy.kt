@@ -4,7 +4,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name="vacancy")
-data class Vacancy(
+class Vacancy(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int?,

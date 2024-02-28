@@ -42,8 +42,10 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
                     .requestMatchers("/api/v1/users/**").authenticated()
                     .requestMatchers("/api/v1/cvs/**").authenticated()
                     .requestMatchers("/api/v1/skills/**").permitAll()
+                    .requestMatchers("/api/v1/vacancy/search").permitAll()
                     .requestMatchers("/api/v1/vacancy/**").permitAll()
                     .requestMatchers("/api/v1/job-family/**").permitAll()
+
                     .anyRequest().authenticated()
             }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)

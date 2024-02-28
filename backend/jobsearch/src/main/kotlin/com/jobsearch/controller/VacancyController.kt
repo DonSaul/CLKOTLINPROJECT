@@ -15,7 +15,7 @@ class VacancyController(
     val vacancyService: VacancyService
 ) {
     @PostMapping
-    @PreAuthorize("hasRole('manager')")
+    //@PreAuthorize("hasRole('manager')")
     @ResponseStatus(HttpStatus.CREATED)
     fun createVacancy(@RequestBody @Valid vacancyDto: VacancyDto): VacancyDto {
         return vacancyService.createVacancy(vacancyDto)
