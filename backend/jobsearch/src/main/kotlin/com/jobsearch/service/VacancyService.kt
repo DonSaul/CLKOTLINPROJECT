@@ -9,14 +9,17 @@ import org.springframework.stereotype.Service
 @Service
 class VacancyService(
     val vacancyRepository: VacancyRepository,
-    val jobFamilyService: JobFamilyService
+    val jobFamilyService: JobFamilyService,
+    val userService: UserService
 ) {
     fun createVacancy(vacancyDto: VacancyDto): VacancyDto {
         val selectedJobFamily = jobFamilyService.findByJobFamilyId(vacancyDto.jobFamilyId!!)
             .orElseThrow { NoSuchElementException("No vacancy found with id ${vacancyDto.jobFamilyId}") }
 
+        val managerUser = userService.retrieveAuthenticatedUser()
+
         val vacancyEntity = vacancyDto.let {
-            Vacancy(it.id, it.name, it.companyName, it.salaryExpectation, it.yearsOfExperience, it.description, selectedJobFamily)
+            Vacancy(it.id, it.name, it.companyName, it.salaryExpectation, it.yearsOfExperience, it.description, selectedJobFamily, managerUser)
         }
         val newVacancy = vacancyRepository.save(vacancyEntity)
 
@@ -81,7 +84,8 @@ class VacancyService(
                 it.yearsOfExperience,
                 it.description,
                 it.jobFamily.id,
-                it.jobFamily.name
+                it.jobFamily.name,
+                it.manager.id
             )
         }
     }

@@ -17,5 +17,6 @@ data class VacancyDto(
     @get:NotBlank(message = "Vacancy.description must not be blank")
     val description: String,
     val jobFamilyId: Int?,
-    val jobFamilyName: String? = null
+    val jobFamilyName: String? = null,
+    val managerId: Int?
 )

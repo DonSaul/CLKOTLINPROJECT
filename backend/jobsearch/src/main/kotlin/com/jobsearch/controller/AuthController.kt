@@ -32,7 +32,4 @@ class AuthController(private val authService: AuthService) {
             ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials.")
         }
     }
-
-
-
 }
