@@ -5,9 +5,13 @@ import com.jobsearch.entity.User
 import com.jobsearch.repository.RoleRepository
 import com.jobsearch.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.security.core.Authentication;
+
 
 @Service
 class UserService @Autowired constructor(
@@ -106,5 +110,12 @@ class UserService @Autowired constructor(
         userRepository.delete(user)
 
         return "User deleted successfully"
+    }
+
+    fun retrieveAuthenticatedUser(): User {
+        val authentication: Authentication = SecurityContextHolder.getContext().authentication
+        val email: String = authentication.name
+        return userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("No user found with email $email") }
     }
 }
