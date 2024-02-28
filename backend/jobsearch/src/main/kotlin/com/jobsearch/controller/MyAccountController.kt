@@ -27,4 +27,9 @@ class MyAccountController(
         return cvService.retrieveAllMyAccountsCvs()
     }
 
+    @GetMapping("cv")
+    fun retrieveMyAccountsLastCv(): CvResponseDTO {
+        return cvService.retrieveMyAccountsLastCv()
+    }
+
 }

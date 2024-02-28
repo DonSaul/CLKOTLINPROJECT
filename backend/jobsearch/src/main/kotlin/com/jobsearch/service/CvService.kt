@@ -184,4 +184,10 @@ class CvService(
         return mapToCvResponseDTO(cv)
     }
 
+    fun retrieveMyAccountsLastCv(): CvResponseDTO {
+        val cv = cvRepository.findFirstByUserOrderByIdDesc(userService.retrieveAuthenticatedUser())
+
+        return mapToCvResponseDTO(cv)
+    }
+
 }
