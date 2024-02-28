@@ -9,4 +9,6 @@ interface CvRepository: JpaRepository<Cv, Int> {
     fun findByUser(user: User): List<Cv>
 
     fun findByUserAndId(user: User, id: Int): Cv
+
+    fun findFirstByUserOrderByIdDesc(user: User): Cv
 }
