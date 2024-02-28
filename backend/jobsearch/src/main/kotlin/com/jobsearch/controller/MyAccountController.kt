@@ -17,6 +17,11 @@ class MyAccountController(
     val cvService: CvService
 ) {
 
+    @GetMapping("cvs/{id}")
+    fun retrieveMyAccountsCv(@PathVariable("id") cvId: Int): CvResponseDTO {
+        return cvService.retrieveMyAccountsCv(cvId)
+    }
+
     @GetMapping("cvs")
     fun retrieveAllMyAccountsCvs(): List<CvResponseDTO> {
         return cvService.retrieveAllMyAccountsCvs()
