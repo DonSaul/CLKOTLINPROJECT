@@ -22,5 +22,9 @@ data class Cv(
         joinColumns = [JoinColumn(name = "cv_id", referencedColumnName = "id")],
         inverseJoinColumns = [JoinColumn(name = "skill_id", referencedColumnName = "skillId")]
     )
-    val skills: MutableSet<Skill>? = mutableSetOf()
+    val skills: MutableSet<Skill>? = mutableSetOf(),
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    val user: User
 )

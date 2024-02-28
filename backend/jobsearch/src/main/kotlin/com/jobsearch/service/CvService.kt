@@ -13,7 +13,8 @@ import org.springframework.stereotype.Service
 class CvService(
     private val cvRepository: CvRepository,
     private val skillRepository: SkillRepository,
-    private val jobFamilyRepository: JobFamilyRepository) {
+    private val jobFamilyRepository: JobFamilyRepository,
+    private val userService: UserService) {
 
     @Transactional
     fun createCv(cvDTO: CvRequestDTO): CvResponseDTO {
@@ -25,7 +26,8 @@ class CvService(
                 salaryExpectation = it.salaryExpectation,
                 education = it.education,
                 projects = mutableSetOf(),
-                skills = mutableSetOf()
+                skills = mutableSetOf(),
+                user = userService.retrieveAuthenticatedUser()
             )
         }
 
@@ -168,6 +170,12 @@ class CvService(
                 )
             }?.toSet() ?: emptySet()
         )
+    }
+
+    fun retrieveAllMyAccountsCvs(): List<CvResponseDTO> {
+        val cvs = cvRepository.findByUser(userService.retrieveAuthenticatedUser())
+
+        return cvs.map { mapToCvResponseDTO(it) }
     }
 
 }
