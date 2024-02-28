@@ -23,7 +23,7 @@ class CvController(
     }
 
     @GetMapping("{id}")
-    fun retrieveVacancy(@PathVariable("id") cvId: Int): CvResponseDTO {
+    fun retrieveCv(@PathVariable("id") cvId: Int): CvResponseDTO {
         return cvService.retrieveCv(cvId)
     }
 

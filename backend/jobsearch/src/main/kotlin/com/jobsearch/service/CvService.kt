@@ -178,4 +178,10 @@ class CvService(
         return cvs.map { mapToCvResponseDTO(it) }
     }
 
+    fun retrieveMyAccountsCv(cvId: Int): CvResponseDTO {
+        val cv = cvRepository.findByUserAndId(userService.retrieveAuthenticatedUser(), cvId)
+
+        return mapToCvResponseDTO(cv)
+    }
+
 }
