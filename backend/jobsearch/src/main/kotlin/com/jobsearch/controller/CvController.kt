@@ -19,6 +19,7 @@ class CvController(
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createCv(@RequestBody @Valid cvRequestDTO: CvRequestDTO): CvResponseDTO {
+
         return cvService.createCv(cvRequestDTO)
     }
 
