@@ -1,7 +1,7 @@
 //TODO
 
 
-export const AUTH_TOKEN='jobSearchToken'
+export const AUTH_TOKEN_NAME='jobSearchToken'
 
 export const ROLES = {
     CANDIDATE: 1,

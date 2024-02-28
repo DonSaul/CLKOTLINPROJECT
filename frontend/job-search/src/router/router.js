@@ -5,7 +5,8 @@ import Vacancies from "../pages/Vacancies";
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ButtonAppBar from "../components/Toolbar";
-
+import { CreateVacancy } from "../pages/CreateVacancy";
+import { CreateUser } from "../pages/CreateUser";
 
 const RoutesConfig = () => {
     return (
@@ -14,6 +15,8 @@ const RoutesConfig = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/cv" element={<CV />} />
         <Route path="/vacancies" element={<Vacancies />} />
+        <Route path="/vacancies/new" element={<CreateVacancy />} />
+        <Route path="/admin/users/new" element={<CreateUser />} />
       </Routes>
     );
   };

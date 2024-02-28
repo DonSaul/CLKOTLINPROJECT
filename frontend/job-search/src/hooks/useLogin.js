@@ -1,6 +1,7 @@
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 import { ENDPOINTS } from '../helpers/endpoints';
-import { AUTH_TOKEN } from '../helpers/constants';
+import { AUTH_TOKEN_NAME } from '../helpers/constants';
+import { useAuth } from '../helpers/userContext';
 
 const login = async (credentials) => {
   const response = await fetch(ENDPOINTS.login, {
@@ -13,19 +14,20 @@ const login = async (credentials) => {
     throw new Error('Login failed');
   }
 
-  const data = await response.json();
-  return data.token;
+  const userData = await response.json();
+  return userData;
 };
 
 export const useLogin = () => {
+  const { login: setAuthUser } = useAuth();
+
   return useMutation(login, {
-    onSuccess: (token) => {
-      localStorage.setItem(AUTH_TOKEN, token);
-      console.log('Login successful. Token:', token);
+    onSuccess: (userData) => {
+      localStorage.setItem(AUTH_TOKEN_NAME, userData.token);
+      setAuthUser(userData); // Use the login function from the AuthContext
     },
     onError: (error) => {
       console.error('Login error:', error);
     },
   });
 };
-

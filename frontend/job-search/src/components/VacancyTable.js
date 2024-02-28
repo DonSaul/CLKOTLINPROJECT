@@ -80,7 +80,7 @@ export default function VacancyTable({dataFromQuery}) {
         },
         {
             accessorKey: 'name', 
-            header: 'Category',
+            header: 'Name',
         },
         {
             accessorKey: 'yearsOfExperience',
@@ -123,7 +123,7 @@ export default function VacancyTable({dataFromQuery}) {
 
     const table = useMaterialReactTable({
         columns:columnsVacancies,
-        data:dataFromQuery?  dataFromQuery: vacancyData,
+        data:dataFromQuery?  dataFromQuery: [],
         hiddenColumns:['id'],
         enableGlobalFilter: false,
         enableColumnFilters:false,
