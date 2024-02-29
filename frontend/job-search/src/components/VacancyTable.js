@@ -61,7 +61,7 @@ export default function VacancyTable({dataFromQuery}) {
     
     const {mutate:applyToVacancy, isError, isSuccess}=useApplyVacancy();
 
-    const { data: cvData, error: cvError, isLoading: isCvLoading } = useGetCurrentUserCv();
+    
 
 
  
