@@ -58,24 +58,13 @@ const vacancyData = [
 export default function VacancyTable({dataFromQuery}) {
 
 
-    const [id,setId]=useState();
-    const [hasFetchedData, setHasFetchedData] = useState(false);
+    
     const {mutate:applyToVacancy, isError, isSuccess}=useApplyVacancy();
 
     const { data: cvData, error: cvError, isLoading: isCvLoading } = useGetCurrentUserCv();
 
 
-    //delete this later
-
-    useEffect(() => {
-        // Set initial state based on cvData when available
-        if (cvData && !hasFetchedData) {
-          console.log("CVDATA",cvData)
-          setId(cvData.id);
-          setHasFetchedData(true);
-        
-        }
-      }, [cvData,hasFetchedData]);
+ 
 
 
 
@@ -150,7 +139,7 @@ export default function VacancyTable({dataFromQuery}) {
         let applicationData=
         {
             vacancyId:rowData.id,
-            cvId:id
+            
 
 
         }
