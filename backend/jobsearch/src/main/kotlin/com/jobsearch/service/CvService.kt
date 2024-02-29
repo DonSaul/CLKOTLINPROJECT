@@ -59,7 +59,7 @@ class CvService(
 
         val newCv = cvRepository.save(cv)
 
-        return mapToCvResponseDTO(newCv)
+        return mapToCvDTO(newCv)
     }
 
 
@@ -67,13 +67,13 @@ class CvService(
         val cv = cvRepository.findById(cvId)
             .orElseThrow { NoSuchElementException("No CV found with id $cvId") }
 
-        return mapToCvResponseDTO(cv)
+        return mapToCvDTO(cv)
     }
 
     fun retrieveAllCvs(): List<CvResponseDTO> {
         val cvs = cvRepository.findAll()
 
-        return cvs.map { mapToCvResponseDTO(it) }
+        return cvs.map { mapToCvDTO(it) }
     }
 
     @Transactional
@@ -133,7 +133,7 @@ class CvService(
 
         val updatedCv = cvRepository.save(cv)
 
-        return mapToCvResponseDTO(updatedCv)
+        return mapToCvDTO(updatedCv)
     }
 
 
@@ -146,7 +146,25 @@ class CvService(
         return "Cv deleted successfully"
     }
 
-    private fun mapToCvResponseDTO(cv: Cv): CvResponseDTO {
+    fun retrieveAllMyAccountsCvs(): List<CvResponseDTO> {
+        val cvs = cvRepository.findByUser(userService.retrieveAuthenticatedUser())
+
+        return cvs.map { mapToCvDTO(it) }
+    }
+
+    fun retrieveMyAccountsCv(cvId: Int): CvResponseDTO {
+        val cv = cvRepository.findByUserAndId(userService.retrieveAuthenticatedUser(), cvId)
+
+        return mapToCvDTO(cv)
+    }
+
+    fun retrieveMyAccountsLastCv(): CvResponseDTO {
+        val cv = cvRepository.findFirstByUserOrderByIdDesc(userService.retrieveAuthenticatedUser())
+
+        return mapToCvDTO(cv)
+    }
+
+    private fun mapToCvDTO(cv: Cv): CvResponseDTO {
         return CvResponseDTO(
             id = cv.id!!,
             yearsOfExperience = cv.yearsOfExperience,
@@ -172,22 +190,5 @@ class CvService(
         )
     }
 
-    fun retrieveAllMyAccountsCvs(): List<CvResponseDTO> {
-        val cvs = cvRepository.findByUser(userService.retrieveAuthenticatedUser())
-
-        return cvs.map { mapToCvResponseDTO(it) }
-    }
-
-    fun retrieveMyAccountsCv(cvId: Int): CvResponseDTO {
-        val cv = cvRepository.findByUserAndId(userService.retrieveAuthenticatedUser(), cvId)
-
-        return mapToCvResponseDTO(cv)
-    }
-
-    fun retrieveMyAccountsLastCv(): CvResponseDTO {
-        val cv = cvRepository.findFirstByUserOrderByIdDesc(userService.retrieveAuthenticatedUser())
-
-        return mapToCvResponseDTO(cv)
-    }
-
 }
+

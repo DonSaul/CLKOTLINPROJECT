@@ -33,7 +33,7 @@ class CvController(
     }
 
     @PutMapping("{id}")
-    fun updateCv(@PathVariable("id") cvId: Int, @RequestBody cvRequestDTO: CvRequestDTO): CvResponseDTO {
+    fun updateCv(@PathVariable("id") cvId: Int, @Valid @RequestBody cvRequestDTO: CvRequestDTO): CvResponseDTO {
         return cvService.updateCv(cvId, cvRequestDTO)
     }
 
