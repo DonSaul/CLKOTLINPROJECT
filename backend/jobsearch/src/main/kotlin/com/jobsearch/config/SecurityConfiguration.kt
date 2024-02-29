@@ -40,6 +40,7 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
                 authRequests
                     .requestMatchers("/api/v1/auth/**").permitAll()
                     .requestMatchers("/api/v1/users/**").authenticated()
+                        .requestMatchers("/api/v1/application/**").authenticated()
                     .requestMatchers("/api/v1/cvs/**").authenticated()
                     .requestMatchers("/api/v1/skills/**").permitAll()
                     .requestMatchers("/api/v1/vacancy/search").permitAll()

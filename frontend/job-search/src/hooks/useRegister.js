@@ -1,7 +1,7 @@
 import { useMutation } from  'react-query';
 import { useQuery } from 'react-query';
 import { ENDPOINTS } from "../helpers/endpoints";
-
+import { toast } from 'react-toastify';
 
 const addUser = async (data) => {
   const res = await fetch(ENDPOINTS.register, {
@@ -16,6 +16,7 @@ const addUser = async (data) => {
 export const useRegister = () => {
     return useMutation(addUser, {
       onSuccess: (res) => {
+        toast.success("Account created!, you can now login to your account");
         console.log("onSuccess res:",res);
       },
   
@@ -25,6 +26,7 @@ export const useRegister = () => {
         
       },
       onError: (_err, data, context) => {
+        toast.error("Error creating account!");
         console.log("Error on mutation",_err);
         console.log("Error data:",data);
       },

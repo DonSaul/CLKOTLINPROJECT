@@ -6,48 +6,60 @@ import { useState } from "react";
 
 
 
-export const CreateVacancy = () =>{
+export const CreateVacancy = () => {
 
 
-    const [companyName,setCompanyName]=useState();
+    const [companyName, setCompanyName] = useState();
+    const [vacancyName, setVacancyName] = useState();
 
 
-    const handleSubmit= (data) =>{
 
-        console.log("submit",data);
+    const handleSubmit = (data) => {
+
+        console.log("submit", data);
     }
 
 
     return (
 
         <>
-        <CardContainer>
-        Create vacancy
+            <CardContainer>
+                Create vacancy
 
-        <form onSubmit={handleSubmit}>
-
-
-        <TextField
-            label="Company name"
-            type="text"
-            value={null}
-            onChange={(e) => setCompanyName(e.target.value)}
-            fullWidth
-            margin="normal"
-            required
-          />
+                <form onSubmit={handleSubmit}>
 
 
+                    <TextField
+                        label="Company name"
+                        type="text"
+                        value={null}
+                        onChange={(e) => setCompanyName(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                        required
+                    />
+
+                    <TextField
+                        label="Company name"
+                        type="text"
+                        value={null}
+                        onChange={(e) => setVacancyName(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                        required
+                    />
 
 
-        </form>
+
+
+                </form>
 
 
 
-        </CardContainer>
-       
-        
-        
+            </CardContainer>
+
+
+
         </>
     )
 }

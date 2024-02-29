@@ -17,11 +17,12 @@ export default function ButtonAppBar() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar sx={{ justifyContent: 'center' }}>
+          {/* 
           <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
             <MenuIcon />
           </IconButton>
-
+        */}
           <Button color="inherit" component={Link} to="/vacancies">
             Vacancies
           </Button>

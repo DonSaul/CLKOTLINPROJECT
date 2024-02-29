@@ -16,5 +16,6 @@ export const ENDPOINTS = {
   vacancy:createUrl("vacancy"),
   searchVacancies:createUrl("vacancy/search"),
   userCv:createUrl("my-account/cv"),
-  createUser:createUrl("users/create")
+  createUser:createUrl("users/create"),
+  application:createUrl("application")
 };

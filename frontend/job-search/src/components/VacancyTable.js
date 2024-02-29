@@ -1,6 +1,8 @@
 import { useMemo, useState, useEffect } from 'react';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import Button from '@mui/material/Button';
+import { useApplyVacancy } from '../hooks/useApplyVacancy';
+import { useGetCurrentUserCv } from '../hooks/useCV';
 const data = [
     {
       name: 'John',
@@ -54,6 +56,30 @@ const vacancyData = [
 ]
 
 export default function VacancyTable({dataFromQuery}) {
+
+
+    const [id,setId]=useState();
+    const [hasFetchedData, setHasFetchedData] = useState(false);
+    const {mutate:applyToVacancy, isError, isSuccess}=useApplyVacancy();
+
+    const { data: cvData, error: cvError, isLoading: isCvLoading } = useGetCurrentUserCv();
+
+
+    //delete this later
+
+    useEffect(() => {
+        // Set initial state based on cvData when available
+        if (cvData && !hasFetchedData) {
+          console.log("CVDATA",cvData)
+          setId(cvData.id);
+          setHasFetchedData(true);
+        
+        }
+      }, [cvData,hasFetchedData]);
+
+
+
+
     const columns = useMemo(
         () => [
         {
@@ -119,6 +145,21 @@ export default function VacancyTable({dataFromQuery}) {
     const handleApply = (rowData) => {
         
         console.log('Applying to vacancy:', rowData);
+
+
+        let applicationData=
+        {
+            vacancyId:rowData.id,
+            cvId:id
+
+
+        }
+
+
+        applyToVacancy(applicationData);
+
+
+
       };
 
     const table = useMaterialReactTable({

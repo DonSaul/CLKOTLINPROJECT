@@ -8,7 +8,7 @@ const Register = () => {
         <div>
             <CardContainer width='xs'>
 
-                <RegisterForm></RegisterForm>
+                <RegisterForm ></RegisterForm>
             </CardContainer>
 
         </div>

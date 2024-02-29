@@ -3,6 +3,8 @@ import { ENDPOINTS } from '../helpers/endpoints';
 import { AUTH_TOKEN_NAME } from '../helpers/constants';
 import { useAuth } from '../helpers/userContext';
 
+import { toast } from 'react-toastify';
+
 const login = async (credentials) => {
   const response = await fetch(ENDPOINTS.login, {
     method: 'POST',
@@ -23,11 +25,13 @@ export const useLogin = () => {
 
   return useMutation(login, {
     onSuccess: (userData) => {
+      toast.success('Login successful!'); 
       localStorage.setItem(AUTH_TOKEN_NAME, userData.token);
       setAuthUser(userData); // Use the login function from the AuthContext
     },
     onError: (error) => {
       console.error('Login error:', error);
+      toast.error('Invalid username or password'); 
     },
   });
 };

@@ -26,8 +26,9 @@ const RegisterForm = ({ variant = 'register', title = 'Sign up to find a Job' })
 
   useEffect(() => {
     if (isSuccess) {
-
+      console.log("variant,",variant)
       if (variant=='register'){
+        
         navigate("/login")
       }
 
@@ -64,7 +65,7 @@ const RegisterForm = ({ variant = 'register', title = 'Sign up to find a Job' })
     };
 
 
-    if (variant='create'){
+    if (variant==='create'){
 
       try {
         await createUser(formData);
@@ -77,6 +78,7 @@ const RegisterForm = ({ variant = 'register', title = 'Sign up to find a Job' })
     }else {
       try {
         await mutate(formData);
+        console.log("variant,",variant)
   
       } catch (error) {
   

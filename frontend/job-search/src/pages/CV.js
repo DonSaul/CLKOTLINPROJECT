@@ -58,18 +58,16 @@ const CV = () => {
 
 
 
-
-  //Fill with the user data
   useEffect(() => {
     // Set initial state based on cvData when available
-    if (cvData) {
+    if (cvData && !hasFetchedData) {
       console.log("CVDATA",cvData)
       setId(cvData.id)
       setYearsOfExperience(cvData.yearsOfExperience);
       setSalaryExpectations(cvData.salaryExpectation);
       setEducation(cvData.education);
       setProjects(cvData.projects || [{ name: '', description: '' }]);
-     
+      setHasFetchedData(true);
       setSelectedSkillsArray(cvData.skills || []);
     }
   }, [cvData,hasFetchedData]);
@@ -218,7 +216,7 @@ const CV = () => {
 
           <TextField
             label="Salary Expectations"
-            type="text"
+            type="number"
             value={salaryExpectations}
             onChange={(e) => setSalaryExpectations(e.target.value)}
             fullWidth

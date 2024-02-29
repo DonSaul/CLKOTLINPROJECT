@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AUTH_TOKEN_NAME } from './constants';
 import { isLoggedIn as checkIsLoggedIn } from '../api/login';
 import { getEmailFromToken,getRoleFromToken } from './tokenHelper';
-
+import { toast } from 'react-toastify';
 
 const AuthContext = createContext();
 
@@ -16,6 +16,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem(AUTH_TOKEN_NAME);
     setUser(null);
     setIsLoggedIn(false);
+    toast.success("You are now logged out!");
    
   };
 
