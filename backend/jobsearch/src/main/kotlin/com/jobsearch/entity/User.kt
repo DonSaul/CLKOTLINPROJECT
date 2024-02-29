@@ -11,6 +11,7 @@ data class User(
     var firstName: String,
     var lastName: String,
     var password: String,
+    @Column(unique = true)
     var email: String,
 
     @ManyToOne(fetch = FetchType.LAZY)

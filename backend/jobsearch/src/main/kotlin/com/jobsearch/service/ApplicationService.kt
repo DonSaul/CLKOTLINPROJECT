@@ -24,10 +24,7 @@ class ApplicationService(
 
         val defaultStatus= statusService.retrieveStatus(2)
 
-
-
-        val cv = cvRepository.findById(applicationDTO.cvId!!)
-            .orElseThrow { NoSuchElementException("Cv not found with ID: ${applicationDTO.cvId}") }
+        val cv = cvRepository.findFirstByUserOrderByIdDesc(candidate)
 
         val vacancy = vacancyRepository.findById(applicationDTO.vacancyId)
             .orElseThrow { NoSuchElementException("Vacancy not found with ID: ${applicationDTO.vacancyId}") }

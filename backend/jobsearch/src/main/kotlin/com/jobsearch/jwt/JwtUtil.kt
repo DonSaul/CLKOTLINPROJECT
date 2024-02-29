@@ -1,4 +1,6 @@
 package com.jobsearch.jwt
+import com.jobsearch.repository.UserRepository
+import com.jobsearch.service.UserDetailsImpl
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import jakarta.servlet.FilterChain
@@ -51,7 +53,8 @@ class JwtProvider {
 @Component
 class JwtAuthenticationFilter(
     private val jwtProvider: JwtProvider,
-    private val userDetailsService: UserDetailsService
+    private val userDetailsService: UserDetailsService,
+    private val userRepository: UserRepository,
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
@@ -63,7 +66,7 @@ class JwtAuthenticationFilter(
 
         if (jwt != null && jwtProvider.validateJwtToken(jwt)) {
             val username = jwtProvider.getUserNameFromJwtToken(jwt)
-            val userDetails = userDetailsService.loadUserByUsername(username)
+            val userDetails = UserDetailsImpl.build(userRepository.findByEmail(username).get())
             val authentication = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
             authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
             SecurityContextHolder.getContext().authentication = authentication
