@@ -6,23 +6,24 @@ import jakarta.persistence.*
 @Table(name = "applications")
 data class Application(
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "application_id")
-    val applicationId: Int? = null,
+    val id: Int? = null,
 
-    @ManyToOne
+        @ManyToOne
     @JoinColumn(name = "user_id")
     val candidate: User,
 
-    @ManyToOne
+        @ManyToOne
     @JoinColumn(name = "cv_id")
     val cv: Cv,
 
-    @ManyToOne
+        @ManyToOne
     @JoinColumn(name = "vacancy_id")
     val vacancy: Vacancy,
 
-    @Column(name = "application_status")
-    var applicationStatus: String
+        @ManyToOne
+        @JoinColumn(name = "status_id")
+    var applicationStatus: Status
 )

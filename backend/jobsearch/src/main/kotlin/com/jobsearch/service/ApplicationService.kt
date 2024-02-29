@@ -2,10 +2,7 @@ package com.jobsearch.service
 
 import com.jobsearch.dto.ApplicationDTO
 import com.jobsearch.entity.Application
-import com.jobsearch.repository.ApplicationRepository
-import com.jobsearch.repository.CvRepository
-import com.jobsearch.repository.UserRepository
-import com.jobsearch.repository.VacancyRepository
+import com.jobsearch.repository.*
 import org.springframework.stereotype.Service
 
 @Service
@@ -14,7 +11,10 @@ class ApplicationService(
     private val userRepository: UserRepository,
     private val cvRepository: CvRepository,
     private val vacancyRepository: VacancyRepository,
-    private val userService: UserService
+    private val userService: UserService,
+    private val statusService: StatusService,
+    private val statusRepository: StatusRepository,
+
 ) {
 
 
@@ -22,7 +22,11 @@ class ApplicationService(
 
         val candidate = userService.retrieveAuthenticatedUser()
 
-        val cv = cvRepository.findById(applicationDTO.cvId)
+        val defaultStatus= statusService.retrieveStatus(2)
+
+
+
+        val cv = cvRepository.findById(applicationDTO.cvId!!)
             .orElseThrow { NoSuchElementException("Cv not found with ID: ${applicationDTO.cvId}") }
 
         val vacancy = vacancyRepository.findById(applicationDTO.vacancyId)
@@ -32,17 +36,18 @@ class ApplicationService(
             candidate = candidate,
             cv = cv,
             vacancy = vacancy,
-            applicationStatus = applicationDTO.applicationStatus
+            applicationStatus = statusRepository.findById(2).get()
         )
 
         val newApplication = applicationEntity.let { applicationRepository.save(it) }
 
         return ApplicationDTO(
-            newApplication.applicationId,
+            newApplication.id,
             newApplication.candidate.id!!,
             newApplication.cv.id!!,
             newApplication.vacancy.id!!,
-            newApplication.applicationStatus
+            newApplication.applicationStatus.name,
+            newApplication.applicationStatus.id
         )
 
     }
@@ -52,13 +57,8 @@ class ApplicationService(
         val application = applicationRepository.findById(applicationId)
             .orElseThrow { NoSuchElementException("No application found with $applicationId") }
 
-        return ApplicationDTO(
-            applicationId = application.applicationId,
-            userId = application.candidate.id!!,
-            cvId = application.cv.id!!,
-            vacancyId = application.vacancy.id!!,
-            applicationStatus = application.applicationStatus
-        )
+
+        return mapToApplicationDTO(application)
 
     }
 
@@ -67,33 +67,23 @@ class ApplicationService(
         val application = applicationRepository.findAll()
 
         return application.map {
-            ApplicationDTO(
-                it.applicationId!!,
-                it.candidate.id!!,
-                it.cv.id!!,
-                it.vacancy.id!!,
-                it.applicationStatus)
+            mapToApplicationDTO(it)
         }
     }
 
 
-    fun updateApplication(applicationId: Int, applicationDTO: ApplicationDTO) : ApplicationDTO{
-        val application = applicationRepository.findById(applicationId)
-            .orElseThrow{NoSuchElementException("No application founded with id $applicationId")}
+    fun updateApplicationStatus( applicationDTO: ApplicationDTO) : ApplicationDTO{
+        val application = applicationRepository.findById(applicationDTO.applicationId!!)
+            .orElseThrow{NoSuchElementException("No application founded with id ${applicationDTO.applicationId}")}
 
-        applicationDTO.apply {
-            application.applicationStatus = this.applicationStatus
+
+        application.apply {
+            application.applicationStatus = statusRepository.findById(applicationDTO.applicationStatusId!!).get()
         }
 
         val updatedApplication = applicationRepository.save(application)
 
-        return ApplicationDTO(
-            applicationId = updatedApplication.applicationId,
-            userId = updatedApplication.candidate.id!!,
-            cvId = updatedApplication.cv.id!!,
-            vacancyId = updatedApplication.vacancy.id!!,
-            applicationStatus = updatedApplication.applicationStatus
-        )
+        return mapToApplicationDTO(updatedApplication)
     }
 
 
@@ -105,6 +95,20 @@ class ApplicationService(
 
         return "Application Deleted Successfully"
 
+    }
+
+
+    fun mapToApplicationDTO(application: Application): ApplicationDTO {
+        return application.let {
+            ApplicationDTO(
+                    it.id,
+                    it.candidate.id!!,
+                    it.cv.id!!,
+                    it.vacancy.id!!,
+                    it.applicationStatus.name,
+                    it.applicationStatus.id
+            )
+        }
     }
 
 }

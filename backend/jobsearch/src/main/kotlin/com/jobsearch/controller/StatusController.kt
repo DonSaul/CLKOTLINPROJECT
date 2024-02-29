@@ -18,7 +18,7 @@ class StatusController(val statusService: StatusService) {
     }
 
     @GetMapping()
-    fun retrieveAllJobFamilies(): List<StatusDTO> {
+    fun retrieveAllStatus(): List<StatusDTO> {
         return statusService.retrieveAllStatus()
     }
 

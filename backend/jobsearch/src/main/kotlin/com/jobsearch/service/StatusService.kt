@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service
 class StatusService(val statusRepository: StatusRepository) {
     fun createStatus(statusDTO: StatusDTO): StatusDTO {
         val statusEntity = statusDTO.let {
-            Status(statusId = null, name = it.name)
+            Status(id = null, name = it.name)
         }
         val newStatus = statusRepository.save(statusEntity)
 
         return newStatus.let {
-            StatusDTO(it.statusId, it.name)
+            StatusDTO(it.id, it.name)
         }
     }
 
@@ -22,14 +22,14 @@ class StatusService(val statusRepository: StatusRepository) {
         val status = statusRepository.findById(statusId)
             .orElseThrow{NoSuchElementException("No status found with id $statusId")}
         return status.let {
-            StatusDTO(it.statusId!!, it.name)
+            StatusDTO(it.id!!, it.name)
         }
     }
 
     fun retrieveAllStatus(): List<StatusDTO> {
         val status = statusRepository.findAll()
         return status.map {
-            StatusDTO(it.statusId!!, it.name)
+            StatusDTO(it.id!!, it.name)
         }
     }
 
@@ -40,7 +40,7 @@ class StatusService(val statusRepository: StatusRepository) {
         val updatedStatus = statusRepository.save(status)
 
         return updatedStatus.let {
-            StatusDTO(it.statusId!!, it.name)
+            StatusDTO(it.id!!, it.name)
         }
     }
 

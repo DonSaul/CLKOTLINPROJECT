@@ -2,8 +2,9 @@ package com.jobsearch.dto
 
 data class ApplicationDTO(
     val applicationId: Int? = null,
-    val userId: Int,
-    val cvId: Int,
+    val userId: Int? = null,
+    val cvId: Int? = null,
     val vacancyId: Int,
-    val applicationStatus: String
+    val applicationStatus: String?=null,
+    val applicationStatusId: Int?=null,
 )

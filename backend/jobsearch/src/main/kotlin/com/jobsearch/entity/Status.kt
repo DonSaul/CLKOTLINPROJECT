@@ -5,8 +5,8 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "application_status")
 data class Status(
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var statusId: Int? = null,
-    var name: String
+    var id: Int? = null,
+        var name: String
 )
