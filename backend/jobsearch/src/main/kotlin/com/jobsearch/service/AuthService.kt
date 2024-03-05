@@ -17,23 +17,17 @@ class AuthService(
     private val userRepository: UserRepository,
     val userService: UserService,
 ) : UserDetailsService {
-
     @Autowired
     private lateinit var passwordEncoder: PasswordEncoder
-
     @Autowired
     private lateinit var jwtProvider: JwtProvider
     fun register(userDto: UserDTO) {
-
         userService.createUser(userDto)
-
     }
-
 
     fun findByUsername(username: String): User? {
         return userRepository.findByEmail(username).orElse(null)
     }
-
 
     fun authenticate(username: String, password: String): String {
         val userDetails = loadUserByUsername(username)
@@ -44,17 +38,9 @@ class AuthService(
         }
     }
 
-
     override fun loadUserByUsername(username: String): UserDetails {
         val user = userRepository.findByEmail(username)
             .orElseThrow { UsernameNotFoundException("User not found.") }
         return UserDetailsImpl.build(user)
-//
-//        val authorities = user.role?.name?.let { SimpleGrantedAuthority(it) }
-//
-//            .username(user.email)
-//            .password(user.password)
-//            .authorities(authorities)
-//            .build()
     }
 }
