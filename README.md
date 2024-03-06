@@ -1,32 +1,28 @@
 # JobSearch Web Application Documentation
 
-## Contents
+## Table of Contents
 
 1. [Introduction](#introduction)
-2. [Getting Started](#getting-started) <br>
+2. [Getting Started](#getting-started) <br> 
    2.1. [Prerequisites](#prerequisites) <br>
    2.2. [Initial Setup and Configuration](#initial-setup-and-configuration)
 3. [Basic Usage](#basic-usage) <br>
-   3.1. [Basic Operations and Examples](#basic-operations-and-examples)
+   3.1. [Basic Operations and Examples as a Candidate](#basic-operations-and-examples-as-a-candidate) <br>
+   3.2. [Basic Operations and Examples as a Manager](#basic-operations-and-examples-as-a-manager)
 4. [Project Architecture](#project-architecture) <br>
    4.1. [Model-View-Controller (MVC)](#model-view-controller-mvc) <br>
-   4.2. [Service Pattern](#service-pattern) <br>
-   4.3. [Dependency Injection](#dependency-injection) <br>
-   4.4. [Benefits](#benefits)
-5. [Security Features and Best Practices](#security-features-and-best-practices) 
+5. [Security Features and Best Practices](#security-features-and-best-practices)
 6. [Advanced Functionalities](#advanced-functionalities) <br>
-   6.1. [API Connection](#api-connection) <br>
-   6.2. [Work Order Filtering](#work-order-filtering) <br>
-   6.3. [Search Technician By Name](#search-technician-by-name) <br>
-   6.4. [Report Generation](#report-generation) <br>
-   6.5. [Testing](#testing) <br>
-   6.6. [Login](#login) <br>
-   6.7. [Data Query](#data-query) <br>
-   6.8. [Frontend](#frontend) <br>
-7. [Error Handling](#error-handling) <br>
+   6.1. [Work Order Filtering](#work-order-filtering) <br>
+   6.2. [Search Technician By Name](#search-technician-by-name) <br>
+   6.3. [Report Generation](#report-generation) <br>
+   6.4. [Testing](#testing) <br> 
+   6.5. [Login](#login) <br>
+   6.6. [Data Query](#data-query) <br>
+   6.7. [Frontend](#frontend) <br>
    7.1. [Try Catches](#try-catches) <br>
    7.2. [Input Validation](#input-validation) <br>
-8. [License](#license)
+7. [License](#license)
 
 ## Introduction
 
@@ -36,56 +32,53 @@ The JobSearch web application is designed for employment and management purposes
 
 ### Prerequisites
 
-To work with the JobSearch application, ensure you have the following:
+Ensure you have the following installed:
 
-- Kotlin
-- React
-- SpringFramework
-- Spring Security
-- PostgreSQL
+- SpringFramework -> [Spring initializr](https://start.spring.io/)
+- [React](https://es.react.dev/learn/installation).
+- Spring Security -> [Add Dependency SpringSecurity](https://start.spring.io/)
+- [Kotlin](https://oregoom.com/kotlin/instalar/).
+- PostgreSQL -> [Add Dependency PostgreSQL Driver](https://start.spring.io/)
 
 ### Initial Setup and Configuration
 
-To set up the project, follow these steps:
-
-1. Clone the repository.
-2. Install dependencies.
-3. Configure the application properties.
+1. Clone the repository. `git clone https://github.com/DonSaul/CLKOTLINPROJECT.git`
+2. Install dependencies. **follow the Prerequisites step**
+3. Configure application properties.
 4. Run the application.
 
 ## Basic Usage
 
-### Basic Operations and Examples
+### Basic Operations and Examples as a Candidate
 
-The basic operations include:
+- Candidate registration.
+- Candidate login.
+- Search for vacancies based on job family, years of experience, and salary expectation.
+- Job Filtering.
+- Create and manage my CV, including information about years of experience, projects, education, and salary expectation.
+- Apply to vacancies that match my skills and expectations.
+- Communication between Candidate and Manager.
 
-- Candidate registration
-- Candidate login
-- Job search
-- Job application
+
+### Basic Operations and Examples as a Manager
+
+- Create and manage vacancies including job family, company name, description, required years of experience, and salary.
+- Search for candidates based on filters such as years of experience, job family, and salary expectation.
+- Send vacancy invitations to candidates who match the job requirements.
 
 
 ## Project Architecture
 
 ### Model-View-Controller (MVC)
 
-The application follows the MVC architecture for better organization and separation of concerns.
-
-### Service Pattern
-
-Services are used to encapsulate business logic and promote code reusability.
-
-### Dependency Injection
-
-Dependency injection is employed for managing component dependencies and promoting testability.
-
-### Benefits
-
-The chosen architecture offers scalability, maintainability, and testability advantages.
+Organized architecture for separation of concerns, such as: 
+1. **Separation of Concerns**: MVC separates the application into three main components - Model, View, and Controller. This separation allows for better organization of code and clear distinction between different aspects of the application logic, making it easier to maintain and update.
+2. **Scalability**: MVC architecture facilitates scalability by enabling developers to modify or extend one component without affecting the others. This modular approach allows for the addition of new features or changes to existing ones without disrupting the entire application.
+3. **Code Reusability**: MVC promotes code reusability through the use of separate components. For example, business logic encapsulated in the Controller can be reused across different views, enhancing development efficiency and reducing duplication of code.
+4. **Testability**: With MVC, each component can be tested independently, leading to more effective testing strategies. Unit tests can be written for the Controller logic, while integration tests can be performed on the interaction between the Model, View, and Controller components.
 
 ## Security Features and Best Practices
-
-The JobSearch application implements robust security measures, including:
+Robust security measures:
 
 - Authentication
 - Authorization
@@ -94,47 +87,43 @@ The JobSearch application implements robust security measures, including:
 
 ## Advanced Functionalities
 
-### API Connection
-
-Integration with external APIs for data exchange and enrichment.
 
 ### Work Order Filtering
 
-Advanced filtering options for job seekers to find suitable openings.
+Advanced filtering options for job seekers.
 
 ### Search Technician By Name
 
-Functionality to search for technicians based on their name or skills.
+Functionality to search for technicians.
 
 ### Report Generation
 
-Generation of reports for analytics and decision-making purposes.
+Analytics and decision-making reports.
 
 ### Testing
 
-Comprehensive testing suite covering unit tests, integration tests, and end-to-end tests.
+Comprehensive testing suite.
 
 ### Login
 
-Secure login functionality with password hashing and session management.
+Secure login functionality.
 
 ### Data Query
 
-Efficient querying of the database using Spring Data JPA.
+Efficient database querying.
 
 ### Frontend
 
-Development of a user-friendly frontend using React for enhanced user experience.
+User-friendly frontend development.
 
-## Error Handling
 
 ### Try Catches
 
-Handling of exceptions using try-catch blocks to ensure graceful degradation.
+Graceful exception handling.
 
 ### Input Validation
 
-Validation of user input to prevent injection attacks and data corruption.
+Preventing injection attacks.
 
 ## License
 
