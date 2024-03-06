@@ -25,14 +25,14 @@ class AuthControllerTest {
 
     @Test
     fun `should register user`() {
-        val userDTO = UserDTO(12121321, "John", "Doe", "john.doe@example.com", "password", 12)
+        val userDTO = UserDTO(12121321, "Thorin", "OakShield", "ThorinOakShield", "password", 12)
         val result = authController.register(userDTO)
         assertEquals(HttpStatus.CREATED, result.statusCode)
     }
 
     @Test
     fun `should authenticate user`() {
-        val loginRequest = LoginRequest("john.doe@example.com", "password")
+        val loginRequest = LoginRequest("ThorinOakShield", "password")
         `when`(authService.authenticate(loginRequest.username, loginRequest.password)).thenReturn("dummy_token")
         val result = authController.authenticateUser(loginRequest) as ResponseEntity<*>
         assertEquals(HttpStatus.OK, result.statusCode)
