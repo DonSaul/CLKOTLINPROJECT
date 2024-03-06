@@ -20,8 +20,6 @@
    6.5. [Login](#login) <br>
    6.6. [Data Query](#data-query) <br>
    6.7. [Frontend](#frontend) <br>
-   7.1. [Try Catches](#try-catches) <br>
-   7.2. [Input Validation](#input-validation) <br>
 7. [License](#license)
 
 ## Introduction
@@ -116,15 +114,5 @@ Efficient database querying.
 
 User-friendly frontend development.
 
-
-### Try Catches
-
-Graceful exception handling.
-
-### Input Validation
-
-Preventing injection attacks.
-
 ## License
-
 We need to add this license: [MIT License](https://opensource.org/licenses/MIT).
