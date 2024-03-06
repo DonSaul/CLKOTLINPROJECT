@@ -3,29 +3,29 @@
 ## Contents
 
 1. [Introduction](#introduction)
-2. [Getting Started](#getting-started)
-   2.1. [Prerequisites](#prerequisites)
+2. [Getting Started](#getting-started) <br>
+   2.1. [Prerequisites](#prerequisites) <br>
    2.2. [Initial Setup and Configuration](#initial-setup-and-configuration)
-3. [Basic Usage](#basic-usage)
+3. [Basic Usage](#basic-usage) <br>
    3.1. [Basic Operations and Examples](#basic-operations-and-examples)
-4. [Project Architecture](#project-architecture)
-   4.1. [Model-View-Controller (MVC)](#model-view-controller-mvc)
-   4.2. [Service Pattern](#service-pattern)
-   4.3. [Dependency Injection](#dependency-injection)
+4. [Project Architecture](#project-architecture) <br>
+   4.1. [Model-View-Controller (MVC)](#model-view-controller-mvc) <br>
+   4.2. [Service Pattern](#service-pattern) <br>
+   4.3. [Dependency Injection](#dependency-injection) <br>
    4.4. [Benefits](#benefits)
-5. [Security Features and Best Practices](#security-features-and-best-practices)
-6. [Advanced Functionalities](#advanced-functionalities)
-   6.1. [API Connection](#api-connection)
-   6.2. [Work Order Filtering](#work-order-filtering)
-   6.3. [Search Technician By Name](#search-technician-by-name)
-   6.4. [Report Generation](#report-generation)
-   6.5. [Testing](#testing)
-   6.6. [Login](#login)
-   6.7. [Data Query](#data-query)
-   6.8. [Frontend](#frontend)
-7. [Error Handling](#error-handling)
-   7.1. [Try Catches](#try-catches)
-   7.2. [Input Validation](#input-validation)
+5. [Security Features and Best Practices](#security-features-and-best-practices) 
+6. [Advanced Functionalities](#advanced-functionalities) <br>
+   6.1. [API Connection](#api-connection) <br>
+   6.2. [Work Order Filtering](#work-order-filtering) <br>
+   6.3. [Search Technician By Name](#search-technician-by-name) <br>
+   6.4. [Report Generation](#report-generation) <br>
+   6.5. [Testing](#testing) <br>
+   6.6. [Login](#login) <br>
+   6.7. [Data Query](#data-query) <br>
+   6.8. [Frontend](#frontend) <br>
+7. [Error Handling](#error-handling) <br>
+   7.1. [Try Catches](#try-catches) <br>
+   7.2. [Input Validation](#input-validation) <br>
 8. [License](#license)
 
 ## Introduction
@@ -63,6 +63,7 @@ The basic operations include:
 - Candidate login
 - Job search
 - Job application
+
 
 ## Project Architecture
 
