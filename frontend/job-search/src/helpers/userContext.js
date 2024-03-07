@@ -4,6 +4,7 @@ import { AUTH_TOKEN_NAME } from './constants';
 import { isLoggedIn as checkIsLoggedIn } from '../api/login';
 import { getEmailFromToken,getRoleFromToken } from './tokenHelper';
 import { toast } from 'react-toastify';
+import { queryClient } from './queryClient';
 
 const AuthContext = createContext();
 
@@ -16,21 +17,24 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem(AUTH_TOKEN_NAME);
     setUser(null);
     setIsLoggedIn(false);
+    queryClient.clear();
     toast.success("You are now logged out!");
    
   };
 
   const login = (data) =>{
 
-    ;
+    
     setUser({
         email:getEmailFromToken(localStorage.getItem(AUTH_TOKEN_NAME)),
         roleId:getRoleFromToken(localStorage.getItem(AUTH_TOKEN_NAME))
     });
     setIsLoggedIn(true);
     
+  }
 
-    console.log("You are (probably):",user);
+  const getUserEmail = () =>{
+    return getEmailFromToken(localStorage.getItem(AUTH_TOKEN_NAME));
   }
 
   const getUserRole = (override = false, role) => {
@@ -69,7 +73,8 @@ export const AuthProvider = ({ children }) => {
     logout,
     isLoggedIn,
     getUserRole,
-    login
+    login,
+    getUserEmail
   };
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
