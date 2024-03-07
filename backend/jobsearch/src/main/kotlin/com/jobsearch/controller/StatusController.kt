@@ -2,13 +2,14 @@ package com.jobsearch.controller
 
 import com.jobsearch.dto.StatusDTO
 import com.jobsearch.service.StatusService
+import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/v1/application-status")
 class StatusController(val statusService: StatusService) {
     @PostMapping
-    fun createStatus(@RequestBody statusDTO: StatusDTO): StatusDTO {
+    fun createStatus(@Valid @RequestBody statusDTO: StatusDTO): StatusDTO {
         return statusService.createStatus(statusDTO)
     }
 
@@ -23,7 +24,7 @@ class StatusController(val statusService: StatusService) {
     }
 
     @PutMapping("{id}")
-    fun updateStatus(@PathVariable("id") statusId: Int, @RequestBody statusDTO: StatusDTO): StatusDTO {
+    fun updateStatus(@PathVariable("id") statusId: Int,@Valid @RequestBody statusDTO: StatusDTO): StatusDTO {
         return statusService.updateStatus(statusId, statusDTO)
     }
 
