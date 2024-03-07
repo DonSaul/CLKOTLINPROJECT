@@ -210,7 +210,8 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
 ```
 ### WebConfig
 The WebConfig class configures CORS settings for HTTP requests.
-```@Configuration
+```kotlin
+@Configuration
 @EnableWebMvc
 class WebConfig() : WebMvcConfigurer {
     // Configuration for Cross-Origin Resource Sharing (CORS)
