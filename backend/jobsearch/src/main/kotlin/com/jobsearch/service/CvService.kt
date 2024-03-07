@@ -81,6 +81,11 @@ class CvService(
         val cv = cvRepository.findById(cvId)
             .orElseThrow { NoSuchElementException("No CV found with id $cvId") }
 
+        val authenticatedUser = userService.retrieveAuthenticatedUser()
+        if (cv.user != authenticatedUser) {
+            throw IllegalAccessException("You are not authorized to edit this CV")
+        }
+
         // Updating attributes
         cv.apply {
             yearsOfExperience = cvDTO.yearsOfExperience
