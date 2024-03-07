@@ -47,7 +47,7 @@ class UserService @Autowired constructor(
     }
     @Transactional
     fun retrieveUser(userId: Int): UserDTO {
-        val user = userRepository.findById(userId.toLong())
+        val user = userRepository.findById(userId)
             .orElseThrow { NoSuchElementException("No user found with id $userId") }
 
         return user.let {
@@ -77,7 +77,7 @@ class UserService @Autowired constructor(
     }
     @Transactional
     fun updateUser(userId: Int, userDTO: UserDTO): UserDTO {
-        val user = userRepository.findById(userId.toLong())
+        val user = userRepository.findById(userId)
             .orElseThrow { NoSuchElementException("No user found with id $userId") }
 
         user.apply {
@@ -104,7 +104,7 @@ class UserService @Autowired constructor(
 
     @Transactional
     fun deleteUser(userId: Int): String {
-        val user = userRepository.findById(userId.toLong())
+        val user = userRepository.findById(userId)
             .orElseThrow { NoSuchElementException("No user found with id $userId") }
 
         userRepository.delete(user)
