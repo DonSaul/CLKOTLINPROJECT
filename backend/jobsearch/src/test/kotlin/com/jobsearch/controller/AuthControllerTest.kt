@@ -4,7 +4,8 @@ import com.jobsearch.dto.JwtResponse
 import com.jobsearch.dto.LoginRequest
 import com.jobsearch.dto.UserDTO
 import com.jobsearch.service.AuthService
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -39,5 +40,4 @@ class AuthControllerTest {
         assertTrue(result.body is JwtResponse)
         assertEquals("dummy_token", (result.body as JwtResponse).token)
     }
-
 }
