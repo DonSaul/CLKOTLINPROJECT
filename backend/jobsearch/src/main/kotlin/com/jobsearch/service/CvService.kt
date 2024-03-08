@@ -2,6 +2,7 @@ package com.jobsearch.service
 
 import com.jobsearch.dto.*
 import com.jobsearch.entity.Cv
+import com.jobsearch.entity.Job
 import com.jobsearch.entity.Project
 import com.jobsearch.repository.CvRepository
 import com.jobsearch.repository.JobFamilyRepository
@@ -25,15 +26,34 @@ class CvService(
                 yearsOfExperience = it.yearsOfExperience,
                 salaryExpectation = it.salaryExpectation,
                 education = it.education,
+                jobs = mutableSetOf(),
                 projects = mutableSetOf(),
                 skills = mutableSetOf(),
                 user = userService.retrieveAuthenticatedUser()
             )
         }
 
+        // Adding jobs to CV
+        cvDTO.jobs.forEach { jobDTO ->
+            val jobFamily = jobFamilyRepository.findById(jobDTO.jobFamilyId)
+                .orElseThrow { NoSuchElementException("No Job Family found with id ${jobDTO.jobFamilyId}") }
+
+            cv.jobs?.add(
+                Job(
+                    cv = cv,
+                    startDate = jobDTO.startDate,
+                    endDate = jobDTO.endDate,
+                    position = jobDTO.position,
+                    description = jobDTO.description,
+                    jobFamily = jobFamily
+                )
+            )
+        }
+
         // Adding projects to CV
         cvDTO.projects.forEach { projectDTO ->
-            val jobFamily = jobFamilyRepository.findById(projectDTO.jobFamilyId).orElse(null)
+            val jobFamily = jobFamilyRepository.findById(projectDTO.jobFamilyId)
+                .orElseThrow { NoSuchElementException("No Job Family found with id ${projectDTO.jobFamilyId}") }
 
             jobFamily?.let {
                 cv.projects?.add(
@@ -82,6 +102,7 @@ class CvService(
             .orElseThrow { NoSuchElementException("No CV found with id $cvId") }
 
         val authenticatedUser = userService.retrieveAuthenticatedUser()
+
         if (cv.user != authenticatedUser) {
             throw IllegalAccessException("You are not authorized to edit this CV")
         }
@@ -91,6 +112,39 @@ class CvService(
             yearsOfExperience = cvDTO.yearsOfExperience
             salaryExpectation = cvDTO.salaryExpectation
             education = cvDTO.education
+        }
+
+        // Updating jobs
+
+        // Removing jobs from the CV that are not in the request
+        cv.jobs?.removeIf { job -> !cvDTO.jobs.any { it.jobId == job.jobId } }
+
+        cvDTO.jobs.forEach { dto ->
+            val existingJob = cv.jobs?.find { it.jobId == dto.jobId }
+
+            if (existingJob != null) {
+                // If job exists, the properties are updated
+                existingJob.apply {
+                    startDate = dto.startDate
+                    endDate = dto.endDate
+                    position = dto.position
+                    description = dto.description
+                    jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
+                        .orElseThrow { NoSuchElementException("No Job Family found with id ${dto.jobFamilyId}") }
+                }
+            } else {
+                // If job doesn't exist, a new one is created and added to the CV
+                val newJob = Job(
+                    cv = cv,
+                    startDate = dto.startDate,
+                    endDate = dto.endDate,
+                    position = dto.position,
+                    description = dto.description,
+                    jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
+                        .orElseThrow { NoSuchElementException("No Job Family found with id ${dto.jobFamilyId}") }
+                )
+                cv.jobs?.add(newJob)
+            }
         }
 
         // Updating projects
@@ -107,7 +161,7 @@ class CvService(
                     name = dto.name
                     description = dto.description
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
-                        .orElseThrow { NoSuchElementException("No JobFamily found with id ${dto.jobFamilyId}") }
+                        .orElseThrow { NoSuchElementException("No Job Family found with id ${dto.jobFamilyId}") }
                 }
             } else {
                 // If project doesn't exist, a new one is created and added to the CV
@@ -116,7 +170,7 @@ class CvService(
                     name = dto.name,
                     description = dto.description,
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
-                        .orElseThrow { NoSuchElementException("No JobFamily found with id ${dto.jobFamilyId}") }
+                        .orElseThrow { NoSuchElementException("No Job Family found with id ${dto.jobFamilyId}") }
                 )
                 cv.projects?.add(newProject)
             }
@@ -175,6 +229,19 @@ class CvService(
             yearsOfExperience = cv.yearsOfExperience,
             salaryExpectation = cv.salaryExpectation,
             education = cv.education,
+            jobs = cv.jobs?.map { job ->
+                JobResponseDTO(
+                    jobId = job.jobId!!,
+                    startDate = job.startDate,
+                    endDate = job.endDate,
+                    position = job.position,
+                    description = job.description,
+                    jobFamily = JobFamilyDto(
+                        id = job.jobFamily.id!!,
+                        name = job.jobFamily.name
+                    )
+                )
+            }?.toSet() ?: emptySet(),
             projects = cv.projects?.map { project ->
                 ProjectResponseDTO(
                     projectId = project.projectId!!,
@@ -196,4 +263,3 @@ class CvService(
     }
 
 }
-

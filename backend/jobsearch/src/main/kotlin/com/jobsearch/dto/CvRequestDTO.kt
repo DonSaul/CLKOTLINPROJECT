@@ -1,5 +1,6 @@
 package com.jobsearch.dto
 
+import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.Positive
@@ -12,7 +13,9 @@ data class CvRequestDTO(
     val salaryExpectation: Int,
     @get:NotBlank(message = "Education field must not be blank")
     val education: String,
-    @get:NotEmpty(message = "CV must include at least one project")
+    @get:Valid // for validating nested objects
+    val jobs: List<JobRequestDTO>,
+    @get:Valid // for validating nested objects
     val projects: List<ProjectRequestDTO>,
     @get:NotBlank(message = "CV must list at least one skill")
     val longSkillString: String
