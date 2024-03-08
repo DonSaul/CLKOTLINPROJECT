@@ -2,6 +2,7 @@ package com.jobsearch.controller
 
 import com.jobsearch.dto.SkillDTO
 import com.jobsearch.service.SkillService
+import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -15,7 +16,7 @@ class SkillController(val skillService: SkillService) {
     }
 
     @PostMapping
-    fun createSkill(@RequestBody skillDTO: SkillDTO): SkillDTO {
+    fun createSkill(@Valid @RequestBody skillDTO: SkillDTO): SkillDTO {
         return skillService.createSkill(skillDTO)
     }
 

@@ -11,7 +11,10 @@ export const CreateVacancy = () => {
 
     const [companyName, setCompanyName] = useState();
     const [vacancyName, setVacancyName] = useState();
-
+    const [description, setDescription] = useState();
+    const [salaryExpectation, setSalaryExpectation] = useState();
+    const [yearsOfExperience, setYearsOfExperience] = useState();
+    const [jobFamily, setJobFamily] = useState('');
 
 
     const handleSubmit = (data) => {
@@ -47,6 +50,14 @@ export const CreateVacancy = () => {
                         fullWidth
                         margin="normal"
                         required
+                    />
+
+                    <TextField
+                        id="outlined-multiline-static"
+                        label="Multiline"
+                        multiline
+                        rows={4}
+                        defaultValue="Default Value"
                     />
 
 

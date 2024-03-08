@@ -31,7 +31,7 @@ class VacancyController(
     }
 
     @PutMapping("{id}")
-    fun updateVacancy(@PathVariable("id") vacancyId: Int, @RequestBody vacancyDto: VacancyDto): VacancyDto {
+    fun updateVacancy(@PathVariable("id") vacancyId: Int, @Valid @RequestBody vacancyDto: VacancyDto): VacancyDto {
         return vacancyService.updateVacancy(vacancyId, vacancyDto)
     }
 

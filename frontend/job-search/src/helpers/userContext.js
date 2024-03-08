@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AUTH_TOKEN_NAME } from './constants';
 import { isLoggedIn as checkIsLoggedIn } from '../api/login';
-import { getEmailFromToken,getRoleFromToken } from './tokenHelper';
+import { getEmailFromToken,getFirstNameFromToken,getLastNameFromToken,getRoleFromToken } from './tokenHelper';
 import { toast } from 'react-toastify';
 import { queryClient } from './queryClient';
 
@@ -36,6 +36,13 @@ export const AuthProvider = ({ children }) => {
   const getUserEmail = () =>{
     return getEmailFromToken(localStorage.getItem(AUTH_TOKEN_NAME));
   }
+  const getUserFirstName =() =>{
+    return getFirstNameFromToken(localStorage.getItem(AUTH_TOKEN_NAME));
+  }
+  const getUserLastName =() =>{
+    return getLastNameFromToken(localStorage.getItem(AUTH_TOKEN_NAME));
+  }
+
 
   const getUserRole = (override = false, role) => {
     const authToken = localStorage.getItem(AUTH_TOKEN_NAME);
@@ -74,7 +81,9 @@ export const AuthProvider = ({ children }) => {
     isLoggedIn,
     getUserRole,
     login,
-    getUserEmail
+    getUserEmail,
+    getUserFirstName,
+    getUserLastName
   };
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
