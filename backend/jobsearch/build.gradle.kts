@@ -6,6 +6,7 @@ plugins {
 	kotlin("jvm") version "1.9.22"
 	kotlin("plugin.spring") version "1.9.22"
 	kotlin("plugin.jpa") version "1.9.22"
+	id("org.jetbrains.kotlin.kapt") version "1.5.21"
 }
 
 group = "com.jobsearch"
@@ -29,19 +30,33 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-mail")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	implementation ("io.jsonwebtoken:jjwt:0.9.1")
+	implementation("javax.servlet:javax.servlet-api:3.1.0")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("javax.xml.bind:jaxb-api:2.3.1")
 	implementation("io.jsonwebtoken:jjwt:0.9.1")
+	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	// JAXB API dependency
+	implementation("javax.xml.bind:jaxb-api:2.3.1")
+
+	// JAXB reference implementation (GlassFish)
+	implementation("org.glassfish.jaxb:jaxb-runtime:2.3.1")
+
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
 	implementation ("io.jsonwebtoken:jjwt:0.9.1")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+
 //	testImplementation("org.springframework.security:spring-security-test")
+
+	implementation("org.mapstruct:mapstruct:1.4.2.Final")
+	kapt("org.mapstruct:mapstruct-processor:1.4.2.Final")
 }
 
 tasks.withType<KotlinCompile> {
@@ -54,3 +69,4 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
