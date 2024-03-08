@@ -33,6 +33,8 @@ import ChatIcon from '@mui/icons-material/Chat';
 import { useLocation } from 'react-router-dom';
 import { useState,useEffect } from 'react';
 import HomeIcon from '@mui/icons-material/Home';
+import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
+import { paths } from '../router/paths';
 
 export default function ButtonAppBar() {
   const { logout, getUserRole, isLoggedIn } = useAuth();
@@ -86,26 +88,27 @@ export default function ButtonAppBar() {
               <Tab key="home" icon={<HomeIcon />} label="Home"  component={Link} to="/" />,
               
               getUserRole() === ROLES.ADMIN && (
-                <Tab key="createUser" label="Create User" component={Link} to="/admin/users/new" />
+                <Tab key="createUser" label="Create User" component={Link} to={paths.createUser} />
               ),
               getUserRole() === ROLES.MANAGER && (
-                <Tab key="createVacancy" label="Create Vacancy" component={Link} to="/vacancies/new" />
+                <Tab key="createVacancy" label="Create Vacancy" component={Link} to={paths.createVacancy} />
               ),
               getUserRole() === ROLES.CANDIDATE && [
-                <Tab key="vacancies" icon={<BusinessCenterIcon />} label="Vacancies" component={Link} to="/vacancies" />,
-                <Tab key="myCV" icon={<AssignmentIndIcon />} label="My CV" component={Link} to="/cv" />,
+                <Tab key="vacancies" icon={<BusinessCenterIcon />} label="Vacancies" component={Link} to={paths.vacancies} />,
+                <Tab key="myCV" icon={<AssignmentIndIcon />} label="My CV" component={Link} to={paths.cv} />,
               ],
-              <Tab key="messaging" label="Messaging" icon={<ChatIcon />} component={Link} to="/messaging" />,
-              <Tab key="notifications" label="Notifications" icon={<NotificationsIcon />} component={Link} to="/notifications"/>,
-              <Tab key="myProfile" label="My profile" icon={<AccountCircleIcon />} component={Link} to="/profile"/>,
-              <Tab key="logout" label="Logout" icon={<LogoutIcon />} onClick={logout} component={Link} to="/login" />,
+              <Tab key="messaging" label="Messaging" icon={<ChatIcon />} component={Link} to={paths.messaging} />,
+              <Tab key="notifications" label="Notifications" icon={<NotificationsIcon />} component={Link} to={paths.notifications}/>,
+              <Tab key="myProfile" label="My profile" icon={<UserAvatar></UserAvatar>} component={Link} to={paths.profile}/>,
+              <Tab key="logout" label="Logout" icon={<LogoutIcon />} onClick={logout} component={Link} to={paths.login} />,
             ] :
             
             [
-              <Tab key="login" icon={<LoginIcon />} label="Login" component={Link} to="/login" />,
-              <Tab key="register" icon={<HowToRegIcon />} label="Register" component={Link} to="/register" />,
+              <Tab key="login" icon={<LoginIcon />} label="Login" component={Link} to={paths.login} />,
+              <Tab key="register" icon={<HowToRegIcon />} label="Register" component={Link} to={paths.register} />,
             ]}
           </Tabs>
+          
           
         </Toolbar>
       </AppBar>
