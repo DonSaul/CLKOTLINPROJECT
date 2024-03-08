@@ -17,16 +17,24 @@ import org.springframework.web.filter.OncePerRequestFilter
 import java.util.*
 
 @Component
-class JwtProvider {
-    @Value("\${jwt.secret}")
-    private val jwtSecret: String? = null
+class JwtProvider (
+        @Value("\${jwt.secret}")
+        private val jwtSecret: String? = null,
 
-    @Value("\${jwt.expiration}")
-    private val jwtExpiration: Int? = null
+        @Value("\${jwt.expiration}")
+        private val jwtExpiration: Int? = null,
+
+        private val userRepository:UserRepository)
+
+{
+
 
     fun generateJwtToken(userDetails: UserDetails): String {
         val claims = Jwts.claims().setSubject(userDetails.username)
         claims["roles"] = userDetails.authorities
+        val user = userRepository.findByEmail(userDetails.username).orElse(null)
+        claims["first_name"] = user.firstName
+        claims["last_name"] = user.lastName
         return Jwts.builder()
             .setClaims(claims)
             .setIssuedAt(Date())
