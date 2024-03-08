@@ -4,7 +4,6 @@ import com.jobsearch.dto.NotificationDTO
 import com.jobsearch.dto.UserDTO
 import com.jobsearch.entity.Notification
 import com.jobsearch.repository.NotificationRepository
-import com.jobsearch.repository.UserRepository
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import com.jobsearch.config.UserMapper
@@ -16,16 +15,19 @@ class NotificationService(
     private val emailService: EmailService,
     private val userService: UserService,
     private val notificationTypeService: NotificationTypeService,
-
 ) {
-
     fun triggerNotification(notificationDTO: NotificationDTO) {
         val recipientId = notificationDTO.recipient
         val recipient = userService.retrieveUser(recipientId)
-        val notification = createNotification(notificationDTO, recipient)
-        if (notification != null) {
-            sendEmailNotification(notification)
+        if (recipient.notificationActivated) { // Check if notificationActivated is true
+            val notification = createNotification(notificationDTO, recipient)
+            if (notification != null) {
+                sendEmailNotification(notification)
+            }
+        } else {
+            println("User ${recipient.email} has notification deactivated. Notification was not sent.")
         }
+
     }
 
     private fun createNotification(notificationDTO: NotificationDTO, recipient: UserDTO): Notification? {
