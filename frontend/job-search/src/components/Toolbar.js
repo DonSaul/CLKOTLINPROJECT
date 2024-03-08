@@ -38,6 +38,8 @@ import { paths } from '../router/paths';
 
 export default function ButtonAppBar() {
   const { logout, getUserRole, isLoggedIn } = useAuth();
+
+  
   const location =useLocation();
   const [value, setValue] = useState(0);
 

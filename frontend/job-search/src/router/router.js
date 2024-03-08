@@ -35,14 +35,14 @@ const RoutesConfig = () => {
 
       </Route>
       <Route element={<RequireAuth role={ROLES.MANAGER} />}>
-        <Route path={paths.createVacancy} element={<CreateVacancy />} />
+      <Route path={paths.createVacancy} element={<CreateVacancy />} />
 
       </Route>
       <Route element={<RequireAuth role={ROLES.ADMIN} />}>
         <Route path={paths.createUser} element={<CreateUser />} />
 
       </Route>
-
+      
       <Route path={paths.notAccess} element={<NotAccess />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

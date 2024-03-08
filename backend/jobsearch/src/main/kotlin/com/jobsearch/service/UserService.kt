@@ -4,6 +4,7 @@ import com.jobsearch.dto.UserDTO
 import com.jobsearch.entity.User
 import com.jobsearch.repository.RoleRepository
 import com.jobsearch.repository.UserRepository
+import com.jobsearch.response.StandardResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -20,7 +21,15 @@ class UserService @Autowired constructor(
     private val passwordEncoder: PasswordEncoder
 ) {
     @Transactional
-    fun createUser(userDTO: UserDTO): UserDTO {
+    fun createUser(userDTO: UserDTO): UserDTO? {
+
+        val existingUser = userRepository.findByEmail(userDTO.email)
+
+        if (existingUser.isPresent) {
+//Handle this with a code later
+            return null
+        }
+
         val encodedPassword = passwordEncoder.encode(userDTO.password)
         val roleId = userDTO.roleId?:1
         val userEntity = User(
@@ -34,7 +43,7 @@ class UserService @Autowired constructor(
         val newUser = userEntity.let { userRepository.save(it) }
 
 
-        return UserDTO(
+        val userResponse= UserDTO(
             newUser.id,
             newUser.firstName,
             newUser.lastName,
@@ -42,6 +51,9 @@ class UserService @Autowired constructor(
             newUser.password,
             newUser.role?.id!!
         )
+        return userResponse
+
+
 
 
     }
