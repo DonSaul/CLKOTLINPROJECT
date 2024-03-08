@@ -2,6 +2,7 @@ package com.jobsearch.controller
 
 import com.jobsearch.dto.UserDTO
 import com.jobsearch.service.UserService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -13,7 +14,7 @@ class UserController(private val userService: UserService) {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('admin')")
-    fun addUser(@RequestBody userDTO: UserDTO): ResponseEntity<UserDTO> {
+    fun addUser(@Valid @RequestBody userDTO: UserDTO): ResponseEntity<UserDTO> {
         val user = userService.createUser(userDTO)
         return ResponseEntity(user, HttpStatus.CREATED)
     }
@@ -31,7 +32,7 @@ class UserController(private val userService: UserService) {
     }
 
     @PutMapping("/{userId}")
-    fun updateUser(@PathVariable userId: Int, @RequestBody userDTO: UserDTO): ResponseEntity<UserDTO> {
+    fun updateUser(@PathVariable userId: Int,@Valid @RequestBody userDTO: UserDTO): ResponseEntity<UserDTO> {
         val updatedUser = userService.updateUser(userId, userDTO)
         return ResponseEntity(updatedUser, HttpStatus.OK)
     }

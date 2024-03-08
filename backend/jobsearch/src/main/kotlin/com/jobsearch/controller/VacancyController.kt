@@ -4,7 +4,6 @@ import com.jobsearch.dto.VacancyDto
 import com.jobsearch.service.VacancyService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -32,7 +31,7 @@ class VacancyController(
     }
 
     @PutMapping("{id}")
-    fun updateVacancy(@PathVariable("id") vacancyId: Int, @RequestBody vacancyDto: VacancyDto): VacancyDto {
+    fun updateVacancy(@PathVariable("id") vacancyId: Int, @Valid @RequestBody vacancyDto: VacancyDto): VacancyDto {
         return vacancyService.updateVacancy(vacancyId, vacancyDto)
     }
 
@@ -48,8 +47,6 @@ class VacancyController(
         @RequestParam(required = false) jobFamilyId: Int?,
         @RequestParam(required = false) yearsOfExperience: Int?
     ): List<VacancyDto> {
-
         return vacancyService.findVacanciesByFilter(salary, jobFamilyId, yearsOfExperience)
-
     }
 }
