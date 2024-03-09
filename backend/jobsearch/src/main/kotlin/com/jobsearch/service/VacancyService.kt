@@ -2,6 +2,7 @@ package com.jobsearch.service
 
 import com.jobsearch.dto.VacancyDto
 import com.jobsearch.entity.Vacancy
+import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.VacancyRepository
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
@@ -14,7 +15,7 @@ class VacancyService(
 ) {
     fun createVacancy(vacancyDto: VacancyDto): VacancyDto {
         val selectedJobFamily = jobFamilyService.findByJobFamilyId(vacancyDto.jobFamilyId!!)
-            .orElseThrow { NoSuchElementException("No vacancy found with id ${vacancyDto.jobFamilyId}") }
+            .orElseThrow { NotFoundException("No vacancy found with id ${vacancyDto.jobFamilyId}") }
 
         val managerUser = userService.retrieveAuthenticatedUser()
 
@@ -28,7 +29,7 @@ class VacancyService(
 
     fun retrieveVacancy(vacancyId: Int): VacancyDto {
         val vacancy = vacancyRepository.findById(vacancyId)
-            .orElseThrow { NoSuchElementException("No vacancy found with id $vacancyId") }
+            .orElseThrow { NotFoundException("No vacancy found with id $vacancyId") }
 
         return mapToVacancyDto(vacancy)
     }
@@ -43,10 +44,10 @@ class VacancyService(
 
     fun updateVacancy(vacancyId: Int, vacancyDto: VacancyDto): VacancyDto {
         val vacancy = vacancyRepository.findById(vacancyId)
-            .orElseThrow { NoSuchElementException("No vacancy found with id $vacancyId") }
+            .orElseThrow { NotFoundException("No vacancy found with id $vacancyId") }
 
         val selectedJobFamily = jobFamilyService.findByJobFamilyId(vacancyDto.jobFamilyId!!)
-            .orElseThrow { NoSuchElementException("No vacancy found with id ${vacancyDto.jobFamilyId}") }
+            .orElseThrow { NotFoundException("No vacancy found with id ${vacancyDto.jobFamilyId}") }
 
         vacancy.name = vacancyDto.name
         vacancy.companyName = vacancyDto.companyName
@@ -60,7 +61,7 @@ class VacancyService(
 
     fun deleteVacancy(vacancyId: Int): String {
         val vacancy = vacancyRepository.findById(vacancyId)
-            .orElseThrow { NoSuchElementException("No vacancy found with id $vacancyId") }
+            .orElseThrow { NotFoundException("No vacancy found with id $vacancyId") }
 
         vacancyRepository.delete(vacancy)
         return "Vacancy deleted successfully"

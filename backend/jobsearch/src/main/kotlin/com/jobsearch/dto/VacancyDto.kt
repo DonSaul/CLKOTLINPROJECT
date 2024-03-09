@@ -10,9 +10,9 @@ data class VacancyDto(
     val name: String,
     @get:NotBlank(message = "Company name must not be blank")
     val companyName: String,
-    @Positive(message = "Salary expectation must be a positive number")
+    @get:Positive(message = "Salary expectation must be a positive number")
     val salaryExpectation: Int,
-    @Positive(message = "Years of experience must be a positive number")
+    @get:Positive(message = "Years of experience must be a positive number")
     val yearsOfExperience: Int,
     @get:NotBlank(message = "Description must not be blank")
     val description: String,

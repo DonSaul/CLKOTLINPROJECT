@@ -4,6 +4,7 @@ import com.jobsearch.dto.*
 import com.jobsearch.entity.Cv
 import com.jobsearch.entity.Job
 import com.jobsearch.entity.Project
+import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.CvRepository
 import com.jobsearch.repository.JobFamilyRepository
 import com.jobsearch.repository.SkillRepository
@@ -85,7 +86,7 @@ class CvService(
 
     fun retrieveCv(cvId: Int): CvResponseDTO {
         val cv = cvRepository.findById(cvId)
-            .orElseThrow { NoSuchElementException("No CV found with id $cvId") }
+            .orElseThrow { NotFoundException("No CV found with id $cvId") }
 
         return mapToCvDTO(cv)
     }
@@ -99,7 +100,7 @@ class CvService(
     @Transactional
     fun updateCv(cvId: Int, cvDTO: CvRequestDTO): CvResponseDTO {
         val cv = cvRepository.findById(cvId)
-            .orElseThrow { NoSuchElementException("No CV found with id $cvId") }
+            .orElseThrow { NotFoundException("No CV found with id $cvId") }
 
         val authenticatedUser = userService.retrieveAuthenticatedUser()
 
@@ -161,7 +162,7 @@ class CvService(
                     name = dto.name
                     description = dto.description
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
-                        .orElseThrow { NoSuchElementException("No Job Family found with id ${dto.jobFamilyId}") }
+                        .orElseThrow { NotFoundException("No JobFamily found with id ${dto.jobFamilyId}") }
                 }
             } else {
                 // If project doesn't exist, a new one is created and added to the CV
@@ -170,7 +171,7 @@ class CvService(
                     name = dto.name,
                     description = dto.description,
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
-                        .orElseThrow { NoSuchElementException("No Job Family found with id ${dto.jobFamilyId}") }
+                        .orElseThrow { NotFoundException("No JobFamily found with id ${dto.jobFamilyId}") }
                 )
                 cv.projects?.add(newProject)
             }
@@ -198,7 +199,7 @@ class CvService(
 
     fun deleteCv(cvId: Int): String {
         val cv = cvRepository.findById(cvId)
-            .orElseThrow { NoSuchElementException("No CV found with id $cvId") }
+            .orElseThrow { NotFoundException("No CV found with id $cvId") }
 
         cvRepository.delete(cv)
 
