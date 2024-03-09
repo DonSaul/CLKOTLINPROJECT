@@ -1,6 +1,6 @@
 package com.jobsearch.service
 
-import com.jobsearch.dto.UserDTO
+import com.jobsearch.dto.UserRequestDTO
 import com.jobsearch.entity.User
 import com.jobsearch.jwt.JwtProvider
 import com.jobsearch.repository.UserRepository
@@ -21,8 +21,8 @@ class AuthService(
     private lateinit var passwordEncoder: PasswordEncoder
     @Autowired
     private lateinit var jwtProvider: JwtProvider
-    fun register(userDto: UserDTO) {
-        userService.createUser(userDto)
+    fun register(userRequestDto: UserRequestDTO) {
+        userService.createUser(userRequestDto)
     }
 
     fun findByUsername(username: String): User? {

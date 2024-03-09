@@ -1,17 +1,16 @@
 package com.jobsearch.service
 
-import com.jobsearch.dto.UserDTO
+import com.jobsearch.dto.UserRequestDTO
+import com.jobsearch.dto.UserResponseDTO
 import com.jobsearch.entity.User
 import com.jobsearch.repository.RoleRepository
 import com.jobsearch.repository.UserRepository
-import com.jobsearch.response.StandardResponse
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.security.core.Authentication;
 
 
 @Service
@@ -21,106 +20,66 @@ class UserService @Autowired constructor(
     private val passwordEncoder: PasswordEncoder
 ) {
     @Transactional
-    fun createUser(userDTO: UserDTO): UserDTO? {
+    fun createUser(userRequestDTO: UserRequestDTO): UserResponseDTO? {
 
-        val existingUser = userRepository.findByEmail(userDTO.email)
+        val existingUser = userRepository.findByEmail(userRequestDTO.email)
 
         if (existingUser.isPresent) {
-//Handle this with a code later
+        //Handle this with a code later
             return null
         }
 
-        val encodedPassword = passwordEncoder.encode(userDTO.password)
-        val roleId = userDTO.roleId?:1
+        val encodedPassword = passwordEncoder.encode(userRequestDTO.password)
+        val roleId = userRequestDTO.roleId?:1
         val userEntity = User(
-            firstName = userDTO.firstName,
-            lastName = userDTO.lastName,
+            firstName = userRequestDTO.firstName,
+            lastName = userRequestDTO.lastName,
             password = encodedPassword,
-            email = userDTO.email,
+            email = userRequestDTO.email,
             role = roleRepository.findById(roleId).get()
         )
 
         val newUser = userEntity.let { userRepository.save(it) }
-
-
-        val userResponse= UserDTO(
-            newUser.id,
-            newUser.firstName,
-            newUser.lastName,
-            newUser.email,
-            newUser.password,
-            newUser.role?.id!!
-        )
-        return userResponse
-
-
-
-
+        return mapToUserResponseDTO(newUser)
     }
+
     @Transactional
-    fun retrieveUser(userId: Int): UserDTO {
+    fun retrieveUser(userId: Int): UserResponseDTO {
         val user = userRepository.findById(userId)
             .orElseThrow { NoSuchElementException("No user found with id $userId") }
-
-        return user.let {
-            UserDTO(
-                it.id!!,
-                it.firstName,
-                it.lastName,
-                it.email,
-                it.password,
-                it.role?.id!!)
-        }
+        return mapToUserResponseDTO(user)
     }
+
     @Transactional
-    fun retrieveAllUsers(): List<UserDTO> {
+    fun retrieveAllUsers(): List<UserResponseDTO> {
         val users = userRepository.findAll()
-
-
-        return users.map { user ->
-            UserDTO(
-                user.id!!,
-                user.firstName,
-                user.lastName,
-                user.email,
-                user.password,
-                user.role?.id!!)
+        return users.map {
+            mapToUserResponseDTO(it)
         }
     }
+
     @Transactional
-    fun updateUser(userId: Int, userDTO: UserDTO): UserDTO {
+    fun updateUser(userId: Int, userRequestDTO: UserRequestDTO): UserResponseDTO {
         val user = userRepository.findById(userId)
             .orElseThrow { NoSuchElementException("No user found with id $userId") }
-
         user.apply {
-            firstName = userDTO.firstName
-            lastName = userDTO.lastName
-            if (userDTO.password.isNotEmpty()) {
-                password = passwordEncoder.encode(userDTO.password)
+            firstName = userRequestDTO.firstName
+            lastName = userRequestDTO.lastName
+            if (userRequestDTO.password.isNotEmpty()) {
+                password = passwordEncoder.encode(userRequestDTO.password)
             }
-            email = userDTO.email
+            email = userRequestDTO.email
         }
 
         val updatedUser = userRepository.save(user)
-
-        return updatedUser.let {
-            UserDTO(
-                it.id!!,
-                it.firstName,
-                it.lastName,
-                it.email,
-                it.password,
-                it.role?.id!!)
-        }
+        return mapToUserResponseDTO(updatedUser)
     }
 
     @Transactional
     fun deleteUser(userId: Int): String {
         val user = userRepository.findById(userId)
             .orElseThrow { NoSuchElementException("No user found with id $userId") }
-
         userRepository.delete(user)
-
         return "User deleted successfully"
     }
 
@@ -129,5 +88,17 @@ class UserService @Autowired constructor(
         val email: String = authentication.name
         return userRepository.findByEmail(email)
             .orElseThrow { NoSuchElementException("No user found with email $email") }
+    }
+
+    fun mapToUserResponseDTO(userEntity: User): UserResponseDTO {
+        return userEntity.let{
+            UserResponseDTO(
+                it.id!!,
+                it.firstName,
+                it.lastName,
+                it.email,
+                it.role!!.id!!
+            )
+        }
     }
 }

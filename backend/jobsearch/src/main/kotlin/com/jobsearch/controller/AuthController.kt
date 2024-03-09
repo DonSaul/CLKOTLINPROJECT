@@ -2,7 +2,7 @@ package com.jobsearch.controller
 
 import com.jobsearch.dto.JwtResponse
 import com.jobsearch.dto.LoginRequest
-import com.jobsearch.dto.UserDTO
+import com.jobsearch.dto.UserRequestDTO
 import com.jobsearch.service.AuthService
 import jakarta.transaction.Transactional
 import jakarta.validation.Valid
@@ -21,8 +21,8 @@ class AuthController(private val authService: AuthService) {
 
     @Transactional
     @PostMapping("/register")
-    fun register(@RequestBody @Valid userDto: UserDTO): ResponseEntity<Void> {
-        authService.register(userDto)
+    fun register(@RequestBody @Valid userRequestDto: UserRequestDTO): ResponseEntity<Void> {
+        authService.register(userRequestDto)
         return ResponseEntity.created(URI.create("/api/v1/auth/register")).build()
     }
 

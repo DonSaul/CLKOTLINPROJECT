@@ -2,7 +2,7 @@ package com.jobsearch.controller
 
 import com.jobsearch.dto.JwtResponse
 import com.jobsearch.dto.LoginRequest
-import com.jobsearch.dto.UserDTO
+import com.jobsearch.dto.UserRequestDTO
 import com.jobsearch.service.AuthService
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -33,10 +33,10 @@ class AuthControllerTest {
 
     @Test
     fun `should register user`() {
-        val userDTO = UserDTO(12121321, FIRST_NAME, LAST_NAME, USERNAME, PASSWORD, 12)
-        val result = authController.register(userDTO)
+        val userRequestDTO = UserRequestDTO(12121321, FIRST_NAME, LAST_NAME, USERNAME, PASSWORD, 12)
+        val result = authController.register(userRequestDTO)
         assertEquals(HttpStatus.CREATED, result.statusCode)
-        Mockito.verify(authService).register(userDTO)
+        Mockito.verify(authService).register(userRequestDTO)
     }
 
     @Test
