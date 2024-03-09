@@ -21,6 +21,7 @@ class CvService(
     @Transactional
     fun createCv(cvDTO: CvRequestDTO): CvResponseDTO {
 
+        // Setting basic attributes
         val cv = cvDTO.let {
             Cv(
                 id = null,
@@ -36,8 +37,6 @@ class CvService(
 
         // Adding jobs to CV
         cvDTO.jobs.forEach { jobDTO ->
-            val jobFamily = jobFamilyRepository.findById(jobDTO.jobFamilyId)
-                .orElseThrow { NotFoundException("No Job Family found with id ${jobDTO.jobFamilyId}") }
 
             cv.jobs?.add(
                 Job(
@@ -46,26 +45,24 @@ class CvService(
                     endDate = jobDTO.endDate,
                     position = jobDTO.position,
                     description = jobDTO.description,
-                    jobFamily = jobFamily
+                    jobFamily = jobFamilyRepository.findById(jobDTO.jobFamilyId)
+                        .orElseThrow { NotFoundException("No Job Family found with id ${jobDTO.jobFamilyId}") }
                 )
             )
         }
 
         // Adding projects to CV
         cvDTO.projects.forEach { projectDTO ->
-            val jobFamily = jobFamilyRepository.findById(projectDTO.jobFamilyId)
-                .orElseThrow { NotFoundException("No Job Family found with id ${projectDTO.jobFamilyId}") }
 
-            jobFamily?.let {
                 cv.projects?.add(
                     Project(
                         cv = cv,
                         name = projectDTO.name,
                         description = projectDTO.description,
-                        jobFamily = it
+                        jobFamily = jobFamilyRepository.findById(projectDTO.jobFamilyId)
+                            .orElseThrow { NotFoundException("No Job Family found with id ${projectDTO.jobFamilyId}") }
                     )
                 )
-            }
         }
 
         val skillIds = cvDTO.longSkillString.split(",").map { it.toInt() }.toSet()
@@ -108,7 +105,7 @@ class CvService(
             throw IllegalAccessException("You are not authorized to edit this CV")
         }
 
-        // Updating attributes
+        // Updating basic attributes
         cv.apply {
             yearsOfExperience = cvDTO.yearsOfExperience
             salaryExpectation = cvDTO.salaryExpectation
@@ -162,7 +159,7 @@ class CvService(
                     name = dto.name
                     description = dto.description
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
-                        .orElseThrow { NotFoundException("No JobFamily found with id ${dto.jobFamilyId}") }
+                        .orElseThrow { NotFoundException("No Job Family found with id ${dto.jobFamilyId}") }
                 }
             } else {
                 // If project doesn't exist, a new one is created and added to the CV
@@ -171,7 +168,7 @@ class CvService(
                     name = dto.name,
                     description = dto.description,
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
-                        .orElseThrow { NotFoundException("No JobFamily found with id ${dto.jobFamilyId}") }
+                        .orElseThrow { NotFoundException("No Job Family found with id ${dto.jobFamilyId}") }
                 )
                 cv.projects?.add(newProject)
             }
@@ -203,7 +200,7 @@ class CvService(
 
         cvRepository.delete(cv)
 
-        return "Cv deleted successfully"
+        return "CV deleted successfully"
     }
 
     fun retrieveAllMyAccountsCvs(): List<CvResponseDTO> {
