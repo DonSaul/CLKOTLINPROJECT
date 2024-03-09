@@ -37,7 +37,7 @@ class CvService(
         // Adding jobs to CV
         cvDTO.jobs.forEach { jobDTO ->
             val jobFamily = jobFamilyRepository.findById(jobDTO.jobFamilyId)
-                .orElseThrow { NoSuchElementException("No Job Family found with id ${jobDTO.jobFamilyId}") }
+                .orElseThrow { NotFoundException("No Job Family found with id ${jobDTO.jobFamilyId}") }
 
             cv.jobs?.add(
                 Job(
@@ -54,7 +54,7 @@ class CvService(
         // Adding projects to CV
         cvDTO.projects.forEach { projectDTO ->
             val jobFamily = jobFamilyRepository.findById(projectDTO.jobFamilyId)
-                .orElseThrow { NoSuchElementException("No Job Family found with id ${projectDTO.jobFamilyId}") }
+                .orElseThrow { NotFoundException("No Job Family found with id ${projectDTO.jobFamilyId}") }
 
             jobFamily?.let {
                 cv.projects?.add(
@@ -131,7 +131,7 @@ class CvService(
                     position = dto.position
                     description = dto.description
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
-                        .orElseThrow { NoSuchElementException("No Job Family found with id ${dto.jobFamilyId}") }
+                        .orElseThrow { NotFoundException("No Job Family found with id ${dto.jobFamilyId}") }
                 }
             } else {
                 // If job doesn't exist, a new one is created and added to the CV
@@ -142,7 +142,7 @@ class CvService(
                     position = dto.position,
                     description = dto.description,
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
-                        .orElseThrow { NoSuchElementException("No Job Family found with id ${dto.jobFamilyId}") }
+                        .orElseThrow { NotFoundException("No Job Family found with id ${dto.jobFamilyId}") }
                 )
                 cv.jobs?.add(newJob)
             }
