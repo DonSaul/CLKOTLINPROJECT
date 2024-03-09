@@ -3,89 +3,18 @@ import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import Button from '@mui/material/Button';
 import { useApplyVacancy } from '../hooks/useApplyVacancy';
 import { useGetCurrentUserCv } from '../hooks/useCV';
-const data = [
-    {
-      name: 'John',
-      age: 30,
-    },
-    {
-      name: 'Sara',
-      age: 25,
-    },
-  ]
-
-const vacancyData = [
-{
-    jobFamily: 'Cybersecurity',
-    yearsOfExperience: 3,
-    salary: 3000000,
-    vacancyId:1
-},
-{
-    jobFamily: 'Backend development',
-    yearsOfExperience: 5,
-    salary: 5000000,
-    vacancyId:2
-},
-{
-    jobFamily: 'Frontend development',
-    yearsOfExperience: 5,
-    salary: 123456,
-    vacancyId:3
-},
-{
-    jobFamily: 'Backend development',
-    yearsOfExperience: 99,
-    salary: 7891234,
-    vacancyId:4
-},
-{
-    jobFamily: 'Backend development',
-    yearsOfExperience: 50,
-    salary: 98765543,
-    vacancyId:5
-    
-},
-{
-    jobFamily: 'Backend development',
-    yearsOfExperience: 100,
-    salary: 98765543,
-    vacancyId:6
-    
-},
-]
-
+import { useNavigate } from 'react-router-dom';
+import { ROLES } from '../helpers/constants';
+import { useAuth } from '../helpers/userContext';
+import { MenuItem } from '@mui/material';
+import { paths } from '../router/paths';
 export default function VacancyTable({dataFromQuery}) {
 
 
-    
+    const {getUserRole} = useAuth();
     const {mutate:applyToVacancy, isError, isSuccess}=useApplyVacancy();
 
-    
-
-
- 
-
-
-
-
-    const columns = useMemo(
-        () => [
-        {
-            accessorKey: 'name', //simple recommended way to define a column
-            header: 'Name',
-            muiTableHeadCellProps: { sx: { color: 'green' } }, //optional custom props
-            Cell: ({ cell }) => <span>{cell.getValue()}</span>, //optional custom cell render
-        },
-        {
-            accessorFn: (row) => row.age, //alternate way
-            id: 'age', //id required if you use accessorFn instead of accessorKey
-            header: 'Age',
-            Header: () => <i>Age</i>, //optional custom header render
-        },
-        ],
-        [],
-    );
+    const navigate = useNavigate();
 
     const columnsVacancies = useMemo(
         () => [
@@ -115,7 +44,7 @@ export default function VacancyTable({dataFromQuery}) {
             id: 'applyButton', 
             header: 'Status',
             Cell: ({ row }) => (
-                <Button variant="contained" color="primary" onClick={() => handleApply(row.original)}>
+                <Button variant="contained" color="primary" onClick={() => handleApply(row.original)} disabled={getUserRole()!==ROLES.CANDIDATE}>
                     Apply
                 </Button>
             ),
@@ -165,6 +94,19 @@ export default function VacancyTable({dataFromQuery}) {
         state: { rowSelection }, //manage your own state, pass it back to the table (optional)
         initialState: { columnVisibility: { vacancyId: false } },
         //enableHiding:false
+        enableRowActions: true,
+  renderRowActionMenuItems: ({ row }) => [
+    <MenuItem key="edit" onClick={() => {
+        console.log("row",row);
+        navigate(`${paths.vacancies}/${row.original.id}`);
+        }}>
+      Visit 
+    </MenuItem>,
+    <MenuItem key="delete" onClick={() => console.info('Delete')}>
+      Delete
+    </MenuItem>,
+  ],
+        
     });
 
     const someEventHandler = () => {

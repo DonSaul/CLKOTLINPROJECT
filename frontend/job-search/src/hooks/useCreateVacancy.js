@@ -23,7 +23,6 @@ const addVacancy = async (data) => {
 
 export const useCreateVacancy = () => {
 
-    console.log("useCreateVacancy");
     return useMutation(addVacancy, {
       onSuccess: (res) => {
         

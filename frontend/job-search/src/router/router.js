@@ -16,18 +16,21 @@ import { paths } from "./paths";
 import { RequireAuth } from "./RequireAuth";
 import { ROLES } from "../helpers/constants";
 import NotAccess from "../pages/NotAccess";
+import VacancyView from "../pages/VacancyView";
 const RoutesConfig = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path={paths.login} element={<Login />} />
       <Route path={paths.register} element={<Register />} />
-
+      
       <Route element={<RequireAuth />}>
         <Route path={paths.notifications} element={<Notifications />} />
         <Route path={paths.messaging} element={<Messaging />} />
         <Route path={paths.profile} element={<Profile />} />
         <Route path={paths.vacancies} element={<Vacancies />} />
+        <Route path={paths.vacancyDetails} element={<VacancyView/>} />
+        
       </Route>
 
       <Route element={<RequireAuth role={ROLES.CANDIDATE} />}>

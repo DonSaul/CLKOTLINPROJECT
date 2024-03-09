@@ -8,6 +8,7 @@ export const paths = {
     profile:'/profile',
     cv:'/cv',
     vacancies:'/vacancies',
+    vacancyDetails: '/vacancies/:id',
     notifications:'/notifications',
     messaging:'/messaging',
     createVacancy:'/vacancies/new',
