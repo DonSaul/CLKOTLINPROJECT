@@ -20,16 +20,19 @@ class JobFamilyController(
     }
 
     @GetMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
     fun retrieveJobFamily(@PathVariable("id") jobFamilyId: Int): JobFamilyDto {
         return jobFamilyService.retrieveJobFamily(jobFamilyId)
     }
 
     @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
     fun retrieveAllJobFamily(): List<JobFamilyDto> {
         return jobFamilyService.retrieveAllJobFamily()
     }
 
     @PutMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
     fun updateJobFamily(@PathVariable("id") jobFamilyId: Int, @Valid @RequestBody jobFamilyDto: JobFamilyDto): JobFamilyDto {
         return jobFamilyService.updateJobFamily(jobFamilyId, jobFamilyDto)
     }

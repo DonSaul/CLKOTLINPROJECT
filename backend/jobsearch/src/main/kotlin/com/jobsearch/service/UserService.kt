@@ -3,6 +3,7 @@ package com.jobsearch.service
 import com.jobsearch.dto.UserRequestDTO
 import com.jobsearch.dto.UserResponseDTO
 import com.jobsearch.entity.User
+import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.RoleRepository
 import com.jobsearch.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,7 +26,6 @@ class UserService @Autowired constructor(
         val existingUser = userRepository.findByEmail(userRequestDTO.email)
 
         if (existingUser.isPresent) {
-        //Handle this with a code later
             return null
         }
 
@@ -46,7 +46,7 @@ class UserService @Autowired constructor(
     @Transactional
     fun retrieveUser(userId: Int): UserResponseDTO {
         val user = userRepository.findById(userId)
-            .orElseThrow { NoSuchElementException("No user found with id $userId") }
+            .orElseThrow { NotFoundException("No user found with id $userId") }
         return mapToUserResponseDTO(user)
     }
 
@@ -61,7 +61,7 @@ class UserService @Autowired constructor(
     @Transactional
     fun updateUser(userId: Int, userRequestDTO: UserRequestDTO): UserResponseDTO {
         val user = userRepository.findById(userId)
-            .orElseThrow { NoSuchElementException("No user found with id $userId") }
+            .orElseThrow { NotFoundException("No user found with id $userId") }
         user.apply {
             firstName = userRequestDTO.firstName
             lastName = userRequestDTO.lastName
@@ -78,7 +78,7 @@ class UserService @Autowired constructor(
     @Transactional
     fun deleteUser(userId: Int): String {
         val user = userRepository.findById(userId)
-            .orElseThrow { NoSuchElementException("No user found with id $userId") }
+            .orElseThrow { NotFoundException("No user found with id $userId") }
         userRepository.delete(user)
         return "User deleted successfully"
     }
@@ -87,7 +87,7 @@ class UserService @Autowired constructor(
         val authentication: Authentication = SecurityContextHolder.getContext().authentication
         val email: String = authentication.name
         return userRepository.findByEmail(email)
-            .orElseThrow { NoSuchElementException("No user found with email $email") }
+            .orElseThrow { NotFoundException("No user found with email $email") }
     }
 
     fun mapToUserResponseDTO(userEntity: User): UserResponseDTO {

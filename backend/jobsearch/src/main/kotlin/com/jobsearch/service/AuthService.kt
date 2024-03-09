@@ -2,13 +2,14 @@ package com.jobsearch.service
 
 import com.jobsearch.dto.UserRequestDTO
 import com.jobsearch.entity.User
+import com.jobsearch.exception.NotFoundException
+import com.jobsearch.exception.UserAlreadyExistsException
 import com.jobsearch.jwt.JwtProvider
 import com.jobsearch.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -22,6 +23,7 @@ class AuthService(
     @Autowired
     private lateinit var jwtProvider: JwtProvider
     fun register(userRequestDto: UserRequestDTO) {
+        if (userRepository.findByEmail(userRequestDto.email).isPresent) throw UserAlreadyExistsException("User with email ${userRequestDto.email} already on the database")
         userService.createUser(userRequestDto)
     }
 
@@ -40,7 +42,7 @@ class AuthService(
 
     override fun loadUserByUsername(username: String): UserDetails {
         val user = userRepository.findByEmail(username)
-            .orElseThrow { UsernameNotFoundException("User not found.") }
+            .orElseThrow { NotFoundException("User with email $username not found.") }
         return UserDetailsImpl.build(user)
     }
 }

@@ -2,9 +2,7 @@ package com.jobsearch.controller
 
 import com.jobsearch.dto.CvRequestDTO
 import com.jobsearch.dto.CvResponseDTO
-import com.jobsearch.dto.VacancyDto
 import com.jobsearch.service.CvService
-import com.jobsearch.service.VacancyService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
@@ -24,16 +22,19 @@ class CvController(
     }
 
     @GetMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
     fun retrieveCv(@PathVariable("id") cvId: Int): CvResponseDTO {
         return cvService.retrieveCv(cvId)
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     fun retrieveAllCvs(): List<CvResponseDTO> {
         return cvService.retrieveAllCvs()
     }
 
     @PutMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
     fun updateCv(@PathVariable("id") cvId: Int, @Valid @RequestBody cvRequestDTO: CvRequestDTO): CvResponseDTO {
         return cvService.updateCv(cvId, cvRequestDTO)
     }

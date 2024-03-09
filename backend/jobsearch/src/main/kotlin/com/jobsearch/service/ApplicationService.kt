@@ -2,6 +2,7 @@ package com.jobsearch.service
 
 import com.jobsearch.dto.ApplicationDTO
 import com.jobsearch.entity.Application
+import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.*
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
@@ -28,7 +29,7 @@ class ApplicationService(
         val cv = cvRepository.findFirstByUserOrderByIdDesc(candidate)
 
         val vacancy = vacancyRepository.findById(applicationDTO.vacancyId)
-            .orElseThrow { NoSuchElementException("Vacancy not found with ID: ${applicationDTO.vacancyId}") }
+            .orElseThrow { NotFoundException("Vacancy not found with ID: ${applicationDTO.vacancyId}") }
 
         val applicationEntity = Application(
             candidate = candidate,
@@ -58,7 +59,7 @@ class ApplicationService(
 
     fun retrieveApplication(applicationId: Int): ApplicationDTO {
         val application = applicationRepository.findById(applicationId)
-            .orElseThrow { NoSuchElementException("No application found with $applicationId") }
+            .orElseThrow { NotFoundException("No application found with $applicationId") }
 
 
         return mapToApplicationDTO(application)
@@ -77,7 +78,7 @@ class ApplicationService(
     @Transactional
     fun updateApplicationStatus( applicationDTO: ApplicationDTO) : ApplicationDTO{
         val application = applicationRepository.findById(applicationDTO.applicationId!!)
-            .orElseThrow{NoSuchElementException("No application founded with id ${applicationDTO.applicationId}")}
+            .orElseThrow{NotFoundException("No application founded with id ${applicationDTO.applicationId}")}
 
 
         application.apply {
@@ -92,7 +93,7 @@ class ApplicationService(
     @Transactional
     fun deleteApplication(applicationId: Int) : String{
         val application = applicationRepository.findById(applicationId)
-            .orElseThrow{NoSuchElementException("No application founded with id $applicationId")}
+            .orElseThrow{NotFoundException("No application founded with id $applicationId")}
 
         applicationRepository.delete(application)
 
