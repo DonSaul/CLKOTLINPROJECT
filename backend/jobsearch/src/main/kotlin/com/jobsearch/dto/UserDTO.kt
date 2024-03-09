@@ -14,7 +14,7 @@ data class UserDTO(
     val email: String,
     @get:Pattern(
         regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{4,}$",
-        message = "Password must have minimum eight characters, at least one letter and one number")
+        message = "Password must have minimum four characters, at least one letter and one number")
     var password: String,
     val roleId: Int?
 )

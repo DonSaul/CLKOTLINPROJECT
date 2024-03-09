@@ -4,6 +4,7 @@ import com.jobsearch.dto.VacancyDto
 import com.jobsearch.service.VacancyService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -14,7 +15,7 @@ class VacancyController(
     val vacancyService: VacancyService
 ) {
     @PostMapping
-    //@PreAuthorize("hasRole('manager')")
+    @PreAuthorize("hasAuthority('manager')")
     @ResponseStatus(HttpStatus.CREATED)
     fun createVacancy(@RequestBody @Valid vacancyDto: VacancyDto): VacancyDto {
         return vacancyService.createVacancy(vacancyDto)
