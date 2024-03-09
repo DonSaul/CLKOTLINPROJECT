@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 class UserController(private val userService: UserService) {
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasAuthority('admin')")
     fun addUser(@Valid @RequestBody userDTO: UserDTO): ResponseEntity<UserDTO> {
         val user = userService.createUser(userDTO)
         return ResponseEntity(user, HttpStatus.CREATED)

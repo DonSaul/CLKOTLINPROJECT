@@ -2,13 +2,12 @@ package com.jobsearch
 
 import com.jobsearch.dto.UserDTO
 import com.jobsearch.service.UserService
-import org.springframework.beans.factory.InitializingBean
+import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.stereotype.Component
 
 @SpringBootApplication
 class JobsearchApplication {
@@ -16,45 +15,45 @@ class JobsearchApplication {
 	fun passwordEncoder(): PasswordEncoder {
 		return BCryptPasswordEncoder()
 	}
+
+	@Bean
+	fun init(userService: UserService): CommandLineRunner {
+		return CommandLineRunner {
+
+			val userDTO = UserDTO(
+					firstName = "Managerio",
+					lastName = "Mangolio",
+					email = "mana@mana",
+					password = "1234",
+					roleId = 2
+			)
+
+			userService.createUser(userDTO)
+
+			val admin = UserDTO(
+					firstName = "Admino",
+					lastName = "Admalio",
+					email = "admin@admin",
+					password = "1234",
+					roleId = 3
+			)
+
+			userService.createUser(admin)
+
+			val candidate = UserDTO(
+					firstName = "Can",
+					lastName = "Didate",
+					email = "can@can",
+					password = "1234",
+					roleId = 1
+			)
+
+			userService.createUser(candidate)
+
+		}
+	}
 }
 
 fun main(args: Array<String>) {
 	runApplication<JobsearchApplication>(*args)
-}
-
-@Component
-class DefaultUserCreator(
-	val userService: UserService
-): InitializingBean {
-	override fun afterPropertiesSet() {
-		val admin = UserDTO(
-			firstName = "Lenny",
-			lastName = "Lennard",
-			email = "lenny@l.com",
-			password = "lenny1",
-			roleId = 3
-		)
-		val manager = UserDTO(
-			firstName = "Carl",
-			lastName = "Carlson",
-			email = "carl@c.com",
-			password = "carl1",
-			roleId = 2
-		)
-		val candidate = UserDTO(
-			firstName = "Juan",
-			lastName = "Topo",
-			email = "juan@t.com",
-			password = "juan1",
-			roleId = 1
-		)
-		for (user in listOf(admin, manager, candidate)) {
-			try {
-				userService.createUser(user)
-			}
-			catch (e: Exception) {
-				println("Default User ${user.email} already in db")
-			}
-		}
-	}
 }
