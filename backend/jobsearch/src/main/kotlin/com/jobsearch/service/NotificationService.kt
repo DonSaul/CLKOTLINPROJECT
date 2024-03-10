@@ -48,20 +48,17 @@ class NotificationService(
 
     private fun handleMessageNotification(notificationDTO: NotificationDTO) {
         val notification = createNotification(notificationDTO)
-        val content = "Message Notification\nSubject: ${notification.subject}\nContent: ${notification.content}"
-        sendEmailNotification(notification, content)
+        sendEmailNotification(notification)
     }
 
     private fun handleInvitationNotification(notificationDTO: NotificationDTO) {
         val notification = createNotification(notificationDTO)
-        val content = "Message Notification\nSubject: ${notification.subject}\nContent: ${notification.content}"
-        sendEmailNotification(notification, content)
+        sendEmailNotification(notification)
     }
 
     private fun handleVacancyNotification(notificationDTO: NotificationDTO) {
         val notification = createNotification(notificationDTO)
-        val content = "Message Notification\nSubject: ${notification.subject}\nContent: ${notification.content}"
-        sendEmailNotification(notification, content)
+        sendEmailNotification(notification)
     }
     private fun createNotification(notificationDTO: NotificationDTO): Notification {
         val typeNotification: NotificationType = notificationTypeRepository.findById(notificationDTO.type)
@@ -87,9 +84,9 @@ class NotificationService(
 
 
     //senderEmail
-    private fun sendEmailNotification(notification: Notification, content: String) {
+    private fun sendEmailNotification(notification: Notification) {
         try {
-            notification.recipient.let { emailService.sendEmail(it.email, "Notification", content) }
+            notification.recipient.let { emailService.sendEmail(it.email, notification.subject, notification.content) }
             markNotificationAsSent(notification)
 
         } catch (e: Exception) {
