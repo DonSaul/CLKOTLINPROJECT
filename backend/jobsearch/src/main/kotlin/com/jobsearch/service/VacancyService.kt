@@ -1,5 +1,6 @@
 package com.jobsearch.service
 
+import com.jobsearch.dto.NotificationDTO
 import com.jobsearch.dto.VacancyDto
 import com.jobsearch.entity.Vacancy
 import com.jobsearch.repository.VacancyRepository
@@ -9,20 +10,39 @@ import org.springframework.stereotype.Service
 @Service
 class VacancyService(
     val vacancyRepository: VacancyRepository,
-    val jobFamilyService: JobFamilyService
+    val jobFamilyService: JobFamilyService,
+    val userService: UserService,
+    val notificationService: NotificationService,
+    val interestService: InterestService
 ) {
     fun createVacancy(vacancyDto: VacancyDto): VacancyDto {
         val selectedJobFamily = jobFamilyService.findByJobFamilyId(vacancyDto.jobFamilyId!!)
             .orElseThrow { NoSuchElementException("No vacancy found with id ${vacancyDto.jobFamilyId}") }
+        val managerUser = userService.retrieveAuthenticatedUser()
 
         val vacancyEntity = vacancyDto.let {
-            Vacancy(it.id, it.name, it.companyName, it.salaryExpectation, it.yearsOfExperience, it.description, selectedJobFamily)
+            Vacancy(it.id, it.name, it.companyName, it.salaryExpectation, it.yearsOfExperience, it.description, selectedJobFamily, managerUser)
         }
         val newVacancy = vacancyRepository.save(vacancyEntity)
-
+        //notification about the new vacancy through email
+        val users = newVacancy.jobFamily.id?.let { interestService.getUsersByJobFamilyId(it) }
+        users?.forEach { user ->
+            val notificationDTO = user.id?.let {
+                NotificationDTO(
+                    type = 3,
+                    recipient = it,
+                    subject = "New Vacancy Available",
+                    content = "A new vacancy matching your interests is available: ${newVacancy.name}",
+                    sender = null,
+                    vacancy = newVacancy.id
+                )
+            }
+            if (notificationDTO != null) {
+                notificationService.triggerNotification(notificationDTO)
+            }
+        }
         return mapToVacancyDto(newVacancy)
     }
-
     fun retrieveVacancy(vacancyId: Int): VacancyDto {
         val vacancy = vacancyRepository.findById(vacancyId)
             .orElseThrow { NoSuchElementException("No vacancy found with id $vacancyId") }
@@ -81,7 +101,8 @@ class VacancyService(
                 it.yearsOfExperience,
                 it.description,
                 it.jobFamily.id,
-                it.jobFamily.name
+                it.jobFamily.name,
+                it.manager.id
             )
         }
     }

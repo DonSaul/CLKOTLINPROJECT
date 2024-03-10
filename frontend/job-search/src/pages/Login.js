@@ -6,15 +6,22 @@ import CardContainer from '../components/CardContainer';
 import {Typography} from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useLogin } from '../hooks/useLogin';
-
+import { useNavigate } from 'react-router-dom';
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
+  const navigate=useNavigate()
 
 
 
   const { mutate, isError, isSuccess } = useLogin();
+
+  useEffect(() => {
+    if (isSuccess) {
+     
+      navigate('/vacancies');
+    }
+  }, [isSuccess, navigate]);
 
   const handleSubmit =async (e) => {
     e.preventDefault();

@@ -7,11 +7,13 @@ import useGetVacancies from '../hooks/useGetVacancies';
 import useJobFamily from '../hooks/useJobFamily';
 import {Autocomplete} from '@mui/material';
 import { useEffect } from 'react';
+import JobFamilyAutocomplete from './JobFamilyAutocomplete';
 
 export const VacancyFilter = ({ onFilterChange, setData }) => {
     const [yearsOfExperience, setYearsOfExperience] = useState('');
     const [jobFamily, setJobFamily] = useState('');
     const [salary, setSalary] = useState('');
+
 
     const { dataVacancies, refetch } = useGetVacancies(salary, jobFamily, yearsOfExperience);
 
@@ -78,10 +80,19 @@ export const VacancyFilter = ({ onFilterChange, setData }) => {
                             value={jobFamilies?.find((job) => job.id === jobFamily) || null}
                             isOptionEqualToValue={(option, value) => option.id === value?.id}  
                             onChange={(e, newValue) => handleJobFamilyChange(newValue)}
-                            renderInput={(params) => <TextField {...params} label={`Select Job Family`} />}
+                            renderInput={(params) => <TextField {...params} label={`Select Job Family`} margin="normal"/>}
                             
-                        />
+    />
+                       
+
+
+
                     </Grid>
+{/* 
+                    <JobFamilyAutocomplete
+                            onChange={(e, newValue) => handleJobFamilyChange(newValue)}
+                            value={jobFamily}
+                        />*/}
 
                     <Grid item xs={3}>
                         <TextField

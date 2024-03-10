@@ -1,6 +1,6 @@
 package com.jobsearch.dto
 
-class SkillDTO (
+data class SkillDTO (
         val skillId:Int,
         val name:String
 )

@@ -1,6 +1,8 @@
 import { useMemo, useState, useEffect } from 'react';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import Button from '@mui/material/Button';
+import { useApplyVacancy } from '../hooks/useApplyVacancy';
+import { useGetCurrentUserCv } from '../hooks/useCV';
 const data = [
     {
       name: 'John',
@@ -54,6 +56,19 @@ const vacancyData = [
 ]
 
 export default function VacancyTable({dataFromQuery}) {
+
+
+    
+    const {mutate:applyToVacancy, isError, isSuccess}=useApplyVacancy();
+
+    
+
+
+ 
+
+
+
+
     const columns = useMemo(
         () => [
         {
@@ -80,7 +95,7 @@ export default function VacancyTable({dataFromQuery}) {
         },
         {
             accessorKey: 'name', 
-            header: 'Category',
+            header: 'Name',
         },
         {
             accessorKey: 'yearsOfExperience',
@@ -119,11 +134,26 @@ export default function VacancyTable({dataFromQuery}) {
     const handleApply = (rowData) => {
         
         console.log('Applying to vacancy:', rowData);
+
+
+        let applicationData=
+        {
+            vacancyId:rowData.id,
+            
+
+
+        }
+
+
+        applyToVacancy(applicationData);
+
+
+
       };
 
     const table = useMaterialReactTable({
         columns:columnsVacancies,
-        data:dataFromQuery?  dataFromQuery: vacancyData,
+        data:dataFromQuery?  dataFromQuery: [],
         hiddenColumns:['id'],
         enableGlobalFilter: false,
         enableColumnFilters:false,

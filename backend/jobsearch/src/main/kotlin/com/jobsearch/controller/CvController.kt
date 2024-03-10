@@ -19,11 +19,12 @@ class CvController(
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createCv(@RequestBody @Valid cvRequestDTO: CvRequestDTO): CvResponseDTO {
+
         return cvService.createCv(cvRequestDTO)
     }
 
     @GetMapping("{id}")
-    fun retrieveVacancy(@PathVariable("id") cvId: Int): CvResponseDTO {
+    fun retrieveCv(@PathVariable("id") cvId: Int): CvResponseDTO {
         return cvService.retrieveCv(cvId)
     }
 
@@ -33,7 +34,7 @@ class CvController(
     }
 
     @PutMapping("{id}")
-    fun updateCv(@PathVariable("id") cvId: Int, @RequestBody cvRequestDTO: CvRequestDTO): CvResponseDTO {
+    fun updateCv(@PathVariable("id") cvId: Int, @Valid @RequestBody cvRequestDTO: CvRequestDTO): CvResponseDTO {
         return cvService.updateCv(cvId, cvRequestDTO)
     }
 

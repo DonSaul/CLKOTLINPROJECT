@@ -1,9 +1,11 @@
 package com.jobsearch.controller
 
+import com.jobsearch.dto.NotificationDTO
 import com.jobsearch.dto.UserDTO
 import com.jobsearch.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*
 class UserController(private val userService: UserService) {
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('admin')")
     fun addUser(@RequestBody userDTO: UserDTO): ResponseEntity<UserDTO> {
         val user = userService.createUser(userDTO)
         return ResponseEntity(user, HttpStatus.CREATED)
@@ -38,5 +41,20 @@ class UserController(private val userService: UserService) {
     fun deleteUser(@PathVariable userId: Int): ResponseEntity<String> {
         val result = userService.deleteUser(userId)
         return ResponseEntity(result, HttpStatus.OK)
+    }
+
+    @PutMapping("/{userId}")
+    fun updateUserNotificationActivated(@PathVariable userId: Int): ResponseEntity<UserDTO> {
+        val updatedUser = userService.activateNotifications(userId)
+        return ResponseEntity(updatedUser, HttpStatus.OK)
+    }
+
+    @PutMapping("/{userId}/activate-notification-type")
+    fun activateNotificationType(
+        @PathVariable userId: Int,
+        @RequestBody notificationTypeDTO: NotificationDTO
+    ): ResponseEntity<UserDTO> {
+        val updatedUser = userService.activatedNotificationTypes(userId, notificationTypeDTO)
+        return ResponseEntity(updatedUser, HttpStatus.OK)
     }
 }
