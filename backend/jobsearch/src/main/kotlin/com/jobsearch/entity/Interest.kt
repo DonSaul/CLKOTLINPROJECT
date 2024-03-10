@@ -9,12 +9,12 @@ data class Interest(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int? = null,
 
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "jobFamily_id")
     val jobFamily : JobFamily,
 
     //Still discussing what relation use (many-to-many or one-to-many)
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "userId")
     val user: User
 )

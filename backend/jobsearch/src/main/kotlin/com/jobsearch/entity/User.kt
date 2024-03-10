@@ -16,5 +16,16 @@ data class User(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
-    var role: Role? = null
+    var role: Role? = null,
+
+    @Column(name = "notification_activated", nullable = false)
+    var notificationActivated: Boolean = false,
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_notification_type",
+        joinColumns = [JoinColumn(name = "user_id")],
+        inverseJoinColumns = [JoinColumn(name = "id")]
+    )
+    var activatedNotificationTypes: Set<NotificationType?> = emptySet()
 )
