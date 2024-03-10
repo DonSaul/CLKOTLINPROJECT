@@ -6,7 +6,7 @@ plugins {
 	kotlin("jvm") version "1.9.22"
 	kotlin("plugin.spring") version "1.9.22"
 	kotlin("plugin.jpa") version "1.9.22"
-	id("org.jetbrains.kotlin.kapt") version "1.5.21"
+
 }
 
 group = "com.jobsearch"
@@ -55,8 +55,6 @@ dependencies {
 
 //	testImplementation("org.springframework.security:spring-security-test")
 
-	implementation("org.mapstruct:mapstruct:1.4.2.Final")
-	kapt("org.mapstruct:mapstruct-processor:1.4.2.Final")
 }
 
 tasks.withType<KotlinCompile> {
