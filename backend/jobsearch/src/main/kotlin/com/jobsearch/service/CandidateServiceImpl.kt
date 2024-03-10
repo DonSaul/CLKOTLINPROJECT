@@ -12,4 +12,4 @@ class CandidateServiceImpl(private val candidateRepository: CandidateRepository)
     override fun searchCandidates(filters: CandidateSearchFilterDTO): List<Candidate> {
         return candidateRepository.searchCandidates(filters)
     }
-}    
+}

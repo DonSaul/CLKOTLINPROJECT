@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import com.jobsearch.dto.Candidate
+import org.springframework.security.access.prepost.PreAuthorize
 
 @RestController
-@RequestMapping("/candidates")
+@RequestMapping("/api/candidates")
 class CandidateController(private val candidateService: CandidateService) {
     @GetMapping("/search")
+    @PreAuthorize("hasRole('manager')")
     fun searchCandidates(@RequestBody filters: CandidateSearchFilterDTO): ResponseEntity<List<Candidate>> {
         val candidates = candidateService.searchCandidates(filters)
         return ResponseEntity.ok(candidates)
