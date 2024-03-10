@@ -1,5 +1,6 @@
 package com.jobsearch.controller
 
+import com.jobsearch.dto.NotificationDTO
 import com.jobsearch.dto.UserDTO
 import com.jobsearch.service.UserService
 import org.springframework.http.HttpStatus
@@ -40,5 +41,20 @@ class UserController(private val userService: UserService) {
     fun deleteUser(@PathVariable userId: Int): ResponseEntity<String> {
         val result = userService.deleteUser(userId)
         return ResponseEntity(result, HttpStatus.OK)
+    }
+
+    @PutMapping("/{userId}")
+    fun updateUserNotificationActivated(@PathVariable userId: Int): ResponseEntity<UserDTO> {
+        val updatedUser = userService.activateNotifications(userId)
+        return ResponseEntity(updatedUser, HttpStatus.OK)
+    }
+
+    @PutMapping("/{userId}/activate-notification-type")
+    fun activateNotificationType(
+        @PathVariable userId: Int,
+        @RequestBody notificationTypeDTO: NotificationDTO
+    ): ResponseEntity<UserDTO> {
+        val updatedUser = userService.activatedNotificationTypes(userId, notificationTypeDTO)
+        return ResponseEntity(updatedUser, HttpStatus.OK)
     }
 }

@@ -125,7 +125,27 @@ class UserService @Autowired constructor(
     }
 
     //!needs test!
-    fun addActivatedNotificationType(userId: Int, notificationTypeDTO: NotificationDTO): UserDTO {
+    fun activateNotifications(userId: Int): UserDTO {
+        val user = userRepository.findById(userId)
+            .orElseThrow { NoSuchElementException("No user found with id $userId") }
+        user.notificationActivated = true
+
+        val updatedUser = userRepository.save(user)
+        return updatedUser.let {
+            UserDTO(
+                it.id!!,
+                it.firstName,
+                it.lastName,
+                it.email,
+                it.password,
+                it.role?.id!!,
+                it.notificationActivated,
+                it.activatedNotificationTypes
+            )
+        }
+    }
+    //!needs test!
+    fun activatedNotificationTypes(userId: Int, notificationTypeDTO: NotificationDTO): UserDTO {
         val user = userRepository.findById(userId)
             .orElseThrow { NoSuchElementException("No user found with id $userId") }
 
@@ -150,4 +170,5 @@ class UserService @Autowired constructor(
             )
         }
     }
+
 }
