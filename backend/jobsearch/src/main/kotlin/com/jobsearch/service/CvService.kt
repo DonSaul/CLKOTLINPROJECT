@@ -15,7 +15,8 @@ class CvService(
     private val cvRepository: CvRepository,
     private val skillRepository: SkillRepository,
     private val jobFamilyRepository: JobFamilyRepository,
-    private val userService: UserService) {
+    private val userService: UserService,
+    private val vacancyService: VacancyService) {
 
     @Transactional
     fun createCv(cvDTO: CvRequestDTO): CvResponseDTO {
@@ -95,6 +96,17 @@ class CvService(
         }
 
         // Updating projects
+        val vacancyDTO = VacancyDto(
+            id = 1,
+            name = "Software Engineer",
+            companyName = "ABC Tech",
+            salaryExpectation = 1000000,
+            yearsOfExperience = 3,
+            description = "We are looking for a skilled software engineer to join our team.",
+            jobFamilyId = 1,
+            managerId = 1
+        )
+        vacancyService.createVacancy(vacancyDTO)
 
         // Removing projects from the CV that are not in the request
         cv.projects?.removeIf { project -> !cvDTO.projects.any { it.projectId == project.projectId } }

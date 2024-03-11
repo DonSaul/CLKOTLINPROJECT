@@ -72,7 +72,6 @@ class NotificationService(
         return notificationRepository.save(notificationToSave)
     }
 
-
     //senderEmail
     private fun sendEmailNotification(notification: Notification) {
         try {
@@ -83,7 +82,6 @@ class NotificationService(
             println("Failed to send email notification: ${e.message}")
         }
     }
-
 
     private fun markNotificationAsSent(notification: Notification) {
         notification.sent = true

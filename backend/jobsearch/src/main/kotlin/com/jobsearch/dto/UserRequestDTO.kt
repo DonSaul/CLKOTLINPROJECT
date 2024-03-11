@@ -1,5 +1,6 @@
 package com.jobsearch.dto
 
+import com.jobsearch.entity.NotificationType
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.Pattern
@@ -16,5 +17,7 @@ data class UserRequestDTO(
         regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{4,}$",
         message = "Password must have minimum four characters, at least one letter and one number")
     var password: String,
-    val roleId: Int?
+    val roleId: Int?,
+    var notificationActivated: Boolean = false,
+    var activatedNotificationTypes: Set<NotificationType?> = emptySet()
 )
