@@ -1,6 +1,7 @@
 package com.jobsearch.controller
 
-import com.jobsearch.dto.VacancyDto
+import com.jobsearch.dto.VacancyRequestDTO
+import com.jobsearch.dto.VacancyResponseDTO
 import com.jobsearch.service.VacancyService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -14,35 +15,16 @@ import org.springframework.web.bind.annotation.*
 class VacancyController(
     val vacancyService: VacancyService
 ) {
-    @PostMapping
-    @PreAuthorize("hasAuthority('manager')")
-    @ResponseStatus(HttpStatus.CREATED)
-    fun createVacancy(@RequestBody @Valid vacancyDto: VacancyDto): VacancyDto {
-        return vacancyService.createVacancy(vacancyDto)
-    }
-
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun retrieveVacancy(@PathVariable("id") vacancyId: Int): VacancyDto {
+    fun retrieveVacancy(@PathVariable("id") vacancyId: Int): VacancyResponseDTO {
         return vacancyService.retrieveVacancy(vacancyId)
     }
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    fun retrieveAllVacancy(): List<VacancyDto> {
+    fun retrieveAllVacancy(): List<VacancyResponseDTO> {
         return vacancyService.retrieveAllVacancy()
-    }
-
-    @PutMapping("{id}")
-    @ResponseStatus(HttpStatus.OK)
-    fun updateVacancy(@PathVariable("id") vacancyId: Int, @Valid @RequestBody vacancyDto: VacancyDto): VacancyDto {
-        return vacancyService.updateVacancy(vacancyId, vacancyDto)
-    }
-
-    @DeleteMapping("{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteVacancy(@PathVariable("id") vacancyId: Int): String {
-        return vacancyService.deleteVacancy(vacancyId)
     }
 
     @GetMapping("/search")
@@ -50,7 +32,37 @@ class VacancyController(
         @RequestParam(required = false) salary: Int?,
         @RequestParam(required = false) jobFamilyId: Int?,
         @RequestParam(required = false) yearsOfExperience: Int?
-    ): List<VacancyDto> {
+    ): List<VacancyResponseDTO> {
         return vacancyService.findVacanciesByFilter(salary, jobFamilyId, yearsOfExperience)
+    }
+
+
+// Manager Layer
+
+    @GetMapping("/manage")
+    @PreAuthorize("hasAuthority('manager')")
+    @ResponseStatus(HttpStatus.OK)
+    fun retrieveVacancyByManager(): List<VacancyResponseDTO> {
+        return vacancyService.retrieveVacancyByManager()
+    }
+    @PostMapping
+    @PreAuthorize("hasAuthority('manager')")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun createVacancy(@RequestBody @Valid vacancyDto: VacancyRequestDTO): VacancyResponseDTO {
+        return vacancyService.createVacancy(vacancyDto)
+    }
+
+    @PutMapping("{id}")
+    @PreAuthorize("hasAuthority('manager')")
+    @ResponseStatus(HttpStatus.OK)
+    fun updateVacancy(@PathVariable("id") vacancyId: Int, @Valid @RequestBody vacancyDto: VacancyRequestDTO): VacancyResponseDTO {
+        return vacancyService.updateVacancy(vacancyId, vacancyDto)
+    }
+
+    @DeleteMapping("{id}")
+    @PreAuthorize("hasAuthority('manager')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteVacancy(@PathVariable("id") vacancyId: Int): String {
+        return vacancyService.deleteVacancy(vacancyId)
     }
 }
