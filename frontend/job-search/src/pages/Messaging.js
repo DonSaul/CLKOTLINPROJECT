@@ -29,6 +29,9 @@ const Messaging = () => {
 
     const [selectedConversation, setSelectedConversation] = useState(null);
     const { getUserEmail,getUserFirstName,getUserLastName } = useAuth();
+
+
+
     const handleSelectConversation = (index) => {
         setSelectedConversation(index);
        console.log("selected conversatioin:",index);
@@ -45,9 +48,9 @@ const Messaging = () => {
     const conversations= [
         { date: '2022-03-05', userName: 'John', topMessage: 'Hello there!' ,firstName: 'John', lastName: 'Doe'},
         { date: '2022-03-05', userName: 'Laura', topMessage: 'hey!' ,firstName: 'Laura', lastName: 'Bue'},
-
-        { date: '2022-03-05', userName: 'Zaul', topMessage: 'job for you' ,firstName: 'Zaul', lastName: 'Xolo'},
-
+        { date: '2022-03-05', userName: 'x', topMessage: 'job for you2' ,firstName: 'ñ', lastName: 'x'},
+        { date: '2022-03-05', userName: 'x', topMessage: 'job for you3' ,firstName: 'y', lastName: 'x'},
+        { date: '2022-03-05', userName: 'x', topMessage: 'job for you4' ,firstName: 'y', lastName: 'x'},
 
     ]
 

@@ -4,6 +4,7 @@ import com.jobsearch.dto.VacancyDto
 import com.jobsearch.service.VacancyService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -14,23 +15,26 @@ class VacancyController(
     val vacancyService: VacancyService
 ) {
     @PostMapping
-    //@PreAuthorize("hasRole('manager')")
+    @PreAuthorize("hasAuthority('manager')")
     @ResponseStatus(HttpStatus.CREATED)
     fun createVacancy(@RequestBody @Valid vacancyDto: VacancyDto): VacancyDto {
         return vacancyService.createVacancy(vacancyDto)
     }
 
     @GetMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
     fun retrieveVacancy(@PathVariable("id") vacancyId: Int): VacancyDto {
         return vacancyService.retrieveVacancy(vacancyId)
     }
 
     @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
     fun retrieveAllVacancy(): List<VacancyDto> {
         return vacancyService.retrieveAllVacancy()
     }
 
     @PutMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
     fun updateVacancy(@PathVariable("id") vacancyId: Int, @Valid @RequestBody vacancyDto: VacancyDto): VacancyDto {
         return vacancyService.updateVacancy(vacancyId, vacancyDto)
     }

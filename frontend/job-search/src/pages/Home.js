@@ -24,7 +24,7 @@ const Home = () => {
                 
                 
                 
-                Hello
+                Hello! Remember you need to login!
                 
                 
                 

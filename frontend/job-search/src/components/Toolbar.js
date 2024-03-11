@@ -35,9 +35,12 @@ import { useState,useEffect } from 'react';
 import HomeIcon from '@mui/icons-material/Home';
 import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
 import { paths } from '../router/paths';
-
+import PostAddIcon from '@mui/icons-material/PostAdd';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
 export default function ButtonAppBar() {
   const { logout, getUserRole, isLoggedIn } = useAuth();
+
+
   const location =useLocation();
   const [value, setValue] = useState(0);
 
@@ -88,11 +91,12 @@ export default function ButtonAppBar() {
               <Tab key="home" icon={<HomeIcon />} label="Home"  component={Link} to="/" />,
               
               getUserRole() === ROLES.ADMIN && (
-                <Tab key="createUser" label="Create User" component={Link} to={paths.createUser} />
+                <Tab key="createUser" label="Create User" icon={<GroupAddIcon></GroupAddIcon>} component={Link} to={paths.createUser} />
               ),
-              getUserRole() === ROLES.MANAGER && (
-                <Tab key="createVacancy" label="Create Vacancy" component={Link} to={paths.createVacancy} />
-              ),
+              getUserRole() === ROLES.MANAGER && [
+                <Tab key="vacancies" icon={<BusinessCenterIcon />} label="Vacancies" component={Link} to={paths.vacancies} />,
+                <Tab key="createVacancy" label="Create Vacancy" icon={<PostAddIcon></PostAddIcon>} component={Link} to={paths.createVacancy} />
+            ],
               getUserRole() === ROLES.CANDIDATE && [
                 <Tab key="vacancies" icon={<BusinessCenterIcon />} label="Vacancies" component={Link} to={paths.vacancies} />,
                 <Tab key="myCV" icon={<AssignmentIndIcon />} label="My CV" component={Link} to={paths.cv} />,
