@@ -5,3 +5,4 @@ data class CandidateSearchFilterDTO(
     val jobFamily: String?,
     val salaryExpectation: Double?
 )
+

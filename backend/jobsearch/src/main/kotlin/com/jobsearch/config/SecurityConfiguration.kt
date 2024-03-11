@@ -30,7 +30,6 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
     @Autowired
     lateinit var jwtAuthenticationFilter: JwtAuthenticationFilter
 
-
     @Bean
     @Throws(Exception::class)
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
@@ -53,7 +52,6 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
             .build()
     }
-
 
     @Autowired
     fun configureGlobal(auth: AuthenticationManagerBuilder) {
