@@ -19,7 +19,6 @@ class NotificationService(
     private val userService: UserService,
     private val userRepository: UserRepository,
     private val notificationTypeRepository: NotificationTypeRepository,
-    private val notificationTypeService: NotificationTypeService,
     private val vacancyRepository: VacancyRepository
 ) {
     fun triggerNotification(notificationDTO: NotificationDTO) {
@@ -33,9 +32,9 @@ class NotificationService(
 
             if (allowedNotificationTypeIds.contains(notificationTypeId)) {
                 when (notificationTypeId) {
-                    1 -> handleVacancyNotification(notificationDTO)
-                    2 -> handleInvitationNotification(notificationDTO)
-                    3 -> handleMessageNotification(notificationDTO)
+                    1 -> handleNotification(notificationDTO)
+                    2 -> handleNotification(notificationDTO)
+                    3 -> handleNotification(notificationDTO)
                     else -> println("Unsupported notification type ID: $notificationTypeId")
                 }
             } else {
@@ -46,20 +45,11 @@ class NotificationService(
         }
     }
 
-    private fun handleMessageNotification(notificationDTO: NotificationDTO) {
+    private fun handleNotification(notificationDTO: NotificationDTO) {
         val notification = createNotification(notificationDTO)
         sendEmailNotification(notification)
     }
 
-    private fun handleInvitationNotification(notificationDTO: NotificationDTO) {
-        val notification = createNotification(notificationDTO)
-        sendEmailNotification(notification)
-    }
-
-    private fun handleVacancyNotification(notificationDTO: NotificationDTO) {
-        val notification = createNotification(notificationDTO)
-        sendEmailNotification(notification)
-    }
     private fun createNotification(notificationDTO: NotificationDTO): Notification {
         val typeNotification: NotificationType = notificationTypeRepository.findById(notificationDTO.type)
             .orElseThrow { NoSuchElementException("No notification type found with id ${notificationDTO.type}") }
