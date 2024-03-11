@@ -3,13 +3,17 @@ package com.jobsearch.entity
 import jakarta.persistence.*
 
 @Entity
-@Table(name="project")
+@Table(name="job")
 class Job (
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         var jobId:Int?=null,
-        var startDate:String,
-        var endDate:String,
+
+        var startYear: Int,
+        var startMonth: Int,
+        var endYear: Int,
+        var endMonth: Int,
+
         var position:String,
         var description:String,
 

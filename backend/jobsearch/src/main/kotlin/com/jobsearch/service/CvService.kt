@@ -41,8 +41,10 @@ class CvService(
             cv.jobs?.add(
                 Job(
                     cv = cv,
-                    startDate = jobDTO.startDate,
-                    endDate = jobDTO.endDate,
+                    startYear = jobDTO.startYear,
+                    startMonth = jobDTO.startMonth,
+                    endYear = jobDTO.endYear,
+                    endMonth = jobDTO.endMonth,
                     position = jobDTO.position,
                     description = jobDTO.description,
                     jobFamily = jobFamilyRepository.findById(jobDTO.jobFamilyId)
@@ -123,8 +125,10 @@ class CvService(
             if (existingJob != null) {
                 // If job exists, the properties are updated
                 existingJob.apply {
-                    startDate = dto.startDate
-                    endDate = dto.endDate
+                    startYear = dto.startYear
+                    startMonth = dto.startMonth
+                    endYear = dto.endYear
+                    endMonth = dto.endMonth
                     position = dto.position
                     description = dto.description
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
@@ -134,8 +138,10 @@ class CvService(
                 // If job doesn't exist, a new one is created and added to the CV
                 val newJob = Job(
                     cv = cv,
-                    startDate = dto.startDate,
-                    endDate = dto.endDate,
+                    startYear = dto.startYear,
+                    startMonth = dto.startMonth,
+                    endYear = dto.endYear,
+                    endMonth = dto.endMonth,
                     position = dto.position,
                     description = dto.description,
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
@@ -230,8 +236,10 @@ class CvService(
             jobs = cv.jobs?.map { job ->
                 JobResponseDTO(
                     jobId = job.jobId!!,
-                    startDate = job.startDate,
-                    endDate = job.endDate,
+                    startYear = job.startYear,
+                    startMonth = job.startMonth,
+                    endYear = job.endYear,
+                    endMonth = job.endMonth,
                     position = job.position,
                     description = job.description,
                     jobFamily = JobFamilyDto(
