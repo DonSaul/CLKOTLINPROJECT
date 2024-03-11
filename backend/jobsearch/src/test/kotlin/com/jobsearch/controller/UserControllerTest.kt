@@ -111,4 +111,9 @@ class UserControllerTest {
         assertNotNull(responseEntity.body)
         assertEquals(deleteUser, responseEntity.body)
     }
+
+    @Test
+    fun `should updateUserNotificationActivated`(){
+
+    }
 }
