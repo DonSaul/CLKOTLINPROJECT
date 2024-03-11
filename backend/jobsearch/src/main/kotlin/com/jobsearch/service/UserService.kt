@@ -1,6 +1,5 @@
 package com.jobsearch.service
 
-import com.jobsearch.dto.UserDTO
 import com.jobsearch.dto.NotificationDTO
 import com.jobsearch.dto.UserRequestDTO
 import com.jobsearch.dto.UserResponseDTO
@@ -13,11 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.security.core.Authentication
+
 
 @Service
 class UserService @Autowired constructor(
@@ -129,30 +127,17 @@ class UserService @Autowired constructor(
 //        }
 //    }
     //!needs test!
-    fun activatedNotificationTypes(userId: Int, notificationTypeDTO: NotificationDTO): UserDTO {
+    fun activatedNotificationTypes(userId: Int, notificationTypeDTO: NotificationDTO): UserResponseDTO {
         val user = userRepository.findById(userId)
             .orElseThrow { NoSuchElementException("No user found with id $userId") }
 
         // Assuming notificationTypeService has a method findById that accepts NotificationDTO
         val notificationType = notificationTypeDTO.id?.let { notificationTypeRepository.findByIdOrNull(it) }
 
-        // Make sure activatedNotificationTypes is initialized
         user.activatedNotificationTypes = user.activatedNotificationTypes.plus(notificationType)
 
         val updatedUser = userRepository.save(user)
-
-        return updatedUser.let {
-            UserDTO(
-                it.id!!,
-                it.firstName,
-                it.lastName,
-                it.email,
-                it.password,
-                it.role?.id!!,
-                it.notificationActivated,
-                it.activatedNotificationTypes
-            )
-        }
+        return mapToUserResponseDTO(updatedUser)
     }
 
 }

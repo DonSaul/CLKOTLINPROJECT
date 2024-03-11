@@ -3,7 +3,6 @@ package com.jobsearch.controller
 import com.jobsearch.dto.UserRequestDTO
 import com.jobsearch.dto.UserResponseDTO
 import com.jobsearch.dto.NotificationDTO
-import com.jobsearch.dto.UserDTO
 import com.jobsearch.service.UserService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -56,7 +55,7 @@ class UserController(private val userService: UserService) {
     fun activateNotificationType(
         @PathVariable userId: Int,
         @RequestBody notificationTypeDTO: NotificationDTO
-    ): ResponseEntity<UserDTO> {
+    ): ResponseEntity<UserRequestDTO> {
         val updatedUser = userService.activatedNotificationTypes(userId, notificationTypeDTO)
         return ResponseEntity(updatedUser, HttpStatus.OK)
     }
