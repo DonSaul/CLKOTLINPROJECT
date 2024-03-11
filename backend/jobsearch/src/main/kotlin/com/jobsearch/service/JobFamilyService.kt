@@ -2,6 +2,7 @@ package com.jobsearch.service
 
 import com.jobsearch.dto.JobFamilyDto
 import com.jobsearch.entity.JobFamily
+import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.JobFamilyRepository
 import org.springframework.stereotype.Service
 import java.util.*
@@ -20,7 +21,7 @@ class JobFamilyService(
 
     fun retrieveJobFamily(jobFamilyId: Int): JobFamilyDto {
         val jobFamily = jobFamilyRepository.findById(jobFamilyId)
-            .orElseThrow { NoSuchElementException("No job family found with id $jobFamilyId") }
+            .orElseThrow { NotFoundException("No job family found with id $jobFamilyId") }
 
         return jobFamily.let {
             JobFamilyDto(it.id, it.name)
@@ -37,7 +38,7 @@ class JobFamilyService(
 
     fun updateJobFamily(jobFamilyId: Int, jobFamilyDto: JobFamilyDto): JobFamilyDto {
         val jobFamily = jobFamilyRepository.findById(jobFamilyId)
-            .orElseThrow { NoSuchElementException("No job family found with id $jobFamilyId") }
+            .orElseThrow { NotFoundException("No job family found with id $jobFamilyId") }
 
         jobFamily.name = jobFamilyDto.name
 
@@ -50,7 +51,7 @@ class JobFamilyService(
 
     fun deleteJobFamily(jobFamilyId: Int): String {
         val jobFamily = jobFamilyRepository.findById(jobFamilyId)
-            .orElseThrow { NoSuchElementException("No job family found with id $jobFamilyId") }
+            .orElseThrow { NotFoundException("No job family found with id $jobFamilyId") }
 
         jobFamilyRepository.delete(jobFamily)
 

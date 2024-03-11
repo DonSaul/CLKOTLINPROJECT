@@ -33,12 +33,13 @@ registration, and application submissions.
 
 Ensure you have the following installed:
 
-- SpringFramework -> [Spring initializr](https://start.spring.io/)
-- [React](https://es.react.dev/learn/installation).
-- Spring Security -> [Add Dependency SpringSecurity](https://start.spring.io/)
+- SpringFramework -> [Spring initializr](https://start.spring.io/) ```implementation("org.springframework.boot:spring-boot-starter-web") version 3.2.2```
+- [React](https://es.react.dev/learn/installation). ```npm install version 9.6.2```
+- Spring Security -> [Add Dependency SpringSecurity](https://start.spring.io/) ```implementation("org.springframework.boot:spring-boot-starter-security")```
 - [Kotlin](https://oregoom.com/kotlin/instalar/).
-- PostgreSQL -> [Add Dependency PostgreSQL Driver](https://start.spring.io/)
-
+- PostgreSQL -> [Add Dependency PostgreSQL Driver](https://start.spring.io/) ```runtimeOnly("org.postgresql:postgresql")```
+- JWT(Json web token) -> ```implementation ("io.jsonwebtoken:jjwt:0.9.1")``` 
+- JVM -> ```kotlin("jvm") version "1.9.22"```
 ### Initial Setup and Configuration
 
 1. Clone the repository. `git clone https://github.com/DonSaul/CLKOTLINPROJECT.git`

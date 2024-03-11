@@ -6,7 +6,6 @@ plugins {
 	kotlin("jvm") version "1.9.22"
 	kotlin("plugin.spring") version "1.9.22"
 	kotlin("plugin.jpa") version "1.9.22"
-
 }
 
 group = "com.jobsearch"
@@ -31,6 +30,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-mail")
+	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation ("io.jsonwebtoken:jjwt:0.9.1")
@@ -46,15 +47,13 @@ dependencies {
 	// JAXB reference implementation (GlassFish)
 	implementation("org.glassfish.jaxb:jaxb-runtime:2.3.1")
 
+	implementation ("io.jsonwebtoken:jjwt:0.9.1")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
-	implementation ("io.jsonwebtoken:jjwt:0.9.1")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
-
 //	testImplementation("org.springframework.security:spring-security-test")
-
 }
 
 tasks.withType<KotlinCompile> {
@@ -67,4 +66,3 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
-

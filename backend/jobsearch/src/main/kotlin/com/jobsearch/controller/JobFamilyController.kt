@@ -2,6 +2,7 @@ package com.jobsearch.controller
 
 import com.jobsearch.dto.JobFamilyDto
 import com.jobsearch.service.JobFamilyService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -12,24 +13,27 @@ import org.springframework.web.bind.annotation.*
 class JobFamilyController(
     val jobFamilyService: JobFamilyService
 ) {
-    @PostMapping
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    fun createJobFamily(@RequestBody jobFamilyDto: JobFamilyDto): JobFamilyDto {
+    fun createJobFamily(@Valid @RequestBody jobFamilyDto: JobFamilyDto): JobFamilyDto {
         return jobFamilyService.createJobFamily(jobFamilyDto)
     }
 
     @GetMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
     fun retrieveJobFamily(@PathVariable("id") jobFamilyId: Int): JobFamilyDto {
         return jobFamilyService.retrieveJobFamily(jobFamilyId)
     }
 
     @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
     fun retrieveAllJobFamily(): List<JobFamilyDto> {
         return jobFamilyService.retrieveAllJobFamily()
     }
 
     @PutMapping("{id}")
-    fun updateJobFamily(@PathVariable("id") jobFamilyId: Int, @RequestBody jobFamilyDto: JobFamilyDto): JobFamilyDto {
+    @ResponseStatus(HttpStatus.OK)
+    fun updateJobFamily(@PathVariable("id") jobFamilyId: Int, @Valid @RequestBody jobFamilyDto: JobFamilyDto): JobFamilyDto {
         return jobFamilyService.updateJobFamily(jobFamilyId, jobFamilyDto)
     }
 
