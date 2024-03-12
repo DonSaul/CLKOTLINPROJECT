@@ -97,8 +97,8 @@ class CvService(
 
         // Updating projects
         val vacancyDTO = VacancyDto(
-            id = 1,
-            name = "Software Engineer",
+            id = 3,
+            name = "Computer Engineer",
             companyName = "ABC Tech",
             salaryExpectation = 1000000,
             yearsOfExperience = 3,

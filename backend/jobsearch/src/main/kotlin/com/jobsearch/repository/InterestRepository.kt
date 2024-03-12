@@ -8,5 +8,4 @@ import org.springframework.data.jpa.repository.Query
 interface InterestRepository : JpaRepository<Interest, Int> {
     @Query("SELECT i.user FROM Interest i WHERE i.jobFamily.id = :jobFamilyId")
     fun findUsersByJobFamilyId(jobFamilyId: Int): List<User>
-
 }

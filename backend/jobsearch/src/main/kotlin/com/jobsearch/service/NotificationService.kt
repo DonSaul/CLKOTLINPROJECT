@@ -89,24 +89,4 @@ class NotificationService(
         notification.sentDateTime = LocalDateTime.now()
         notificationRepository.save(notification)
     }
-
-    fun sendRecoverPassword(email: String){
-        try {
-            val user = userRepository.findByEmail(email)
-                .orElseThrow { NoSuchElementException("No user found with email $email") }
-
-            val notificationDTO = NotificationDTO(
-                    type = 4,
-                    recipient = user.id!!,
-                    subject = "Reset Password",
-                    content = "Instructions for resetting your password",
-                    sender = null,
-                    vacancy = null
-                )
-
-            triggerNotification(notificationDTO)
-        } catch (e: Exception) {
-            println("Failed to send email notification: ${e.message}")
-        }
-    }
 }

@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.core.token.TokenService
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -32,6 +33,7 @@ class SecurityConfig {
     lateinit var jwtAuthenticationFilter: JwtAuthenticationFilter
 
 
+
     @Bean
     @Throws(Exception::class)
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
@@ -49,6 +51,7 @@ class SecurityConfig {
                     .requestMatchers("/api/v1/job-family/**").permitAll()
                     .requestMatchers("/api/v1/application-status/**").permitAll()
                     .requestMatchers("/api/v1/notifications/**").permitAll()
+                    .requestMatchers("/api/v1/recoverPassword/**").permitAll()
 
                     .anyRequest().authenticated()
             }

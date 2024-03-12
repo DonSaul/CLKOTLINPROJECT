@@ -19,13 +19,4 @@ class NotificationController(private val notificationService: NotificationServic
         notificationService.triggerNotification(notificationDTO)
         return ResponseEntity.status(HttpStatus.CREATED).body("Notification triggered successfully")
     }
-
-    data class ForgotPasswordRequest(
-        val email: String
-    )
-    @PostMapping("/forgotPassword")
-    fun forgotPassword(@RequestBody request: ForgotPasswordRequest): ResponseEntity<String>{
-        notificationService.sendRecoverPassword(request.email)
-        return ResponseEntity.status(HttpStatus.CREATED).body("Notification triggered successfully")
-    }
 }
