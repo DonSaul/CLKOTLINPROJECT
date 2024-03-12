@@ -6,14 +6,14 @@ import jakarta.validation.constraints.Positive
 
 data class CvRequestDTO(
     val id: Int?,
-    @Positive(message = "CV must have a valid number of years of experience")
+    @get:Positive(message = "CV must have a valid number of years of experience")
     val yearsOfExperience: Int,
-    @Positive(message = "CV must have a valid salary expectation")
+    @get:Positive(message = "CV must have a valid salary expectation")
     val salaryExpectation: Int,
-    @NotBlank(message = "Education field must not be blank")
+    @get:NotBlank(message = "Education field must not be blank")
     val education: String,
-    @NotEmpty(message = "CV must include at least one project")
+    @get:NotEmpty(message = "CV must include at least one project")
     val projects: List<ProjectRequestDTO>,
-    @NotBlank(message = "CV must list at least one skill")
+    @get:NotBlank(message = "CV must list at least one skill")
     val longSkillString: String
 )

@@ -15,24 +15,27 @@ class VacancyController(
     val vacancyService: VacancyService
 ) {
     @PostMapping
-    //@PreAuthorize("hasRole('manager')")
+    @PreAuthorize("hasAuthority('manager')")
     @ResponseStatus(HttpStatus.CREATED)
     fun createVacancy(@RequestBody @Valid vacancyDto: VacancyDto): VacancyDto {
         return vacancyService.createVacancy(vacancyDto)
     }
 
     @GetMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
     fun retrieveVacancy(@PathVariable("id") vacancyId: Int): VacancyDto {
         return vacancyService.retrieveVacancy(vacancyId)
     }
 
     @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
     fun retrieveAllVacancy(): List<VacancyDto> {
         return vacancyService.retrieveAllVacancy()
     }
 
     @PutMapping("{id}")
-    fun updateVacancy(@PathVariable("id") vacancyId: Int, @RequestBody vacancyDto: VacancyDto): VacancyDto {
+    @ResponseStatus(HttpStatus.OK)
+    fun updateVacancy(@PathVariable("id") vacancyId: Int, @Valid @RequestBody vacancyDto: VacancyDto): VacancyDto {
         return vacancyService.updateVacancy(vacancyId, vacancyDto)
     }
 
@@ -48,8 +51,6 @@ class VacancyController(
         @RequestParam(required = false) jobFamilyId: Int?,
         @RequestParam(required = false) yearsOfExperience: Int?
     ): List<VacancyDto> {
-
         return vacancyService.findVacanciesByFilter(salary, jobFamilyId, yearsOfExperience)
-
     }
 }
