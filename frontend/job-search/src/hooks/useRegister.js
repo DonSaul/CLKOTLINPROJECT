@@ -16,8 +16,15 @@ const addUser = async (data) => {
 export const useRegister = () => {
     return useMutation(addUser, {
       onSuccess: (res) => {
-        toast.success("Account created!, you can now login to your account");
+        
         console.log("onSuccess res:",res);
+        if (res.status==403){
+          toast.error("You are not allowed to do that");
+        }else if(res.status==400){
+          toast.error("You are not allowed to do that");
+        } else {
+          toast.success("Account created!, you can now login to your account");
+        }
       },
   
       onMutate: async (data) => {
