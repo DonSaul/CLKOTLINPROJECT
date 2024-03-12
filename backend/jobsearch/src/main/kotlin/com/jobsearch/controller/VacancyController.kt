@@ -37,30 +37,27 @@ class VacancyController(
     }
 
 
-// Manager Layer
+// Manager Layer, endpoint contraints on SecurityCOnfiguration.kt
 
     @GetMapping("/manage")
-    @PreAuthorize("hasAuthority('manager')")
     @ResponseStatus(HttpStatus.OK)
     fun retrieveVacancyByManager(): List<VacancyResponseDTO> {
         return vacancyService.retrieveVacancyByManager()
     }
     @PostMapping
-    @PreAuthorize("hasAuthority('manager')")
+    @PreAuthorize("hasAuthorities('manager')")
     @ResponseStatus(HttpStatus.CREATED)
     fun createVacancy(@RequestBody @Valid vacancyDto: VacancyRequestDTO): VacancyResponseDTO {
         return vacancyService.createVacancy(vacancyDto)
     }
 
     @PutMapping("{id}")
-    @PreAuthorize("hasAuthority('manager')")
     @ResponseStatus(HttpStatus.OK)
     fun updateVacancy(@PathVariable("id") vacancyId: Int, @Valid @RequestBody vacancyDto: VacancyRequestDTO): VacancyResponseDTO {
         return vacancyService.updateVacancy(vacancyId, vacancyDto)
     }
 
     @DeleteMapping("{id}")
-    @PreAuthorize("hasAuthority('manager')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteVacancy(@PathVariable("id") vacancyId: Int): String {
         return vacancyService.deleteVacancy(vacancyId)
