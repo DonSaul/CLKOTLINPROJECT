@@ -1,6 +1,7 @@
 package com.jobsearch.service
 
 import com.jobsearch.dto.NotificationDTO
+import com.jobsearch.entity.NotificationTypeEnum
 import com.jobsearch.entity.User
 import com.jobsearch.jwt.JwtProvider
 import com.jobsearch.repository.UserRepository
@@ -25,7 +26,7 @@ class RecoverPasswordService @Autowired constructor(
             val token = jwtProvider.generateJwtToken(userDetails)
 
             val notificationDTO = NotificationDTO(
-                type = 4,
+                type = NotificationTypeEnum.FORGOT_PASSWORD.id,
                 recipient = user.id!!,
                 subject = "Reset Password",
                 content = "Instructions for resetting your password: Click this link to reset your password: http://localhost:3000/changepassword?token=$token",
