@@ -5,6 +5,7 @@ export const paths = {
 
     login:'/login',
     register:'/register',
+    recoverPassword: '/forgot-password',
     profile:'/profile',
     cv:'/cv',
     vacancies:'/vacancies',
@@ -14,6 +15,7 @@ export const paths = {
     createVacancy:'/vacancies/new',
     createUser:'/admin/users/new',
     notAccess:'/no-access'
+    
 
 
 }

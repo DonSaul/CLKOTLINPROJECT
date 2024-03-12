@@ -1,5 +1,6 @@
 import Login from "../pages/Login";
 import Register from "../pages/Register";
+import RecoverPassword from "../pages/RecoverPassword";
 import CV from "../pages/CV";
 import Vacancies from "../pages/Vacancies";
 import React from 'react';
@@ -23,6 +24,7 @@ const RoutesConfig = () => {
       <Route path="/" element={<Home />} />
       <Route path={paths.login} element={<Login />} />
       <Route path={paths.register} element={<Register />} />
+      <Route path={paths.recoverPassword} element={<RecoverPassword />}/>
       
       <Route element={<RequireAuth />}>
         <Route path={paths.notifications} element={<Notifications />} />

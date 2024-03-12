@@ -8,6 +8,7 @@ const createUrl = (path) => {
 
 export const ENDPOINTS = {
   register: createUrl("auth/register"),
+  recoverPassword: createUrl("notifications/forgotPassword"),
   getSkills: createUrl("skills"),
   submitCV:createUrl("cvs"),
   login: createUrl("auth/login"),

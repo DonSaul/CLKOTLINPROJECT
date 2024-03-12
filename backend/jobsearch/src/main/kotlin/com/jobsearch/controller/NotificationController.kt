@@ -1,5 +1,6 @@
 package com.jobsearch.controller
 
+import com.jobsearch.dto.LoginRequest
 import com.jobsearch.dto.NotificationDTO
 import com.jobsearch.service.NotificationService
 import org.springframework.http.HttpStatus
@@ -16,6 +17,15 @@ class NotificationController(private val notificationService: NotificationServic
     @PostMapping("/trigger")
     fun triggerNotification(@RequestBody notificationDTO: NotificationDTO): ResponseEntity<String> {
         notificationService.triggerNotification(notificationDTO)
-        return ResponseEntity.status(HttpStatus.CREATED).body("Notifications triggered successfully")
+        return ResponseEntity.status(HttpStatus.CREATED).body("Notification triggered successfully")
+    }
+
+    data class ForgotPasswordRequest(
+        val email: String
+    )
+    @PostMapping("/forgotPassword")
+    fun forgotPassword(@RequestBody request: ForgotPasswordRequest): ResponseEntity<String>{
+        notificationService.sendRecoverPassword(request.email)
+        return ResponseEntity.status(HttpStatus.CREATED).body("Notification triggered successfully")
     }
 }

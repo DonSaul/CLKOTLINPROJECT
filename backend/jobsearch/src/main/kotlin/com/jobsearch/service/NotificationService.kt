@@ -35,6 +35,7 @@ class NotificationService(
                     1 -> handleNotification(notificationDTO)
                     2 -> handleNotification(notificationDTO)
                     3 -> handleNotification(notificationDTO)
+                    4 -> handleNotification(notificationDTO)
                     else -> println("Unsupported notification type ID: $notificationTypeId")
                 }
             } else {
@@ -87,5 +88,25 @@ class NotificationService(
         notification.sent = true
         notification.sentDateTime = LocalDateTime.now()
         notificationRepository.save(notification)
+    }
+
+    fun sendRecoverPassword(email: String){
+        try {
+            val user = userRepository.findByEmail(email)
+                .orElseThrow { NoSuchElementException("No user found with email $email") }
+
+            val notificationDTO = NotificationDTO(
+                    type = 4,
+                    recipient = user.id!!,
+                    subject = "Reset Password",
+                    content = "Instructions for resetting your password",
+                    sender = null,
+                    vacancy = null
+                )
+
+            triggerNotification(notificationDTO)
+        } catch (e: Exception) {
+            println("Failed to send email notification: ${e.message}")
+        }
     }
 }

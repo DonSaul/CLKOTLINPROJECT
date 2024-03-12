@@ -41,6 +41,7 @@ class UserService @Autowired constructor(
             password = encodedPassword,
             email = userRequestDTO.email,
             role = roleRepository.findById(roleId).get()
+
         )
 
         val newUser = userEntity.let { userRepository.save(it) }
@@ -51,7 +52,16 @@ class UserService @Autowired constructor(
     fun retrieveUser(userId: Int): UserResponseDTO {
         val user = userRepository.findById(userId)
             .orElseThrow { NotFoundException("No user found with id $userId") }
-        return mapToUserResponseDTO(user)
+        return user.let {
+            UserResponseDTO(
+                it.id!!,
+                it.firstName,
+                it.lastName,
+                it.email,
+                it.role?.id!!,
+                it.notificationActivated,
+                it.activatedNotificationTypes)
+        }
     }
 
     @Transactional
