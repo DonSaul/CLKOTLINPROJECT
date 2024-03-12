@@ -55,7 +55,7 @@ class UserController(private val userService: UserService) {
     fun activateNotificationType(
         @PathVariable userId: Int,
         @RequestBody notificationTypeDTO: NotificationDTO
-    ): ResponseEntity<UserRequestDTO> {
+    ): ResponseEntity<UserResponseDTO> {
         val updatedUser = userService.activatedNotificationTypes(userId, notificationTypeDTO)
         return ResponseEntity(updatedUser, HttpStatus.OK)
     }
