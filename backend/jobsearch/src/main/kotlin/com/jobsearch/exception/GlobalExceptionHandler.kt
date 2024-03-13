@@ -68,4 +68,17 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(body)
     }
+
+    @ExceptionHandler(ForbiddenException::class)
+    fun handleForbiddenException(ex: ForbiddenException): ResponseEntity<ErrorResponse>{
+        val body = ErrorResponse(
+            status = HttpStatus.FORBIDDEN.value(),
+            message = ex.message!!,
+            timeStamp = System.currentTimeMillis()
+        )
+
+        return ResponseEntity
+            .status(HttpStatus.FORBIDDEN)
+            .body(body)
+    }
 }
