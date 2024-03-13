@@ -9,13 +9,14 @@ const createUrl = (path) => {
 export const ENDPOINTS = {
   register: createUrl("auth/register"),
   getSkills: createUrl("skills"),
-  submitCV:createUrl("cvs"),
+  submitCV: createUrl("cvs"),
   login: createUrl("auth/login"),
   getJobFamilies: createUrl("job-family"),
-  users:createUrl("users"),
-  vacancy:createUrl("vacancy"),
-  searchVacancies:createUrl("vacancy/search"),
-  userCv:createUrl("my-account/cv"),
-  createUser:createUrl("users/create"),
-  application:createUrl("application")
+  users: createUrl("users"),
+  vacancy: createUrl("vacancy"),
+  searchVacancies: createUrl("vacancy/search"),
+  userCv: createUrl("my-account/cv"),
+  createUser: createUrl("users/create"),
+  searchCandidates: createUrl("candidates/search"),
+  application: createUrl("application")
 };
