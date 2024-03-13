@@ -2,6 +2,7 @@ package com.jobsearch.service
 
 import com.jobsearch.dto.NotificationDTO
 import com.jobsearch.dto.VacancyDto
+import com.jobsearch.entity.NotificationTypeEnum
 import com.jobsearch.entity.Vacancy
 import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.VacancyRepository
@@ -38,7 +39,7 @@ class VacancyService(
         val users = newVacancy.jobFamily.id!!.let { interestService.getUsersByJobFamilyId(it) }
         users.forEach { user ->
             val notificationDTO = NotificationDTO(
-                type = 1,
+                type = NotificationTypeEnum.VACANCIES.id,
                 recipient = user.id!!,
                 subject = "New Vacancy Available",
                 content = "A new vacancy matching your interests is available: ${newVacancy.name}",

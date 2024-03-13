@@ -12,3 +12,10 @@ data class NotificationType (
     var type: String,
 
 )
+
+enum class NotificationTypeEnum(val id: Int, val type: String) {
+    VACANCIES(1, "vacancies"),
+    INVITATIONS(2, "invitations"),
+    MESSAGES(3, "messages"),
+    FORGOT_PASSWORD(4, "forgotPassword")
+}
