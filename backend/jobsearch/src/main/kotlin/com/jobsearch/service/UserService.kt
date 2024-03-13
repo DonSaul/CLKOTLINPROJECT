@@ -53,16 +53,8 @@ class UserService @Autowired constructor(
     fun retrieveUser(userId: Int): UserResponseDTO {
         val user = userRepository.findById(userId)
                 .orElseThrow { NotFoundException("No user found with id $userId") }
-        return user.let {
-            UserResponseDTO(
-                    it.id!!,
-                    it.firstName,
-                    it.lastName,
-                    it.email,
-                    it.role?.id!!,
-                    it.notificationActivated,
-                    it.activatedNotificationTypes)
-        }
+        return mapToUserResponseDTO(user)
+
     }
 
     @Transactional
@@ -127,18 +119,8 @@ class UserService @Autowired constructor(
         user.notificationActivated = true
 
         val updatedUser = userRepository.save(user)
-        return UserResponseDTO(
-                updatedUser.id!!,
-                updatedUser.firstName,
-                updatedUser.lastName,
-                updatedUser.email,
-                updatedUser.role?.id!!,
-                updatedUser.notificationActivated,
-                updatedUser.activatedNotificationTypes
-        )
+        return mapToUserResponseDTO(updatedUser)
     }
-
-    //!needs test!
     fun activatedNotificationTypes(userId: Int, notificationTypeId: Int): UserResponseDTO {
         val user = userRepository.findById(userId)
                 .orElseThrow { NoSuchElementException("No user found with id $userId") }
@@ -157,12 +139,6 @@ class UserService @Autowired constructor(
                 .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
         user.resetPasswordToken = token
         userRepository.save(user)
-    }
-
-    fun getByResetPasswordToken(token: String): UserResponseDTO {
-        val user = userRepository.findByResetPasswordToken(token)
-                .orElseThrow { NotFoundException("No user found with id $token") }
-        return mapToUserResponseDTO(user)
     }
 
     fun updatePassword(user: User, newPassword: String) {
