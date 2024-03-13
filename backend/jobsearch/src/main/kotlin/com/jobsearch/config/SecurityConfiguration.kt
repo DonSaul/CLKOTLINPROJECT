@@ -5,6 +5,7 @@ import com.jobsearch.service.AuthService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -46,8 +47,13 @@ class SecurityConfig {
                     .requestMatchers("/api/v1/application/**").authenticated()
                     .requestMatchers("/api/v1/cvs/**").authenticated()
                     .requestMatchers("/api/v1/skills/**").permitAll()
-                    .requestMatchers("/api/v1/vacancy/search").permitAll()
-                    .requestMatchers("/api/v1/vacancy/**").permitAll()
+                    .requestMatchers(HttpMethod.GET,"/api/v1/vacancy").authenticated()
+                    .requestMatchers(HttpMethod.GET,"/api/v1/vacancy/**").authenticated()
+                    .requestMatchers(HttpMethod.GET,"/api/v1/vacancy/search").authenticated()
+                    .requestMatchers(HttpMethod.GET,"/api/v1/vacancy/manage").hasAuthority("manager")
+                    .requestMatchers(HttpMethod.POST,"/api/v1/vacancy").hasAuthority("manager")
+                    .requestMatchers(HttpMethod.PUT,"/api/v1/vacancy/**").hasAuthority("manager")
+                    .requestMatchers(HttpMethod.DELETE,"/api/v1/vacancy/**").hasAuthority("manager")
                     .requestMatchers("/api/v1/job-family/**").permitAll()
                     .requestMatchers("/api/v1/application-status/**").permitAll()
                     .requestMatchers("/api/v1/notifications/**").permitAll()
