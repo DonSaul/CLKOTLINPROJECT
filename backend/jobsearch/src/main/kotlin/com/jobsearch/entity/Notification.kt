@@ -28,7 +28,7 @@ data class Notification(
     var sender: User? = null,
     //vacancy
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vacancy_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "vacancy_id", referencedColumnName = "id")
     var vacancy: Vacancy? = null
 )
 

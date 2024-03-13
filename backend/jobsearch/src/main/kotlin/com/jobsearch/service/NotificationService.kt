@@ -6,6 +6,7 @@ import com.jobsearch.repository.NotificationRepository
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import com.jobsearch.entity.NotificationType
+import com.jobsearch.entity.NotificationTypeEnum
 import com.jobsearch.entity.User
 import com.jobsearch.repository.NotificationTypeRepository
 import com.jobsearch.repository.UserRepository
@@ -25,17 +26,17 @@ class NotificationService(
         val recipientId = notificationDTO.recipient
         val recipient = userService.retrieveUser(recipientId)
 
-        if (recipient.notificationActivated || notificationDTO.type == 4) {
+        if (recipient.notificationActivated || notificationDTO.type == NotificationTypeEnum.FORGOT_PASSWORD.id) {
             val allowedNotificationTypeIds = recipient.activatedNotificationTypes.map { it?.id }
 
             val notificationTypeId = notificationDTO.type
 
-            if (allowedNotificationTypeIds.contains(notificationTypeId)|| notificationDTO.type == 4) {
+            if (allowedNotificationTypeIds.contains(notificationTypeId)|| notificationDTO.type == NotificationTypeEnum.FORGOT_PASSWORD.id) {
                 when (notificationTypeId) {
-                    1 -> handleNotification(notificationDTO)
-                    2 -> handleNotification(notificationDTO)
-                    3 -> handleNotification(notificationDTO)
-                    4 -> handleNotification(notificationDTO)
+                    NotificationTypeEnum.VACANCIES.id -> handleNotification(notificationDTO)
+                    NotificationTypeEnum.INVITATIONS.id -> handleNotification(notificationDTO)
+                    NotificationTypeEnum.MESSAGES.id -> handleNotification(notificationDTO)
+                    NotificationTypeEnum.FORGOT_PASSWORD.id -> handleNotification(notificationDTO)
                     else -> println("Unsupported notification type ID: $notificationTypeId")
                 }
             } else {
