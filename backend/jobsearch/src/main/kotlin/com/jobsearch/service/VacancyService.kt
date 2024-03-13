@@ -29,13 +29,12 @@ class VacancyService(
         val newVacancy = vacancyRepository.save(vacancyEntity)
 
         //notification about the new vacancy through email
-        notificateUser(newVacancy)
+        notificateUsers(newVacancy)
 
 
         return mapToVacancyDto(newVacancy)
     }
-    fun notificateUser(newVacancy: Vacancy){
-
+    fun notificateUsers(newVacancy: Vacancy){
         val users = newVacancy.jobFamily.id!!.let { interestService.getUsersByJobFamilyId(it) }
         users.forEach { user ->
             val notificationDTO = NotificationDTO(
@@ -43,10 +42,9 @@ class VacancyService(
                 recipient = user.id!!,
                 subject = "New Vacancy Available",
                 content = "A new vacancy matching your interests is available: ${newVacancy.name}",
-                sender = null,
+                sender = newVacancy.manager.id!!,
                 vacancy = newVacancy.id!!
             )
-
             notificationService.triggerNotification(notificationDTO)
         }
     }

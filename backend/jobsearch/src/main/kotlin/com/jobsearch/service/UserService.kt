@@ -139,12 +139,12 @@ class UserService @Autowired constructor(
     }
 
     //!needs test!
-    fun activatedNotificationTypes(userId: Int, notificationTypeDTO: NotificationDTO): UserResponseDTO {
+    fun activatedNotificationTypes(userId: Int, notificationTypeId: Int): UserResponseDTO {
         val user = userRepository.findById(userId)
                 .orElseThrow { NoSuchElementException("No user found with id $userId") }
 
-        // Assuming notificationTypeService has a method findById that accepts NotificationDTO
-        val notificationType = notificationTypeDTO.id?.let { notificationTypeRepository.findByIdOrNull(it) }
+        val notificationType = notificationTypeRepository.findByIdOrNull(notificationTypeId)
+            ?: throw NoSuchElementException("No notification type found with id $notificationTypeId")
 
         user.activatedNotificationTypes = user.activatedNotificationTypes.plus(notificationType)
 

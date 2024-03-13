@@ -24,7 +24,7 @@ class RecoverPasswordService @Autowired constructor(
         try {
             val user = userRepository.findByEmail(email)
                 .orElseThrow { NoSuchElementException("No user found with email $email") }
-            val userDetails = UserDetailsImpl.build(user)
+
 
             val token = TokenUUID().generateToken()
 
