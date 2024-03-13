@@ -47,7 +47,7 @@ class RecoverPasswordService @Autowired constructor(
 
     fun changePassword(token: String, newPassword: String){
         val user = userRepository.findByResetPasswordToken(token)
-            .orElseThrow { NotFoundException("No user found with id $token") }
+            .orElseThrow { NotFoundException("No user found with token: $token") }
         userService.updatePassword(user, newPassword)
 
     }
