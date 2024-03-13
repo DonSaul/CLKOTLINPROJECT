@@ -2,6 +2,7 @@ package com.jobsearch.service
 
 import com.jobsearch.dto.NotificationDTO
 import com.jobsearch.entity.User
+import com.jobsearch.exception.NotFoundException
 import com.jobsearch.jwt.JwtProvider
 import com.jobsearch.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,7 +15,8 @@ import org.springframework.stereotype.Service
 class RecoverPasswordService @Autowired constructor(
     private val notificationService: NotificationService,
     private val userRepository: UserRepository,
-    private val jwtProvider: JwtProvider
+    private val jwtProvider: JwtProvider,
+    private val userService: UserService
 ){
     fun sendRecoverPassword(email: String){
         try {
@@ -24,11 +26,13 @@ class RecoverPasswordService @Autowired constructor(
 
             val token = jwtProvider.generateJwtToken(userDetails)
 
+            userService.updateResetPasswordToken(token, email)
+
             val notificationDTO = NotificationDTO(
                 type = 4,
                 recipient = user.id!!,
                 subject = "Reset Password",
-                content = "Instructions for resetting your password: Click this link to reset your password: http://localhost:3000/changepassword?token=$token",
+                content = "Instructions for resetting your password: Click this link to reset your password: http://localhost:3000/change-password?token=$token",
                 sender = null,
                 vacancy = null
             )
@@ -38,5 +42,14 @@ class RecoverPasswordService @Autowired constructor(
             println("Failed to send email notification: ${e.message}")
         }
     }
+
+    fun changePassword(token: String, newPassword: String){
+        val user = userRepository.findByResetPasswordToken(token)
+            .orElseThrow { NotFoundException("No user found with id $token") }
+        userService.updatePassword(user, newPassword)
+
+    }
+
+
 
 }

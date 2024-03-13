@@ -43,7 +43,7 @@ class VacancyService(
                 subject = "New Vacancy Available",
                 content = "A new vacancy matching your interests is available: ${newVacancy.name}",
                 sender = null,
-                vacancy = newVacancy.id
+                vacancy = newVacancy.id!!
             )
 
             notificationService.triggerNotification(notificationDTO)

@@ -9,5 +9,6 @@ data class UserResponseDTO(
     val email: String,
     val roleId: Int,
     var notificationActivated: Boolean = false,
-    var activatedNotificationTypes: Set<NotificationType?> = emptySet()
+    var activatedNotificationTypes: Set<NotificationType?> = emptySet(),
+    var resetPasswordToken: String? = null
 )

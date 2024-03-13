@@ -9,6 +9,7 @@ const createUrl = (path) => {
 export const ENDPOINTS = {
   register: createUrl("auth/register"),
   recoverPassword: createUrl("recoverPassword/forgotPassword"),
+  changePassword: createUrl("recoverPassword/changePassword"),
   getSkills: createUrl("skills"),
   submitCV:createUrl("cvs"),
   login: createUrl("auth/login"),

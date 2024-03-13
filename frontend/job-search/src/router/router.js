@@ -26,7 +26,7 @@ const RoutesConfig = () => {
       <Route path={paths.login} element={<Login />} />
       <Route path={paths.register} element={<Register />} />
       <Route path={paths.recoverPassword} element={<RecoverPassword />}/>
-      <Route path={paths.changePassword} element={<ChangePassword />}/>
+      <Route path={paths.changePassword} element={<ChangePassword />} />
       
       <Route element={<RequireAuth />}>
         <Route path={paths.notifications} element={<Notifications />} />

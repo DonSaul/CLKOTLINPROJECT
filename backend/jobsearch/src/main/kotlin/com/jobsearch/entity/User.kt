@@ -27,5 +27,9 @@ data class User(
         joinColumns = [JoinColumn(name = "user_id")],
         inverseJoinColumns = [JoinColumn(name = "id")]
     )
-    var activatedNotificationTypes: Set<NotificationType?> = emptySet()
+    var activatedNotificationTypes: Set<NotificationType?> = emptySet(),
+
+    @Lob
+    @Column(name = "reset_password_token")
+    var resetPasswordToken: String?
 )

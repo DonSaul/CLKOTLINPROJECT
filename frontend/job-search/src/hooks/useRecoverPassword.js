@@ -12,7 +12,6 @@ function useRecoverPassword() {
         // Start loading
         setLoading(true);
   
-        console.log(ENDPOINTS.recoverPassword)
         // Make API call to send reset password email
         const response = await fetch(ENDPOINTS.recoverPassword, {
           method: 'POST',

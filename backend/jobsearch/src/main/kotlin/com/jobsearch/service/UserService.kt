@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -40,8 +41,8 @@ class UserService @Autowired constructor(
             lastName = userRequestDTO.lastName,
             password = encodedPassword,
             email = userRequestDTO.email,
-            role = roleRepository.findById(roleId).get()
-
+            role = roleRepository.findById(roleId).get(),
+            resetPasswordToken = null
         )
 
         val newUser = userEntity.let { userRepository.save(it) }
@@ -111,7 +112,10 @@ class UserService @Autowired constructor(
                 it.firstName,
                 it.lastName,
                 it.email,
-                it.role!!.id!!
+                it.role!!.id!!,
+                it.notificationActivated,
+                it.activatedNotificationTypes,
+                it.resetPasswordToken
             )
         }
     }
@@ -148,6 +152,27 @@ class UserService @Autowired constructor(
 
         val updatedUser = userRepository.save(user)
         return mapToUserResponseDTO(updatedUser)
+    }
+
+    fun updateResetPasswordToken(token: String, email: String) {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
+        user.resetPasswordToken = token
+        userRepository.save(user)
+    }
+
+    fun getByResetPasswordToken(token: String): UserResponseDTO {
+        val user = userRepository.findByResetPasswordToken(token)
+            .orElseThrow { NotFoundException("No user found with id $token") }
+        return mapToUserResponseDTO(user)
+    }
+
+    fun updatePassword(user: User, newPassword: String) {
+        val passwordEncoder = BCryptPasswordEncoder()
+        val encodedPassword = passwordEncoder.encode(newPassword)
+        user.password = encodedPassword
+        user.resetPasswordToken = null
+        userRepository.save(user)
     }
 
 }
