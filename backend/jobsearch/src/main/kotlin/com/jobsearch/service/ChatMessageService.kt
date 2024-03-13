@@ -27,7 +27,7 @@ class ChatMessageService
             val currentUser = userService.retrieveAuthenticatedUser()
             return chatMessageRepository.findBySenderOrReceiver(currentUser, currentUser)
         }
-
+/*
         fun sendMessage(chatMessageRequestDTO: ChatMessageRequestDTO):ChatMessageDTO {
 
                 val currentUser = userService.retrieveAuthenticatedUser()
@@ -64,6 +64,6 @@ class ChatMessageService
                         date = chatMessage.date
                 )
         }
-
+*/
 
 }
