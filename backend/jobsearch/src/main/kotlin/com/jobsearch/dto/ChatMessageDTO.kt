@@ -10,6 +10,7 @@ data class ChatMessageDTO(
     val receiverUsername: String?,
     val senderId:Int?,
     val receiverId:Int?,
-    val date: Date
+    val date: Date,
+    val conversationId:Int,
 
 )

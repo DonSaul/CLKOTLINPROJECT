@@ -4,10 +4,10 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Positive
 
 
-data class VacancyDto(
+data class VacancyRequestDTO(
     val id: Int?,
     @get:NotBlank(message = "Vacancy name must not be blank")
-    val name: String,
+    var name: String,
     @get:NotBlank(message = "Company name must not be blank")
     val companyName: String,
     @get:Positive(message = "Salary expectation must be a positive number")
@@ -16,7 +16,6 @@ data class VacancyDto(
     val yearsOfExperience: Int,
     @get:NotBlank(message = "Description must not be blank")
     val description: String,
-    val jobFamilyId: Int?,
-    val jobFamilyName: String? = null,
-    val managerId: Int?
+    @get:Positive(message = "Job family id must be a valid number")
+    val jobFamilyId: Int,
 )

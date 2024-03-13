@@ -5,7 +5,6 @@ import com.jobsearch.entity.JobFamily
 import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.JobFamilyRepository
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class JobFamilyService(
@@ -57,7 +56,11 @@ class JobFamilyService(
 
         return "Job family deleted successfully"
     }
-    fun findByJobFamilyId(jobFamilyId: Int): Optional<JobFamily> {
-        return jobFamilyRepository.findById(jobFamilyId)
+    fun findByJobFamilyId(jobFamilyId: Int): JobFamily {
+        val jobFamilyEntity = jobFamilyRepository.findById(jobFamilyId)
+        if (jobFamilyEntity.isEmpty) {
+            throw NotFoundException("No job family found with id $jobFamilyId")
+        }
+        return jobFamilyEntity.get()
     }
 }
