@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.Pattern
 
-data class UserDTO(
+data class UserRequestDTO(
     val id: Int? = null,
     @get:NotEmpty(message = "First name must not be empty.")
     val firstName: String,

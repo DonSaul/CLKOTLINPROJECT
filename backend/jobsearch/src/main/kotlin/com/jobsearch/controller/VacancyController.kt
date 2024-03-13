@@ -22,16 +22,19 @@ class VacancyController(
     }
 
     @GetMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
     fun retrieveVacancy(@PathVariable("id") vacancyId: Int): VacancyDto {
         return vacancyService.retrieveVacancy(vacancyId)
     }
 
     @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
     fun retrieveAllVacancy(): List<VacancyDto> {
         return vacancyService.retrieveAllVacancy()
     }
 
     @PutMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
     fun updateVacancy(@PathVariable("id") vacancyId: Int, @Valid @RequestBody vacancyDto: VacancyDto): VacancyDto {
         return vacancyService.updateVacancy(vacancyId, vacancyDto)
     }

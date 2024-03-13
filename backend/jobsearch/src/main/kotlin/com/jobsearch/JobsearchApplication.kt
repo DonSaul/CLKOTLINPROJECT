@@ -1,6 +1,6 @@
 package com.jobsearch
 
-import com.jobsearch.dto.UserDTO
+import com.jobsearch.dto.UserRequestDTO
 import com.jobsearch.service.UserService
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -20,7 +20,7 @@ class JobsearchApplication {
 	fun init(userService: UserService): CommandLineRunner {
 		return CommandLineRunner {
 
-			val userDTO = UserDTO(
+			val userRequestDTO = UserRequestDTO(
 					firstName = "Managerio",
 					lastName = "Mangolio",
 					email = "mana@mana",
@@ -28,9 +28,9 @@ class JobsearchApplication {
 					roleId = 2
 			)
 
-			userService.createUser(userDTO)
+			userService.createUser(userRequestDTO)
 
-			val admin = UserDTO(
+			val admin = UserRequestDTO(
 					firstName = "Admino",
 					lastName = "Admalio",
 					email = "admin@admin",
@@ -40,7 +40,7 @@ class JobsearchApplication {
 
 			userService.createUser(admin)
 
-			val candidate = UserDTO(
+			val candidate = UserRequestDTO(
 					firstName = "Can",
 					lastName = "Didate",
 					email = "can@can",
