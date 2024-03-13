@@ -109,7 +109,9 @@ class VacancyControllerIntgTest {
             content = objectMapper.writeValueAsString(VACANCY_REQUEST)
         }
         // then
-        response.andExpect {
+        response
+            .andDo { print() }
+            .andExpect {
             status { isCreated() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.id") { isNumber() }
@@ -130,7 +132,9 @@ class VacancyControllerIntgTest {
             content = objectMapper.writeValueAsString(VACANCY_REQUEST)
         }
         // then
-        response.andExpect {
+        response
+            .andDo { print() }
+            .andExpect {
             status { isForbidden() }
         }
     }
@@ -148,7 +152,9 @@ class VacancyControllerIntgTest {
             content = objectMapper.writeValueAsString(vacancy1WithNewName)
         }
         // then
-        response.andExpect {
+        response
+            .andDo { print() }
+            .andExpect {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.name") { value(newName) }
@@ -168,7 +174,9 @@ class VacancyControllerIntgTest {
             content = objectMapper.writeValueAsString(vacancy1WithNewName)
         }
         // then
-        response.andExpect {
+        response
+            .andDo { print() }
+            .andExpect {
             status { isForbidden() }
         }
     }
@@ -186,7 +194,9 @@ class VacancyControllerIntgTest {
             content = objectMapper.writeValueAsString(vacancy1WithNewName)
         }
         // then
-        response.andExpect {
+        response
+            .andDo { print() }
+            .andExpect {
             status { isForbidden() }
         }
     }
@@ -201,7 +211,9 @@ class VacancyControllerIntgTest {
             content = objectMapper.writeValueAsString(VACANCY_REQUEST)
         }
         // then
-        response.andExpect {
+        response
+            .andDo { print() }
+            .andExpect {
             status { isNotFound() }
         }
     }
@@ -214,7 +226,9 @@ class VacancyControllerIntgTest {
         // when
         val response = mockMvc.delete("/api/v1/vacancy/${savedVacancy.id}")
         // then
-        response.andExpect {
+        response
+            .andDo { print() }
+            .andExpect {
             status { isNoContent() }
         }
     }
@@ -227,7 +241,9 @@ class VacancyControllerIntgTest {
         // when
         val response = mockMvc.delete("/api/v1/vacancy/${savedVacancy.id}")
         // then
-        response.andExpect {
+        response
+            .andDo { print() }
+            .andExpect {
             status { isForbidden() }
         }
     }
@@ -239,7 +255,9 @@ class VacancyControllerIntgTest {
         // when
         val response = mockMvc.delete("/api/v1/vacancy/${VACANCY_ENTITY.id}")
         // then
-        response.andExpect {
+        response
+            .andDo { print() }
+            .andExpect {
             status { isNoContent() }
         }
     }
@@ -252,7 +270,9 @@ class VacancyControllerIntgTest {
         // when
         val response = mockMvc.get("/api/v1/vacancy/${savedVacancy.id}")
         // then
-        response.andExpect {
+        response
+            .andDo { print() }
+            .andExpect {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.name") { value(VACANCY_ENTITY.name) }
@@ -272,7 +292,9 @@ class VacancyControllerIntgTest {
         // when
         val response = mockMvc.get("/api/v1/vacancy/${VACANCY_ENTITY.id}")
         // then
-        response.andExpect {
+        response
+            .andDo { print() }
+            .andExpect {
             status { isNotFound() }
         }
     }
@@ -288,7 +310,9 @@ class VacancyControllerIntgTest {
         // when
         val response = mockMvc.get("/api/v1/vacancy")
         // then
-        response.andExpect {
+        response
+            .andDo { print() }
+            .andExpect {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$[0].name") { value(savedVacancy1.name) }
@@ -308,10 +332,32 @@ class VacancyControllerIntgTest {
         // when
         val response = mockMvc.get("/api/v1/vacancy/my-vacancies")
         // then
-        response.andExpect {
+        response
+            .andDo { print() }
+            .andExpect {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$", hasSize<Int>(3)) // Ensure the response list has a size of 3
+        }
+    }
+
+    @Test
+    @WithMockUser(username = "candidate1@mail.com", roles = ["candite"])
+    fun `Should return vacancies with salary greater than 5000`() {
+        // given
+        val savedVacancy1 = vacancyRepository.save(VACANCY_ENTITY.copy(id = 1, name = "Vacante 1", salaryExpectation = 4000))
+        val savedVacancy2 = vacancyRepository.save(VACANCY_ENTITY.copy(id = 2, name = "Vacante 2", salaryExpectation = 3000))
+        val savedVacancy3 = vacancyRepository.save(VACANCY_ENTITY.copy(id = 3, name = "Vacante 3", salaryExpectation = 8000))
+        val savedVacancy4 = vacancyRepository.save(VACANCY_ENTITY.copy(id = 4, name = "Vacante 4", salaryExpectation = 9000))
+        // when
+        val response = mockMvc.get("/api/v1/vacancy/search?salary=5000")
+        // then
+        response
+            .andDo { print() }
+            .andExpect {
+            status { isOk() }
+            content { contentType(MediaType.APPLICATION_JSON) }
+            jsonPath("$", hasSize<Int>(2)) // Ensure the response list has a size of 2
         }
     }
 }
