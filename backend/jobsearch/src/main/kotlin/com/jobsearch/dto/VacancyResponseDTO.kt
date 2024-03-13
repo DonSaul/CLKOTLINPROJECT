@@ -3,7 +3,7 @@ package com.jobsearch.dto
 
 data class VacancyResponseDTO(
     val id: Int,
-    val name: String,
+    var name: String,
     val companyName: String,
     val salaryExpectation: Int,
     val yearsOfExperience: Int,

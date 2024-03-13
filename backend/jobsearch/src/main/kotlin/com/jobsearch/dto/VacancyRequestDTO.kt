@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Positive
 data class VacancyRequestDTO(
     val id: Int?,
     @get:NotBlank(message = "Vacancy name must not be blank")
-    val name: String,
+    var name: String,
     @get:NotBlank(message = "Company name must not be blank")
     val companyName: String,
     @get:Positive(message = "Salary expectation must be a positive number")

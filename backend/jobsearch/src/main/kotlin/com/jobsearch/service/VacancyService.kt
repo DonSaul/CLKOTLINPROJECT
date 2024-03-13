@@ -8,6 +8,7 @@ import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.VacancyRepository
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class VacancyService(
@@ -17,8 +18,10 @@ class VacancyService(
 ) {
     fun retrieveVacancy(vacancyId: Int): VacancyResponseDTO {
         val vacancy = vacancyRepository.findById(vacancyId)
-            .orElseThrow { NotFoundException("No vacancy found with id $vacancyId") }
-        return mapToVacancyResponseDto(vacancy)
+        if (vacancy.isEmpty) {
+            throw NotFoundException("No vacancy found with id $vacancyId")
+        }
+        return mapToVacancyResponseDto(vacancy.get())
     }
 
     fun retrieveAllVacancy(): List<VacancyResponseDTO> {
@@ -38,7 +41,6 @@ class VacancyService(
     @Transactional
     fun createVacancy(vacancyDto: VacancyRequestDTO): VacancyResponseDTO {
         val selectedJobFamily = jobFamilyService.findByJobFamilyId(vacancyDto.jobFamilyId)
-            .orElseThrow { NotFoundException("No vacancy found with id ${vacancyDto.jobFamilyId}") }
         val managerUser = userService.retrieveAuthenticatedUser()
         val vacancyEntity = vacancyDto.let {
             Vacancy(it.id, it.name, it.companyName, it.salaryExpectation, it.yearsOfExperience, it.description, selectedJobFamily, managerUser)
@@ -55,12 +57,9 @@ class VacancyService(
         val vacancy = vacancyRepository.findById(vacancyId)
             .orElseThrow { NotFoundException("No vacancy found with id $vacancyId") }
         val manager = userService.retrieveAuthenticatedUser()
-
-        if (vacancy.manager != manager ) throw ForbiddenException("You are not allowed to edit this vacancy.")
+        if (vacancy.manager.email != manager.email ) throw ForbiddenException("You are not allowed to edit this vacancy.")
 
         val selectedJobFamily = jobFamilyService.findByJobFamilyId(vacancyDto.jobFamilyId)
-            .orElseThrow { NotFoundException("No vacancy found with id ${vacancyDto.jobFamilyId}") }
-
         vacancy.name = vacancyDto.name
         vacancy.companyName = vacancyDto.companyName
         vacancy.salaryExpectation = vacancyDto.salaryExpectation
@@ -73,14 +72,16 @@ class VacancyService(
     }
 
     @Transactional
-    fun deleteVacancy(vacancyId: Int): String {
-        val vacancy = vacancyRepository.findById(vacancyId)
-            .orElseThrow { NotFoundException("No vacancy found with id $vacancyId") }
-        val manager = userService.retrieveAuthenticatedUser()
-        if (vacancy.manager != manager ) throw ForbiddenException("You are not allowed to erase this vacancy.")
-
-        vacancyRepository.delete(vacancy)
-        return "Vacancy deleted successfully"
+    fun deleteVacancy(vacancyId: Int) {
+        val vacancy: Optional<Vacancy> = vacancyRepository.findById(vacancyId)
+        if (vacancy.isEmpty) {
+            return
+        } else {
+            val selectedVacancy = vacancy.get()
+            val manager = userService.retrieveAuthenticatedUser()
+            if (selectedVacancy.manager != manager ) throw ForbiddenException("You are not allowed to erase this vacancy.")
+            vacancyRepository.delete(selectedVacancy)
+        }
     }
 
     @Transactional

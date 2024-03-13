@@ -59,7 +59,7 @@ class VacancyController(
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteVacancy(@PathVariable("id") vacancyId: Int): String {
+    fun deleteVacancy(@PathVariable("id") vacancyId: Int) {
         return vacancyService.deleteVacancy(vacancyId)
     }
 }
