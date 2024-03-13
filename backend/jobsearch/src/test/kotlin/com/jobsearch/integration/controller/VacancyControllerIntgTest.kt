@@ -101,7 +101,7 @@ class VacancyControllerIntgTest {
     }
 
     @Test
-    @WithMockUser(username = "manager1@mail.com", roles = ["manager"])
+    @WithMockUser(username = "manager1@mail.com", authorities = ["manager"])
     fun `Should create vacancy and return it`() {
         // when
         val response = mockMvc.post("/api/v1/vacancy"){
@@ -114,13 +114,13 @@ class VacancyControllerIntgTest {
             .andExpect {
             status { isCreated() }
             content { contentType(MediaType.APPLICATION_JSON) }
-            jsonPath("$.id") { isNumber() }
-            jsonPath("$.name") { value(VACANCY_ENTITY.name) }
-            jsonPath("$.companyName") { value(VACANCY_ENTITY.companyName) }
-            jsonPath("$.salaryExpectation") { value(VACANCY_ENTITY.salaryExpectation) }
-            jsonPath("$.yearsOfExperience") { value(VACANCY_ENTITY.yearsOfExperience) }
-            jsonPath("$.description") { value(VACANCY_ENTITY.description) }
-            jsonPath("$.jobFamilyId") { value(JOB_FAMILY.id) }
+            jsonPath("$.data.id") { isNumber() }
+            jsonPath("$.data.name") { value(VACANCY_ENTITY.name) }
+            jsonPath("$.data.companyName") { value(VACANCY_ENTITY.companyName) }
+            jsonPath("$.data.salaryExpectation") { value(VACANCY_ENTITY.salaryExpectation) }
+            jsonPath("$.data.yearsOfExperience") { value(VACANCY_ENTITY.yearsOfExperience) }
+            jsonPath("$.data.description") { value(VACANCY_ENTITY.description) }
+            jsonPath("$.data.jobFamilyId") { value(JOB_FAMILY.id) }
         }
     }
 
@@ -140,7 +140,7 @@ class VacancyControllerIntgTest {
     }
 
     @Test
-    @WithMockUser(username = "manager1@mail.com", roles = ["manager"])
+    @WithMockUser(username = "manager1@mail.com", authorities = ["manager"])
     fun `Should update vacancy and return it`() {
         // given
         val savedVacancy = vacancyRepository.save(VACANCY_ENTITY)
@@ -157,12 +157,12 @@ class VacancyControllerIntgTest {
             .andExpect {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
-            jsonPath("$.name") { value(newName) }
+            jsonPath("$.data.name") { value(newName) }
         }
     }
 
     @Test
-    @WithMockUser(username = "user@mail.com", roles = ["candidate"])
+    @WithMockUser(username = "user@mail.com", authorities = ["candidate"])
     fun `Should not update vacancy if not manager`() {
         // given
         val savedVacancy = vacancyRepository.save(VACANCY_ENTITY)
@@ -182,7 +182,7 @@ class VacancyControllerIntgTest {
     }
 
     @Test
-    @WithMockUser(username = "manager2@mail.com", roles = ["manager"])
+    @WithMockUser(username = "manager2@mail.com", authorities = ["manager"])
     fun `Should not update vacancy if manager not found`() {
         // given
         val savedVacancy = vacancyRepository.save(VACANCY_ENTITY)
@@ -202,7 +202,7 @@ class VacancyControllerIntgTest {
     }
 
     @Test
-    @WithMockUser(username = "manager1@mail.com", roles = ["manager"])
+    @WithMockUser(username = "manager1@mail.com", authorities = ["manager"])
     fun `Should not update vacancy if not found`() {
         // given
         // when
@@ -219,7 +219,7 @@ class VacancyControllerIntgTest {
     }
 
     @Test
-    @WithMockUser(username = "manager1@mail.com", roles = ["manager"])
+    @WithMockUser(username = "manager1@mail.com", authorities = ["manager"])
     fun `Should delete vacancy`() {
         // given
         val savedVacancy = vacancyRepository.save(VACANCY_ENTITY)
@@ -234,7 +234,7 @@ class VacancyControllerIntgTest {
     }
 
     @Test
-    @WithMockUser(username = "manager2@mail.com", roles = ["manager"])
+    @WithMockUser(username = "manager2@mail.com", authorities = ["manager"])
     fun `Should not delete vacancy if not owner manager`() {
         // given
         val savedVacancy = vacancyRepository.save(VACANCY_ENTITY)
@@ -249,7 +249,7 @@ class VacancyControllerIntgTest {
     }
 
     @Test
-    @WithMockUser(username = "manager1@mail.com", roles = ["manager"])
+    @WithMockUser(username = "manager1@mail.com", authorities = ["manager"])
     fun `Should return 204 if not found`() {
         // given
         // when
@@ -263,7 +263,7 @@ class VacancyControllerIntgTest {
     }
 
     @Test
-    @WithMockUser(username = "candidate1@mail.com", roles = ["candidate"])
+    @WithMockUser(username = "candidate1@mail.com", authorities = ["candidate"])
     fun `Should retrieve vacancy by id`() {
         // given
         val savedVacancy = vacancyRepository.save(VACANCY_ENTITY)
@@ -275,18 +275,18 @@ class VacancyControllerIntgTest {
             .andExpect {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
-            jsonPath("$.name") { value(VACANCY_ENTITY.name) }
-            jsonPath("$.companyName") { value(VACANCY_ENTITY.companyName) }
-            jsonPath("$.salaryExpectation") { value(VACANCY_ENTITY.salaryExpectation) }
-            jsonPath("$.yearsOfExperience") { value(VACANCY_ENTITY.yearsOfExperience) }
-            jsonPath("$.description") { value(VACANCY_ENTITY.description) }
-            jsonPath("$.jobFamilyId") { value(VACANCY_ENTITY.jobFamily.id) }
-            jsonPath("$.jobFamilyName") { value(VACANCY_ENTITY.jobFamily.name) }
-            jsonPath("$.managerId") { value(VACANCY_ENTITY.manager.id) }
+            jsonPath("$.data.name") { value(VACANCY_ENTITY.name) }
+            jsonPath("$.data.companyName") { value(VACANCY_ENTITY.companyName) }
+            jsonPath("$.data.salaryExpectation") { value(VACANCY_ENTITY.salaryExpectation) }
+            jsonPath("$.data.yearsOfExperience") { value(VACANCY_ENTITY.yearsOfExperience) }
+            jsonPath("$.data.description") { value(VACANCY_ENTITY.description) }
+            jsonPath("$.data.jobFamilyId") { value(VACANCY_ENTITY.jobFamily.id) }
+            jsonPath("$.data.jobFamilyName") { value(VACANCY_ENTITY.jobFamily.name) }
+            jsonPath("$.data.managerId") { value(VACANCY_ENTITY.manager.id) }
         }
     }
     @Test
-    @WithMockUser(username = "candidate1@mail.com", roles = ["candidate"])
+    @WithMockUser(username = "candidate1@mail.com", authorities = ["candidate"])
     fun `Should return 404 if not found`() {
         // given
         // when
@@ -300,7 +300,7 @@ class VacancyControllerIntgTest {
     }
 
     @Test
-    @WithMockUser(username = "candidate1@mail.com", roles = ["candidate"])
+    @WithMockUser(username = "candidate1@mail.com", authorities = ["candidate"])
     fun `Should return list of vacancies`() {
         // given
         val savedVacancy1 = vacancyRepository.save(VACANCY_ENTITY)
@@ -315,14 +315,14 @@ class VacancyControllerIntgTest {
             .andExpect {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
-            jsonPath("$[0].name") { value(savedVacancy1.name) }
-            jsonPath("$[1].name") { value(savedVacancy2.name) }
-            jsonPath("$[2].name") { value(savedVacancy3.name) }
+            jsonPath("$.data[0].name") { value(savedVacancy1.name) }
+            jsonPath("$.data[1].name") { value(savedVacancy2.name) }
+            jsonPath("$.data[2].name") { value(savedVacancy3.name) }
         }
     }
 
     @Test
-    @WithMockUser(username = "manager1@mail.com", roles = ["manager"])
+    @WithMockUser(username = "manager1@mail.com", authorities = ["manager"])
     fun `Should return just the manager vacancies`() {
         // given
         val savedVacancy1 = vacancyRepository.save(VACANCY_ENTITY)
@@ -337,12 +337,12 @@ class VacancyControllerIntgTest {
             .andExpect {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
-            jsonPath("$", hasSize<Int>(3)) // Ensure the response list has a size of 3
+            jsonPath("$.data", hasSize<Int>(3)) // Ensure the response list has a size of 3
         }
     }
 
     @Test
-    @WithMockUser(username = "candidate1@mail.com", roles = ["candite"])
+    @WithMockUser(username = "candidate1@mail.com", authorities = ["candidate"])
     fun `Should return vacancies with salary greater than 5000`() {
         // given
         val savedVacancy1 = vacancyRepository.save(VACANCY_ENTITY.copy(id = 1, name = "Vacante 1", salaryExpectation = 4000))
@@ -357,7 +357,7 @@ class VacancyControllerIntgTest {
             .andExpect {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
-            jsonPath("$", hasSize<Int>(2)) // Ensure the response list has a size of 2
+            jsonPath("$.data", hasSize<Int>(2)) // Ensure the response list has a size of 2
         }
     }
 }
