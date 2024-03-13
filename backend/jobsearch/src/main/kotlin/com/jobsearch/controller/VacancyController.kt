@@ -5,7 +5,6 @@ import com.jobsearch.dto.VacancyResponseDTO
 import com.jobsearch.service.VacancyService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -39,13 +38,12 @@ class VacancyController(
 
 // Manager Layer, endpoint contraints on SecurityCOnfiguration.kt
 
-    @GetMapping("/manage")
+    @GetMapping("/my-vacancies")
     @ResponseStatus(HttpStatus.OK)
     fun retrieveVacancyByManager(): List<VacancyResponseDTO> {
         return vacancyService.retrieveVacancyByManager()
     }
     @PostMapping
-    @PreAuthorize("hasAuthorities('manager')")
     @ResponseStatus(HttpStatus.CREATED)
     fun createVacancy(@RequestBody @Valid vacancyDto: VacancyRequestDTO): VacancyResponseDTO {
         return vacancyService.createVacancy(vacancyDto)

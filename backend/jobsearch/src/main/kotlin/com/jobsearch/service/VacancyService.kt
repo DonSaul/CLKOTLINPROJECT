@@ -25,8 +25,8 @@ class VacancyService(
     }
 
     fun retrieveAllVacancy(): List<VacancyResponseDTO> {
-        val persons = vacancyRepository.findAll()
-        return persons.map {
+        val vacancies = vacancyRepository.findAll()
+        return vacancies.map {
             mapToVacancyResponseDto(it)
         }
     }
