@@ -11,4 +11,19 @@ export const ROLES = {
   };
 
 
+  export const getRoleString = (roleNumber) => {
+    switch (roleNumber) {
+      case ROLES.NO_ROLE:
+        return 'No Role';
+      case ROLES.CANDIDATE:
+        return 'Candidate';
+      case ROLES.MANAGER:
+        return 'Manager';
+      case ROLES.ADMIN:
+        return 'Admin';
+      default:
+        return 'Unknown Role';
+    }
+  };
+
   
