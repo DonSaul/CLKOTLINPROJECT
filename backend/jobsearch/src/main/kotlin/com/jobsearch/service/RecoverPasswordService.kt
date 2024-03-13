@@ -1,5 +1,6 @@
 package com.jobsearch.service
 
+import com.jobsearch.config.TokenUUID
 import com.jobsearch.dto.NotificationDTO
 import com.jobsearch.entity.NotificationTypeEnum
 import com.jobsearch.entity.User
@@ -25,7 +26,7 @@ class RecoverPasswordService @Autowired constructor(
                 .orElseThrow { NoSuchElementException("No user found with email $email") }
             val userDetails = UserDetailsImpl.build(user)
 
-            val token = jwtProvider.generateJwtToken(userDetails)
+            val token = TokenUUID().generateToken()
 
             userService.updateResetPasswordToken(token, email)
 

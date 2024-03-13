@@ -29,7 +29,6 @@ data class User(
     )
     var activatedNotificationTypes: Set<NotificationType?> = emptySet(),
 
-    @Lob
     @Column(name = "reset_password_token")
     var resetPasswordToken: String?
 )

@@ -25,12 +25,12 @@ class NotificationService(
         val recipientId = notificationDTO.recipient
         val recipient = userService.retrieveUser(recipientId)
 
-        if (recipient.notificationActivated) {
+        if (recipient.notificationActivated || notificationDTO.type == 4) {
             val allowedNotificationTypeIds = recipient.activatedNotificationTypes.map { it?.id }
 
             val notificationTypeId = notificationDTO.type
 
-            if (allowedNotificationTypeIds.contains(notificationTypeId)) {
+            if (allowedNotificationTypeIds.contains(notificationTypeId)|| notificationDTO.type == 4) {
                 when (notificationTypeId) {
                     1 -> handleNotification(notificationDTO)
                     2 -> handleNotification(notificationDTO)
