@@ -60,6 +60,9 @@ class NotificationService(
         //Can be null
         val senderNotification = notificationDTO.sender?.let { userRepository.findByIdOrNull(it) }
         val vacancyNotification = notificationDTO.vacancy?.let { vacancyRepository.findByIdOrNull(it) }
+        if (vacancyNotification != null) {
+            println(vacancyNotification.id)
+        }
 
         val notificationToSave = Notification(
             type = typeNotification,
@@ -69,7 +72,6 @@ class NotificationService(
             sender = senderNotification,
             vacancy = vacancyNotification
         )
-
         return notificationRepository.save(notificationToSave)
     }
 

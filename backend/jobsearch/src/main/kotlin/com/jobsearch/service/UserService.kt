@@ -120,33 +120,21 @@ class UserService @Autowired constructor(
         }
     }
 
+    fun activateNotifications(userId: Int): UserResponseDTO {
+        val user = userRepository.findById(userId)
+            .orElseThrow { NoSuchElementException("No user found with id $userId") }
+        user.notificationActivated = true
+
+        val updatedUser = userRepository.save(user)
+        return mapToUserResponseDTO(updatedUser)
+    }
     //!needs test!
-//    fun activateNotifications(userId: Int): UserDTO {
-//        val user = userRepository.findById(userId)
-//            .orElseThrow { NoSuchElementException("No user found with id $userId") }
-//        user.notificationActivated = true
-//
-//        val updatedUser = userRepository.save(user)
-//        return updatedUser.let {
-//            UserDTO(
-//                it.id!!,
-//                it.firstName,
-//                it.lastName,
-//                it.email,
-//                it.password,
-//                it.role?.id!!,
-//                it.notificationActivated,
-//                it.activatedNotificationTypes
-//            )
-//        }
-//    }
-    //!needs test!
-    fun activatedNotificationTypes(userId: Int, notificationTypeDTO: NotificationDTO): UserResponseDTO {
+    fun activatedNotificationTypes(userId: Int, notificationTypeId: Int): UserResponseDTO {
         val user = userRepository.findById(userId)
             .orElseThrow { NoSuchElementException("No user found with id $userId") }
 
-        // Assuming notificationTypeService has a method findById that accepts NotificationDTO
-        val notificationType = notificationTypeDTO.id?.let { notificationTypeRepository.findByIdOrNull(it) }
+        val notificationType = notificationTypeRepository.findByIdOrNull(notificationTypeId)
+            ?: throw NoSuchElementException("No notification type found with id $notificationTypeId")
 
         user.activatedNotificationTypes = user.activatedNotificationTypes.plus(notificationType)
 
@@ -159,12 +147,6 @@ class UserService @Autowired constructor(
             .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
         user.resetPasswordToken = token
         userRepository.save(user)
-    }
-
-    fun getByResetPasswordToken(token: String): UserResponseDTO {
-        val user = userRepository.findByResetPasswordToken(token)
-            .orElseThrow { NotFoundException("No user found with id $token") }
-        return mapToUserResponseDTO(user)
     }
 
     fun updatePassword(user: User, newPassword: String) {
