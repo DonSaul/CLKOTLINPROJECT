@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # JobSearch Web Application Documentation
 
 ## Table of Contents
@@ -248,3 +249,7 @@ User-friendly frontend development.
 
 8. ## License
 We need to add this license: [MIT License](https://opensource.org/licenses/MIT).
+=======
+# CLKOTLINPROJECT
+# here will be the docs
+>>>>>>> f043cdeff057c62d4b7d1fe429551637ec1a9992
