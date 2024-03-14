@@ -1,7 +1,6 @@
 package com.jobsearch.service
 
 import com.jobsearch.dto.NotificationDTO
-import com.jobsearch.dto.VacancyDto
 import com.jobsearch.entity.NotificationTypeEnum
 import com.jobsearch.dto.VacancyRequestDTO
 import com.jobsearch.dto.VacancyResponseDTO
@@ -58,7 +57,7 @@ class VacancyService(
         notificateUsers(newVacancy)
 
 
-        return mapToVacancyDto(newVacancy)
+
         return mapToVacancyResponseDto(newVacancy)
     }
     fun notificateUsers(newVacancy: Vacancy){
@@ -75,7 +74,7 @@ class VacancyService(
             notificationService.triggerNotification(notificationDTO)
         }
     }
-    fun retrieveVacancy(vacancyId: Int): VacancyDto {
+
 
     @Transactional
     fun updateVacancy(vacancyId: Int, vacancyDto: VacancyRequestDTO): VacancyResponseDTO {
@@ -93,11 +92,11 @@ class VacancyService(
         vacancy.jobFamily = selectedJobFamily
 
         val updatedVacancy = vacancyRepository.save(vacancy)
-        return mapToVacancyDto(updatedVacancy)
-    }
-
         return mapToVacancyResponseDto(updatedVacancy)
     }
+
+
+
 
     @Transactional
     fun deleteVacancy(vacancyId: Int) {
@@ -129,7 +128,7 @@ class VacancyService(
                 it.salaryExpectation,
                 it.yearsOfExperience,
                 it.description,
-                it.jobFamily.id,
+                it.jobFamily.id!!,
                 it.jobFamily.name,
                 it.manager.id
             )

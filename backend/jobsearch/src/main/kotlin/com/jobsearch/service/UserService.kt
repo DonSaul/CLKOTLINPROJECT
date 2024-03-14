@@ -1,6 +1,5 @@
 package com.jobsearch.service
 
-import com.jobsearch.dto.NotificationDTO
 import com.jobsearch.dto.UserRequestDTO
 import com.jobsearch.dto.UserResponseDTO
 import com.jobsearch.entity.User
@@ -16,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import kotlin.NoSuchElementException
 
 
 @Service
@@ -145,7 +145,7 @@ class UserService @Autowired constructor(
     fun updateResetPasswordToken(token: String, email: String) {
         val user = userRepository.findByEmail(email)
                 .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
-        user.resetPasswordToken = token
+        user.resetPasswordToken = token.toString()
         userRepository.save(user)
     }
 

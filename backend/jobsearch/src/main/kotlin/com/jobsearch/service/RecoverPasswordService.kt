@@ -1,33 +1,38 @@
 package com.jobsearch.service
 
-import com.jobsearch.config.TokenUUID
+
+import com.jobsearch.config.ExpirableUUID
 import com.jobsearch.dto.NotificationDTO
 import com.jobsearch.entity.NotificationTypeEnum
-import com.jobsearch.entity.User
 import com.jobsearch.exception.NotFoundException
-import com.jobsearch.jwt.JwtProvider
 import com.jobsearch.repository.UserRepository
+import org.hibernate.validator.constraints.UUID
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.core.token.Token
-import org.springframework.security.core.token.TokenService
-import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.beans.factory.annotation.Value
+
 import org.springframework.stereotype.Service
+import java.time.Duration
+import kotlin.NoSuchElementException
+
 
 @Service
 class RecoverPasswordService @Autowired constructor(
     private val notificationService: NotificationService,
     private val userRepository: UserRepository,
-    private val jwtProvider: JwtProvider,
-    private val userService: UserService
+    private val userService: UserService,
+    private val expirableUUID: ExpirableUUID
 ){
+    @Value("\${token.expiration.minutes}")
+    private val expirationMinutes: Long = 5
+
+
     fun sendRecoverPassword(email: String){
+
         try {
             val user = userRepository.findByEmail(email)
                 .orElseThrow { NoSuchElementException("No user found with email $email") }
 
-
-            val token = TokenUUID().generateToken()
-
+            val token = expirableUUID.generateExpirableToken(Duration.ofMinutes(expirationMinutes))
             userService.updateResetPasswordToken(token, email)
 
             val notificationDTO = NotificationDTO(
@@ -45,11 +50,18 @@ class RecoverPasswordService @Autowired constructor(
         }
     }
 
-    fun changePassword(token: String, newPassword: String){
+    fun changePassword(token: String, newPassword: String) {
+        // Check if the token is valid and not expired
+        if (expirableUUID.isExpired(token)) {
+            throw RuntimeException("The provided token has expired")
+        }
+
+        // Fetch the user associated with the token
         val user = userRepository.findByResetPasswordToken(token)
             .orElseThrow { NotFoundException("No user found with token: $token") }
-        userService.updatePassword(user, newPassword)
 
+        // Update the user's password
+        userService.updatePassword(user, newPassword)
     }
 
 
