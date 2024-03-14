@@ -34,8 +34,6 @@ const RoutesConfig = () => {
 
       </Route>
 
-      <Route path="/manager-search" element={<ManagerSearchPage />} />
-
 
       <Route element={<RequireAuth role={ROLES.CANDIDATE} />}>
         <Route path={paths.cv} element={<CV />} />
@@ -43,6 +41,7 @@ const RoutesConfig = () => {
       </Route>
       <Route element={<RequireAuth role={ROLES.MANAGER} />}>
         <Route path={paths.createVacancy} element={<CreateVacancy />} />
+        <Route path="/manager-search" element={<ManagerSearchPage />} />
 
       </Route>
       <Route element={<RequireAuth role={ROLES.ADMIN} />}>

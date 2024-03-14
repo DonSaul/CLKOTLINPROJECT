@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSearchCandidates } from '../hooks/useSearchCandidates';
+import { TextField, Button, Container, Typography } from '@material-ui/core';
 
 const ManagerSearch = () => {
   const [filters, setFilters] = useState({
@@ -25,32 +26,40 @@ const ManagerSearch = () => {
   if (error) return 'An error has occurred: ' + error.message;
 
   return (
-    <div>
-      <h1>Manager Search</h1>
+    <Container>
+      <Typography variant="h4">Manager Search</Typography>
       <form onSubmit={handleSubmit}>
-        <label>
-          Years of Experience:
-          <input type="number" name="yearsOfExperience" onChange={handleInputChange} />
-        </label>
-        <label>
-          Job Family:
-          <input type="text" name="jobFamily" onChange={handleInputChange} />
-        </label>
-        <label>
-          Salary Expectation:
-          <input type="number" name="salaryExpectation" onChange={handleInputChange} />
-        </label>
-        <button type="submit">Search</button>
+        <TextField
+          label="Years of Experience"
+          type="number"
+          name="yearsOfExperience"
+          onChange={handleInputChange}
+        />
+        <TextField
+          label="Job Family"
+          type="text"
+          name="jobFamily"
+          onChange={handleInputChange}
+        />
+        <TextField
+          label="Salary Expectation"
+          type="number"
+          name="salaryExpectation"
+          onChange={handleInputChange}
+        />
+        <Button type="submit" variant="contained" color="primary">
+          Search
+        </Button>
       </form>
       {candidates && candidates.map(candidate => (
         <div key={candidate.id}>
-          <h2>{candidate.name}</h2>
-          <p>{candidate.yearsOfExperience} years of experience</p>
-          <p>Job Family: {candidate.jobFamily}</p>
-          <p>Salary Expectation: {candidate.salaryExpectation}</p>
+          <Typography variant="h6">{candidate.name}</Typography>
+          <Typography>{candidate.yearsOfExperience} years of experience</Typography>
+          <Typography>Job Family: {candidate.jobFamily}</Typography>
+          <Typography>Salary Expectation: {candidate.salaryExpectation}</Typography>
         </div>
       ))}
-    </div>
+    </Container>
   );
 };
 
