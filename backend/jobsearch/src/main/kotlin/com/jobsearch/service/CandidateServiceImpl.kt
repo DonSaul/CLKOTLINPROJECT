@@ -7,9 +7,9 @@ import com.jobsearch.repository.CandidateService
 import org.springframework.stereotype.Service
 
 @Service
-class CandidateServiceImpl(private val candidateRepository: CandidateRepository) : CandidateService {
+class CandidateServiceImpl(private val candidateRepository: CandidateRepository)  {
 
-    override fun searchCandidates(filters: CandidateSearchFilterDTO): List<Candidate> {
-        return candidateRepository.searchCandidates(filters)
+    fun searchCandidates(): List<Candidate> {
+        return candidateRepository.findAll()
     }
 }
