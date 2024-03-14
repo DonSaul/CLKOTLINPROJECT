@@ -17,6 +17,7 @@ import { RequireAuth } from "./RequireAuth";
 import { ROLES } from "../helpers/constants";
 import NotAccess from "../pages/NotAccess";
 import VacancyView from "../pages/VacancyView";
+import ManagerSearchPage from "../pages/ManagerSearchPage";
 const RoutesConfig = () => {
   return (
     <Routes>
