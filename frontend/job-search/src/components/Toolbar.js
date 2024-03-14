@@ -45,10 +45,6 @@ export default function ButtonAppBar() {
   const location =useLocation();
   const [value, setValue] = useState(0);
 
-
-
-  
-
   const handleChange = (event, newValue) => {
     //console.log("valuetab",newValue);
     setValue(newValue);
@@ -57,9 +53,6 @@ export default function ButtonAppBar() {
     color: 'white',
     fontWeight: 'bold',
   };
-
-  
-
 
   return (
     <Box sx={{ flexGrow: 1 }}>
