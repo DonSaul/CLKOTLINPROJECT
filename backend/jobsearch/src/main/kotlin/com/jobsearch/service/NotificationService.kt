@@ -111,4 +111,11 @@ class NotificationService(
             )
         }
     }
+
+    fun findLatestMessageNotification(senderId: Int, recipientId: Int): NotificationDTO {
+        val typeId = NotificationTypeEnum.MESSAGES.id
+        val latestNotification = notificationRepository.findFirstBySenderIdAndRecipientIdAndTypeIdOrderBySentDateTimeDesc(senderId, recipientId, typeId)
+            .orElseThrow { NoSuchElementException("No latest notification found") }
+        return mapToDto(latestNotification)
+    }
 }

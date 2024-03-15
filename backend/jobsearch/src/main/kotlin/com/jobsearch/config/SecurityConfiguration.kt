@@ -59,6 +59,7 @@ class SecurityConfig {
                     .requestMatchers("/api/v1/application-status/**").permitAll()
                     .requestMatchers("/api/v1/notifications/**").permitAll()
                     .requestMatchers("/api/v1/recoverPassword/**").permitAll()
+                    .requestMatchers("api/v1/conversation/**").permitAll()
 
                     .anyRequest().authenticated()
             }

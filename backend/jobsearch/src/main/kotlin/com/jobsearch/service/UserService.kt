@@ -1,5 +1,6 @@
 package com.jobsearch.service
 
+import com.jobsearch.dto.CandidateDTO
 import com.jobsearch.dto.UserRequestDTO
 import com.jobsearch.dto.UserResponseDTO
 import com.jobsearch.entity.Cv
@@ -26,6 +27,7 @@ class UserService @Autowired constructor(
         private val roleRepository: RoleRepository,
         private val passwordEncoder: PasswordEncoder,
         private val notificationTypeRepository: NotificationTypeRepository,
+        private val cvRepository: CvRepository
 ) {
     @Transactional
     fun createUser(userRequestDTO: UserRequestDTO): UserResponseDTO? {
