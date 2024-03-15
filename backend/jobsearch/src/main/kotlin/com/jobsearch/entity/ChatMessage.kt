@@ -1,5 +1,6 @@
 package com.jobsearch.entity
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import jakarta.persistence.*
 import java.util.*
 
@@ -27,5 +28,12 @@ data class ChatMessage(
         @Column(nullable = false)
         val date: Date,
 
-) {
+        //test
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JsonBackReference
+        @JoinColumn(name = "conversation_id")
+        val conversation: Conversation
+
+
+        ) {
 }

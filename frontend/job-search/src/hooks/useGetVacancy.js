@@ -14,7 +14,9 @@ const fetchVacancyById = async (id, token) => {
     throw new Error('Failed to fetch vacancy information');
   }
 
-  return response.json();
+  let responseData = await response.json()
+
+  return responseData.data;
 };
 
 export const useGetVacancyById = (id) => {

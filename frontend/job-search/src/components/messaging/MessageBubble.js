@@ -6,8 +6,9 @@ import Box from '@mui/material/Box';
 import UserAvatar from '../UserAvatar';
 import { useAuth } from '../../helpers/userContext';
 const MessageBubble = ({ data }) => {
-    const { date, userName, message, firstName, lastName } = data;
+    const { date, userName, message, sender: {firstName,lastName,email} ,receiver} = data;
     const { getUserEmail } = useAuth();
+    //console.log("message bubble",data);
 
 
     const formattedDate = new Date(date).toLocaleString('en-US', {
@@ -21,7 +22,7 @@ const MessageBubble = ({ data }) => {
 
     const isCurrentUser = () => {
         //console.log("what is user:",userName,"what is email :",getUserEmail(),"firsname:",firstName,"last name",lastName );
-        return userName === getUserEmail();
+        return email === getUserEmail();
     }
 
     return (
@@ -33,7 +34,7 @@ const MessageBubble = ({ data }) => {
 
         >
 
-            <UserAvatar user={{ firstName, lastName, userName }}></UserAvatar>
+            <UserAvatar user={{ firstName, lastName, email }}></UserAvatar>
             <Paper elevation={3} sx={{
                 padding: 2, maxWidth: '70%', minWidth: '30%',
                 bgcolor:isCurrentUser() ? 'white' : '#A7C7E7',
@@ -42,7 +43,7 @@ const MessageBubble = ({ data }) => {
                 <Typography variant="caption" color="textSecondary" mb={1}>
                     {formattedDate}
                 </Typography>
-                <Typography variant="body1">{message}</Typography>
+                <Typography variant="body1" sx={{ overflowWrap: 'break-word' }}>{message}</Typography>
             </Paper>
         </Box>
     );
