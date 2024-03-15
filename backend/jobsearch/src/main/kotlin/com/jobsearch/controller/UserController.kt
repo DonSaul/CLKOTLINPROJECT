@@ -45,9 +45,14 @@ class UserController(private val userService: UserService) {
         return ResponseEntity(result, HttpStatus.OK)
     }
 
-    @PutMapping("/updateNotificationActivated/{userId}")
-    fun updateUserNotificationActivated(@PathVariable userId: Int): ResponseEntity<UserResponseDTO> {
+    @PutMapping("/activateNotification/{userId}")
+    fun activateUserNotification(@PathVariable userId: Int): ResponseEntity<UserResponseDTO> {
         val updatedUser = userService.activateNotifications(userId)
+        return ResponseEntity(updatedUser, HttpStatus.OK)
+    }
+    @PutMapping("/deactivateNotification/{userId}")
+    fun deactivateUserNotification(@PathVariable userId: Int): ResponseEntity<UserResponseDTO> {
+        val updatedUser = userService.deactivateNotifications(userId)
         return ResponseEntity(updatedUser, HttpStatus.OK)
     }
 

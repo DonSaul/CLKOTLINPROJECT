@@ -7,7 +7,7 @@ import jakarta.persistence.*
 data class JobFamily(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Int?,
+    var id: Int?,
     @Column(unique = true)
     var name: String,
 )

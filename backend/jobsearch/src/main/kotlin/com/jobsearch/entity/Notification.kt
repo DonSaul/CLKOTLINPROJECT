@@ -15,10 +15,9 @@ data class Notification(
     var type: NotificationType,
     //receiver
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "recipient_id")
     var recipient: User,
     var subject: String,
-    @Lob
     var content: String,
     var sentDateTime: LocalDateTime = LocalDateTime.now(),
     var sent: Boolean = false,

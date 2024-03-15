@@ -1,10 +1,12 @@
 package com.jobsearch.controller
 
-import com.jobsearch.dto.VacancyDto
+import com.jobsearch.dto.VacancyRequestDTO
+import com.jobsearch.dto.VacancyResponseDTO
+import com.jobsearch.response.StandardResponse
 import com.jobsearch.service.VacancyService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
-import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -14,34 +16,33 @@ import org.springframework.web.bind.annotation.*
 class VacancyController(
     val vacancyService: VacancyService
 ) {
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    fun createVacancy(@RequestBody @Valid vacancyDto: VacancyDto): VacancyDto {
-        return vacancyService.createVacancy(vacancyDto)
-    }
-
     @GetMapping("{id}")
-    @ResponseStatus(HttpStatus.OK)
-    fun retrieveVacancy(@PathVariable("id") vacancyId: Int): VacancyDto {
-        return vacancyService.retrieveVacancy(vacancyId)
+    fun retrieveVacancy(@PathVariable("id") vacancyId: Int): ResponseEntity<StandardResponse<VacancyResponseDTO>> {
+        val responseEntity = vacancyService.retrieveVacancy(vacancyId)
+        val status = HttpStatus.OK
+        val body = StandardResponse(
+            status = status.value(),
+            data = responseEntity
+        )
+        return ResponseEntity
+            .status(status)
+            .body(body)
     }
 
     @GetMapping()
-    @ResponseStatus(HttpStatus.OK)
-    fun retrieveAllVacancy(): List<VacancyDto> {
-        return vacancyService.retrieveAllVacancy()
-    }
-
-    @PutMapping("{id}")
-    @ResponseStatus(HttpStatus.OK)
-    fun updateVacancy(@PathVariable("id") vacancyId: Int, @Valid @RequestBody vacancyDto: VacancyDto): VacancyDto {
-        return vacancyService.updateVacancy(vacancyId, vacancyDto)
-    }
-
-    @DeleteMapping("{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteVacancy(@PathVariable("id") vacancyId: Int): String {
-        return vacancyService.deleteVacancy(vacancyId)
+    fun retrieveAllVacancy(): ResponseEntity<StandardResponse<List<VacancyResponseDTO>>>  {
+        val responseEntityList = vacancyService.retrieveAllVacancy()
+        var status = HttpStatus.OK
+        if (responseEntityList.isEmpty()) {
+            status = HttpStatus.NO_CONTENT
+        }
+        val body = StandardResponse(
+            status = status.value(),
+            data = responseEntityList
+        )
+        return ResponseEntity
+            .status(status)
+            .body(body)
     }
 
     @GetMapping("/search")
@@ -49,7 +50,68 @@ class VacancyController(
         @RequestParam(required = false) salary: Int?,
         @RequestParam(required = false) jobFamilyId: Int?,
         @RequestParam(required = false) yearsOfExperience: Int?
-    ): List<VacancyDto> {
-        return vacancyService.findVacanciesByFilter(salary, jobFamilyId, yearsOfExperience)
+    ): ResponseEntity<StandardResponse<List<VacancyResponseDTO>>>  {
+        val responseEntityList = vacancyService.findVacanciesByFilter(salary, jobFamilyId, yearsOfExperience)
+        val status = HttpStatus.OK
+//        if (responseEntityList.isEmpty()) {
+//            status = HttpStatus.NO_CONTENT
+//        }
+        val body = StandardResponse(
+            status = status.value(),
+            data = responseEntityList
+        )
+        return ResponseEntity
+            .status(status)
+            .body(body)
+    }
+
+
+// Manager Layer, endpoint contraints on SecurityCOnfiguration.kt
+
+    @GetMapping("/my-vacancies")
+    fun retrieveVacancyByManager(): ResponseEntity<StandardResponse<List<VacancyResponseDTO>>>  {
+        val responseEntityList = vacancyService.retrieveVacancyByManager()
+        var status = HttpStatus.OK
+        if (responseEntityList.isEmpty()) {
+            status = HttpStatus.NO_CONTENT
+        }
+        val body = StandardResponse(
+            status = status.value(),
+            data = responseEntityList
+        )
+        return ResponseEntity
+            .status(status)
+            .body(body)
+    }
+    @PostMapping
+    fun createVacancy(@RequestBody @Valid vacancyDto: VacancyRequestDTO): ResponseEntity<StandardResponse<VacancyResponseDTO>> {
+        val responseEntity = vacancyService.createVacancy(vacancyDto)
+        val status = HttpStatus.CREATED
+        val body = StandardResponse(
+            status = status.value(),
+            data = responseEntity
+        )
+        return ResponseEntity
+            .status(status)
+            .body(body)
+    }
+
+    @PutMapping("{id}")
+    fun updateVacancy(@PathVariable("id") vacancyId: Int, @Valid @RequestBody vacancyDto: VacancyRequestDTO): ResponseEntity<StandardResponse<VacancyResponseDTO>> {
+        val responseEntity = vacancyService.updateVacancy(vacancyId, vacancyDto)
+        val status = HttpStatus.OK
+        val body = StandardResponse(
+            status = status.value(),
+            data = responseEntity
+        )
+        return ResponseEntity
+            .status(status)
+            .body(body)
+    }
+
+    @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteVacancy(@PathVariable("id") vacancyId: Int) {
+        return vacancyService.deleteVacancy(vacancyId)
     }
 }

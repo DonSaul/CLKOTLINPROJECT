@@ -1,11 +1,13 @@
 package com.jobsearch.service
 
-import com.jobsearch.dto.NotificationDTO
+import com.jobsearch.dto.CandidateDTO
 import com.jobsearch.dto.UserRequestDTO
 import com.jobsearch.dto.UserResponseDTO
+import com.jobsearch.entity.Cv
 import com.jobsearch.entity.User
 import com.jobsearch.repository.NotificationTypeRepository
 import com.jobsearch.exception.NotFoundException
+import com.jobsearch.repository.CvRepository
 import com.jobsearch.repository.RoleRepository
 import com.jobsearch.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import kotlin.NoSuchElementException
 
 
 @Service
@@ -24,6 +27,7 @@ class UserService @Autowired constructor(
         private val roleRepository: RoleRepository,
         private val passwordEncoder: PasswordEncoder,
         private val notificationTypeRepository: NotificationTypeRepository,
+        private val cvRepository: CvRepository
 ) {
     @Transactional
     fun createUser(userRequestDTO: UserRequestDTO): UserResponseDTO? {
@@ -53,16 +57,8 @@ class UserService @Autowired constructor(
     fun retrieveUser(userId: Int): UserResponseDTO {
         val user = userRepository.findById(userId)
                 .orElseThrow { NotFoundException("No user found with id $userId") }
-        return user.let {
-            UserResponseDTO(
-                    it.id!!,
-                    it.firstName,
-                    it.lastName,
-                    it.email,
-                    it.role?.id!!,
-                    it.notificationActivated,
-                    it.activatedNotificationTypes)
-        }
+        return mapToUserResponseDTO(user)
+
     }
 
     @Transactional
@@ -127,18 +123,16 @@ class UserService @Autowired constructor(
         user.notificationActivated = true
 
         val updatedUser = userRepository.save(user)
-        return UserResponseDTO(
-                updatedUser.id!!,
-                updatedUser.firstName,
-                updatedUser.lastName,
-                updatedUser.email,
-                updatedUser.role?.id!!,
-                updatedUser.notificationActivated,
-                updatedUser.activatedNotificationTypes
-        )
+        return mapToUserResponseDTO(updatedUser)
     }
+    fun deactivateNotifications(userId: Int): UserResponseDTO {
+        val user = userRepository.findById(userId)
+            .orElseThrow { NoSuchElementException("No user found with id $userId") }
+        user.notificationActivated = false
 
-    //!needs test!
+        val updatedUser = userRepository.save(user)
+        return mapToUserResponseDTO(updatedUser)
+    }
     fun activatedNotificationTypes(userId: Int, notificationTypeId: Int): UserResponseDTO {
         val user = userRepository.findById(userId)
                 .orElseThrow { NoSuchElementException("No user found with id $userId") }
@@ -155,14 +149,8 @@ class UserService @Autowired constructor(
     fun updateResetPasswordToken(token: String, email: String) {
         val user = userRepository.findByEmail(email)
                 .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
-        user.resetPasswordToken = token
+        user.resetPasswordToken = token.toString()
         userRepository.save(user)
-    }
-
-    fun getByResetPasswordToken(token: String): UserResponseDTO {
-        val user = userRepository.findByResetPasswordToken(token)
-                .orElseThrow { NotFoundException("No user found with id $token") }
-        return mapToUserResponseDTO(user)
     }
 
     fun updatePassword(user: User, newPassword: String) {
@@ -173,4 +161,22 @@ class UserService @Autowired constructor(
         userRepository.save(user)
     }
 
+
+    fun findCandidatesByFilter(salary: Int?, jobFamilyId: Int?, yearsOfExperience: Int?): List<CandidateDTO> {
+        val cvs = cvRepository.findCvByFilter(salary, yearsOfExperience)
+        val listsOfDto = cvs.map { mapToUserCandidateDTO (it) }
+        return listsOfDto
+    }
+    fun mapToUserCandidateDTO(cvEntity: Cv): CandidateDTO {
+        return cvEntity.let {
+            CandidateDTO(
+                it.user.id!!,
+                it.user.firstName,
+                it.user.lastName,
+                it.user.email,
+                it.yearsOfExperience,
+                it.salaryExpectation
+            )
+        }
+    }
 }

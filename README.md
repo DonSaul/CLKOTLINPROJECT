@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # JobSearch Web Application Documentation
 
 ## Table of Contents
@@ -10,7 +11,7 @@
    3.1. [Basic Operations and Examples as a Candidate](#basic-operations-and-examples-as-a-candidate) <br>
    3.2. [Basic Operations and Examples as a Manager](#basic-operations-and-examples-as-a-manager)
 4. [Project Architecture](#project-architecture) <br>
-   4.1. [Model-View-Controller (MVC)](#model-view-controller-mvc) <br>
+   4.1. [Model-View-Presenter (MVP)](#model-view-presenter-mvp) <br>
 5. [Security Features and Best Practices](#security-features-and-best-practices)
 6. [Advanced Functionalities](#advanced-functionalities) <br>
    6.1. [Work Order Filtering](#work-order-filtering) <br>
@@ -67,20 +68,20 @@ Ensure you have the following installed:
 
 ## Project Architecture
 
-### Model-View-Controller (MVC)
+### Model-View-Presenter (MVP)
 
 Organized architecture for separation of concerns, such as:
 
-1. **Separation of Concerns**: MVC separates the application into three main components - Model, View, and Controller.
+1. **Separation of Concerns**: MVP separates the application into three main components - Model, View, and Controller.
    This separation allows for better organization of code and clear distinction between different aspects of the
    application logic, making it easier to maintain and update.
-2. **Scalability**: MVC architecture facilitates scalability by enabling developers to modify or extend one component
+2. **Scalability**: MVP architecture facilitates scalability by enabling developers to modify or extend one component
    without affecting the others. This modular approach allows for the addition of new features or changes to existing
    ones without disrupting the entire application.
-3. **Code Reusability**: MVC promotes code reusability through the use of separate components. For example, business
+3. **Code Reusability**: MVP promotes code reusability through the use of separate components. For example, business
    logic encapsulated in the Controller can be reused across different views, enhancing development efficiency and
    reducing duplication of code.
-4. **Testability**: With MVC, each component can be tested independently, leading to more effective testing strategies.
+4. **Testability**: With MVP, each component can be tested independently, leading to more effective testing strategies.
    Unit tests can be written for the Controller logic, while integration tests can be performed on the interaction
    between the Model, View, and Controller components.
 
@@ -248,3 +249,7 @@ User-friendly frontend development.
 
 8. ## License
 We need to add this license: [MIT License](https://opensource.org/licenses/MIT).
+=======
+# CLKOTLINPROJECT
+# here will be the docs
+>>>>>>> f043cdeff057c62d4b7d1fe429551637ec1a9992

@@ -64,9 +64,9 @@ class NotificationService(
         //Can be null
         val senderNotification = notificationDTO.sender?.let { userRepository.findByIdOrNull(it) }
         val vacancyNotification = notificationDTO.vacancy?.let { vacancyRepository.findByIdOrNull(it) }
-        if (vacancyNotification != null) {
-            println(vacancyNotification.id)
-        }
+
+        val recipientDTO = userService.mapToUserResponseDTO(recipientNotification)
+        val senderDTO = senderNotification?.let { userService.mapToUserResponseDTO(it) }
 
         val notificationToSave = Notification(
             type = typeNotification,
@@ -94,5 +94,31 @@ class NotificationService(
         notification.sent = true
         notification.sentDateTime = LocalDateTime.now()
         notificationRepository.save(notification)
+    }
+    fun getNotificationsByRecipientId(recipientId: Int): List<NotificationDTO> {
+        val notifications = notificationRepository.getNotificationsByRecipientId(recipientId)
+        return notifications.map { mapToDto(it) }
+    }
+    fun mapToDto(notification: Notification): NotificationDTO {
+        return notification.let {
+            NotificationDTO(
+                id = it.id,
+                type = it.type.id!!,
+                recipient = it.recipient.id!!,
+                subject = it.subject,
+                content = it.content,
+                sentDateTime = it.sentDateTime,
+                sent = it.sent,
+                sender = it.sender?.id,
+                vacancy = it.vacancy?.id
+            )
+        }
+    }
+
+    fun findLatestMessageNotification(senderId: Int, recipientId: Int): NotificationDTO {
+        val typeId = NotificationTypeEnum.MESSAGES.id
+        val latestNotification = notificationRepository.findFirstBySenderIdAndRecipientIdAndTypeIdOrderBySentDateTimeDesc(senderId, recipientId, typeId)
+            .orElseThrow { NoSuchElementException("No latest notification found") }
+        return mapToDto(latestNotification)
     }
 }

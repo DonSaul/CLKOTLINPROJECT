@@ -24,6 +24,12 @@ const ChatInput = ({ onSendMessage }) => {
                     display: 'flex',
                     alignItems: 'center',
                     '& > :not(style)': { mr: 1 },
+                    position: 'sticky',
+                    bottom: 0,
+                    backgroundColor: '#F0F8FF',
+                    zIndex: 1000, 
+                    p: 2, 
+                    borderTop: '1px solid #ddd', 
                 }}
             >
                 <TextField
@@ -42,6 +48,9 @@ const ChatInput = ({ onSendMessage }) => {
                 >
                     Send
                 </Button>
+
+
+                
             </Box>
 
 
