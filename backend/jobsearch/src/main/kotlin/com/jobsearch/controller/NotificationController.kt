@@ -1,6 +1,6 @@
 package com.jobsearch.controller
 
-import com.jobsearch.dto.LoginRequest
+
 import com.jobsearch.dto.NotificationDTO
 import com.jobsearch.entity.Notification
 import com.jobsearch.service.NotificationService
@@ -31,6 +31,6 @@ class NotificationController(private val notificationService: NotificationServic
     @GetMapping("/all")
     fun retrieveAllNotifications(): ResponseEntity<List<Notification>> {
         val notifications = notificationService.retrieveAllNotifications()
-        return ResponseEntity(notifications, HttpStatus.OK)
+         return ResponseEntity(notifications, HttpStatus.OK)
     }
 }
