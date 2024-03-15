@@ -8,10 +8,11 @@ class InvitationDTO(
     val id: Int?,
     @get:NotBlank(message = "Message must not be blank")
     val message: String,
-    @get:PastOrPresent(message = "Time must be valid")
-    val time: LocalDateTime = LocalDateTime.now(),
+//    @get:PastOrPresent(message = "Time must be valid")
+//    val time: LocalDateTime = LocalDateTime.now(),
+    val time: LocalDateTime?,
     val managerId: Int?,
     val candidateId: Int?,
-    val vacancyId: Int?,
+    val vacancyId: Int? = null,
 )
 

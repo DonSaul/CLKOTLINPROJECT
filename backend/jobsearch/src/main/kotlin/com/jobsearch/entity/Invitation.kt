@@ -9,18 +9,18 @@ data class Invitation(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int?,
-    val message: String,
-    val time: LocalDateTime = LocalDateTime.now(),
+    var message: String,
+    val time: LocalDateTime? = null,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_id")
     val manager: User,
 
-    @ManyToOne  //or ManyToMany?
+    @ManyToOne(fetch = FetchType.LAZY)  //or ManyToMany?
     @JoinColumn(name = "candidate_id")
     val candidate: User,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vacancy_id")
     val vacancy: Vacancy,
 )
