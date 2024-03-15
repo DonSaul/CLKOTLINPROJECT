@@ -62,6 +62,9 @@ class NotificationService(
         val senderNotification = notificationDTO.sender?.let { userRepository.findByIdOrNull(it) }
         val vacancyNotification = notificationDTO.vacancy?.let { vacancyRepository.findByIdOrNull(it) }
 
+        val recipientDTO = userService.mapToUserResponseDTO(recipientNotification)
+        val senderDTO = senderNotification?.let { userService.mapToUserResponseDTO(it) }
+
         val notificationToSave = Notification(
             type = typeNotification,
             recipient = recipientNotification,
