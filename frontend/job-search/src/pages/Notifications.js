@@ -17,7 +17,7 @@ const Notifications = () => {
   return (
     <div>
       <CardContainer width='xs'>
-        <NotificationItem notification={notification} />
+        <NotificationItem notifications={notification} />
       </CardContainer>
     </div>
   );
