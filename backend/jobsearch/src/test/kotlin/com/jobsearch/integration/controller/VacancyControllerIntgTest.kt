@@ -17,10 +17,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.*
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 @Transactional // Reverts the changes made to the database after finish
 class VacancyControllerIntgTest {
     @Autowired
@@ -42,7 +44,7 @@ class VacancyControllerIntgTest {
     companion object {
         val JOB_FAMILY = JobFamily(1, "Information Technology")
         val MANAGER_1 = User(
-            id = 1,
+            id = null,
             firstName = "Mana",
             lastName = "Ger",
             email = "manager1@mail.com",
@@ -50,7 +52,7 @@ class VacancyControllerIntgTest {
             role = Role(1,"manager")
         )
         val MANAGER_2 = User(
-            id = 2,
+            id = null,
             firstName = "Mana2",
             lastName = "Ger2",
             email = "manager2@mail.com",
@@ -58,7 +60,7 @@ class VacancyControllerIntgTest {
             role = Role(1,"manager")
         )
         val CANDIDATE_1 = User(
-            id = 3,
+            id = null,
             firstName = "Cand",
             lastName = "Ide",
             email = "candidate1@mail.com",
@@ -66,7 +68,7 @@ class VacancyControllerIntgTest {
             role = Role(2,"candidate")
         )
         val VACANCY_ENTITY = Vacancy(
-            id = 1,
+            id = null,
             name = "Vacante 1",
             companyName = "Important Company",
             salaryExpectation = 10000,

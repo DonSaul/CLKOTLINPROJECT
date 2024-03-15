@@ -19,5 +19,4 @@ class WebConfig() : WebMvcConfigurer {
                 .allowedHeaders("Origin", "Content-Type", "Accept", "Authorization")
                 .allowCredentials(true)
     }
-
 }

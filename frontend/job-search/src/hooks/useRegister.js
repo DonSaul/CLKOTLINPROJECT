@@ -38,4 +38,4 @@ export const useRegister = () => {
         console.log("Error data:",data);
       },
     });
-  };
+  }; 

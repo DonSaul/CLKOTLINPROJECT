@@ -40,20 +40,21 @@ class SecurityConfig {
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         return http
             .csrf { csrf -> csrf.disable() }
-            .authorizeHttpRequests{ authRequests ->
+            .authorizeHttpRequests { authRequests ->
                 authRequests
                     .requestMatchers("/api/v1/auth/**").permitAll()
                     .requestMatchers("/api/v1/users/**").authenticated()
                     .requestMatchers("/api/v1/application/**").authenticated()
                     .requestMatchers("/api/v1/cvs/**").authenticated()
                     .requestMatchers("/api/v1/skills/**").permitAll()
-                    .requestMatchers(HttpMethod.GET,"/api/v1/vacancy").authenticated()
-                    .requestMatchers(HttpMethod.GET,"/api/v1/vacancy/**").authenticated()
-                    .requestMatchers(HttpMethod.GET,"/api/v1/vacancy/search").authenticated()
-                    .requestMatchers(HttpMethod.GET,"/api/v1/vacancy/manage").hasAuthority("manager")
-                    .requestMatchers(HttpMethod.POST,"/api/v1/vacancy").hasAuthority("manager")
-                    .requestMatchers(HttpMethod.PUT,"/api/v1/vacancy/**").hasAuthority("manager")
-                    .requestMatchers(HttpMethod.DELETE,"/api/v1/vacancy/**").hasAuthority("manager")
+                    .requestMatchers(HttpMethod.GET, "/api/v1/vacancy").authenticated()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/**").authenticated()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/search").authenticated()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/manage").hasAuthority("manager")
+                    .requestMatchers(HttpMethod.POST, "/api/v1/vacancy").hasAuthority("manager")
+                    .requestMatchers(HttpMethod.GET, "/api/v1/candidates/search").hasAuthority("manager")
+                    .requestMatchers(HttpMethod.PUT, "/api/v1/vacancy/**").hasAuthority("manager")
+                    .requestMatchers(HttpMethod.DELETE, "/api/v1/vacancy/**").hasAuthority("manager")
                     .requestMatchers("/api/v1/job-family/**").permitAll()
                     .requestMatchers("/api/v1/application-status/**").permitAll()
                     .requestMatchers("/api/v1/notifications/**").permitAll()

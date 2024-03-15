@@ -2,9 +2,11 @@ package com.jobsearch.service
 
 import com.jobsearch.dto.UserRequestDTO
 import com.jobsearch.dto.UserResponseDTO
+import com.jobsearch.entity.Cv
 import com.jobsearch.entity.User
 import com.jobsearch.repository.NotificationTypeRepository
 import com.jobsearch.exception.NotFoundException
+import com.jobsearch.repository.CvRepository
 import com.jobsearch.repository.RoleRepository
 import com.jobsearch.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -157,4 +159,22 @@ class UserService @Autowired constructor(
         userRepository.save(user)
     }
 
+
+    fun findCandidatesByFilter(salary: Int?, jobFamilyId: Int?, yearsOfExperience: Int?): List<CandidateDTO> {
+        val cvs = cvRepository.findCvByFilter(salary, yearsOfExperience)
+        val listsOfDto = cvs.map { mapToUserCandidateDTO (it) }
+        return listsOfDto
+    }
+    fun mapToUserCandidateDTO(cvEntity: Cv): CandidateDTO {
+        return cvEntity.let {
+            CandidateDTO(
+                it.user.id!!,
+                it.user.firstName,
+                it.user.lastName,
+                it.user.email,
+                it.yearsOfExperience,
+                it.salaryExpectation
+            )
+        }
+    }
 }

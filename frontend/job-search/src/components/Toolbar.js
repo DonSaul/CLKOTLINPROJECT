@@ -37,16 +37,13 @@ import NotificationImportantIcon from '@mui/icons-material/NotificationImportant
 import { paths } from '../router/paths';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import { Search } from '@mui/icons-material';
 export default function ButtonAppBar() {
   const { logout, getUserRole, isLoggedIn } = useAuth();
 
 
   const location =useLocation();
   const [value, setValue] = useState(0);
-
-
-
-  
 
   const handleChange = (event, newValue) => {
     //console.log("valuetab",newValue);
@@ -56,9 +53,6 @@ export default function ButtonAppBar() {
     color: 'white',
     fontWeight: 'bold',
   };
-
-  
-
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -95,7 +89,8 @@ export default function ButtonAppBar() {
               ),
               getUserRole() === ROLES.MANAGER && [
                 <Tab key="vacancies" icon={<BusinessCenterIcon />} label="Vacancies" component={Link} to={paths.vacancies} />,
-                <Tab key="createVacancy" label="Create Vacancy" icon={<PostAddIcon></PostAddIcon>} component={Link} to={paths.createVacancy} />
+                <Tab key="createVacancy" label="Create Vacancy" icon={<PostAddIcon></PostAddIcon>} component={Link} to={paths.createVacancy} />,
+                <Tab key="managerSearchPage" label="Search Candidates" icon={<Search></Search>} component={Link} to={paths.managerSearchPage} />
             ],
               getUserRole() === ROLES.CANDIDATE && [
                 <Tab key="vacancies" icon={<BusinessCenterIcon />} label="Vacancies" component={Link} to={paths.vacancies} />,
