@@ -46,6 +46,9 @@ class NotificationService(
             println("User ${recipient.email} has notifications deactivated. Notification was not sent.")
         }
     }
+    fun retrieveAllNotifications(): List<Notification> {
+        return notificationRepository.findAll()
+    }
 
     private fun handleNotification(notificationDTO: NotificationDTO) {
         val notification = createNotification(notificationDTO)

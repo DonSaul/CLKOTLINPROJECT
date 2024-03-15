@@ -2,9 +2,11 @@ package com.jobsearch.controller
 
 import com.jobsearch.dto.LoginRequest
 import com.jobsearch.dto.NotificationDTO
+import com.jobsearch.entity.Notification
 import com.jobsearch.service.NotificationService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -18,5 +20,11 @@ class NotificationController(private val notificationService: NotificationServic
     fun triggerNotification(@RequestBody notificationDTO: NotificationDTO): ResponseEntity<String> {
         notificationService.triggerNotification(notificationDTO)
         return ResponseEntity.status(HttpStatus.CREATED).body("Notification triggered successfully")
+    }
+
+    @GetMapping("/all")
+    fun retrieveAllNotifications(): ResponseEntity<List<Notification>> {
+        val notifications = notificationService.retrieveAllNotifications()
+        return ResponseEntity(notifications, HttpStatus.OK)
     }
 }
