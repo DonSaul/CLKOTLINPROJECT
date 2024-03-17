@@ -5,7 +5,6 @@ const NotificationItem = ({ notifications }) => {
   if (!notifications || notifications.length === 0) {
     return <Typography>No notifications found</Typography>;
   }
-  //this is only for testing the component
 
   return (
     <div>
