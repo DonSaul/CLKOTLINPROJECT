@@ -3,11 +3,10 @@ package com.jobsearch.config
 import org.springframework.stereotype.Component
 import java.security.SecureRandom
 import java.time.Duration
-import java.util.*
 import java.time.Instant
 
 @Component
-class ExpirableUUID {
+class ExpirableToken {
     private val random = SecureRandom()
 
     fun generateExpirableToken(expirationDuration: Duration): String {
