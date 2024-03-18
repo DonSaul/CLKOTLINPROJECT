@@ -29,18 +29,14 @@ class VacancyServiceUnitTest {
     @InjectMocks
     private lateinit var vacancyService: VacancyService
 
-    lateinit var vacancyEntity: Vacancy
-    lateinit var expectedResponseDTO: VacancyResponseDTO
-    lateinit var vacancyRequestDTO: VacancyRequestDTO
+    // Will be initialized in setUp
+    lateinit var VACANCY_1: Vacancy
+    lateinit var EXPECTED_RESPONSE_DTO: VacancyResponseDTO
+    lateinit var VACANCY_REQUEST_DTO: VacancyRequestDTO
 
     companion object {
-        val ID = 1
-        val NAME = "Vacante 1"
-        val COMPANY_NAME = "Important Company"
-        val SALARY_EXPECTATION = 10000
-        val YEARS_OF_EXPERIENCE = 3
-        val DESCRIPTION = "BLABLABLA"
-        val JOB_FAMILY = JobFamily(1, "Developer")
+        // Mock objects, will be initialized in setUp
+        val JOB_FAMILY = JobFamily(1, "Information Technology")
         val MANAGER_1 = User(
             id = 1,
             firstName = "Mana",
@@ -57,117 +53,121 @@ class VacancyServiceUnitTest {
             password = "test123",
             role = Role(1,"manager")
         )
+        val VACANCY_1 = Vacancy(
+            id = 1,
+            name = "Vacancy one",
+            companyName = "Important Company",
+            salaryExpectation = 10000,
+            yearsOfExperience = 3,
+            description = "Vacancy one description",
+            jobFamily = JOB_FAMILY,
+            manager = MANAGER_1
+        )
+        val EXPECTED_RESPONSE_DTO = VACANCY_1.let {
+            VacancyResponseDTO(
+                id = it.id!!,
+                name = it.name,
+                salaryExpectation = it.salaryExpectation,
+                yearsOfExperience = it.yearsOfExperience,
+                managerId = it.manager.id,
+                jobFamilyId = it.jobFamily.id!!,
+                jobFamilyName = it.jobFamily.name,
+                companyName = it.companyName,
+                description = it.description
+            )
+        }
+        val VACANCY_REQUEST_DTO = VACANCY_1.let {
+            VacancyRequestDTO(
+                id = null,
+                name = it.name,
+                salaryExpectation = it.salaryExpectation,
+                yearsOfExperience = it.yearsOfExperience,
+                jobFamilyId = it.jobFamily.id!!,
+                companyName = it.companyName,
+                description = it.description
+            )
+        }
     }
 
 
     @BeforeEach
         fun setUp() {
-            vacancyEntity = Vacancy(
-                ID,
-                NAME,
-                COMPANY_NAME,
-                SALARY_EXPECTATION,
-                YEARS_OF_EXPERIENCE,
-                DESCRIPTION,
-                JOB_FAMILY,
-                MANAGER_1
-            )
+            VACANCY_1 = VacancyServiceUnitTest.VACANCY_1
+            EXPECTED_RESPONSE_DTO = VacancyServiceUnitTest.EXPECTED_RESPONSE_DTO
+            VACANCY_REQUEST_DTO = VacancyServiceUnitTest.VACANCY_REQUEST_DTO
 
-            expectedResponseDTO = VacancyResponseDTO(
-                id = ID,
-                name = NAME,
-                salaryExpectation = SALARY_EXPECTATION,
-                yearsOfExperience = YEARS_OF_EXPERIENCE,
-                managerId = MANAGER_1.id,
-                jobFamilyId = JOB_FAMILY.id!!,
-                jobFamilyName = JOB_FAMILY.name,
-                companyName = COMPANY_NAME,
-                description = DESCRIPTION
-            )
-            vacancyRequestDTO = VacancyRequestDTO(
-                id = null,
-                name = NAME,
-                salaryExpectation = SALARY_EXPECTATION,
-                yearsOfExperience = YEARS_OF_EXPERIENCE,
-                jobFamilyId = JOB_FAMILY.id!!,
-                companyName = COMPANY_NAME,
-                description = DESCRIPTION
-            )
             MockitoAnnotations.openMocks(this)
         }
 
     @Test
     fun `Should retrieve vacancy by id`() {
-        val vacancyId = vacancyEntity.id!!
-        val vacancyEntity = vacancyEntity
-        val expectedResponseDTO = expectedResponseDTO
+        val vacancyId = VACANCY_1.id!!
+        val vacancyEntity = VACANCY_1
+        val expectedResponseDTO = EXPECTED_RESPONSE_DTO
         // Mocking behavior of vacancyRepository
         `when`(vacancyRepository.findById(vacancyId)).thenReturn(Optional.of(vacancyEntity))
-
         // Calling the method under test
         val result = vacancyService.retrieveVacancy(vacancyId)
-
         // Verifying the result
         Assertions.assertEquals(expectedResponseDTO, result)
-    }
-
-    @Test
-    fun `Should throw NotFoundException when retrieving vacancy by id`() {
-        val vacancyId = vacancyEntity.id!!
-        val emptyOptional: Optional<Vacancy> = Optional.empty()
-        // Mocking behavior of vacancyRepository
-        `when`(vacancyRepository.findById(vacancyId)).thenReturn(emptyOptional)
-
-        // Calling the method under test
-        Assertions.assertThrows(NotFoundException::class.java) {
-            vacancyService.retrieveVacancy(vacancyId)
-        }
-        // Verifying the result
         verify(vacancyRepository, times(1)).findById(vacancyId)
     }
 
     @Test
-    fun `Should create vacancy and return response`() {
+    fun `Should throw NotFoundException when there is no vacancy on the repository`() {
+        val vacancyId = VACANCY_1.id!!
+        val emptyOptional: Optional<Vacancy> = Optional.empty()
+        `when`(vacancyRepository.findById(vacancyId)).thenReturn(emptyOptional)
+        // Calling the method under test
+        Assertions.assertThrows(NotFoundException::class.java) {
+            vacancyService.retrieveVacancy(vacancyId)
+        }
+        verify(vacancyRepository, times(1)).findById(vacancyId)
+
+    }
+
+    @Test
+    fun `Should create vacancy and return VacancyResponseDTO`() {
         // Given
-        `when`(jobFamilyService.findByJobFamilyId(vacancyRequestDTO.jobFamilyId)).thenReturn(JOB_FAMILY)
+        `when`(jobFamilyService.findByJobFamilyId(VACANCY_REQUEST_DTO.jobFamilyId)).thenReturn(JOB_FAMILY)
         `when`(userService.retrieveAuthenticatedUser()).thenReturn(MANAGER_1)
-        `when`(vacancyRepository.save(any())).thenReturn(vacancyEntity)
+        `when`(vacancyRepository.save(any())).thenReturn(VACANCY_1)
 
         // When
-        val result = vacancyService.createVacancy(vacancyRequestDTO)
+        val result = vacancyService.createVacancy(VACANCY_REQUEST_DTO)
 
         // Then
-        Assertions.assertEquals(expectedResponseDTO, result)
+        Assertions.assertEquals(EXPECTED_RESPONSE_DTO, result)
 
         // Verify mocks
-        verify(jobFamilyService).findByJobFamilyId(vacancyRequestDTO.jobFamilyId)
+        verify(jobFamilyService).findByJobFamilyId(VACANCY_REQUEST_DTO.jobFamilyId)
         verify(userService).retrieveAuthenticatedUser()
         verify(vacancyRepository).save(any())
     }
 
     @Test
-    fun `When user is not vacancy manager should throw ForbiddenException`() {
+    fun `When user is not vacancy manager and try to delete Vacancy it should throw ForbiddenException`() {
         // Given
         val differentManager = MANAGER_2
         `when`(userService.retrieveAuthenticatedUser()).thenReturn(differentManager)
-        `when`(vacancyRepository.findById(ID)).thenReturn(Optional.of(vacancyEntity))
+        `when`(vacancyRepository.findById(VACANCY_1.id!!)).thenReturn(Optional.of(VACANCY_1))
 
         // When
         Assertions.assertThrows(ForbiddenException::class.java){
-            vacancyService.deleteVacancy(ID)
+            vacancyService.deleteVacancy(VACANCY_1.id!!)
         }
 
-        // Then
         // Verify that the vacancyRepository delete method was not called
         verify(vacancyRepository, never()).delete(any())
+        verify(userService, times(1)).retrieveAuthenticatedUser()
     }
 
     @Test
-    fun `Should delete Vacancy and vacancyRepository delete should be executed one time`(){
+    fun `Should delete Vacancy and vacancyRepository delete should be executed just once`(){
         `when`(userService.retrieveAuthenticatedUser()).thenReturn(MANAGER_1)
-        `when`(vacancyRepository.findById(ID)).thenReturn(Optional.of(vacancyEntity))
+        `when`(vacancyRepository.findById(VACANCY_1.id!!)).thenReturn(Optional.of(VACANCY_1))
         //when
-        vacancyService.deleteVacancy(ID)
+        vacancyService.deleteVacancy(VACANCY_1.id!!)
         //then
         verify(vacancyRepository).delete(any())
         verify(vacancyRepository, times(1)).delete(any())
