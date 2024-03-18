@@ -1,11 +1,7 @@
 package com.jobsearch.service
 
-import com.jobsearch.dto.ApplicationDTO
 import com.jobsearch.dto.InvitationDTO
-import com.jobsearch.entity.Application
 import com.jobsearch.entity.Invitation
-import com.jobsearch.entity.User
-import com.jobsearch.entity.Vacancy
 import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.InvitationRepository
 import com.jobsearch.repository.UserRepository
@@ -19,7 +15,8 @@ class InvitationService(
     val invitationRepository: InvitationRepository,
     val userService: UserService,
     val userRepository: UserRepository,
-    val vacancyRepository: VacancyRepository
+    val vacancyRepository: VacancyRepository,
+    val vacancyService: VacancyService
 ) {
     @Transactional
     fun createInvitation(invitationDTO: InvitationDTO): InvitationDTO {
@@ -29,6 +26,8 @@ class InvitationService(
 //        val managerId = invitationDTO.managerId
 //        val managerUser = userRepository.findById(managerId!!)
 //            .orElseThrow { NotFoundException("Manager not found with ID: $managerId") }
+
+//        val availableVacancies = vacancyService.retrieveVacancyByManager()
 
         val vacancy = vacancyRepository.findById(invitationDTO.vacancyId!!)
             .orElseThrow { NotFoundException("Vacancy not found with ID: ${invitationDTO.vacancyId}") }
@@ -40,7 +39,7 @@ class InvitationService(
         val currentDateTime = LocalDateTime.now()
 
         val invitationEntity = invitationDTO.let {
-            Invitation(it.id, it.message, currentDateTime, managerUser, candidate, vacancy)
+            Invitation(it.id, candidate, it.subject, it.content, currentDateTime, it.sent, managerUser, vacancy)
         }
 
         val newInvitation = invitationRepository.save(invitationEntity)
@@ -74,7 +73,8 @@ class InvitationService(
         val invitation = invitationRepository.findById(invitationDTO.id!!)
             .orElseThrow { NotFoundException("No invitation found with id ${invitationDTO.id}") }
 
-        invitation.message = invitationDTO.message
+        invitation.subject = invitationDTO.subject
+        invitation.content = invitationDTO.content
         // preguntar si se pueded modificar vacancy
 
         val updatedInvitation = invitationRepository.save(invitation)
@@ -95,14 +95,26 @@ class InvitationService(
         return invitation.let {
             InvitationDTO(
                 it.id,
-                it.message,
-                it.time,
-                it.manager.id!!,
                 it.candidate.id!!,
+                it.subject,
+                it.content,
+                it.sentDateTime,
+                it.sent,
+                it.manager.id!!,
                 it.vacancy.id!!,
             )
         }
     }
+
+//    fun sendInvitation(invitation: Invitation) {
+//        invitation.sent = true
+//        //invitation.sentDateTime = LocalDateTime.now()
+//        invitationRepository.save(invitation)
+//    }
+}
+
+
+
 
 //    fun invitationAlreadySent(invitationEntity: Invitation): Boolean {
 //        val candidateInvitationList = invitationRepository.findById(invitationEntity.candidate.id!!)
@@ -114,4 +126,3 @@ class InvitationService(
 //        return false
 //    }
 
-}

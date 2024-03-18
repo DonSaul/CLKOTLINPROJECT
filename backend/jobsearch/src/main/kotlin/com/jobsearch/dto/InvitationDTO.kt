@@ -6,13 +6,20 @@ import java.time.*
 
 class InvitationDTO(
     val id: Int?,
-    @get:NotBlank(message = "Message must not be blank")
-    val message: String,
-//    @get:PastOrPresent(message = "Time must be valid")
-//    val time: LocalDateTime = LocalDateTime.now(),
-    val time: LocalDateTime?,
-    val managerId: Int?,
+
+    // Receiver
     val candidateId: Int?,
+
+    // Invitation details
+    @get:NotBlank(message = "Subject must not be blank")
+    val subject: String,
+    @get:NotBlank(message = "Content must not be blank")
+    var content: String,
+    var sentDateTime: LocalDateTime?,
+    var sent: Boolean = false,
+
+    // Sender
+    val managerId: Int?,
     val vacancyId: Int? = null,
 )
 
