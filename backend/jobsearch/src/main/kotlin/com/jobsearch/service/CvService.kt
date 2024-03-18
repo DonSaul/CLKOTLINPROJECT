@@ -7,6 +7,7 @@ import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.CvRepository
 import com.jobsearch.repository.JobFamilyRepository
 import com.jobsearch.repository.SkillRepository
+import com.jobsearch.repository.UserRepository
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 
@@ -16,10 +17,12 @@ class CvService(
     private val skillRepository: SkillRepository,
     private val jobFamilyRepository: JobFamilyRepository,
     private val userService: UserService,
-    private val interestService: InterestService) {
+    private val interestService: InterestService,
+    private val userRepository: UserRepository) {
 
     @Transactional
     fun createCv(cvDTO: CvRequestDTO): CvResponseDTO {
+        val user = userService.retrieveAuthenticatedUser()
 
         val cv = cvDTO.let {
             Cv(
@@ -29,7 +32,7 @@ class CvService(
                 education = it.education,
                 projects = mutableSetOf(),
                 skills = mutableSetOf(),
-                user = userService.retrieveAuthenticatedUser()
+                user = user
             )
         }
 
