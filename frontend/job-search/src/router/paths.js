@@ -8,6 +8,7 @@ export const paths = {
     profile:'/profile',
     cv:'/cv',
     vacancies:'/vacancies',
+    managerSearchPage:'/managerSearchPage',
     vacancyDetails: '/vacancies/:id',
     notifications:'/notifications',
     messaging:'/messaging',
@@ -15,6 +16,4 @@ export const paths = {
     createUser:'/admin/users/new',
     notAccess:'/no-access'
 
-
 }
-
