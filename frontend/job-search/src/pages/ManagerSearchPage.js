@@ -9,7 +9,7 @@ const ManagerSearchPage = () => {
     const [data, setData] = useState([]);
     return (
         <div>
-            <h1>Manager Search</h1>
+            <h1>Advanced candidate search</h1>
             <CandidatesFilter setData={setData} />
 
             <CardContainer>

@@ -81,12 +81,7 @@ export const CandidatesFilter = ({ onFilterChange, setData }) => {
               isOptionEqualToValue={(option, value) => option.id === value?.id}
               onChange={(e, newValue) => handleJobFamilyChange(newValue)}
               renderInput={(params) => <TextField {...params} label={`Select Job Family`} margin="normal" />}
-
             />
-
-
-
-
           </Grid>
           {/* 
                     <JobFamilyAutocomplete
