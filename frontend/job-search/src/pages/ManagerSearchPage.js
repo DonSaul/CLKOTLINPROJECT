@@ -1,7 +1,7 @@
 import React from 'react';
 import CandidatesFilter from '../components/ManagerSearch';
 import CandidatesTable from '../components/CandidatesTable';
-import {useState} from 'react';
+import { useState } from 'react';
 import CardContainer from '../components/CardContainer';
 
 const ManagerSearchPage = () => {

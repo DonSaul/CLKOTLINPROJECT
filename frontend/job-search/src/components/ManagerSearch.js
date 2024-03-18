@@ -48,14 +48,14 @@ export const CandidatesFilter = ({ onFilterChange, setData }) => {
 
   const handleApplyFilter = async () => {
     try {
-      const fetchedData = await refetch(salary, jobFamily, yearsOfExperience);
-      console.log("fetched:", fetchedData);
-      setData(fetchedData.data);
+        const fetchedData = await refetch(salary, jobFamily, yearsOfExperience);
+        console.log("fetched:", fetchedData);
+        setData(fetchedData.data);
     } catch (error) {
-
-      console.error("Error fetching data:", error);
+        console.error("Error fetching data:", error);
     }
-  };
+};
+
 
   return (
     <div>
@@ -107,11 +107,6 @@ export const CandidatesFilter = ({ onFilterChange, setData }) => {
           </Grid>
         </Grid>
       </CardContainer>
-
-
-
-
-
 
     </div>
   );
