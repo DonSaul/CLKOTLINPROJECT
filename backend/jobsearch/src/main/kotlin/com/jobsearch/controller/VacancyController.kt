@@ -52,10 +52,10 @@ class VacancyController(
         @RequestParam(required = false) yearsOfExperience: Int?
     ): ResponseEntity<StandardResponse<List<VacancyResponseDTO>>>  {
         val responseEntityList = vacancyService.findVacanciesByFilter(salary, jobFamilyId, yearsOfExperience)
-        var status = HttpStatus.OK
-        if (responseEntityList.isEmpty()) {
-            status = HttpStatus.NO_CONTENT
-        }
+        val status = HttpStatus.OK
+//        if (responseEntityList.isEmpty()) {
+//            status = HttpStatus.NO_CONTENT
+//        }
         val body = StandardResponse(
             status = status.value(),
             data = responseEntityList
