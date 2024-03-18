@@ -30,5 +30,5 @@ data class User(
     var activatedNotificationTypes: Set<NotificationType?> = emptySet(),
 
     @Column(name = "reset_password_token")
-    var resetPasswordToken: String?
+    var resetPasswordToken: String? = null
 )
