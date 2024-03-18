@@ -9,3 +9,4 @@ data class CandidateDTO(
     val salaryExpectation: Int
 )
 //    val jobFamilyId: Int,
+//    val jobFamilyName: String
