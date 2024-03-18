@@ -53,6 +53,7 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
                     .requestMatchers(HttpMethod.DELETE, "/api/v1/vacancy/**").hasAuthority("manager")
                     .requestMatchers("/api/v1/job-family/**").permitAll()
                     .requestMatchers("/api/v1/application-status/**").permitAll()
+                    .requestMatchers("/api/v1/invitations/**").permitAll()
                     .anyRequest().authenticated()
             }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
