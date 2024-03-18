@@ -67,7 +67,6 @@ class JwtProvider(
 @Component
 class JwtAuthenticationFilter(
     private val jwtProvider: JwtProvider,
-    private val userDetailsService: UserDetailsService,
     private val userRepository: UserRepository,
 ) : OncePerRequestFilter() {
 

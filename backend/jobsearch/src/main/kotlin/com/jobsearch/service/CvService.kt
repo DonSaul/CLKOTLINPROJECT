@@ -15,7 +15,8 @@ class CvService(
     private val cvRepository: CvRepository,
     private val skillRepository: SkillRepository,
     private val jobFamilyRepository: JobFamilyRepository,
-    private val userService: UserService) {
+    private val userService: UserService,
+    private val interestService: InterestService) {
 
     @Transactional
     fun createCv(cvDTO: CvRequestDTO): CvResponseDTO {
@@ -36,6 +37,7 @@ class CvService(
         cvDTO.projects.forEach { projectDTO ->
             val jobFamily = jobFamilyRepository.findById(projectDTO.jobFamilyId).orElse(null)
 
+            interestService.createInterest(jobFamily.id!!, cv.user.id!!)
             jobFamily?.let {
                 cv.projects?.add(
                     Project(
@@ -57,6 +59,7 @@ class CvService(
                 cv.skills?.add(it)
             }
         }
+
 
         val newCv = cvRepository.save(cv)
 
@@ -97,7 +100,13 @@ class CvService(
         // Updating projects
 
         // Removing projects from the CV that are not in the request
-        cv.projects?.removeIf { project -> !cvDTO.projects.any { it.projectId == project.projectId } }
+        cv.projects?.removeIf { project ->
+            val isProjectInDTO = cvDTO.projects.any { it.projectId == project.projectId }
+            if (!isProjectInDTO) {
+                interestService.deleteInterestByUserIdAndJobFamilyId(project.jobFamily.id!!, cv.user.id!!)
+            }
+            !isProjectInDTO
+        }
 
         cvDTO.projects.forEach { dto ->
             val existingProject = cv.projects?.find { it.projectId == dto.projectId }
@@ -109,6 +118,7 @@ class CvService(
                     description = dto.description
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
                         .orElseThrow { NotFoundException("No JobFamily found with id ${dto.jobFamilyId}") }
+                    interestService.updateInterest(dto.jobFamilyId, cv.user.id!!)
                 }
             } else {
                 // If project doesn't exist, a new one is created and added to the CV
@@ -119,6 +129,7 @@ class CvService(
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
                         .orElseThrow { NotFoundException("No JobFamily found with id ${dto.jobFamilyId}") }
                 )
+                interestService.createInterest(newProject.jobFamily.id!!, cv.user.id!!)
                 cv.projects?.add(newProject)
             }
         }

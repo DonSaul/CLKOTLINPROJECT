@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.core.token.TokenService
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -20,7 +21,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
-class SecurityConfig(private val userDetailsService: UserDetailsService) {
+class SecurityConfig {
+
 
     @Autowired
     private lateinit var authService: AuthService
@@ -30,6 +32,8 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
 
     @Autowired
     lateinit var jwtAuthenticationFilter: JwtAuthenticationFilter
+
+
 
     @Bean
     @Throws(Exception::class)
@@ -53,6 +57,10 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
                     .requestMatchers(HttpMethod.DELETE, "/api/v1/vacancy/**").hasAuthority("manager")
                     .requestMatchers("/api/v1/job-family/**").permitAll()
                     .requestMatchers("/api/v1/application-status/**").permitAll()
+                    .requestMatchers("/api/v1/notifications/**").permitAll()
+                    .requestMatchers("/api/v1/recoverPassword/**").permitAll()
+                    .requestMatchers("api/v1/conversation/**").permitAll()
+
                     .anyRequest().authenticated()
             }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
