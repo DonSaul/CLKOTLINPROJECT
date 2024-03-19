@@ -6,6 +6,7 @@ import com.jobsearch.entity.Notification
 import com.jobsearch.service.NotificationService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -22,12 +23,12 @@ class NotificationController(private val notificationService: NotificationServic
         notificationService.triggerNotification(notificationDTO)
         return ResponseEntity.status(HttpStatus.CREATED).body("Notification triggered successfully")
     }
-
+    @Transactional
     @GetMapping("/recipient/{email}")
     fun getNotificationsByRecipientId(@PathVariable email: String): List<NotificationDTO> {
         return notificationService.getNotificationsByRecipientUsername(email)
     }
-
+    @Transactional
     @GetMapping("/all")
     fun retrieveAllNotifications(): ResponseEntity<List<Notification>> {
         val notifications = notificationService.retrieveAllNotifications()
