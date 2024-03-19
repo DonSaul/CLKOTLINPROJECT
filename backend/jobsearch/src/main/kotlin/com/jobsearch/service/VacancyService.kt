@@ -29,6 +29,7 @@ class VacancyService(
         }
     }
 
+    @Transactional
     fun retrieveVacancyByManager(): List<VacancyResponseDTO> {
         val manager = userService.retrieveAuthenticatedUser()
         return vacancyRepository.findByManager(manager).map {

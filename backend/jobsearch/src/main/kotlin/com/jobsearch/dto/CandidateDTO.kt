@@ -6,6 +6,7 @@ data class CandidateDTO(
     val lastName: String,
     val email: String,
     val yearsOfExperience: Int,
-    val salaryExpectation: Int
+    val salaryExpectation: Int,
+    val status: String? = null
 )
 //    val jobFamilyId: Int,
