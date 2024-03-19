@@ -119,28 +119,27 @@ class UserService @Autowired constructor(
         }
     }
 
-    //!needs test!
-    fun activateNotifications(userId: Int): UserResponseDTO {
-        val user = userRepository.findById(userId)
-            .orElseThrow { NoSuchElementException("No user found with id $userId") }
+    fun activateNotifications(email: String): UserResponseDTO {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
         user.notificationActivated = true
 
         val updatedUser = userRepository.save(user)
         return mapToUserResponseDTO(updatedUser)
     }
 
-    fun deactivateNotifications(userId: Int): UserResponseDTO {
-        val user = userRepository.findById(userId)
-            .orElseThrow { NoSuchElementException("No user found with id $userId") }
+    fun deactivateNotifications(email: String): UserResponseDTO {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
         user.notificationActivated = false
 
         val updatedUser = userRepository.save(user)
         return mapToUserResponseDTO(updatedUser)
     }
 
-    fun activatedNotificationTypes(userId: Int, notificationTypeId: Int): UserResponseDTO {
-        val user = userRepository.findById(userId)
-            .orElseThrow { NoSuchElementException("No user found with id $userId") }
+    fun activatedNotificationTypes(email: String, notificationTypeId: Int): UserResponseDTO {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
 
         val notificationType = notificationTypeRepository.findByIdOrNull(notificationTypeId)
             ?: throw NoSuchElementException("No notification type found with id $notificationTypeId")

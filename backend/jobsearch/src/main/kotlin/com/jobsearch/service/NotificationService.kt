@@ -65,9 +65,6 @@ class NotificationService(
         val senderNotification = notificationDTO.sender?.let { userRepository.findByIdOrNull(it) }
         val vacancyNotification = notificationDTO.vacancy?.let { vacancyRepository.findByIdOrNull(it) }
 
-        val recipientDTO = userService.mapToUserResponseDTO(recipientNotification)
-        val senderDTO = senderNotification?.let { userService.mapToUserResponseDTO(it) }
-
         val notificationToSave = Notification(
             type = typeNotification,
             recipient = recipientNotification,
@@ -95,8 +92,11 @@ class NotificationService(
         notification.sentDateTime = LocalDateTime.now()
         notificationRepository.save(notification)
     }
-    fun getNotificationsByRecipientId(recipientId: Int): List<NotificationDTO> {
-        val notifications = notificationRepository.getNotificationsByRecipientId(recipientId)
+    fun getNotificationsByRecipientUsername(email: String): List<NotificationDTO> {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
+        val notifications = notificationRepository.getNotificationsByRecipientId(user.id!!)
+            .filter { it.type.id != NotificationTypeEnum.FORGOT_PASSWORD.id }
         return notifications.map { mapToDto(it) }
     }
     fun mapToDto(notification: Notification): NotificationDTO {
