@@ -1,7 +1,9 @@
 package com.jobsearch.service
 
 import com.jobsearch.dto.InvitationDTO
+import com.jobsearch.dto.NotificationDTO
 import com.jobsearch.entity.Invitation
+import com.jobsearch.entity.NotificationTypeEnum
 import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.InvitationRepository
 import com.jobsearch.repository.UserRepository
@@ -10,22 +12,20 @@ import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
+
 @Service
 class InvitationService(
     val invitationRepository: InvitationRepository,
     val userService: UserService,
     val userRepository: UserRepository,
     val vacancyRepository: VacancyRepository,
-    val vacancyService: VacancyService
+//    val vacancyService: VacancyService,
+    val notificationService: NotificationService
 ) {
     @Transactional
     fun createInvitation(invitationDTO: InvitationDTO): InvitationDTO {
 
        val managerUser = userService.retrieveAuthenticatedUser()
-
-//        val managerId = invitationDTO.managerId
-//        val managerUser = userRepository.findById(managerId!!)
-//            .orElseThrow { NotFoundException("Manager not found with ID: $managerId") }
 
 //        val availableVacancies = vacancyService.retrieveVacancyByManager()
 
@@ -43,6 +43,21 @@ class InvitationService(
         }
 
         val newInvitation = invitationRepository.save(invitationEntity)
+
+        sendInvitation(newInvitation)
+
+        // Get notification when sent
+        val notificationDTO = NotificationDTO(
+            type = NotificationTypeEnum.INVITATIONS.id,
+            recipient = newInvitation.candidate.id!!,
+            subject = newInvitation.subject,
+            content = newInvitation.content,
+            sender = newInvitation.manager.id,
+            vacancy = newInvitation.vacancy.id,
+        )
+        notificationService.triggerNotification(notificationDTO)
+
+
 
         return mapToInvitationDTO(newInvitation)
         
@@ -106,11 +121,12 @@ class InvitationService(
         }
     }
 
-//    fun sendInvitation(invitation: Invitation) {
-//        invitation.sent = true
-//        //invitation.sentDateTime = LocalDateTime.now()
-//        invitationRepository.save(invitation)
-//    }
+    fun sendInvitation(invitation: Invitation) {
+        invitation.sent = true
+        //invitation.sentDateTime = LocalDateTime.now()
+
+        invitationRepository.save(invitation)
+    }
 }
 
 
