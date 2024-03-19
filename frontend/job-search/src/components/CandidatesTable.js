@@ -15,24 +15,15 @@ export default function CandidatesTable({dataFromQuery}) {
     const {mutate:applyToVacancy, isError, isSuccess}=useApplyVacancy();  //remove
 
     const navigate = useNavigate();
-
     const columnsCandidates = useMemo(
         () => [
-        {
-            accessorKey: 'jobFamilyName',
-            header: 'Category',
-        },
         {
             accessorKey: 'firstName',
             header: 'Name',
         },
         {
             accessorKey: 'lastName',
-            header: 'LastName',
-        },
-        {
-            accessorKey: 'email',
-            header: 'Email',
+            header: 'Last Name',
         },
         {
             accessorKey: 'yearsOfExperience',
@@ -41,18 +32,12 @@ export default function CandidatesTable({dataFromQuery}) {
         },
         {
             accessorKey: 'salaryExpectation', 
-            header: 'Salary',
+            header: 'Salary Expectation',
         },
 
         {
-            id: 'applyButton', 
-            header: 'Status',
-            Cell: ({ row }) => (
-                <Button variant="contained" color="primary" onClick={() => handleApply(row.original)} disabled={getUserRole()!==ROLES.CANDIDATE}>
-                    Invite
-                </Button>
-            ),
-          },
+            accessorKey: 'status', 
+            header: 'Status',}
         ],
         [],
     );
@@ -65,23 +50,12 @@ export default function CandidatesTable({dataFromQuery}) {
     }, [rowSelection]);
 
     const handleApply = (rowData) => {
-        
         console.log('Applying to vacancy:', rowData);
-
-
         let applicationData=
         {
             vacancyId:rowData.id,
-            
-
-
         }
-
-
         applyToVacancy(applicationData);
-
-
-
       };
 
     const table = useMaterialReactTable({
@@ -99,15 +73,12 @@ export default function CandidatesTable({dataFromQuery}) {
         initialState: { columnVisibility: { vacancyId: false } },
         //enableHiding:false
         enableRowActions: true,
-  renderRowActionMenuItems: ({ row }) => [
+        renderRowActionMenuItems: ({ row }) => [
     <MenuItem key="edit" onClick={() => {
         console.log("row",row);
         navigate(`${paths.vacancies}/${row.original.id}`);
         }}>
-      Visit 
-    </MenuItem>,
-    <MenuItem key="delete" onClick={() => console.info('Delete')}>
-      Delete
+      View Profile 
     </MenuItem>,
   ],
         

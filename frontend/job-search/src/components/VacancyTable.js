@@ -16,42 +16,46 @@ export default function VacancyTable({dataFromQuery}) {
 
     const navigate = useNavigate();
 
-    const columnsVacancies = useMemo(
-        () => [
-        {
-            accessorKey: 'jobFamilyName',
-            header: 'Category',
-        },
-        {
-            accessorKey: 'name', 
-            header: 'Name',
-        },
-        {
-            accessorKey: 'yearsOfExperience',
-            header: 'Years of experience',
-
-        },
-        {
-            accessorKey: 'salaryExpectation', 
-            header: 'Salary',
-        },
-        {
-            accessorKey: 'vacancyId', 
-            header: 'ID',
-            hidden: true,
-        },
-        {
-            id: 'applyButton', 
-            header: 'Status',
-            Cell: ({ row }) => (
-                <Button variant="contained" color="primary" onClick={() => handleApply(row.original)} disabled={getUserRole()!==ROLES.CANDIDATE}>
-                    Apply
-                </Button>
-            ),
-          },
-        ],
-        [],
-    );
+    const columnsVacancies = useMemo(() => {
+        const columns = [
+            { 
+                accessorKey: 'jobFamilyName',
+                header: 'Category',
+            },
+            {
+                accessorKey: 'name', 
+                header: 'Name',
+            },
+            {
+                accessorKey: 'yearsOfExperience',
+                header: 'Years of experience',
+            },
+            {
+                accessorKey: 'salaryExpectation', 
+                header: 'Salary',
+            },
+            {
+                accessorKey: 'vacancyId', 
+                header: 'ID',
+                hidden: true,
+            },
+        ];
+    
+        if (getUserRole() === ROLES.CANDIDATE) {
+            columns.push({
+                id: 'applyButton', 
+                header: 'Status',
+                Cell: ({ row }) => (
+                    <Button variant="contained" color="primary" onClick={() => handleApply(row.original)}>
+                        Apply
+                    </Button>
+                )
+            });
+        }
+    
+        return columns;
+    }, []);
+    
 
     //optionally, you can manage any/all of the table state yourself
     const [rowSelection, setRowSelection] = useState({});
@@ -61,23 +65,12 @@ export default function VacancyTable({dataFromQuery}) {
     }, [rowSelection]);
 
     const handleApply = (rowData) => {
-        
         console.log('Applying to vacancy:', rowData);
-
-
         let applicationData=
         {
             vacancyId:rowData.id,
-            
-
-
         }
-
-
         applyToVacancy(applicationData);
-
-
-
       };
 
     const table = useMaterialReactTable({
@@ -95,17 +88,17 @@ export default function VacancyTable({dataFromQuery}) {
         initialState: { columnVisibility: { vacancyId: false } },
         //enableHiding:false
         enableRowActions: true,
-  renderRowActionMenuItems: ({ row }) => [
-    <MenuItem key="edit" onClick={() => {
-        console.log("row",row);
-        navigate(`${paths.vacancies}/${row.original.id}`);
-        }}>
-      Visit 
-    </MenuItem>,
-    <MenuItem key="delete" onClick={() => console.info('Delete')}>
-      Delete
-    </MenuItem>,
-  ],
+        renderRowActionMenuItems: ({ row }) => [
+            <MenuItem key="edit" onClick={() => {
+                console.log("row",row);
+                navigate(`${paths.vacancies}/${row.original.id}`);
+                }}>
+            Visit 
+            </MenuItem>,
+            <MenuItem key="delete" onClick={() => console.info('Delete')}>
+            Delete
+            </MenuItem>,
+        ],
         
     });
 

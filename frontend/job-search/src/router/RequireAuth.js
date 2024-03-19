@@ -14,14 +14,9 @@ export function RequireAuth({role}) {
       console.log("Not loggued in");
       return <Navigate to={paths.login} state={{ from: location }} />;
     } 
-    
     if (role && auth.getUserRole()!==role){
       console.log("Not Authorized");
       return <Navigate to={paths.notAccess} />;
     }
-
-
-
-  
     return <Outlet />;
   }
