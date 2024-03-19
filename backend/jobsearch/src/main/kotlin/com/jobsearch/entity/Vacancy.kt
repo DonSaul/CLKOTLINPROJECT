@@ -17,5 +17,9 @@ data class Vacancy(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job_family_id")
-    var jobFamily: JobFamily
+    var jobFamily: JobFamily,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manager_id")
+    var manager: User
 )
