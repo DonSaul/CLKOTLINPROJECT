@@ -17,18 +17,21 @@ class VacancyService(
     val jobFamilyService: JobFamilyService,
     val userService: UserService
 ) {
+    @Transactional
     fun retrieveVacancy(vacancyId: Int): VacancyResponseDTO {
         val vacancy = vacancyRepository.findById(vacancyId)
             .orElseThrow { NotFoundException("No vacancy found with id $vacancyId") }
         return mapToVacancyResponseDto(vacancy)
     }
 
+    @Transactional
     fun retrieveAllVacancy(): List<VacancyResponseDTO> {
         return vacancyRepository.findAll().map {
             mapToVacancyResponseDto(it)
         }
     }
 
+    @Transactional
     fun retrieveVacancyByManager(): List<VacancyResponseDTO> {
         val manager = userService.retrieveAuthenticatedUser()
         return vacancyRepository.findByManager(manager).map {
