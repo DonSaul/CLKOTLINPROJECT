@@ -10,7 +10,7 @@ export const ENDPOINTS = {
   register: createUrl("auth/register"),
   recoverPassword: createUrl("recoverPassword/forgotPassword"),
   changePassword: createUrl("recoverPassword/changePassword"),
-  activateNotification: createUrl("users/updateNotificationActivated/"),
+  activateNotification: createUrl("users/activateNotification/"),
   notification: createUrl("notifications/all"),
   getSkills: createUrl("skills"),
   register:createUrl("auth/register"),

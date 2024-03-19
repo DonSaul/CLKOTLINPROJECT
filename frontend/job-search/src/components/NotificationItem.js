@@ -1,7 +1,8 @@
 import React from 'react';
 import { Typography } from '@mui/material';
 
-const NotificationItem = ({ notifications }) => {
+const NotificationItem = ({ notifications }) => { 
+
   if (!notifications || notifications.length === 0) {
     return <Typography>No notifications found</Typography>;
   }
