@@ -3,12 +3,12 @@ package com.jobsearch.service
 import com.jobsearch.dto.CandidateDTO
 import com.jobsearch.dto.UserRequestDTO
 import com.jobsearch.dto.UserResponseDTO
+import com.jobsearch.entity.Application
 import com.jobsearch.entity.Cv
 import com.jobsearch.entity.User
+import com.jobsearch.exception.ForbiddenException
 import com.jobsearch.exception.NotFoundException
-import com.jobsearch.repository.CvRepository
-import com.jobsearch.repository.RoleRepository
-import com.jobsearch.repository.UserRepository
+import com.jobsearch.repository.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
@@ -22,7 +22,9 @@ class UserService @Autowired constructor(
     private val userRepository: UserRepository,
     private val roleRepository: RoleRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val cvRepository: CvRepository
+    private val cvRepository: CvRepository,
+    private val vacancyRepository: VacancyRepository,
+    private val applicationRepository: ApplicationRepository
 ) {
     @Transactional
     fun createUser(userRequestDTO: UserRequestDTO): UserResponseDTO? {
@@ -111,6 +113,15 @@ class UserService @Autowired constructor(
         val listsOfDto = cvs.map { mapToUserCandidateDTO (it) }
         return listsOfDto
     }
+    fun findCandidatesByVacancyApplication(vacancyId: Int): List<CandidateDTO> {
+        val vacancy = vacancyRepository.findById(vacancyId)
+            .orElseThrow { NotFoundException("No vacancy found with id $vacancyId") }
+        val user = retrieveAuthenticatedUser()
+        if (vacancy.manager != user) throw ForbiddenException("You are not authorized to perform this action")
+        val applications = applicationRepository.findByVacancy(vacancy)
+        return applications.map { mapToUserCandidateDTO(it) }
+
+    }
     fun mapToUserCandidateDTO(cvEntity: Cv): CandidateDTO {
         return cvEntity.let {
             CandidateDTO(
@@ -123,4 +134,19 @@ class UserService @Autowired constructor(
             )
         }
     }
+    fun mapToUserCandidateDTO(application: Application): CandidateDTO {
+        return application.let {
+            CandidateDTO(
+                it.candidate.id!!,
+                it.candidate.firstName,
+                it.candidate.lastName,
+                it.candidate.email,
+                it.cv.yearsOfExperience,
+                it.cv.salaryExpectation,
+                it.applicationStatus.name
+            )
+        }
+    }
+
+
 }
