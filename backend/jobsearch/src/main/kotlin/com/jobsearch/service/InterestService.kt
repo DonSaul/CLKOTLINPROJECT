@@ -53,9 +53,6 @@ class InterestService(
 
     fun getJobFamilyByUserId(userId: Int): List<JobFamily> {
         val interests = interestRepository.getJobFamilyByUserId(userId)
-
-
-
         return interests
     }
 }

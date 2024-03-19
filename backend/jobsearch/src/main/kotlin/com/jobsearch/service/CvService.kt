@@ -160,9 +160,8 @@ class CvService(
     fun deleteCv(cvId: Int): String {
         val cv = cvRepository.findById(cvId)
             .orElseThrow { NotFoundException("No CV found with id $cvId") }
-
+        cv.projects?.forEach { project -> interestService.deleteInterestByUserIdAndJobFamilyId(project.jobFamily.id!!, cv.user.id!!) }
         cvRepository.delete(cv)
-
         return "Cv deleted successfully"
     }
 
