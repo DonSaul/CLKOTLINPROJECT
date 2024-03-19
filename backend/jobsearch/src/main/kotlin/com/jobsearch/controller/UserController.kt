@@ -45,23 +45,25 @@ class UserController(private val userService: UserService) {
         return ResponseEntity(result, HttpStatus.OK)
     }
 
-    @PutMapping("/activateNotification/{userId}")
-    fun activateUserNotification(@PathVariable userId: Int): ResponseEntity<UserResponseDTO> {
-        val updatedUser = userService.activateNotifications(userId)
-        return ResponseEntity(updatedUser, HttpStatus.OK)
-    }
-    @PutMapping("/deactivateNotification/{userId}")
-    fun deactivateUserNotification(@PathVariable userId: Int): ResponseEntity<UserResponseDTO> {
-        val updatedUser = userService.deactivateNotifications(userId)
-        return ResponseEntity(updatedUser, HttpStatus.OK)
+    @PutMapping("/notification/{email}/{isActivate}")
+    fun updateUserNotification(
+        @PathVariable email: String,
+        @PathVariable isActivate: Boolean
+    ): ResponseEntity<UserResponseDTO> {
+        val updatedUser: UserResponseDTO = if (isActivate) {
+            userService.activateNotifications(email)
+        } else {
+            userService.deactivateNotifications(email)
+        }
+        return ResponseEntity.ok(updatedUser)
     }
 
-    @PutMapping("{userId}/activateNotificationType/{notificationTypeId}")
+    @PutMapping("{email}/activateNotificationType/{notificationTypeId}")
     fun activateNotificationType(
-        @PathVariable userId: Int,
+        @PathVariable email: String,
         @PathVariable notificationTypeId: Int
     ): ResponseEntity<UserResponseDTO> {
-        val updatedUser = userService.activatedNotificationTypes(userId, notificationTypeId)
+        val updatedUser = userService.activatedNotificationTypes(email, notificationTypeId)
         return ResponseEntity(updatedUser, HttpStatus.OK)
     }
 }
