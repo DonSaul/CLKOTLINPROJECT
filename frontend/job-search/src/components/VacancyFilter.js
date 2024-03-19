@@ -68,11 +68,9 @@ export const VacancyFilter = ({ onFilterChange, setData }) => {
                             value={yearsOfExperience}
                             onChange={handleYearsOfExperienceChange}
                             fullWidth
-                            margin="normal"
-                           
+                            margin="normal"   
                         />
                     </Grid>
-
                     <Grid item xs={3}>
                         <Autocomplete
                             options={jobFamilies || []}
@@ -81,19 +79,8 @@ export const VacancyFilter = ({ onFilterChange, setData }) => {
                             isOptionEqualToValue={(option, value) => option.id === value?.id}  
                             onChange={(e, newValue) => handleJobFamilyChange(newValue)}
                             renderInput={(params) => <TextField {...params} label={`Select Job Family`} margin="normal"/>}
-                            
-    />
-                       
-
-
-
+                        />
                     </Grid>
-{/* 
-                    <JobFamilyAutocomplete
-                            onChange={(e, newValue) => handleJobFamilyChange(newValue)}
-                            value={jobFamily}
-                        />*/}
-
                     <Grid item xs={3}>
                         <TextField
                             label="Salary"
@@ -104,7 +91,6 @@ export const VacancyFilter = ({ onFilterChange, setData }) => {
                             margin="normal"
                         />
                     </Grid>
-
                     <Grid item xs={3}>
                         <Button onClick={handleApplyFilter} variant="contained" color="primary">
                             Apply Filter
@@ -112,12 +98,6 @@ export const VacancyFilter = ({ onFilterChange, setData }) => {
                     </Grid>
                 </Grid>
             </CardContainer>
-
-
-
-
-
-
         </div>
     );
 };
