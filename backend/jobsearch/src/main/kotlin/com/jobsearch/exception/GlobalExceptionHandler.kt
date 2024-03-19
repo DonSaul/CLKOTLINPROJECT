@@ -1,6 +1,7 @@
 package com.jobsearch.exception
 
 import com.jobsearch.response.ErrorResponse
+import com.jobsearch.response.StandardResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -13,72 +14,53 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(IllegalArgumentException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    fun handleIllegalArgumentException(ex: IllegalArgumentException): ResponseEntity<String> {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.message)
+    fun handleIllegalArgumentException(ex: IllegalArgumentException): ResponseEntity<ErrorResponse<Exception>> {
+        return mapResponseEntity(ex, HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(UserAlreadyExistsException::class)
-    fun handleUserAlreadyExistsException(ex: UserAlreadyExistsException): ResponseEntity<ErrorResponse>{
-        val body = ErrorResponse(
-            status = HttpStatus.CONFLICT.value(),
-            message = ex.message!!,
-            timeStamp = System.currentTimeMillis()
-        )
-
-        return ResponseEntity
-            .status(HttpStatus.CONFLICT)
-            .body(body)
+    fun handleUserAlreadyExistsException(ex: UserAlreadyExistsException): ResponseEntity<ErrorResponse<Exception>>{
+        return mapResponseEntity(ex, HttpStatus.CONFLICT)
     }
 
     @ExceptionHandler(NotFoundException::class)
-    fun handleNotFoundException(ex: NotFoundException): ResponseEntity<ErrorResponse>{
-        val body = ErrorResponse(
-            status = HttpStatus.NOT_FOUND.value(),
-            message = ex.message!!,
-            timeStamp = System.currentTimeMillis()
-        )
-
-        return ResponseEntity
-            .status(HttpStatus.NOT_FOUND)
-            .body(body)
+    fun handleNotFoundException(ex: NotFoundException): ResponseEntity<ErrorResponse<Exception>>{
+        return mapResponseEntity(ex, HttpStatus.NOT_FOUND)
     }
 
     @ExceptionHandler(IllegalAccessException::class)
-    fun handleIllegalAccessException(ex: IllegalAccessException): ResponseEntity<ErrorResponse>{
-        val body = ErrorResponse(
-            status = HttpStatus.FORBIDDEN.value(),
-            message = ex.message!!,
-            timeStamp = System.currentTimeMillis()
-        )
-
-        return ResponseEntity
-            .status(HttpStatus.FORBIDDEN)
-            .body(body)
+    fun handleIllegalAccessException(ex: IllegalAccessException): ResponseEntity<ErrorResponse<Exception>>{
+        return mapResponseEntity(ex, HttpStatus.FORBIDDEN)
     }
 
     @ExceptionHandler(Exception::class)
-    fun handleAllException(ex: Exception): ResponseEntity<ErrorResponse>{
-        val body = ErrorResponse(
-            status = HttpStatus.INTERNAL_SERVER_ERROR.value(),
-            message = ex.message!!,
-            timeStamp = System.currentTimeMillis()
-        )
-
-        return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(body)
+    fun handleAllException(ex: Exception): ResponseEntity<ErrorResponse<Exception>>{
+        return mapResponseEntity(ex, HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
     @ExceptionHandler(ForbiddenException::class)
-    fun handleForbiddenException(ex: ForbiddenException): ResponseEntity<ErrorResponse>{
-        val body = ErrorResponse(
-            status = HttpStatus.FORBIDDEN.value(),
-            message = ex.message!!,
-            timeStamp = System.currentTimeMillis()
-        )
+    fun handleForbiddenException(ex: ForbiddenException): ResponseEntity<ErrorResponse<Exception>>{
+        return mapResponseEntity(ex, HttpStatus.FORBIDDEN)
+    }
 
+    /**
+     * Maps the exception to a standar response.
+     *
+     * @param ex The body of the response.
+     * @param status The HTTP status of the response. Default is HttpStatus.INTERNAL_SERVER_ERROR.
+     * @return The ResponseEntity containing the mapped exception.
+     */
+    fun mapResponseEntity(
+        ex: Exception,
+        status: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR): ResponseEntity<ErrorResponse<Exception>>{
+
+        val bodyContent = ErrorResponse(
+            status = status.value(),
+            data = ex,
+            message = ex.message!!
+        )
         return ResponseEntity
-            .status(HttpStatus.FORBIDDEN)
-            .body(body)
+            .status(status)
+            .body(bodyContent)
     }
 }
