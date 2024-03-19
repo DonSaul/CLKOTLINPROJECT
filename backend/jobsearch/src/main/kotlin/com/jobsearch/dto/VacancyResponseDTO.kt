@@ -1,6 +1,4 @@
 package com.jobsearch.dto
-
-
 data class VacancyResponseDTO(
     val id: Int,
     var name: String,

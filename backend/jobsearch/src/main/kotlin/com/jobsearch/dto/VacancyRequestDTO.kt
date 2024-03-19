@@ -3,7 +3,6 @@ package com.jobsearch.dto
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Positive
 
-
 data class VacancyRequestDTO(
     val id: Int?,
     @get:NotBlank(message = "Vacancy name must not be blank")
