@@ -50,5 +50,13 @@ class InterestService(
             interestRepository.save(matchingInterest)
         }
     }
+
+    fun getJobFamilyByUserId(userId: Int): List<JobFamily> {
+        val interests = interestRepository.getJobFamilyByUserId(userId)
+
+
+
+        return interests
+    }
 }
 

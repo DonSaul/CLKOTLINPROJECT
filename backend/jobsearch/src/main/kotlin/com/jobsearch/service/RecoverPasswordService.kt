@@ -1,12 +1,11 @@
 package com.jobsearch.service
 
 
-import com.jobsearch.config.ExpirableUUID
+import com.jobsearch.config.ExpirableToken
 import com.jobsearch.dto.NotificationDTO
 import com.jobsearch.entity.NotificationTypeEnum
 import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.UserRepository
-import org.hibernate.validator.constraints.UUID
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 
@@ -20,7 +19,7 @@ class RecoverPasswordService @Autowired constructor(
     private val notificationService: NotificationService,
     private val userRepository: UserRepository,
     private val userService: UserService,
-    private val expirableUUID: ExpirableUUID
+    private val expirableToken: ExpirableToken
 ){
     @Value("\${token.expiration.minutes}")
     private val expirationMinutes: Long = 5
@@ -32,7 +31,7 @@ class RecoverPasswordService @Autowired constructor(
             val user = userRepository.findByEmail(email)
                 .orElseThrow { NoSuchElementException("No user found with email $email") }
 
-            val token = expirableUUID.generateExpirableToken(Duration.ofMinutes(expirationMinutes))
+            val token = expirableToken.generateExpirableToken(Duration.ofMinutes(expirationMinutes))
             userService.updateResetPasswordToken(token, email)
 
             val notificationDTO = NotificationDTO(
@@ -52,7 +51,7 @@ class RecoverPasswordService @Autowired constructor(
 
     fun changePassword(token: String, newPassword: String) {
         // Check if the token is valid and not expired
-        if (expirableUUID.isExpired(token)) {
+        if (expirableToken.isExpired(token)) {
             throw RuntimeException("The provided token has expired")
         }
 
