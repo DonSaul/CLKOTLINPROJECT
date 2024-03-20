@@ -80,8 +80,8 @@ class UserController(private val userService: UserService) {
         return ResponseEntity(notificationStatus, HttpStatus.OK)
     }
 
-    @GetMapping("/activatedNotificationTypes")
-    fun getActivatedNotificationTypes(@RequestParam email: String): List<NotificationTypeDTO> {
+    @GetMapping("/activatedNotificationTypes/{email}")
+    fun getActivatedNotificationTypes(@PathVariable email: String): List<NotificationTypeDTO> {
         return userService.getActivatedNotificationTypes(email)
     }
 }
