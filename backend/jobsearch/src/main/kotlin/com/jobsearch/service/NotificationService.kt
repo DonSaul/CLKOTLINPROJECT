@@ -134,12 +134,12 @@ class NotificationService(
 
         //recipient
         val recipientId = notification.recipient.id
-            ?: throw NoSuchElementException("Sender id is null for notification id ${notification.id}")
+            ?: throw NoSuchElementException("Recipient id is null for notification id ${notification.id}")
         val recipient = userRepository.findById(recipientId)
             .map { it.copy(password = null.toString()) }
-            .orElseThrow { NoSuchElementException("Could not find any user with the id $senderId") }
+            .orElseThrow { NoSuchElementException("Could not find any user with the id $recipientId") }
 
-        return Notification(
+        return Notification
             id = notification.id,
             type = notification.type,
             recipient = recipient,
