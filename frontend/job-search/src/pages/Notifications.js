@@ -13,12 +13,38 @@ const Notifications = () => {
   const { notificationActivated, loading } = useNotificationActivated(user?.email);
   const handleCheckboxChange = useNotificationUpdater(user?.email);
 
+  
+
   // Ensure notificationActivated is not null before using it
   const [initialCheckboxValue, setInitialCheckboxValue] = useState(false);
+  const [vacancyChecked, setVacancyChecked] = useState(false);
+  const [invitationChecked, setInvitationChecked] = useState(false);
+  const [messageChecked, setMessageChecked] = useState(false);
+
+  const handleVacancyCheckboxChange = (event) => {
+    const newValue = event.target.checked;
+    setVacancyChecked(newValue);
+    handleCheckboxChange(newValue, "vacancy");
+  };
+  
+  const handleInvitationCheckboxChange = (event) => {
+    const newValue = event.target.checked;
+    setInvitationChecked(newValue);
+    handleCheckboxChange(newValue, "invitation");
+  };
+  
+  const handleMessageCheckboxChange = (event) => {
+    const newValue = event.target.checked;
+    setMessageChecked(newValue);
+    handleCheckboxChange(newValue, "message");
+  };
 
   useEffect(() => {
     if (!loading && notificationActivated !== null) {
       setInitialCheckboxValue(notificationActivated);
+      setVacancyChecked(false);
+      setInvitationChecked(false);
+      setMessageChecked(false);
     }
   }, [notificationActivated, loading]);
 
@@ -39,6 +65,22 @@ const Notifications = () => {
           label={initialCheckboxValue ? "Deactivate Notifications" : "Activate Notifications"}
         />
       </CardContainer>
+      {initialCheckboxValue && (
+        <CardContainer width='xs'>
+          <FormControlLabel
+  control={<Checkbox color="primary" checked={vacancyChecked} onChange={handleVacancyCheckboxChange} />}
+  label="Vacancies"
+/>
+<FormControlLabel
+  control={<Checkbox color="primary" checked={invitationChecked} onChange={handleInvitationCheckboxChange} />}
+  label="Invitations"
+/>
+<FormControlLabel
+  control={<Checkbox color="primary" checked={messageChecked} onChange={handleMessageCheckboxChange} />}
+  label="Messages"
+/>
+        </CardContainer>
+      )}
       {initialCheckboxValue ? (
         <CardContainer width='xs'>
           {notifications.length > 0 ? (
