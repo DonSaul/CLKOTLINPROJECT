@@ -1,40 +1,56 @@
 import React, { useState, useEffect } from 'react';
+import { Checkbox, FormControlLabel, CircularProgress } from '@mui/material';
 import CardContainer from '../components/CardContainer';
-import { FormControlLabel, Checkbox } from '@mui/material';
 import NotificationItem from '../components/NotificationItem';
-import { useCheckboxField } from '../hooks/useCheckboxField';
 import { useAuth } from '../helpers/userContext';
-import { useNotificationData } from '../hooks/useNotifications'; // Import the updated useNotificationData hook
-import { useUpdateUser } from '../hooks/useUpdateUser'; // Import the useUpdateUser hook
+import { useNotificationData } from '../hooks/notifications/useNotifications';
+import { useNotificationUpdater } from '../hooks/notifications/useNotificationUpdater';
+import { useNotificationActivated } from '../hooks/notifications/useGetCurrentOnNotification';
 
 const Notifications = () => {
-  const [checkboxValue, handleCheckboxChange] = useCheckboxField(false);
-  const { user } = useAuth(); // Get the user object from the AuthContext
-  const notifications = useNotificationData(user?.email); // Pass the user ID to the useNotificationData hook
-  useUpdateUser(user?.email, checkboxValue); // Pass the checkboxValue and user ID to the useUpdateUser hook
+  const { user } = useAuth();
+  const notifications = useNotificationData(user?.email);
+  const { notificationActivated, loading } = useNotificationActivated(user?.email);
+  const handleCheckboxChange = useNotificationUpdater(user?.email);
 
-  console.log('Notifications received:', user?.email);
-  console.log('USERRRRRRs:', user);
+  // Ensure notificationActivated is not null before using it
+  const [initialCheckboxValue, setInitialCheckboxValue] = useState(false);
+
+  useEffect(() => {
+    if (!loading && notificationActivated !== null) {
+      setInitialCheckboxValue(notificationActivated);
+    }
+  }, [notificationActivated, loading]);
+
+  // Handle loading state
+  if (loading) {
+    return <CircularProgress />;
+  }
+
   return (
     <div>
       <CardContainer width='xs'>
         <FormControlLabel
-          control={<Checkbox color="primary" checked={checkboxValue} onChange={handleCheckboxChange} />}
-          label={checkboxValue ? "Deactivate Notifications" : "Activate Notifications"}
+          control={<Checkbox color="primary" checked={initialCheckboxValue} onChange={(event) => {
+            const newValue = event.target.checked;
+            setInitialCheckboxValue(newValue); // Update the checkbox state
+            handleCheckboxChange(newValue); // Update the notification status
+          }} />}
+          label={initialCheckboxValue ? "Deactivate Notifications" : "Activate Notifications"}
         />
       </CardContainer>
-      {checkboxValue ? (
+      {initialCheckboxValue ? (
         <CardContainer width='xs'>
-          <NotificationItem notifications={notifications} />
+          {notifications.length > 0 ? (
+            <NotificationItem notifications={notifications} />
+          ) : (
+            <p>No notifications found</p>
+          )}
         </CardContainer>
       ) : (
         <div>
           <CardContainer width='xs'>
-            {notifications.length > 0 ? (
-              <p>You need to activate the notifications</p>
-            ) : (
-              <p>No notifications found</p>
-            )}          
+            <p>You need to activate the notifications</p>
           </CardContainer>
         </div>
       )}
