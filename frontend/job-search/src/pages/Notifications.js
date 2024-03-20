@@ -3,19 +3,20 @@ import { Checkbox, FormControlLabel, CircularProgress } from '@mui/material';
 import CardContainer from '../components/CardContainer';
 import NotificationItem from '../components/NotificationItem';
 import { useAuth } from '../helpers/userContext';
-import { useNotificationData } from '../hooks/notifications/useNotifications';
+import { useNotificationData } from '../hooks/notifications/useNotificationsByEmail';
 import { useNotificationUpdater } from '../hooks/notifications/useNotificationUpdater';
 import { useNotificationActivated } from '../hooks/notifications/useGetCurrentOnNotification';
+import { useNotificationTypeUpdater } from '../hooks/notifications/useNotificationTypesUpdated';
+import { useNotificationTypes } from '../hooks/notifications/useNotificationTypes';
 
 const Notifications = () => {
   const { user } = useAuth();
   const notifications = useNotificationData(user?.email);
   const { notificationActivated, loading } = useNotificationActivated(user?.email);
+  const { notificationTypes, loadingType } = useNotificationTypes(user?.email);
   const handleCheckboxChange = useNotificationUpdater(user?.email);
+  const handleCheckboxNotificationType = useNotificationTypeUpdater(user?.email);
 
-  
-
-  // Ensure notificationActivated is not null before using it
   const [initialCheckboxValue, setInitialCheckboxValue] = useState(false);
   const [vacancyChecked, setVacancyChecked] = useState(false);
   const [invitationChecked, setInvitationChecked] = useState(false);
@@ -24,32 +25,35 @@ const Notifications = () => {
   const handleVacancyCheckboxChange = (event) => {
     const newValue = event.target.checked;
     setVacancyChecked(newValue);
-    handleCheckboxChange(newValue, "vacancy");
+    handleCheckboxNotificationType(newValue, 1);
   };
-  
+
   const handleInvitationCheckboxChange = (event) => {
     const newValue = event.target.checked;
     setInvitationChecked(newValue);
-    handleCheckboxChange(newValue, "invitation");
+    handleCheckboxNotificationType(newValue, 2);
   };
-  
+
   const handleMessageCheckboxChange = (event) => {
     const newValue = event.target.checked;
     setMessageChecked(newValue);
-    handleCheckboxChange(newValue, "message");
+    handleCheckboxNotificationType(newValue, 3);
   };
 
   useEffect(() => {
     if (!loading && notificationActivated !== null) {
       setInitialCheckboxValue(notificationActivated);
-      setVacancyChecked(false);
-      setInvitationChecked(false);
-      setMessageChecked(false);
+      // Set the initial state for each notification type based on fetched data
+      const vacancyType = notificationTypes.find(type => type.id === 1);
+      const invitationType = notificationTypes.find(type => type.id === 2);
+      const messageType = notificationTypes.find(type => type.id === 3);
+      if (vacancyType) setVacancyChecked(true);
+      if (invitationType) setInvitationChecked(true);
+      if (messageType) setMessageChecked(true);
     }
-  }, [notificationActivated, loading]);
+  }, [notificationActivated, loading, notificationTypes]);
 
-  // Handle loading state
-  if (loading) {
+  if (loading || loadingType) {
     return <CircularProgress />;
   }
 
@@ -59,8 +63,8 @@ const Notifications = () => {
         <FormControlLabel
           control={<Checkbox color="primary" checked={initialCheckboxValue} onChange={(event) => {
             const newValue = event.target.checked;
-            setInitialCheckboxValue(newValue); // Update the checkbox state
-            handleCheckboxChange(newValue); // Update the notification status
+            setInitialCheckboxValue(newValue);
+            handleCheckboxChange(newValue);
           }} />}
           label={initialCheckboxValue ? "Deactivate Notifications" : "Activate Notifications"}
         />
@@ -68,17 +72,17 @@ const Notifications = () => {
       {initialCheckboxValue && (
         <CardContainer width='xs'>
           <FormControlLabel
-  control={<Checkbox color="primary" checked={vacancyChecked} onChange={handleVacancyCheckboxChange} />}
-  label="Vacancies"
-/>
-<FormControlLabel
-  control={<Checkbox color="primary" checked={invitationChecked} onChange={handleInvitationCheckboxChange} />}
-  label="Invitations"
-/>
-<FormControlLabel
-  control={<Checkbox color="primary" checked={messageChecked} onChange={handleMessageCheckboxChange} />}
-  label="Messages"
-/>
+            control={<Checkbox color="primary" checked={vacancyChecked} onChange={handleVacancyCheckboxChange} />}
+            label="Vacancies"
+          />
+          <FormControlLabel
+            control={<Checkbox color="primary" checked={invitationChecked} onChange={handleInvitationCheckboxChange} />}
+            label="Invitations"
+          />
+          <FormControlLabel
+            control={<Checkbox color="primary" checked={messageChecked} onChange={handleMessageCheckboxChange} />}
+            label="Messages"
+          />
         </CardContainer>
       )}
       {initialCheckboxValue ? (
