@@ -1,6 +1,7 @@
 package com.jobsearch.service
 
 import com.jobsearch.dto.CandidateDTO
+import com.jobsearch.dto.NotificationTypeDTO
 import com.jobsearch.dto.UserRequestDTO
 import com.jobsearch.dto.UserResponseDTO
 import com.jobsearch.entity.Cv
@@ -150,6 +151,19 @@ class UserService @Autowired constructor(
         return mapToUserResponseDTO(updatedUser)
     }
 
+    fun deactivateNotificationTypes(email: String, notificationTypeId: Int): UserResponseDTO {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
+
+        val notificationType = notificationTypeRepository.findByIdOrNull(notificationTypeId)
+            ?: throw NoSuchElementException("No notification type found with id $notificationTypeId")
+
+        user.activatedNotificationTypes = user.activatedNotificationTypes.minus(notificationType)
+
+        val updatedUser = userRepository.save(user)
+        return mapToUserResponseDTO(updatedUser)
+    }
+
     fun updateResetPasswordToken(token: String, email: String) {
         val user = userRepository.findByEmail(email)
             .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
@@ -180,6 +194,22 @@ class UserService @Autowired constructor(
         val user = userRepository.findByEmail(email)
             .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
         return user.notificationActivated
+    }
+    fun getActivatedNotificationTypes(email: String): List<NotificationTypeDTO> {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
+
+        val activatedNotificationTypes = user.activatedNotificationTypes
+
+        val activatedNotificationTypeDTOs = activatedNotificationTypes.map { notificationType ->
+            NotificationTypeDTO(
+                id = notificationType?.id!!,
+                type = notificationType.type,
+
+            )
+        }
+
+        return activatedNotificationTypeDTOs
     }
 
     fun mapToUserCandidateDTO(cvEntity: Cv, jobFamilies: List<JobFamily>?): CandidateDTO {

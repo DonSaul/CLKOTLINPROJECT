@@ -3,11 +3,13 @@ package com.jobsearch.controller
 import com.jobsearch.dto.UserRequestDTO
 import com.jobsearch.dto.UserResponseDTO
 import com.jobsearch.dto.NotificationDTO
+import com.jobsearch.dto.NotificationTypeDTO
 import com.jobsearch.service.UserService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.parameters.P
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -58,12 +60,17 @@ class UserController(private val userService: UserService) {
         return ResponseEntity.ok(updatedUser)
     }
 
-    @PutMapping("{email}/activateNotificationType/{notificationTypeId}")
-    fun activateNotificationType(
+    @PutMapping("/activateNotificationType/{email}/{notificationTypeId}/{isActivate}")
+    fun updateUserNotificationType(
         @PathVariable email: String,
-        @PathVariable notificationTypeId: Int
+        @PathVariable notificationTypeId: Int,
+        @PathVariable isActivate: Boolean
     ): ResponseEntity<UserResponseDTO> {
-        val updatedUser = userService.activatedNotificationTypes(email, notificationTypeId)
+        val updatedUser: UserResponseDTO = if (isActivate) {
+            userService.activatedNotificationTypes(email, notificationTypeId)
+        } else {
+            userService.deactivateNotificationTypes(email, notificationTypeId)
+        }
         return ResponseEntity(updatedUser, HttpStatus.OK)
     }
 
@@ -71,5 +78,10 @@ class UserController(private val userService: UserService) {
     fun getUserNotificationStatus(@PathVariable email: String): ResponseEntity<Boolean> {
         val notificationStatus = userService.getUserNotificationStatus(email)
         return ResponseEntity(notificationStatus, HttpStatus.OK)
+    }
+
+    @GetMapping("/activatedNotificationTypes")
+    fun getActivatedNotificationTypes(@RequestParam email: String): List<NotificationTypeDTO> {
+        return userService.getActivatedNotificationTypes(email)
     }
 }
