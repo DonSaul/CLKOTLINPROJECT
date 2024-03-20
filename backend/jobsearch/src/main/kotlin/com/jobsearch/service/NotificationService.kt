@@ -92,12 +92,20 @@ class NotificationService(
         notification.sentDateTime = LocalDateTime.now()
         notificationRepository.save(notification)
     }
-    fun getNotificationsByRecipientUsername(email: String): List<NotificationDTO> {
+    fun getNotificationsByRecipientUsername(email: String): List<Notification> {
         val user = userRepository.findByEmail(email)
             .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
         val notifications = notificationRepository.getNotificationsByRecipientId(user.id!!)
             .filter { it.type.id != NotificationTypeEnum.FORGOT_PASSWORD.id }
-        return notifications.map { mapToDto(it) }
+
+
+        return notifications.map { mapToNotification(it) }
+    }
+    fun findLatestMessageNotification(senderId: Int, recipientId: Int): NotificationDTO {
+        val typeId = NotificationTypeEnum.MESSAGES.id
+        val latestNotification = notificationRepository.findFirstBySenderIdAndRecipientIdAndTypeIdOrderBySentDateTimeDesc(senderId, recipientId, typeId)
+            .orElseThrow { NoSuchElementException("No latest notification found") }
+        return mapToDto(latestNotification)
     }
     fun mapToDto(notification: Notification): NotificationDTO {
         return notification.let {
@@ -115,12 +123,32 @@ class NotificationService(
         }
     }
 
-    fun findLatestMessageNotification(senderId: Int, recipientId: Int): NotificationDTO {
-        val typeId = NotificationTypeEnum.MESSAGES.id
-        val latestNotification = notificationRepository.findFirstBySenderIdAndRecipientIdAndTypeIdOrderBySentDateTimeDesc(senderId, recipientId, typeId)
-            .orElseThrow { NoSuchElementException("No latest notification found") }
-        return mapToDto(latestNotification)
+    fun mapToNotification(notification: Notification): Notification {
+        //sender
+        val senderId = notification.sender?.id
+            ?: throw NoSuchElementException("Sender id is null for notification id ${notification.id}")
+
+        val sender = userRepository.findById(senderId)
+            .map { it.copy(password = null.toString()) }
+            .orElseThrow { NoSuchElementException("Could not find any user with the id $senderId") }
+
+        //recipient
+        val recipientId = notification.recipient.id
+            ?: throw NoSuchElementException("Sender id is null for notification id ${notification.id}")
+        val recipient = userRepository.findById(recipientId)
+            .map { it.copy(password = null.toString()) }
+            .orElseThrow { NoSuchElementException("Could not find any user with the id $senderId") }
+
+        return Notification(
+            id = notification.id,
+            type = notification.type,
+            recipient = recipient,
+            subject = notification.subject,
+            content = notification.content,
+            sentDateTime = notification.sentDateTime,
+            sent = notification.sent,
+            sender = sender,
+            vacancy = notification.vacancy
+        )
     }
-
-
 }

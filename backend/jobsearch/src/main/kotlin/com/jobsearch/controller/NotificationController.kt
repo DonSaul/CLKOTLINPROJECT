@@ -25,8 +25,9 @@ class NotificationController(private val notificationService: NotificationServic
     }
     @Transactional
     @GetMapping("/recipient/{email}")
-    fun getNotificationsByRecipientId(@PathVariable email: String): List<NotificationDTO> {
-        return notificationService.getNotificationsByRecipientUsername(email)
+    fun getNotificationsByRecipientId(@PathVariable email: String):ResponseEntity<List<Notification>> {
+        val notifications = notificationService.getNotificationsByRecipientUsername(email)
+        return ResponseEntity(notifications, HttpStatus.OK)
     }
 
     @Transactional
