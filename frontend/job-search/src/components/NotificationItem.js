@@ -15,7 +15,7 @@ const NotificationItem = ({ notifications }) => {
           <Typography sx={{ fontSize: 14, textAlign: 'left' }}>Type: {notification.type.type}</Typography>
           {notification.sender && (
             <Typography sx={{ fontSize: 14, textAlign: 'left' }}>
-              Sender: {notification.sender}
+              Sender: {notification.sender.sender}
             </Typography>
           )}
           <Typography sx={{ fontSize: 14, textAlign: 'left' }}>Content: {notification.content}</Typography>
