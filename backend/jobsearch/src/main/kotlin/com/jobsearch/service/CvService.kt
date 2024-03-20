@@ -67,11 +67,11 @@ class CvService(
             )
         }
 
-        val skillIds = cvDTO.longSkillString.split(",").map { it.toInt() }.toSet()
-
         // Adding skills to CV
-        skillIds.forEach { skillId ->
-            val skill = skillRepository.findById(skillId).orElse(null)
+        cvDTO.skillIds.forEach { skillId ->
+            val skill = skillRepository.findById(skillId)
+                .orElseThrow { NotFoundException("No Skill found with id $skillId") }
+
             skill?.let {
                 cv.skills?.add(it)
             }
@@ -103,6 +103,7 @@ class CvService(
 
         val authenticatedUser = userService.retrieveAuthenticatedUser()
 
+        // Checking if user is the owner of the CV he's trying to edit
         if (cv.user != authenticatedUser) {
             throw IllegalAccessException("You are not authorized to edit this CV")
         }
@@ -115,7 +116,6 @@ class CvService(
         }
 
         // Updating jobs
-
         // Removing jobs from the CV that are not in the request
         cv.jobs?.removeIf { job -> !cvDTO.jobs.any { it.id == job.id } }
 
@@ -152,7 +152,6 @@ class CvService(
         }
 
         // Updating projects
-
         // Removing projects from the CV that are not in the request
         cv.projects?.removeIf { project -> !cvDTO.projects.any { it.id == project.id } }
 
@@ -181,24 +180,26 @@ class CvService(
         }
 
         // Updating skills
-        val skillIds = cvDTO.longSkillString.split(",").map { it.toInt() }.toSet()
-
         // Getting current skills from the CV
         val currentSkillIds = cv.skills?.map { it.skillId!! }?.toSet() ?: emptySet()
 
         // Removing skills from the CV that are not in the request
-        cv.skills?.removeIf { skill -> skill.skillId !in skillIds }
+        cv.skills?.removeIf { skill -> skill.skillId !in cvDTO.skillIds }
 
         // Adding new skills to the CV
-        skillIds.filterNot { it in currentSkillIds }.forEach { id ->
-            skillRepository.findById(id).ifPresent { cv.skills?.add(it) }
+        cvDTO.skillIds.filterNot { it in currentSkillIds }.forEach { skillId ->
+            val skill = skillRepository.findById(skillId)
+                .orElseThrow { NotFoundException("No Skill found with id $skillId") }
+
+            skill?.let {
+                cv.skills?.add(it)
+            }
         }
 
         val updatedCv = cvRepository.save(cv)
 
         return mapToCvDTO(updatedCv)
     }
-
 
     fun deleteCv(cvId: Int): String {
         val cv = cvRepository.findById(cvId)
@@ -267,5 +268,4 @@ class CvService(
             }?.toSet() ?: emptySet()
         )
     }
-
 }
