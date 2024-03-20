@@ -66,4 +66,10 @@ class UserController(private val userService: UserService) {
         val updatedUser = userService.activatedNotificationTypes(email, notificationTypeId)
         return ResponseEntity(updatedUser, HttpStatus.OK)
     }
+
+    @GetMapping("notificationStatus/{email}")
+    fun getUserNotificationStatus(@PathVariable email: String): ResponseEntity<Boolean> {
+        val notificationStatus = userService.getUserNotificationStatus(email)
+        return ResponseEntity(notificationStatus, HttpStatus.OK)
+    }
 }

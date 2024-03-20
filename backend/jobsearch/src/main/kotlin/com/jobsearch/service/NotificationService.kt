@@ -121,4 +121,6 @@ class NotificationService(
             .orElseThrow { NoSuchElementException("No latest notification found") }
         return mapToDto(latestNotification)
     }
+
+
 }
