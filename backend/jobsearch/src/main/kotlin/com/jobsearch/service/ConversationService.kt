@@ -33,7 +33,7 @@ class ConversationService(
                     user2 = conversation.user2,
                     lastMessage = conversation.getLastMessage()
             )
-        }
+        }.sortedByDescending { it.lastMessage?.date }
     }
 
     fun sendMessage(chatMessageRequestDTO: ChatMessageRequestDTO): ChatMessageDTO {
