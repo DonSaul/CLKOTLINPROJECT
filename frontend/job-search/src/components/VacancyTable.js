@@ -57,7 +57,7 @@ export default function VacancyTable({dataFromQuery}) {
     const [rowSelection, setRowSelection] = useState({});
 
     useEffect(() => {
-        //do something when the row selection changes
+        console.log("rowSelection",rowSelection);
     }, [rowSelection]);
 
     const handleApply = (rowData) => {
@@ -101,9 +101,6 @@ export default function VacancyTable({dataFromQuery}) {
         navigate(`${paths.vacancies}/${row.original.id}`);
         }}>
       Visit 
-    </MenuItem>,
-    <MenuItem key="delete" onClick={() => console.info('Delete')}>
-      Delete
     </MenuItem>,
   ],
         

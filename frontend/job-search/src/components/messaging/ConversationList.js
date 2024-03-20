@@ -16,14 +16,14 @@ const ConversationsList = ({ conversations, onSelectConversation,onSetUserData }
   const [formattedConversations, setFormattedConversations] = useState();
 
   const handleConversationClick = (index) => {
-    console.log("the index conversation is ", index);
+    //console.log("the index conversation is ", index);
     //console.log("selected conversation: ", formattedConversations[index])
-    console.log("conversations are", conversations);
-    console.log("formatted  are", formattedConversations);
+    //console.log("conversations are", conversations);
+    //console.log("formatted  are", formattedConversations);
 
     const selectedConversation = formattedConversations[index];
     if (selectedConversation?.email) {
-      console.error("selected email", selectedConversation.email);
+      //console.error("selected email", selectedConversation.email);
       onSelectConversation(selectedConversation.email);
 
       
@@ -74,7 +74,8 @@ const ConversationsList = ({ conversations, onSelectConversation,onSetUserData }
       user: user,
       senderName: sender?.email === getUserEmail() ? sender?.firstName : sender?.lastName,
       senderLastName: sender?.email === getUserEmail() ? sender?.firstName : sender?.lastName,
-      roleId:user.role.id
+      roleId:user.role.id,
+      senderEmail:sender?.email
     };
   };
 
@@ -82,13 +83,13 @@ const ConversationsList = ({ conversations, onSelectConversation,onSetUserData }
 
     if (conversations) {
       setFormattedConversations(conversations.map(formatConversation));
-      console.log('Formatted Conversations:', formattedConversations);
+      //console.log('Formatted Conversations:', formattedConversations);
     }
 
   }, [conversations]);
 
-  console.log('Type of conversations:', typeof conversations);
-  console.log('conversations:', conversations);
+ // console.log('Type of conversations:', typeof conversations);
+  //console.log('conversations:', conversations);
   return (
     <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
       <Typography>
@@ -111,7 +112,7 @@ const ConversationsList = ({ conversations, onSelectConversation,onSetUserData }
               <UserAvatar user={conversation.user}></UserAvatar>
             </ListItemAvatar>
             <ListItemText
-              primary={truncateText(conversation.topMessage,20)}
+              //primary={truncateText(conversation.topMessage,20)}
               secondary={
                 <React.Fragment>
                   <Typography
@@ -121,7 +122,16 @@ const ConversationsList = ({ conversations, onSelectConversation,onSetUserData }
                     color="text.primary"
 
                   >
-                    {`${conversation.senderName} ${conversation.senderLastName}`}
+                    {conversation.senderEmail === getUserEmail() ? 
+                    (<>
+                    {`You`}
+                    </>) 
+                    :
+                     (<>
+                     
+                     {`${conversation.senderName} ${conversation.senderLastName}`}
+                     </>)}
+                    
                   </Typography >
                   {` — `}
                   <Typography //fix this
