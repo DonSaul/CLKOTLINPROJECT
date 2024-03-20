@@ -1,7 +1,8 @@
 import { useMemo, useState, useEffect } from 'react';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import Button from '@mui/material/Button';
-import { useApplyVacancy } from '../hooks/useApplyVacancy';
+// import { useApplyVacancy } from '../hooks/useApplyVacancy';
+import { useSendInvitation } from '../hooks/useSendInvitation';
 import { useGetCurrentUserCv } from '../hooks/useCV';
 import { useNavigate } from 'react-router-dom';
 import { ROLES } from '../helpers/constants';
@@ -12,7 +13,7 @@ export default function CandidatesTable({dataFromQuery}) {
 
 
     const {getUserRole} = useAuth();
-    const {mutate:applyToVacancy, isError, isSuccess}=useApplyVacancy();  //remove
+    const {mutate:sendInvitation, isError, isSuccess}=useSendInvitation();  //remove
 
     const navigate = useNavigate();
 
@@ -45,10 +46,10 @@ export default function CandidatesTable({dataFromQuery}) {
         },
 
         {
-            id: 'applyButton', 
+            id: 'sendButton', 
             header: 'Status',
             Cell: ({ row }) => (
-                <Button variant="contained" color="primary" onClick={() => handleApply(row.original)} disabled={getUserRole()!==ROLES.CANDIDATE}>
+                <Button variant="contained" color="primary" onClick={() => handleInvite(row.original)} disabled={getUserRole()!==ROLES.MANAGER}>
                     Invite
                 </Button>
             ),
@@ -64,25 +65,30 @@ export default function CandidatesTable({dataFromQuery}) {
         //do something when the row selection changes
     }, [rowSelection]);
 
-    const handleApply = (rowData) => {
+    const handleInvite = (rowData) => {
+        const candidateId = rowData.id;
+        console.log('Sending invitation to candidate:', candidateId);
+        navigate(`${paths.sendInvitation.replace(':id', candidateId)}`);
+    };
+    // const handleInvite = (rowData) => {
         
-        console.log('Applying to vacancy:', rowData);
+    //     console.log('Sending invitation:', rowData);
 
 
-        let applicationData=
-        {
-            vacancyId:rowData.id,
+    //     let candidateData=
+    //     {
+    //         candidateId:rowData.id,
             
 
 
-        }
+    //     }
 
 
-        applyToVacancy(applicationData);
+    //     sendInvitation(candidateData);
 
 
 
-      };
+    //   };
 
     const table = useMaterialReactTable({
         columns:columnsCandidates,
