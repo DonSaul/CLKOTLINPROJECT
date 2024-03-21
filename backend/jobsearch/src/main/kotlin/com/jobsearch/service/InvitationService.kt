@@ -25,9 +25,8 @@ class InvitationService(
     @Transactional
     fun createInvitation(invitationDTO: InvitationDTO): InvitationDTO {
 
-       val managerUser = userService.retrieveAuthenticatedUser()
+        val managerUser = userService.retrieveAuthenticatedUser()
 
-//        val availableVacancies = vacancyService.retrieveVacancyByManager()
 
         val vacancy = vacancyRepository.findById(invitationDTO.vacancyId!!)
             .orElseThrow { NotFoundException("Vacancy not found with ID: ${invitationDTO.vacancyId}") }
@@ -38,13 +37,16 @@ class InvitationService(
 
         val currentDateTime = LocalDateTime.now()
 
+        val defaultSubject = "Default Subject"
+        val defaultContent = "Default content"
+
         val invitationEntity = invitationDTO.let {
-            Invitation(it.id, candidate, it.subject, it.content, currentDateTime, it.sent, managerUser, vacancy)
+            Invitation(it.id, candidate, defaultSubject, defaultContent, currentDateTime, it.sent, managerUser, vacancy)
         }
 
         val newInvitation = invitationRepository.save(invitationEntity)
 
-        sendInvitation(newInvitation)
+//        sendInvitation(newInvitation)
 
         // Get notification when sent
         val notificationDTO = NotificationDTO(
@@ -90,7 +92,6 @@ class InvitationService(
 
         invitation.subject = invitationDTO.subject
         invitation.content = invitationDTO.content
-        // preguntar si se pueded modificar vacancy
 
         val updatedInvitation = invitationRepository.save(invitation)
         return mapToInvitationDTO(updatedInvitation)
@@ -121,12 +122,12 @@ class InvitationService(
         }
     }
 
-    fun sendInvitation(invitation: Invitation) {
-        invitation.sent = true
-        //invitation.sentDateTime = LocalDateTime.now()
-
-        invitationRepository.save(invitation)
-    }
+//    fun sendInvitation(invitation: Invitation) {
+//        invitation.sent = true
+//        //invitation.sentDateTime = LocalDateTime.now()
+//
+//        invitationRepository.save(invitation)
+//    }
 }
 
 
