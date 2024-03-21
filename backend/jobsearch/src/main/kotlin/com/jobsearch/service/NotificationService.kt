@@ -139,7 +139,7 @@ class NotificationService(
             .map { it.copy(password = null.toString()) }
             .orElseThrow { NoSuchElementException("Could not find any user with the id $recipientId") }
 
-        return Notification
+        return Notification(
             id = notification.id,
             type = notification.type,
             recipient = recipient,
