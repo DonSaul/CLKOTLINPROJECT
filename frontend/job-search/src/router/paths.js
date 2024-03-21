@@ -14,7 +14,9 @@ export const paths = {
     notifications:'/notifications',
     messaging:'/messaging',
     createVacancy:'/vacancies/new',
+    managerVacanciesPage: '/vacancies/manage',
     createUser:'/admin/users/new',
+    sendInvitation:'/users/:id/send-invitation',
     notAccess:'/no-access'
 
 }
