@@ -100,11 +100,10 @@ class VacancyService(
                 it.salaryExpectation,
                 it.yearsOfExperience,
                 it.description,
-                it.jobFamily.id!!,
+                it.jobFamily.id,
                 it.jobFamily.name,
                 it.manager.id
             )
         }
     }
-
 }

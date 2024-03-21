@@ -8,7 +8,7 @@ data class VacancyResponseDTO(
     val salaryExpectation: Int,
     val yearsOfExperience: Int,
     val description: String,
-    val jobFamilyId: Int,
+    val jobFamilyId: Int?,
     val jobFamilyName: String,
-    val managerId: Int
+    val managerId: Int?
 )
