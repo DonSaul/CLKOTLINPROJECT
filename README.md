@@ -4,8 +4,9 @@
 
 1. [Introduction](#introduction)
 2. [Getting Started](#getting-started) <br>
-   2.1. [Prerequisites](#prerequisites) <br>
-   2.2. [Initial Setup and Configuration](#initial-setup-and-configuration)
+   2.1. [Communication](#communication-between-frontend-and-backend) <br>
+   2.2. [Prerequisites](#prerequisites) <br>
+   2.3. [Initial Setup and Configuration](#initial-setup-and-configuration)
 3. [Basic Usage](#basic-usage) <br>
    3.1. [Basic Operations and Examples as a Candidate](#basic-operations-and-examples-as-a-candidate) <br>
    3.2. [Basic Operations and Examples as a Manager](#basic-operations-and-examples-as-a-manager)
@@ -13,21 +14,40 @@
    4.1. [Model-View-Presenter (MVP)](#model-view-presenter-mvp) <br>
 5. [Security Features and Best Practices](#security-features-and-best-practices)
 6. [Advanced Functionalities](#advanced-functionalities) <br>
-   6.1. [Work Order Filtering](#work-order-filtering) <br>
-   6.2. [Search Technician By Name](#search-technician-by-name) <br>
-   6.3. [Report Generation](#report-generation) <br>
-   6.4. [Testing](#testing) <br>
-   6.5. [Login](#login) <br>
-   6.6. [Data Query](#data-query) <br>
-   6.7. [Frontend](#frontend) <br>
-7. [License](#license)
+   6.1. [Data Query](#data-query) <br>
+   6.2. [Frontend files](#frontend-helper-files) <br>
+    
 
 ## Introduction
 
 The JobSearch web application is designed for employment and management purposes. It facilitates job openings, candidate
 registration, and application submissions.
 
+| Role      | Basic Operations                                                                                                                            |
+|-----------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| Candidate | - Register an account with your details.                                                                                                    |
+|           | - Log in to your account securely.                                                                                                          |
+|           | - Create and manage your CV, including details like years of experience, projects, education, and salary expectation.                       |
+|           | - Search for job vacancies based on job family, years of experience, and salary expectation.                                                |
+|           | - Apply to vacancies matching your skills and expectations.                                                                                 |
+|           | - Communicate with managers regarding job opportunities.                                                                                    |
+| Manager   | - Create and manage job vacancies, specifying details like job family, company name, description, required years of experience, and salary. |
+|           | - Search for candidates based on filters such as years of experience, job family, and salary expectation.                                   |
+|           | - Send vacancy invitations to candidates who match the job requirements.                                                                    |
+
 ## Getting Started
+
+### Communication between Frontend and Backend
+
+The frontend and backend of JobSearch communicate via HTTP requests using the RESTful protocol. When a user interacts
+with the frontend user interface, requests are sent to the backend to perform operations such as logging in, registering
+a user, searching for vacancies, creating CVs, etc.
+
+This communication occurs through files such as paths.js, **RequireAuth.js**, and **router.js**, where endpoints and
+authentication mechanisms are defined and utilized. The backend processes these requests and returns corresponding
+responses, which the frontend utilizes to update the user interface and display information to the user. The
+communication between the frontend and backend is based on a set of RESTful endpoints defined in the backend, which the
+frontend utilizes to perform various operations.
 
 ### Prerequisites
 
@@ -55,7 +75,7 @@ PostgreSQL. [Add Dependency PostgreSQL Driver](https://start.spring.io/) ```runt
 
 ## Basic Usage
 
-### Basic Operations and Examples as a Candidate
+### Basic Operations and examples as a Candidate
 
 - Candidate registration.
 - Candidate login.
@@ -74,6 +94,54 @@ PostgreSQL. [Add Dependency PostgreSQL Driver](https://start.spring.io/) ```runt
 ## Project Architecture
 
 ### Model-View-Presenter (MVP)
+
+```
+#backenend: jobsearch/
+├── .gradle
+├── .idea
+├── build
+├── gradle
+├── out
+└── src/
+├── main/
+└── kotlin/
+└── com.jobsearch/
+├── config
+├── controller
+├── dto
+├── entity
+├── exception
+├── interceptor
+├── jwt
+├── repository
+└── response
+└── resources  
+└── test
+
+/fronted/job-search
+├── node_modules
+├── public
+├── src
+│   ├── api
+│   ├── assets
+│   ├── components
+│   ├── helpers
+│   ├── hooks
+│   ├── pages
+│   ├── router
+│   │   ├── paths.js
+│   │   ├── RequireAuth.js
+│   │   └── router.js
+│   ├── App.css
+│   ├── App.js
+│   ├── App.test.js
+│   ├── index.css
+│   ├── index.js
+│   ├── logo.svg
+│   ├── reportWebVitals.js
+│   └── setupTests.js
+
+```
 
 Organized architecture for separation of concerns, such as:
 
@@ -231,8 +299,33 @@ The project includes various entity classes representing database tables:
 - `Status`: Stores application statuses.
 - `User`: Stores user account information.
 
-## Frontend
+### Frontend Helper Files
 
-User-friendly frontend development.
+The frontend helper files in the `/helpers` directory provide essential functionalities and constants used throughout
+the application. Here's an overview:
 
+| File           | Purpose                                                                                               |
+|----------------|-------------------------------------------------------------------------------------------------------|
+| constants.js   | Defines constants such as the authentication token name (`AUTH_TOKEN_NAME`) and user roles (`ROLES`). |
+| endpoints.js   | Contains endpoint URLs for various API requests used in the application.                              |
+| queryClient.js | Creates a React Query Client instance used for data fetching and caching.                             |
+| tokenHelper.js | Provides helper functions to decode and extract information from authentication tokens.               |
+| userContext.js | Defines the authentication context and provides hooks to access user authentication information.      |
+
+These helper files play a crucial role in managing authentication, API communication, and user context within the
+frontend application.
+
+### Router Files
+
+The router files in the `/router` directory define the application's navigation and route authentication logic. Here's a
+breakdown:
+
+| File           | Purpose                                                                                                 |
+|----------------|---------------------------------------------------------------------------------------------------------|
+| paths.js       | Defines path constants for different routes within the application.                                     |
+| RequireAuth.js | Implements a component to ensure route access is restricted to authenticated users with specific roles. |
+| router.js      | Configures the application routes using React Router, including route guarding and role-based access.   |
+
+These router files ensure proper navigation and access control within the frontend application, enhancing overall user
+experience and security.
 
