@@ -8,6 +8,7 @@ import { useNotificationUpdater } from '../hooks/notifications/useNotificationUp
 import { useNotificationActivated } from '../hooks/notifications/useGetCurrentOnNotification';
 import { useNotificationTypeUpdater } from '../hooks/notifications/useNotificationTypesUpdated';
 import { useNotificationTypes } from '../hooks/notifications/useNotificationTypes';
+import { Button, ButtonGroup } from '@mui/material';
 
 const Notifications = () => {
   const { user } = useAuth();
@@ -21,6 +22,18 @@ const Notifications = () => {
   const [vacancyChecked, setVacancyChecked] = useState(false);
   const [invitationChecked, setInvitationChecked] = useState(false);
   const [messageChecked, setMessageChecked] = useState(false);
+
+  //Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = notifications.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(notifications.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   const handleVacancyCheckboxChange = (event) => {
     const newValue = event.target.checked;
@@ -86,12 +99,33 @@ const Notifications = () => {
         </CardContainer>
       )}
       {initialCheckboxValue ? (
-        <CardContainer width='xs'>
-          {notifications.length > 0 ? (
-            <NotificationItem notifications={notifications} />
+        <CardContainer width='sm'>
+          {currentItems.length > 0 ? (
+            <NotificationItem notifications={currentItems} />
           ) : (
             <p>No notifications found</p>
           )}
+          <ButtonGroup>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </Button>
+            <Button style={{ color: 'black' }}>{currentPage}</Button>
+            <Button style={{ color: 'black' }}>of</Button>
+            <Button style={{ color: 'black' }}>{totalPages}</Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentItems.length < itemsPerPage}
+            >
+              Next
+            </Button>
+          </ButtonGroup>
         </CardContainer>
       ) : (
         <div>
