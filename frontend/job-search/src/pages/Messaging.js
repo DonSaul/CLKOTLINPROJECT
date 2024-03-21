@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import CardContainer from '../components/CardContainer';
 import { Grid } from '@mui/material';
 import { Box, ThemeProvider, createTheme } from '@mui/material';
-import AlignItemsList from '../components/messaging/ConversationList';
-import VirtualizedList from '../components/messaging/UserList';
-import MessageBubble from '../components/messaging/MessageBubble';
 import ChatBox from '../components/messaging/ChatBox';
 import { useAuth } from '../helpers/userContext';
 import ConversationsList from '../components/messaging/ConversationList';
-
-
-
+import UserList from '../components/messaging/UserList';
+import useGetUsers from '../hooks/messaging/useGetUsers';
+import { useEffect } from 'react';
+import useGetConversations from '../hooks/messaging/useGetConversations';
+import useGetCurrentConversation from '../hooks/messaging/useGetCurrentConversation';
+import {CircularProgress} from '@mui/material';
 const theme = createTheme({
     palette: {
         primary: {
@@ -27,33 +27,41 @@ const theme = createTheme({
 
 const Messaging = () => {
 
-    const [selectedConversation, setSelectedConversation] = useState(null);
+    const [selectedConversation, setSelectedConversation] = useState();
     const { getUserEmail,getUserFirstName,getUserLastName } = useAuth();
-    const handleSelectConversation = (index) => {
-        setSelectedConversation(index);
-       console.log("selected conversatioin:",index);
-    };
+    const [selectedUserChat,setSelectedUserChat]= useState();
+  
+    
+    const {data:userList} = useGetUsers();
+    const {data:userConversations}= useGetConversations();
+    const {data:currentConversation,refetch:fetchConversation}=useGetCurrentConversation(selectedConversation);
 
 
-    const messages = [
-        { date: '2024-03-05', userName: 'John', firstName: 'John', lastName: 'Doe', message: 'Hello there!' },
-        { date: '2024-03-05', userName:  getUserEmail() , firstName: getUserFirstName(), lastName: getUserLastName(), message: 'Hi John! How are you?' },
-        { date: '2024-03-05T12:30:00', userName: 'John', firstName: 'John', lastName: 'Doe', message: 'Whats up' },
-        { date: '2024-03-05T12:30:00', userName:  getUserEmail() , firstName: getUserFirstName(), lastName: getUserLastName(), message: 'ABD' },
-        { date: '2024-03-05T12:55:12', userName: 'John', firstName: 'John', lastName: 'Doe', message: 'Im back to left' },
-    ];
-    const conversations= [
-        { date: '2022-03-05', userName: 'John', topMessage: 'Hello there!' ,firstName: 'John', lastName: 'Doe'},
-        { date: '2022-03-05', userName: 'Laura', topMessage: 'hey!' ,firstName: 'Laura', lastName: 'Bue'},
 
-        { date: '2022-03-05', userName: 'Zaul', topMessage: 'job for you' ,firstName: 'Zaul', lastName: 'Xolo'},
+    const [filteredUserList, setFilteredUserList] = useState([]);
 
+    useEffect(() => {
+      if (userList) {
+        const filteredList = userList.filter(user => user.email !== getUserEmail());
+        setFilteredUserList(filteredList);
+      }
+    }, [userList]);
 
-    ]
+  
+
+    useEffect( () =>{
+
+        if (selectedConversation){
+            console.log("YES ",currentConversation)
+            fetchConversation();
+        }
+        
+        
+
+    },[selectedConversation,fetchConversation])
 
 
     return (
-
 
         <ThemeProvider theme={theme}>
 
@@ -71,7 +79,10 @@ const Messaging = () => {
                                // },
                             }}
                         >
-                            <ConversationsList conversations={conversations} onSelectConversation={handleSelectConversation}></ConversationsList>
+                             
+                            <ConversationsList conversations={userConversations} onSelectConversation={setSelectedConversation} onSetUserData={setSelectedUserChat}>
+
+                            </ConversationsList>
 
                         </Box>
                     </Grid>
@@ -87,7 +98,7 @@ const Messaging = () => {
                                 },
                             }}
                         >
-                            <ChatBox data={messages}/>
+                            <ChatBox data={currentConversation} user={selectedConversation} userData={selectedUserChat}/>
 
                            
 
@@ -106,13 +117,10 @@ const Messaging = () => {
                                // },
                             }}
                         >
-                            <VirtualizedList></VirtualizedList>
+                            <UserList users={filteredUserList} onSelectUser={setSelectedConversation}  onSetUserData={setSelectedUserChat}></UserList>
 
                         </Box>
                     </Grid>
-
-
-
 
 
                 </Grid>

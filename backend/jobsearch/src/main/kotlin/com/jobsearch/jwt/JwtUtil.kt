@@ -1,4 +1,5 @@
 package com.jobsearch.jwt
+import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.UserRepository
 import com.jobsearch.service.UserDetailsImpl
 import io.jsonwebtoken.Jwts
@@ -74,7 +75,9 @@ class JwtAuthenticationFilter(
 
         if (jwt != null && jwtProvider.validateJwtToken(jwt)) {
             val username = jwtProvider.getUserNameFromJwtToken(jwt)
-            val userDetails = UserDetailsImpl.build(userRepository.findByEmail(username).get())
+            val userEntity = userRepository.findByEmail(username)
+            if (userEntity.isEmpty) throw NotFoundException("User with email $username not found")
+            val userDetails = UserDetailsImpl.build(userEntity.get())
             val authentication = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
             authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
             SecurityContextHolder.getContext().authentication = authentication

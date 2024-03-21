@@ -2,7 +2,7 @@ import React from 'react';
 import Avatar from '@mui/material/Avatar';
 import { deepOrange } from '@mui/material/colors';
 import { useAuth } from '../helpers/userContext';
-
+import { Tooltip } from '@mui/material';
 const UserAvatar = ({ user}) => {
   const { getUserEmail, getUserFirstName, getUserLastName } = useAuth();
 
@@ -33,9 +33,9 @@ const UserAvatar = ({ user}) => {
     
       return user;
     } else  {
-      
+      console.log("WHAT IS WRONG WITH EMAIL",getUserEmail())
       return {
-        userName: getUserEmail(),
+        email: getUserEmail(),
         firstName: getUserFirstName(),
         lastName: getUserLastName(),
       };
@@ -43,15 +43,17 @@ const UserAvatar = ({ user}) => {
   };
 
   const userData = getUserData();
-  const hasName = userData.firstName || userData.lastName;
+  const hasName = userData?.firstName || userData?.lastName;
   return (
     <>
       {userData && (
-        <Avatar sx={{ bgcolor: stringToColour(userData?.userName) }}>
+        <Tooltip title={userData ? `${userData.firstName} ${userData.lastName} (${userData.email})` : "No data"}>
+        <Avatar sx={{ bgcolor: stringToColour(userData?.email || userData?.email) }}>
          {hasName
             ? `${capitalizeFirstLetter(userData.firstName)}${capitalizeFirstLetter(userData.lastName)}`
             : ':('}
         </Avatar>
+        </Tooltip>
       )}
     </>
   );

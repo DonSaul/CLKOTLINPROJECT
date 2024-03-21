@@ -16,6 +16,8 @@ import { paths } from "./paths";
 import { RequireAuth } from "./RequireAuth";
 import { ROLES } from "../helpers/constants";
 import NotAccess from "../pages/NotAccess";
+import VacancyView from "../pages/VacancyView";
+import ManagerSearchPage from "../pages/ManagerSearchPage";
 const RoutesConfig = () => {
   return (
     <Routes>
@@ -28,7 +30,10 @@ const RoutesConfig = () => {
         <Route path={paths.messaging} element={<Messaging />} />
         <Route path={paths.profile} element={<Profile />} />
         <Route path={paths.vacancies} element={<Vacancies />} />
+        <Route path={paths.vacancyDetails} element={<VacancyView />} />
+
       </Route>
+
 
       <Route element={<RequireAuth role={ROLES.CANDIDATE} />}>
         <Route path={paths.cv} element={<CV />} />
@@ -36,6 +41,7 @@ const RoutesConfig = () => {
       </Route>
       <Route element={<RequireAuth role={ROLES.MANAGER} />}>
         <Route path={paths.createVacancy} element={<CreateVacancy />} />
+        <Route path={paths.managerSearchPage} element={<ManagerSearchPage />} />
 
       </Route>
       <Route element={<RequireAuth role={ROLES.ADMIN} />}>
