@@ -1,52 +1,75 @@
 # JobSearch Web Application Documentation
 
-## Table of Contents
+![logo](https://www.dice.com/binaries/medium/content/gallery/dice/insights/2015/06/Screen-Shot-2015-06-22-at-10.41.14-AM.png)
 
-1. [Introduction](#introduction)
-2. [Getting Started](#getting-started) <br>
-   2.1. [Communication](#communication-between-frontend-and-backend) <br>
+🗂️ **JobSearch** is a web platform for employment and management aimed at facilitating interaction between candidates and managers. The project is a product of SoftServe's project lab, where we focus on learning and improving our skills.
+
+## Features
+
+### User Authentication and Authorization:
+- Users can register an account with their Last Name, First Name, password, and email.
+- Users can log in with their credentials.
+- Different roles (candidate, manager, admin) with specific permissions are supported.
+- Managers can create new user accounts with specific roles.
+
+### Candidate Features:
+- Candidates can create and manage their CV, including information about years of experience, projects, education, and salary expectation.
+- Candidates can search for vacancies based on job family, years of experience, and salary expectation.
+- Candidates can apply to vacancies that match their skills and expectations.
+
+### Manager Features:
+- Managers can create and manage vacancies, including job family, company name, description, required years of experience, and salary.
+- Managers can search for candidates based on filters such as years of experience, job family, and salary expectation.
+- Managers can send vacancy invitations to candidates who match the job requirements.
+
+### Communication Features:
+- Users can communicate with other users (managers or candidates) within the app.
+- Users receive email notifications for important actions such as new vacancies, invitations, and messages.
+- Users can respond to messages and notifications directly from the email.
+
+### Integration and Testing:
+- All features are seamlessly integrated to ensure they work together.
+- Thorough testing is conducted to identify and fix any bugs or issues.
+- The codebase is optimized and refined for better performance and reliability.
+
+### Documentation and Finalization:
+- The codebase is thoroughly documented, including APIs and usage instructions, for future reference.
+- Any remaining tasks or bug fixes are finalized before deployment.
+- The project is prepared for deployment and ensured to be production-ready.
+
+## Links
+
+- [Documentation](#documentation)
+- [Demo](https://google.com)
+
+
+## Discussion
+Please visit our [issues discussions](https://github.com/DonSaul/CLKOTLINPROJECT/issues) for general questions. **Issues are for bug reports and feature requests only.**
+
+
+## Contributors
+
+[![Contributors](https://contrib.nn.ci/api?repo=https://github.com/DonSaul/CLKOTLINPROJECT)](https://contrib.nn.ci/api?repo=https://github.com/DonSaul/CLKOTLINPROJECT)
+_______________________________________________
+## *documentation*
+
+## Table of Contents
+1. [Getting Started](#getting-started) <br>
    2.2. [Prerequisites](#prerequisites) <br>
    2.3. [Initial Setup and Configuration](#initial-setup-and-configuration)
-3. [Basic Usage](#basic-usage) <br>
+2. [Basic Usage](#basic-usage) <br>
    3.1. [Basic Operations and Examples as a Candidate](#basic-operations-and-examples-as-a-candidate) <br>
    3.2. [Basic Operations and Examples as a Manager](#basic-operations-and-examples-as-a-manager)
-4. [Project Architecture](#project-architecture) <br>
+3. [Project Architecture](#project-architecture) <br>
    4.1. [Model-View-Presenter (MVP)](#model-view-presenter-mvp) <br>
-5. [Security Features and Best Practices](#security-features-and-best-practices)
-6. [Advanced Functionalities](#advanced-functionalities) <br>
+4. [Security Features and Best Practices](#security-features-and-best-practices)
+5. [Advanced Functionalities](#advanced-functionalities) <br>
    6.1. [Data Query](#data-query) <br>
-   6.2. [Frontend files](#frontend-helper-files) <br>
+   2.2. [Communication](#communication-between-frontend-and-backend) <br>
+   6.3. [Frontend files](#frontend-helper-files) <br>
 
-## Introduction
-
-The JobSearch web application is designed for employment and management purposes. It facilitates job openings, candidate
-registration, and application submissions.
-
-| Role      | Basic Operations                                                                                                                            |
-|-----------|---------------------------------------------------------------------------------------------------------------------------------------------|
-| Candidate | - Register an account with your details.                                                                                                    |
-|           | - Log in to your account securely.                                                                                                          |
-|           | - Create and manage your CV, including details like years of experience, projects, education, and salary expectation.                       |
-|           | - Search for job vacancies based on job family, years of experience, and salary expectation.                                                |
-|           | - Apply to vacancies matching your skills and expectations.                                                                                 |
-|           | - Communicate with managers regarding job opportunities.                                                                                    |
-| Manager   | - Create and manage job vacancies, specifying details like job family, company name, description, required years of experience, and salary. |
-|           | - Search for candidates based on filters such as years of experience, job family, and salary expectation.                                   |
-|           | - Send vacancy invitations to candidates who match the job requirements.                                                                    |
 
 ## Getting Started
-
-### Communication between Frontend and Backend
-
-The frontend and backend of JobSearch communicate via HTTP requests using the RESTful protocol. When a user interacts
-with the frontend user interface, requests are sent to the backend to perform operations such as logging in, registering
-a user, searching for vacancies, creating CVs, etc.
-
-This communication occurs through files such as paths.js, **RequireAuth.js**, and **router.js**, where endpoints and
-authentication mechanisms are defined and utilized. The backend processes these requests and returns corresponding
-responses, which the frontend utilizes to update the user interface and display information to the user. The
-communication between the frontend and backend is based on a set of RESTful endpoints defined in the backend, which the
-frontend utilizes to perform various operations.
 
 ### Prerequisites
 
@@ -252,9 +275,17 @@ The following tables are part of the database schema:
 | users              | Stores user account information including email, password, etc.    |
 | vacancy            | Represents job vacancies posted by companies.                      |
 
-#### Database Models
+### Communication between Frontend and Backend
 
-The project includes various entity classes representing database tables:
+The frontend and backend of JobSearch communicate via HTTP requests using the RESTful protocol. When a user interacts
+with the frontend user interface, requests are sent to the backend to perform operations such as logging in, registering
+a user, searching for vacancies, creating CVs, etc.
+
+This communication occurs through files such as paths.js, **RequireAuth.js**, and **router.js**, where endpoints and
+authentication mechanisms are defined and utilized. The backend processes these requests and returns corresponding
+responses, which the frontend utilizes to update the user interface and display information to the user. The
+communication between the frontend and backend is based on a set of RESTful endpoints defined in the backend, which the
+frontend utilizes to perform various operations.
 
 ### Frontend Helper Files
 
