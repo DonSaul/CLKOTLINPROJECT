@@ -8,4 +8,3 @@ data class CandidateDTO(
     val yearsOfExperience: Int,
     val salaryExpectation: Int
 )
-//    val jobFamilyId: Int,
