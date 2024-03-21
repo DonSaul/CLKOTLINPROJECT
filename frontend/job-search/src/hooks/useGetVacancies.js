@@ -21,7 +21,7 @@ const fetchVacancies = async (salary,jobFamilyId,yearsOfExperience) => {
   });
   console.log("vacancy response",response);
 
-  if (!response.ok) {
+  if (!response.ok && response.status !== 204) {
     throw new Error('Failed to fetch vacancies');
   }
   let responseData = await response.json()

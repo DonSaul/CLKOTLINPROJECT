@@ -15,15 +15,12 @@ const fetchCandidates = async (salary, jobFamilyId, yearsOfExperience) => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
         },
-        // body: JSON.stringify(filters),
     });
 
     if (!response.ok) {
         throw new Error('Search failed');
     }
-
     const candidates = await response.json();
-    // console.log(candidates)
     return candidates.data;
 };
 

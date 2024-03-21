@@ -11,7 +11,6 @@ const ManagerSearchPage = () => {
         <div>
             <h1>Manager Search</h1>
             <CandidatesFilter setData={setData} />
-
             <CardContainer>
                 <CandidatesTable dataFromQuery={data}></CandidatesTable>
             </CardContainer>

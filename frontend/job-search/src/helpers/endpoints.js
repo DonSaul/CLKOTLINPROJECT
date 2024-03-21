@@ -9,6 +9,7 @@ const createUrl = (path) => {
 export const ENDPOINTS = {
   register:createUrl("auth/register"),
   searchCandidates:createUrl("candidates/search"),
+  getCandidatesByApplication:createUrl("candidates/vacancy"),
   getSkills:createUrl("skills"),
   submitCV:createUrl("cvs"),
   login:createUrl("auth/login"),
@@ -16,6 +17,7 @@ export const ENDPOINTS = {
   users:createUrl("users"),
   vacancy:createUrl("vacancy"),
   searchVacancies:createUrl("vacancy/search"),
+  getVacanciesByManager:createUrl("vacancy/my-vacancies"),
   userCv:createUrl("my-account/cv"),
   createUser:createUrl("users/create"),
   application:createUrl("application"),
