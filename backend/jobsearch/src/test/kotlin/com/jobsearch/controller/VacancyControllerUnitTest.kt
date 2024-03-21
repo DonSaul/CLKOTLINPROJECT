@@ -71,7 +71,6 @@ class VacancyControllerUnitTest {
                 content { contentType(MediaType.APPLICATION_JSON) }
                 jsonPath("$.data.id") { vacancyResponseDTO.id }
             }
-        // Verify that the service method to create Vacancy is called just once
         verify(vacancyService).createVacancy(vacancyRequestDTO)
     }
 
@@ -87,7 +86,6 @@ class VacancyControllerUnitTest {
                 content { content().contentType(MediaType.APPLICATION_JSON) }
                 content { jacksonObjectMapper().writeValueAsString(vacancyResponseDTO) }
             }
-        // Verify that the service method to retrieve a Vacancy is called just once with the correct id
         verify(vacancyService).retrieveVacancy(vacancyId)
     }
 
@@ -103,7 +101,6 @@ class VacancyControllerUnitTest {
                 content { jacksonObjectMapper().writeValueAsString(listOf(vacancyResponseDTO)) }
             }
             .andReturn().response.contentAsString
-        // Verify that the service method to retrieve all Vacancies is called just once
         verify(vacancyService).retrieveAllVacancy()
     }
 
@@ -113,10 +110,10 @@ class VacancyControllerUnitTest {
         // Perform a DELETE request to delete a Vacancy
         val vacancyId = 1
         mockMvc.delete("/api/v1/vacancy/{id}", vacancyId)
+            // Validate the response
             .andExpect {
                 status { isNoContent() }
             }
-        // Verify that the service method to delete a Vacancy is called just once
         verify(vacancyService).deleteVacancy(vacancyId)
     }
 
@@ -136,6 +133,5 @@ class VacancyControllerUnitTest {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
         }
-        // Verify that the service method to update a Vacancy is called just once
         verify(vacancyService).updateVacancy(1, vacancyRequestDTO)}
 }

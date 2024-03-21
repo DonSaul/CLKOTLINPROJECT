@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.verify
@@ -95,12 +96,12 @@ class VacancyServiceUnitTest {
         val vacancyId = VACANCY_1.id!!
         val vacancyEntity = VACANCY_1
         val expectedResponseDTO = EXPECTED_RESPONSE_DTO
-        // Mocking behavior of vacancyRepository
         `when`(vacancyRepository.findById(vacancyId)).thenReturn(Optional.of(vacancyEntity))
         // Calling the method under test
         val result = vacancyService.retrieveVacancy(vacancyId)
-        // Verifying the result
+        // then
         Assertions.assertEquals(expectedResponseDTO, result)
+        verify(vacancyRepository).findById(vacancyId)
         verify(vacancyRepository).findById(vacancyId)
     }
 
@@ -113,8 +114,9 @@ class VacancyServiceUnitTest {
         Assertions.assertThrows(NotFoundException::class.java) {
             vacancyService.retrieveVacancy(vacancyId)
         }
+        // then
         verify(vacancyRepository).findById(vacancyId)
-
+        verify(jobFamilyService, never()).findByJobFamilyId(anyInt())
     }
 
     @Test
@@ -123,14 +125,10 @@ class VacancyServiceUnitTest {
         `when`(jobFamilyService.findByJobFamilyId(VACANCY_REQUEST_DTO.jobFamilyId)).thenReturn(JOB_FAMILY)
         `when`(userService.retrieveAuthenticatedUser()).thenReturn(MANAGER_1)
         `when`(vacancyRepository.save(any())).thenReturn(VACANCY_1)
-
         // When
         val result = vacancyService.createVacancy(VACANCY_REQUEST_DTO)
-
         // Then
         Assertions.assertEquals(EXPECTED_RESPONSE_DTO, result)
-
-        // Verify mocks
         verify(jobFamilyService).findByJobFamilyId(VACANCY_REQUEST_DTO.jobFamilyId)
         verify(userService).retrieveAuthenticatedUser()
         verify(vacancyRepository).save(any())
@@ -142,13 +140,11 @@ class VacancyServiceUnitTest {
         val differentManager = MANAGER_2
         `when`(userService.retrieveAuthenticatedUser()).thenReturn(differentManager)
         `when`(vacancyRepository.findById(VACANCY_1.id!!)).thenReturn(Optional.of(VACANCY_1))
-
         // When
         Assertions.assertThrows(ForbiddenException::class.java){
             vacancyService.deleteVacancy(VACANCY_1.id!!)
         }
-
-        // Verify that the vacancyRepository delete method was not called
+        // Then
         verify(vacancyRepository, never()).delete(any())
         verify(userService).retrieveAuthenticatedUser()
     }
@@ -161,8 +157,6 @@ class VacancyServiceUnitTest {
         vacancyService.deleteVacancy(VACANCY_1.id!!)
         //then
         verify(vacancyRepository).delete(any())
-        verify(vacancyRepository).delete(any())
-
     }
 }
 

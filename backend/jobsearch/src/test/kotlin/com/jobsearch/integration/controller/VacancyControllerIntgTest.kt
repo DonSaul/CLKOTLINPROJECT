@@ -102,11 +102,10 @@ class VacancyControllerIntgTest {
         // Delete all records from the repository
         vacancyRepository.deleteAll()
         userRepository.deleteAll()
-
         // Save the managers and candidate mock objects
-        manager1 = userRepository.save(VacancyControllerIntgTest.MANAGER_1)
-        manager2 = userRepository.save(VacancyControllerIntgTest.MANAGER_2)
-        candidate1 = userRepository.save(VacancyControllerIntgTest.CANDIDATE_1)
+        manager1 = userRepository.save(MANAGER_1)
+        manager2 = userRepository.save(MANAGER_2)
+        candidate1 = userRepository.save(CANDIDATE_1)
     }
 
     @Test
@@ -143,8 +142,6 @@ class VacancyControllerIntgTest {
         }
         // Then
         response
-            .andDo { print() }
-            // Check that the response status is forbidden
             .andExpect {
             status { isForbidden() }
         }
@@ -165,7 +162,6 @@ class VacancyControllerIntgTest {
         }
         // then
         response
-            .andDo { print() }
             .andExpect {
                 status { isOk() }
                 content { contentType(MediaType.APPLICATION_JSON) }
@@ -189,8 +185,6 @@ class VacancyControllerIntgTest {
         }
         // then
         response
-            .andDo { print() }
-            // Check that the response status is forbidden
             .andExpect {
             status { isForbidden() }
         }
@@ -211,8 +205,6 @@ class VacancyControllerIntgTest {
         }
         // then
         response
-            .andDo { print() }
-            // Check that the response status is forbidden
             .andExpect {
             status { isForbidden() }
         }
@@ -232,8 +224,6 @@ class VacancyControllerIntgTest {
         }
         // then
         response
-            .andDo { print() }
-            // Check that the response status is not found
             .andExpect {
             status { isNotFound() }
         }
@@ -249,8 +239,6 @@ class VacancyControllerIntgTest {
         val response = mockMvc.delete("/api/v1/vacancy/${savedVacancy.id}")
         // then
         response
-            .andDo { print() }
-            // Check that the response status is no content
             .andExpect {
             status { isNoContent() }
         }
@@ -266,8 +254,6 @@ class VacancyControllerIntgTest {
         val response = mockMvc.delete("/api/v1/vacancy/${savedVacancy.id}")
         // then
         response
-            .andDo { print() }
-            // Check that the response status is forbidden
             .andExpect {
             status { isForbidden() }
         }
@@ -283,8 +269,6 @@ class VacancyControllerIntgTest {
         val response = mockMvc.delete("/api/v1/vacancy/$vacancyId")
         // then
         response
-            .andDo { print() }
-            // Check that the response status is no content
             .andExpect {
             status { isNotFound() }
         }
@@ -299,8 +283,6 @@ class VacancyControllerIntgTest {
         val response = mockMvc.get("/api/v1/vacancy/${savedVacancy.id}")
         // then
         response
-            .andDo { print() }
-            // Check that the response status is ok and body contains the expected data
             .andExpect {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
@@ -324,8 +306,6 @@ class VacancyControllerIntgTest {
         val response = mockMvc.get("/api/v1/vacancy/$vacancyId")
         // then
         response
-            .andDo { print() }
-            // Check that the response status is not found
             .andExpect {
             status { isNotFound() }
         }
@@ -343,7 +323,6 @@ class VacancyControllerIntgTest {
         val response = mockMvc.get("/api/v1/vacancy")
         // then
         response
-            .andDo { print() }
             .andExpect {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
@@ -365,8 +344,6 @@ class VacancyControllerIntgTest {
         val response = mockMvc.get("/api/v1/vacancy/my-vacancies")
         // then
         response
-            .andDo { print() }
-            // Check that the response status is ok and body contains the expected data
             .andExpect {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
@@ -386,7 +363,6 @@ class VacancyControllerIntgTest {
         val response = mockMvc.get("/api/v1/vacancy/search?salary=5000")
         // then
         response
-            .andDo { print() }
             .andExpect {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
