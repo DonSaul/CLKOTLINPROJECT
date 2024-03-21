@@ -12,12 +12,14 @@ import com.jobsearch.repository.VacancyRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers.any
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.never
 import org.mockito.MockitoAnnotations
-import java.util.*
-
+import java.util.Optional
 
 class VacancyServiceUnitTest {
     @Mock
@@ -29,13 +31,8 @@ class VacancyServiceUnitTest {
     @InjectMocks
     private lateinit var vacancyService: VacancyService
 
-    // Will be initialized in setUp
-    lateinit var VACANCY_1: Vacancy
-    lateinit var EXPECTED_RESPONSE_DTO: VacancyResponseDTO
-    lateinit var VACANCY_REQUEST_DTO: VacancyRequestDTO
-
     companion object {
-        // Mock objects, will be initialized in setUp
+        private val managerRole = Role(2, "manager")
         val JOB_FAMILY = JobFamily(1, "Information Technology")
         val MANAGER_1 = User(
             id = 1,
@@ -43,7 +40,7 @@ class VacancyServiceUnitTest {
             lastName = "Ger",
             email = "manager@mail.com",
             password = "test123",
-            role = Role(1,"manager")
+            role = managerRole
         )
         val MANAGER_2 = User(
             id = 2,
@@ -51,7 +48,7 @@ class VacancyServiceUnitTest {
             lastName = "Ger2",
             email = "manager2@mail.com",
             password = "test123",
-            role = Role(1,"manager")
+            role = managerRole
         )
         val VACANCY_1 = Vacancy(
             id = 1,
@@ -69,7 +66,7 @@ class VacancyServiceUnitTest {
                 name = it.name,
                 salaryExpectation = it.salaryExpectation,
                 yearsOfExperience = it.yearsOfExperience,
-                managerId = it.manager.id,
+                managerId = it.manager.id!!,
                 jobFamilyId = it.jobFamily.id!!,
                 jobFamilyName = it.jobFamily.name,
                 companyName = it.companyName,
@@ -78,7 +75,6 @@ class VacancyServiceUnitTest {
         }
         val VACANCY_REQUEST_DTO = VACANCY_1.let {
             VacancyRequestDTO(
-                id = null,
                 name = it.name,
                 salaryExpectation = it.salaryExpectation,
                 yearsOfExperience = it.yearsOfExperience,
@@ -89,13 +85,8 @@ class VacancyServiceUnitTest {
         }
     }
 
-
     @BeforeEach
         fun setUp() {
-            VACANCY_1 = VacancyServiceUnitTest.VACANCY_1
-            EXPECTED_RESPONSE_DTO = VacancyServiceUnitTest.EXPECTED_RESPONSE_DTO
-            VACANCY_REQUEST_DTO = VacancyServiceUnitTest.VACANCY_REQUEST_DTO
-
             MockitoAnnotations.openMocks(this)
         }
 
@@ -110,7 +101,7 @@ class VacancyServiceUnitTest {
         val result = vacancyService.retrieveVacancy(vacancyId)
         // Verifying the result
         Assertions.assertEquals(expectedResponseDTO, result)
-        verify(vacancyRepository, times(1)).findById(vacancyId)
+        verify(vacancyRepository).findById(vacancyId)
     }
 
     @Test
@@ -122,7 +113,7 @@ class VacancyServiceUnitTest {
         Assertions.assertThrows(NotFoundException::class.java) {
             vacancyService.retrieveVacancy(vacancyId)
         }
-        verify(vacancyRepository, times(1)).findById(vacancyId)
+        verify(vacancyRepository).findById(vacancyId)
 
     }
 
@@ -159,7 +150,7 @@ class VacancyServiceUnitTest {
 
         // Verify that the vacancyRepository delete method was not called
         verify(vacancyRepository, never()).delete(any())
-        verify(userService, times(1)).retrieveAuthenticatedUser()
+        verify(userService).retrieveAuthenticatedUser()
     }
 
     @Test
@@ -170,7 +161,8 @@ class VacancyServiceUnitTest {
         vacancyService.deleteVacancy(VACANCY_1.id!!)
         //then
         verify(vacancyRepository).delete(any())
-        verify(vacancyRepository, times(1)).delete(any())
+        verify(vacancyRepository).delete(any())
 
     }
 }
+

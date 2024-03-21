@@ -8,7 +8,6 @@ import com.jobsearch.entity.User
 import com.jobsearch.entity.Vacancy
 import com.jobsearch.repository.UserRepository
 import com.jobsearch.repository.VacancyRepository
-import jakarta.transaction.Transactional
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -18,7 +17,12 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.web.servlet.*
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
+import org.springframework.test.web.servlet.put
+import org.springframework.test.web.servlet.delete
+
 /**
  * Integration test for VacancyController.
  * Uses H2 database for testing with hardcoded base data contained in data.sql file.
@@ -38,15 +42,13 @@ class VacancyControllerIntgTest {
     lateinit var objectMapper: ObjectMapper
 
     // Will be initialized in setUp
-    lateinit var MANAGER_1: User
-    lateinit var MANAGER_2: User
-    lateinit var CANDIDATE_1: User
-    lateinit var VACANCY_ENTITY: Vacancy
-    lateinit var VACANCY_REQUEST: VacancyRequestDTO
-    lateinit var JOB_FAMILY: JobFamily
-
+    lateinit var manager1: User
+    lateinit var manager2: User
+    lateinit var candidate1: User
     companion object {
         // Mock objects, will be initialized in setUp
+        private val candidateRole = Role(1, "candidate")
+        private val managerRole = Role(2, "manager")
         val JOB_FAMILY = JobFamily(1, "Information Technology")
         val MANAGER_1 = User(
             id = null,
@@ -54,7 +56,7 @@ class VacancyControllerIntgTest {
             lastName = "Ger",
             email = "manager1@mail.com",
             password = "test123",
-            role = Role(1,"manager")
+            role = managerRole
         )
         val MANAGER_2 = User(
             id = null,
@@ -62,7 +64,7 @@ class VacancyControllerIntgTest {
             lastName = "Ger2",
             email = "manager2@mail.com",
             password = "test123",
-            role = Role(1,"manager")
+            role = managerRole
         )
         val CANDIDATE_1 = User(
             id = null,
@@ -70,7 +72,7 @@ class VacancyControllerIntgTest {
             lastName = "Ide",
             email = "candidate1@mail.com",
             password = "test123",
-            role = Role(2,"candidate")
+            role = candidateRole
         )
         val VACANCY_ENTITY = Vacancy(
             id = null,
@@ -84,7 +86,7 @@ class VacancyControllerIntgTest {
         )
         val VACANCY_REQUEST = VACANCY_ENTITY.let{
             VacancyRequestDTO(
-                id = null,
+
                 name = it.name,
                 companyName = it.companyName,
                 salaryExpectation = it.salaryExpectation,
@@ -102,14 +104,9 @@ class VacancyControllerIntgTest {
         userRepository.deleteAll()
 
         // Save the managers and candidate mock objects
-        MANAGER_1 = userRepository.save(VacancyControllerIntgTest.MANAGER_1)
-        MANAGER_2 = userRepository.save(VacancyControllerIntgTest.MANAGER_2)
-        CANDIDATE_1 = userRepository.save(VacancyControllerIntgTest.CANDIDATE_1)
-
-        // Assign the vacancy entity, vacancy request and job family mock objects
-        VACANCY_ENTITY = VacancyControllerIntgTest.VACANCY_ENTITY
-        VACANCY_REQUEST = VacancyControllerIntgTest.VACANCY_REQUEST
-        JOB_FAMILY = VacancyControllerIntgTest.JOB_FAMILY
+        manager1 = userRepository.save(VacancyControllerIntgTest.MANAGER_1)
+        manager2 = userRepository.save(VacancyControllerIntgTest.MANAGER_2)
+        candidate1 = userRepository.save(VacancyControllerIntgTest.CANDIDATE_1)
     }
 
     @Test
@@ -120,7 +117,6 @@ class VacancyControllerIntgTest {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.writeValueAsString(VACANCY_REQUEST)
         }
-
         // Then
         response
             .andDo { print() }
@@ -279,7 +275,7 @@ class VacancyControllerIntgTest {
 
     @Test
     @WithMockUser(username = "manager1@mail.com", authorities = ["manager"])
-    fun `Should return 204 when delete and vacancy is not found`() {
+    fun `Should return 404 when delete and vacancy is not found`() {
         // given
         // There is no vacancy with id 100
         val vacancyId = 100
@@ -290,7 +286,7 @@ class VacancyControllerIntgTest {
             .andDo { print() }
             // Check that the response status is no content
             .andExpect {
-            status { isNoContent() }
+            status { isNotFound() }
         }
     }
 
@@ -361,10 +357,10 @@ class VacancyControllerIntgTest {
     @WithMockUser(username = "manager1@mail.com", authorities = ["manager"])
     fun `Should return just the vacancies created by the manager`() {
         // given
-        val savedVacancy1 = vacancyRepository.save(VACANCY_ENTITY.copy(name = "Vacancy one", manager = MANAGER_1))
-        val savedVacancy2 = vacancyRepository.save(VACANCY_ENTITY.copy(name = "Vacancy two", manager = MANAGER_1))
-        val savedVacancy3 = vacancyRepository.save(VACANCY_ENTITY.copy(name = "Vacancy three", manager = MANAGER_1))
-        val savedVacancy4 = vacancyRepository.save(VACANCY_ENTITY.copy(name = "Vacancy four", manager = MANAGER_2))
+        val savedVacancy1 = vacancyRepository.save(VACANCY_ENTITY.copy(name = "Vacancy one", manager = manager1))
+        val savedVacancy2 = vacancyRepository.save(VACANCY_ENTITY.copy(name = "Vacancy two", manager = manager1))
+        val savedVacancy3 = vacancyRepository.save(VACANCY_ENTITY.copy(name = "Vacancy three", manager = manager1))
+        val savedVacancy4 = vacancyRepository.save(VACANCY_ENTITY.copy(name = "Vacancy four", manager = manager2))
         // when
         val response = mockMvc.get("/api/v1/vacancy/my-vacancies")
         // then
