@@ -1,5 +1,6 @@
 package com.jobsearch.dto
 
+
 data class UserResponseDTO(
     val id: Int,
     val firstName: String,
