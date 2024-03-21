@@ -122,7 +122,6 @@ class NotificationService(
             )
         }
     }
-
     fun mapToNotification(notification: Notification): Notification {
         //sender
         val senderId = notification.sender?.id

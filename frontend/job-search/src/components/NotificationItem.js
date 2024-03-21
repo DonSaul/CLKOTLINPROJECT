@@ -11,7 +11,7 @@ const NotificationItem = ({ notifications }) => {
       {notifications.map(notification => {
         // Create a Date object from the sentDateTime array
         let dateArray = notification.sentDateTime;
-        let date = new Date(Date.UTC(dateArray[0], dateArray[1] - 1, dateArray[2], dateArray[3], dateArray[4], dateArray[5], dateArray[6] / 1000));
+        const date = `${dateArray[0]}-${dateArray[1]}-${dateArray[2]} ${dateArray[3]}:${dateArray[4]}:${dateArray[5]} GMT-3`;
 
         return (
           <div key={notification.id}>
@@ -24,7 +24,7 @@ const NotificationItem = ({ notifications }) => {
             )}
             <Typography sx={{ fontSize: 14, textAlign: 'left' }}>Content: {notification.content}</Typography>
             <Typography sx={{ fontSize: 14, textAlign: 'left' }}>
-              Date: {date.toUTCString()}
+              Date: {date}
             </Typography>
             <hr />
           </div>
