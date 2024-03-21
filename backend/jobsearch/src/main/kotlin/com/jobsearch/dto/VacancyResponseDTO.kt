@@ -10,5 +10,5 @@ data class VacancyResponseDTO(
     val description: String,
     val jobFamilyId: Int,
     val jobFamilyName: String,
-    val managerId: Int?
+    val managerId: Int
 )
