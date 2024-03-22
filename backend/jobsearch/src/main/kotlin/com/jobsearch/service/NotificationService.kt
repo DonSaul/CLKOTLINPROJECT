@@ -8,10 +8,12 @@ import java.time.LocalDateTime
 import com.jobsearch.entity.NotificationType
 import com.jobsearch.entity.NotificationTypeEnum
 import com.jobsearch.entity.User
+import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.NotificationTypeRepository
 import com.jobsearch.repository.UserRepository
 import com.jobsearch.repository.VacancyRepository
 import org.springframework.data.repository.findByIdOrNull
+import java.util.concurrent.CompletableFuture
 
 @Service
 class NotificationService(
@@ -46,6 +48,7 @@ class NotificationService(
             println("User ${recipient.email} has notifications deactivated. Notification was not sent.")
         }
     }
+
     fun retrieveAllNotifications(): List<Notification> {
         return notificationRepository.findAll()
     }
@@ -54,6 +57,7 @@ class NotificationService(
         val notification = createNotification(notificationDTO)
         sendEmailNotification(notification)
     }
+
 
     private fun createNotification(notificationDTO: NotificationDTO): Notification {
         val typeNotification: NotificationType = notificationTypeRepository.findById(notificationDTO.type)
@@ -104,7 +108,8 @@ class NotificationService(
     fun findLatestMessageNotification(senderId: Int, recipientId: Int): NotificationDTO {
         val typeId = NotificationTypeEnum.MESSAGES.id
         val latestNotification = notificationRepository.findFirstBySenderIdAndRecipientIdAndTypeIdOrderBySentDateTimeDesc(senderId, recipientId, typeId)
-            .orElseThrow { NoSuchElementException("No latest notification found") }
+            .orElseThrow { NotFoundException("No latest notification found") }
+
         return mapToDto(latestNotification)
     }
     fun mapToDto(notification: Notification): NotificationDTO {

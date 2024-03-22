@@ -10,60 +10,46 @@ import { useState } from 'react';
 import { useAuth } from '../../helpers/userContext';
 import UserAvatar from '../UserAvatar';
 import { useEffect } from 'react';
+
 const ConversationsList = ({ conversations, onSelectConversation, onSetUserData }) => {
-
-  const { getUserEmail } = useAuth()
+  const { getUserEmail } = useAuth();
   const [formattedConversations, setFormattedConversations] = useState();
-
-  //todo: handle this based on id url
   const [selectedConversationIndex, setSelectedConversationIndex] = useState(null);
 
   const handleConversationClick = (index) => {
-    //console.log("the index conversation is ", index);
-    //console.log("selected conversation: ", formattedConversations[index])
-    //console.log("conversations are", conversations);
-    //console.log("formatted  are", formattedConversations);
     setSelectedConversationIndex(index);
     const selectedConversation = formattedConversations[index];
     if (selectedConversation?.email) {
-      //console.error("selected email", selectedConversation.email);
       onSelectConversation(selectedConversation.email);
-
-
       onSetUserData(selectedConversation);
     } else {
       console.error("Can't select this conversation");
     }
   };
 
-
   const truncateText = (text, maxLength) => {
-    if (text?.length <= maxLength) {
-      return text;
-    } else {
+    if (text && text.length > maxLength) {
       return text.substring(0, maxLength) + '...';
     }
-  }
-
-
+    return text;
+  };
 
   const formatConversation = (conversation) => {
     const { id, lastMessage, user1, user2 } = conversation;
 
     let firstName, lastName, email, user;
-    //user selection 
+
     if (user1?.email === getUserEmail()) {
       firstName = user2.firstName;
       lastName = user2.lastName;
       email = user2.email;
-      user = user2
+      user = user2;
     } else {
       firstName = user1?.firstName;
       lastName = user1?.lastName;
       email = user1?.email;
       user = user1;
     }
-
 
     const sender = lastMessage?.sender;
 
@@ -83,32 +69,22 @@ const ConversationsList = ({ conversations, onSelectConversation, onSetUserData 
   };
 
   useEffect(() => {
-
     if (conversations) {
       setFormattedConversations(conversations.map(formatConversation));
-      //console.log('Formatted Conversations:', formattedConversations);
     }
-
   }, [conversations]);
 
-  // console.log('Type of conversations:', typeof conversations);
-  //console.log('conversations:', conversations);
   return (
     <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-      <Typography>
-        Conversations
-      </Typography>
-
-      {formattedConversations && formattedConversations?.map((conversation, index) => (
+      <Typography>Conversations</Typography>
+      {formattedConversations && formattedConversations.map((conversation, index) => (
         <React.Fragment key={index}>
           <ListItem
             alignItems="flex-start"
             button
             onClick={() => handleConversationClick(index)}
             sx={{
-              ':hover': {
-                bgcolor: '#f0f0f0',
-              },
+              ':hover': { bgcolor: '#f0f0f0' },
               ...(selectedConversationIndex === index && { bgcolor: '#e1f5fe' }),
             }}
           >
@@ -116,27 +92,14 @@ const ConversationsList = ({ conversations, onSelectConversation, onSetUserData 
               <UserAvatar user={conversation.user}></UserAvatar>
             </ListItemAvatar>
             <div>
-              <Typography
-                sx={{ display: 'inline' }}
-                component="span"
-                variant="body2"
-                color="text.primary"
-              >
+              <Typography sx={{ display: 'inline' }} component="span" variant="body2" color="text.primary">
                 {conversation.senderEmail === getUserEmail() ? (
-                  <>
-                    <b>{`You`}</b>
-                  </>
+                  <b>You</b>
                 ) : (
-                  <>
-                    <b>
-                    {truncateText(`${conversation.senderName} ${conversation.senderLastName}`, 15)}
-                    
-                     
-                      </b>
-                  </>
+                  <b>{truncateText(`${conversation.senderName} ${conversation.senderLastName}`, 15)}</b>
                 )}
-              </Typography >
-              {` — `}
+              </Typography>
+              {' — '}
               <Typography
                 sx={{
                   display: 'inline',
@@ -154,11 +117,8 @@ const ConversationsList = ({ conversations, onSelectConversation, onSetUserData 
         </React.Fragment>
       ))}
       {!formattedConversations && <>No users Available</>}
-
-
-
     </List>
   );
-}
+};
 
 export default ConversationsList;

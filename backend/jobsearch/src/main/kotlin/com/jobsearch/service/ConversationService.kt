@@ -11,8 +11,10 @@ import com.jobsearch.entity.User
 import com.jobsearch.repository.ChatMessageRepository
 import com.jobsearch.repository.ConversationRepository
 import com.jobsearch.repository.UserRepository
+import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
-import java.text.SimpleDateFormat
+import org.springframework.transaction.annotation.Transactional
+import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.*
@@ -26,7 +28,6 @@ class ConversationService(
         private val conversationRepository: ConversationRepository,
         private val notificationService: NotificationService
 ) {
-
     fun getAllConversationsForCurrentUser():List<ConversationResponseDTO> {
         val currentUser = userService.retrieveAuthenticatedUser()
 
@@ -42,23 +43,12 @@ class ConversationService(
         }.sortedByDescending { it.lastMessage?.date }
     }
 
+    @Transactional
     fun sendMessage(chatMessageRequestDTO: ChatMessageRequestDTO): ChatMessageDTO {
         val currentUser = userService.retrieveAuthenticatedUser()
         val receiver = userRepository.findByEmail(chatMessageRequestDTO.receiverUserName)
-              .orElseThrow { NoSuchElementException("No user found with email ${chatMessageRequestDTO.receiverUserName}") }
+            .orElseThrow { NoSuchElementException("No user found with email ${chatMessageRequestDTO.receiverUserName}") }
 
-        if (!isNotificationThrottled(currentUser.id!!, receiver.id!!)) {
-
-            val notificationDTO = NotificationDTO(
-                type = NotificationTypeEnum.MESSAGES.id,
-                recipient = receiver.id,
-                subject = "New Message",
-                content = "There is a new conversation created by: ${receiver.email} ",
-                sender = currentUser.id,
-                vacancy = null
-            )
-            notificationService.triggerNotification(notificationDTO)
-        }
         val existingConversation = conversationRepository.findByUser1AndUser2(currentUser, receiver)
             ?: conversationRepository.findByUser1AndUser2(receiver, currentUser)
 
@@ -75,9 +65,46 @@ class ConversationService(
         val newChatMessage = chatMessageRepository.save(chatMessage)
 
 
+
+
         return mapToChatMessageDTO(newChatMessage)
     }
+    @Transactional
+    fun sendMessageNotification(email: String) {
+        val sender = userService.retrieveAuthenticatedUser()
+        val receiver = userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("No user found with email $email") }
 
+        try {
+            if (!isNotificationThrottled(sender.id!!, receiver.id!!)) {
+                val notificationDTO = NotificationDTO(
+                    type = NotificationTypeEnum.MESSAGES.id,
+                    recipient = receiver.id,
+                    subject = "New Message",
+                    content = "There is a new message by: ${receiver.email}",
+                    sender = sender.id,
+                    vacancy = null
+                )
+                notificationService.triggerNotification(notificationDTO)
+
+            }
+        } catch (e: Exception) {
+            println("Error sending notification: ${e.message}")
+        }
+    }
+    @Async
+    fun triggerNotificationAsync(senderId: Int, receiverId: Int) {
+            val notificationDTO = NotificationDTO(
+                type = NotificationTypeEnum.MESSAGES.id,
+                recipient = receiverId,
+                subject = "New Message",
+                content = "There is a new conversation created by: $receiverId ",
+                sender = senderId,
+                vacancy = null
+            )
+            notificationService.triggerNotification(notificationDTO)
+
+    }
 
      fun getCurrentConversationWithUser(email:String) : List<ChatMessage>{
         val currentUser = userService.retrieveAuthenticatedUser()
@@ -118,7 +145,6 @@ class ConversationService(
                 conversationId = chatMessage.conversation.id!!
         )
     }
-
 
     private fun isNotificationThrottled(senderId: Int, receiverId: Int): Boolean {
         val lastNotificationTime = getLastNotificationTime(senderId, receiverId)
