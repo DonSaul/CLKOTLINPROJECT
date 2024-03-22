@@ -2,37 +2,46 @@
 
 ![logo](https://www.dice.com/binaries/medium/content/gallery/dice/insights/2015/06/Screen-Shot-2015-06-22-at-10.41.14-AM.png)
 
-🗂️ **JobSearch** is a web platform for employment and management aimed at facilitating interaction between candidates and managers. The project is a product of SoftServe's project lab, where we focus on learning and improving our skills.
+🗂️ **JobSearch** is a web platform for employment and management aimed at facilitating interaction between candidates
+and managers. The project is a product of SoftServe's project lab, where we focus on learning and improving our skills.
 
 ## Features
 
 ### User Authentication and Authorization:
+
 - Users can register an account with their Last Name, First Name, password, and email.
 - Users can log in with their credentials.
 - Different roles (candidate, manager, admin) with specific permissions are supported.
 - Managers can create new user accounts with specific roles.
 
 ### Candidate Features:
-- Candidates can create and manage their CV, including information about years of experience, projects, education, and salary expectation.
+
+- Candidates can create and manage their CV, including information about years of experience, projects, education, and
+  salary expectation.
 - Candidates can search for vacancies based on job family, years of experience, and salary expectation.
 - Candidates can apply to vacancies that match their skills and expectations.
 
 ### Manager Features:
-- Managers can create and manage vacancies, including job family, company name, description, required years of experience, and salary.
+
+- Managers can create and manage vacancies, including job family, company name, description, required years of
+  experience, and salary.
 - Managers can search for candidates based on filters such as years of experience, job family, and salary expectation.
 - Managers can send vacancy invitations to candidates who match the job requirements.
 
 ### Communication Features:
+
 - Users can communicate with other users (managers or candidates) within the app.
 - Users receive email notifications for important actions such as new vacancies, invitations, and messages.
 - Users can respond to messages and notifications directly from the email.
 
 ### Integration and Testing:
+
 - All features are seamlessly integrated to ensure they work together.
 - Thorough testing is conducted to identify and fix any bugs or issues.
 - The codebase is optimized and refined for better performance and reliability.
 
 ### Documentation and Finalization:
+
 - The codebase is thoroughly documented, including APIs and usage instructions, for future reference.
 - Any remaining tasks or bug fixes are finalized before deployment.
 - The project is prepared for deployment and ensured to be production-ready.
@@ -42,18 +51,20 @@
 - [Documentation](#documentation)
 - [Demo](https://google.com)
 
-
 ## Discussion
-Please visit our [issues discussions](https://github.com/DonSaul/CLKOTLINPROJECT/issues) for general questions. **Issues are for bug reports and feature requests only.**
 
+Please visit our [issues discussions](https://github.com/DonSaul/CLKOTLINPROJECT/issues) for general questions. **Issues
+are for bug reports and feature requests only.**
 
 ## Contributors
 
 [![Contributors](https://contrib.nn.ci/api?repo=https://github.com/DonSaul/CLKOTLINPROJECT)](https://contrib.nn.ci/api?repo=https://github.com/DonSaul/CLKOTLINPROJECT)
 _______________________________________________
+
 ## *documentation*
 
 ## Table of Contents
+
 1. [Getting Started](#getting-started) <br>
    2.2. [Prerequisites](#prerequisites) <br>
    2.3. [Initial Setup and Configuration](#initial-setup-and-configuration)
@@ -68,22 +79,20 @@ _______________________________________________
    5.2. [Communication](#communication-between-frontend-and-backend) <br>
    5.3. [Frontend files](#frontend-helper-files) <br>
 
-
 ## Getting Started
-
 
 ### Prerequisites
 
 Ensure you have the following installed:
-| Technology          | Installation/Dependency                                       | Version |
+| Technology | Installation/Dependency | Version |
 | ------------------- | ------------------------------------------------------------- | ------- |
-| SpringFramework     | [Spring initializr](https://start.spring.io/)                 | 3.2.2   |
-| React               | [React Installation](https://es.react.dev/learn/installation) | 9.6.2   |
-| Spring Security     | [Add Dependency SpringSecurity](https://start.spring.io/)     |         |
-| Kotlin language     | [Kotlin Installation](https://oregoom.com/kotlin/instalar/)   |         |
-| PostgreSQL          | [Add Dependency PostgreSQL Driver](https://start.spring.io/)  |         |
-| JWT(Json web token) |                                                               | 0.9.1   |
-| JVM                 |                                                               | 1.9.22  |
+| SpringFramework | [Spring initializr](https://start.spring.io/)                 | 3.2.2 |
+| React | [React Installation](https://es.react.dev/learn/installation) | 9.6.2 |
+| Spring Security | [Add Dependency SpringSecurity](https://start.spring.io/)     | |
+| Kotlin language | [Kotlin Installation](https://oregoom.com/kotlin/instalar/)   | |
+| PostgreSQL | [Add Dependency PostgreSQL Driver](https://start.spring.io/)  | |
+| JWT(Json web token) | | 0.9.1 |
+| JVM | | 1.9.22 |
 
 ### Initial Setup and Configuration
 
@@ -93,10 +102,11 @@ Ensure you have the following installed:
 4. Run the application.
 
 ## Basic Usage
+
 ### Basic Operations and examples as a Candidate
 
 | Operation                      | Description                                                                                                                         | Example                                                                                                 |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
 | **Candidate Basic Operations** |                                                                                                                                     |                                                                                                         |
 | Candidate Registration         | Register as a candidate in the system.                                                                                              |                                                                                                         |
 | Candidate Login                | Log in to the system as a registered candidate.                                                                                     |                                                                                                         |
@@ -145,7 +155,7 @@ Ensure you have the following installed:
 Organized architecture for separation of concerns, such as:
 
 | Aspect                     | Description                                                                                                                                                                                                                                                                   |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Separation of Concerns** | API Rest for the structure. This separation allows for better organization of code and clear distinction between different aspects of the application logic, making it easier to maintain and update.                                                                         |
 | **Scalability**            | The API Rest architecture facilitates scalability by enabling developers to modify or extend one component without affecting the others. This modular approach allows for the addition of new features or changes to existing ones without disrupting the entire application. |
 | **Code Reusability**       | The API Rest architecture promotes code reusability through the use of separate components. For example, business logic encapsulated in the Controller can be reused across different views, enhancing development efficiency and reducing duplication of code.               |
@@ -156,12 +166,11 @@ Organized architecture for separation of concerns, such as:
 Robust security measures:
 
 | Atribute         | Implementation                                                            |
-| ---------------- | ------------------------------------------------------------------------- |
+|------------------|---------------------------------------------------------------------------|
 | Authentication   | implementation("io.jsonwebtoken:jjwt:0.9.1")                              |
 | Authorization    | implementation ("io.jsonwebtoken:jjwt:0.9.1")                             |
 | Encryption       | implementation("org.springframework.boot:spring-boot-starter-security")   |
 | Input validation | implementation("org.springframework.boot:spring-boot-starter-validation") |
-
 
 ## Advanced Functionalities
 
@@ -172,7 +181,7 @@ The **CandidateController** is responsible for handling requests related to cand
 #### Endpoints
 
 | Endpoint                    | Description                                        | HTTP Method | Query Parameters                                                                                                                                                                  | Response                                                                                                                                                                                                   |
-| --------------------------- | -------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|-----------------------------|----------------------------------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `/api/v1/candidates/search` | Searches for candidates based on provided filters. | GET         | `salary` (optional): Candidate's expected salary. <br> `jobFamilyId` (optional): Candidate's job family ID. <br> `yearsOfExperience` (optional): Candidate's years of experience. | - HTTP Status Code: <br>   - 200 (OK): Candidates matching the criteria found. <br>   - 204 (No Content): No candidates matching the criteria found. <br> - Response Body: List of `CandidateDTO` objects. |
 
 #### Related Classes
@@ -185,7 +194,7 @@ The `UserService` handles operations related to users and candidates.
 #### Main Methods
 
 | Method                  | Description                                         | Parameters                                                                                                                                                                        | Return                                                       |
-| ----------------------- | --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+|-------------------------|-----------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------|
 | `searchCandidates`      | Searches for candidates based on provided criteria. | `salary` (optional): Candidate's expected salary. <br> `jobFamilyId` (optional): Candidate's job family ID. <br> `yearsOfExperience` (optional): Candidate's years of experience. | List of `CandidateDTO` objects matching the search criteria. |
 | `mapToUserCandidateDTO` | Maps a `Cv` object to a `CandidateDTO` object.      | `cvEntity`: Cv entity to be mapped. <br> `jobFamilies`: List of job families associated with the candidate.                                                                       | `CandidateDTO` object with candidate information.            |
 
@@ -234,7 +243,7 @@ measures include password encryption, token validation, and authorization for ac
 ### Summary Table
 
 | Component               | Description                                                 |
-| ----------------------- | ----------------------------------------------------------- |
+|-------------------------|-------------------------------------------------------------|
 | AuthService             | Handles user authentication and registration.               |
 | JwtProvider             | Generates and validates JWT tokens.                         |
 | JwtAuthenticationFilter | Intercepts HTTP requests and validates JWT tokens.          |
@@ -252,7 +261,7 @@ The project utilizes PostgreSQL as the database management system (DBMS) for eff
 The following tables are part of the database schema:
 
 | Table Name         | Description                                                        |
-| ------------------ | ------------------------------------------------------------------ |
+|--------------------|--------------------------------------------------------------------|
 | application_status | Stores various application statuses such as "Not Applied"          |
 |                    | and "Accepted".                                                    |
 | applications       | Represents job applications submitted by candidates.               |
@@ -289,21 +298,23 @@ The frontend helper files in the `/helpers` directory provide essential function
 the application. Here's an overview:
 
 | File           | Purpose                                                                                               |
-| -------------- | ----------------------------------------------------------------------------------------------------- |
+|----------------|-------------------------------------------------------------------------------------------------------|
 | constants.js   | Defines constants such as the authentication token name (`AUTH_TOKEN_NAME`) and user roles (`ROLES`). |
 | endpoints.js   | Contains endpoint URLs for various API requests used in the application.                              |
 | queryClient.js | Creates a React Query Client instance used for data fetching and caching.                             |
 | tokenHelper.js | Provides helper functions to decode and extract information from authentication tokens.               |
 | userContext.js | Defines the authentication context and provides hooks to access user authentication information.      |
 
-These helper files play a crucial role in managing authentication, API communication, and user context within the frontend application.
+These helper files play a crucial role in managing authentication, API communication, and user context within the
+frontend application.
 
 ### Router Files
 
-The router files in the `/router` directory define the application's navigation and route authentication logic. Here's a breakdown:
+The router files in the `/router` directory define the application's navigation and route authentication logic. Here's a
+breakdown:
 
 | File           | Purpose                                                                                                 |
-| -------------- | ------------------------------------------------------------------------------------------------------- |
+|----------------|---------------------------------------------------------------------------------------------------------|
 | paths.js       | Defines path constants for different routes within the application.                                     |
 | RequireAuth.js | Implements a component to ensure route access is restricted to authenticated users with specific roles. |
 | router.js      | Configures the application routes using React Router, including route guarding and role-based access.   |
