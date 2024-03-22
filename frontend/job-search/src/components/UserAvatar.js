@@ -33,7 +33,7 @@ const UserAvatar = ({ user}) => {
     
       return user;
     } else  {
-      console.log("WHAT IS WRONG WITH EMAIL",getUserEmail())
+      //console.log("WHAT IS WRONG WITH EMAIL",getUserEmail())
       return {
         email: getUserEmail(),
         firstName: getUserFirstName(),

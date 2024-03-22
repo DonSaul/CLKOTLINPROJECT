@@ -47,6 +47,7 @@ class SecurityConfig {
                     .requestMatchers("/api/v1/application/**").authenticated()
                     .requestMatchers("/api/v1/cvs/**").authenticated()
                     .requestMatchers("/api/v1/skills/**").permitAll()
+                    // Vacancy endpoints
                     .requestMatchers(HttpMethod.GET, "/api/v1/vacancy").authenticated()
                     .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/**").authenticated()
                     .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/search").authenticated()

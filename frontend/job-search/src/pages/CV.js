@@ -21,8 +21,7 @@ import JobFamilyAutocomplete from '../components/JobFamilyAutocomplete';
 import SnackbarNotification from '../components/SnackbarNotification';
 import { useAuth } from '../helpers/userContext';
 const CV = () => {
-  //todo: fix user change
-  //Current user send id, when available
+
   const [id, setId] = useState(); 
   const [hasFetchedData, setHasFetchedData] = useState(false);
   const { logout, getUserRole, isLoggedIn } = useAuth();
@@ -33,7 +32,7 @@ const CV = () => {
   const [yearsOfExperience, setYearsOfExperience] = useState('');
   const [salaryExpectations, setSalaryExpectations] = useState('');
   const [education, setEducation] = useState('');
-  //const [project, setProject] = useState('');
+
 
   //tsting 
   const [projects, setProjects] = useState([{ name: '', description: '' }]);

@@ -11,8 +11,8 @@ import { Typography } from '@mui/material';
 export default function UserList({users,onSelectUser,onSetUserData}) {
   const handleUserSelect = (value) => () => {
     //console.log("im in the list",users)
-    console.log(`User ${value?.email} clicked`);
-    console.log("user data in list",value);
+    //console.log(`User ${value?.email} clicked`);
+    //console.log("user data in list",value);
     
     onSelectUser(value?.email);
     onSetUserData(value);
