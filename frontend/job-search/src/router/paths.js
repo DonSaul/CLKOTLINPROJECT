@@ -2,9 +2,10 @@
 
 
 export const paths = {
-
     login:'/login',
     register:'/register',
+    recoverPassword: '/forgot-password',
+    changePassword: '/change-password',
     profile:'/profile',
     cv:'/cv',
     vacancies:'/vacancies',
@@ -13,7 +14,9 @@ export const paths = {
     notifications:'/notifications',
     messaging:'/messaging',
     createVacancy:'/vacancies/new',
+    managerVacanciesPage: '/vacancies/manage',
     createUser:'/admin/users/new',
+    sendInvitation:'/users/:id/send-invitation',
     notAccess:'/no-access'
 
 }

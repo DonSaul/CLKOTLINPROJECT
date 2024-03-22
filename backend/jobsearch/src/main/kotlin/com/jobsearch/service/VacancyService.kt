@@ -29,6 +29,7 @@ class VacancyService(
         }
     }
 
+    @Transactional
     fun retrieveVacancyByManager(): List<VacancyResponseDTO> {
         val manager = userService.retrieveAuthenticatedUser()
         return vacancyRepository.findByManager(manager).map {
@@ -83,7 +84,7 @@ class VacancyService(
         val manager = userService.retrieveAuthenticatedUser()
         if (vacancy.manager != manager ) throw ForbiddenException("You are not allowed to erase this vacancy.")
         vacancyRepository.delete(vacancy)
-}
+    }
 
     /**
      * Maps a Vacancy object to a VacancyResponseDTO object.

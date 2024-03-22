@@ -1,25 +1,36 @@
 import { useMemo, useState, useEffect } from 'react';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import Button from '@mui/material/Button';
-import { useApplyVacancy } from '../hooks/useApplyVacancy';
+// import { useApplyVacancy } from '../hooks/useApplyVacancy';
+import { useSendInvitation } from '../hooks/useSendInvitation';
 import { useGetCurrentUserCv } from '../hooks/useCV';
 import { useNavigate } from 'react-router-dom';
 import { ROLES } from '../helpers/constants';
 import { useAuth } from '../helpers/userContext';
 import { MenuItem } from '@mui/material';
 import { paths } from '../router/paths';
+import { PersonalInvitation } from './PersonalInvitation';
+
 export default function CandidatesTable({ dataFromQuery,onRowSelectionChange }) {
 
-    const { getUserRole } = useAuth();
-    const { mutate: applyToVacancy, isError, isSuccess } = useApplyVacancy();  //remove
+
+    const {getUserRole} = useAuth();
+    const {mutate:sendInvitation, isError, isSuccess}=useSendInvitation();  //remove
 
     const navigate = useNavigate();
 
     const columnsCandidates = useMemo(
         () => [
             {
-                accessorKey: 'jobFamilyName',
-                header: 'Category',
+                accessorKey: 'jobFamilies',
+                header: 'Categories',
+                Cell: ({ row }) => (
+                    <div>
+                        {row.original.jobFamilies.map((jobFamily) => (
+                            <div key={jobFamily.id}>{jobFamily.name}</div>
+                        ))}
+                    </div>
+                ),
             },
             {
                 accessorKey: 'firstName',
@@ -43,15 +54,15 @@ export default function CandidatesTable({ dataFromQuery,onRowSelectionChange }) 
                 header: 'Salary',
             },
 
-            {
-                id: 'applyButton',
-                header: 'Status',
-                Cell: ({ row }) => (
-                    <Button variant="contained" color="primary" onClick={() => handleApply(row.original)} disabled={getUserRole() !== ROLES.CANDIDATE}>
-                        Invite
-                    </Button>
-                ),
-            },
+        {
+            id: 'sendButton', 
+            header: 'Status',
+            Cell: ({ row }) => (
+                <Button variant="contained" color="primary" onClick={() => handleInvite(row.original)} disabled={getUserRole()!==ROLES.MANAGER}>
+                    Invite
+                </Button>
+            ),
+          },
         ],
         [],
     );
@@ -66,29 +77,13 @@ export default function CandidatesTable({ dataFromQuery,onRowSelectionChange }) 
     };
 
     useEffect(() => {
-        //do something when the row selection changes
-       // console.log("row selected", rowSelection)
-        
+        //do something when the row selection changes        
     }, [rowSelection]);
 
-    const handleApply = (rowData) => {
-
-        console.log('Applying to vacancy:', rowData);
-
-
-        let applicationData =
-        {
-            vacancyId: rowData.id,
-
-
-
-        }
-
-
-        applyToVacancy(applicationData);
-
-
-
+    const handleInvite = (rowData) => {
+        const candidateId = rowData.id;
+        console.log('Sending invitation to candidate:', candidateId);
+        navigate(`${paths.sendInvitation.replace(':id', candidateId)}`);
     };
 
     const table = useMaterialReactTable({
@@ -123,16 +118,15 @@ export default function CandidatesTable({ dataFromQuery,onRowSelectionChange }) 
         enableRowActions: true,
         positionActionsColumn: 'last',
         renderRowActionMenuItems: ({ row }) => [
-            <MenuItem key="visit" onClick={() => {
+            <MenuItem key="edit" onClick={() => {
                 console.log("row", row);
                 //navigate(`${paths.vacancies}/${row.original.id}`);
             }}>
                 Visit
             </MenuItem>,
-            <MenuItem key="invitation" >
-            Send Invitation
+            <MenuItem>
+                Send Invitation
             </MenuItem>
-            
         ],
 
     });

@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.core.token.TokenService
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -47,13 +48,20 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
                     .requestMatchers(HttpMethod.GET, "/api/v1/vacancy").authenticated()
                     .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/**").authenticated()
                     .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/search").authenticated()
-                    .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/manage").hasAuthority("manager")
+                    .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/my-vacancies").hasAuthority("manager")
                     .requestMatchers(HttpMethod.POST, "/api/v1/vacancy").hasAuthority("manager")
                     .requestMatchers(HttpMethod.GET, "/api/v1/candidates/search").hasAuthority("manager")
+                    .requestMatchers(HttpMethod.GET, "/api/v1/candidates/vacancy/**").hasAuthority("manager")
                     .requestMatchers(HttpMethod.PUT, "/api/v1/vacancy/**").hasAuthority("manager")
                     .requestMatchers(HttpMethod.DELETE, "/api/v1/vacancy/**").hasAuthority("manager")
+//                    .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/manage").hasAuthority("manager")
                     .requestMatchers("/api/v1/job-family/**").permitAll()
                     .requestMatchers("/api/v1/application-status/**").permitAll()
+                    .requestMatchers("/api/v1/invitations/**").permitAll()
+                    .requestMatchers("/api/v1/notifications/**").permitAll()
+                    .requestMatchers("/api/v1/recoverPassword/**").permitAll()
+                    .requestMatchers("api/v1/conversation/**").permitAll()
+
                     .anyRequest().authenticated()
             }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)

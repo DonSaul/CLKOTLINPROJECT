@@ -44,8 +44,8 @@ class VacancyController(
 
     @GetMapping("/my-vacancies")
     fun retrieveVacancyByManager(): ResponseEntity<StandardResponse<List<VacancyResponseDTO>>>  {
-        val dataBodylist = vacancyService.retrieveVacancyByManager()
-        return mapResponseEntity(dataBodylist)
+        val dataBodyList = vacancyService.retrieveVacancyByManager()
+        return mapResponseEntity(dataBodyList)
     }
     @PostMapping
     fun createVacancy(@RequestBody @Valid vacancyDto: VacancyRequestDTO): ResponseEntity<StandardResponse<VacancyResponseDTO>> {

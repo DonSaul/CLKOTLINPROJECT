@@ -7,6 +7,12 @@ const createUrl = (path) => {
 };
 
 export const ENDPOINTS = {
+  register: createUrl("auth/register"),
+  recoverPassword: createUrl("recoverPassword/forgotPassword"),
+  changePassword: createUrl("recoverPassword/changePassword"),
+  activateNotification: createUrl("users/updateNotificationActivated/"),
+  notification: createUrl("notifications/all"),
+  getSkills: createUrl("skills"),
   register:createUrl("auth/register"),
   searchCandidates:createUrl("candidates/search"),
   getSkills:createUrl("skills"),
@@ -16,6 +22,7 @@ export const ENDPOINTS = {
   users:createUrl("users"),
   vacancy:createUrl("vacancy"),
   searchVacancies:createUrl("vacancy/search"),
+  getVacanciesByManager:createUrl("vacancy/my-vacancies"),
   userCv:createUrl("my-account/cv"),
   createUser:createUrl("users/create"),
   application:createUrl("application"),
@@ -23,4 +30,5 @@ export const ENDPOINTS = {
   getConversations:createUrl("conversation/user/all"),
   getCurrentConversationMessages:createUrl("conversation/messages"),
   sendMessage:createUrl("conversation/send-message"),
+  invitation:createUrl("invitations")
 };
