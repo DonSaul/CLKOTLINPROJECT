@@ -52,14 +52,11 @@ const CV = () => {
   const { mutate:updateCVbyID } = useUpdateCV();
 
 //simple way to fetch
-  useEffect( () => {
-
-    if (cvData) {
-      setCvData(cvData);
-    }
-    
-
-  },[cvData])
+useEffect(() => {
+  if (cvData) {
+    setCvData(cvData);
+  }
+}, [cvData]);
 
  
 //skills

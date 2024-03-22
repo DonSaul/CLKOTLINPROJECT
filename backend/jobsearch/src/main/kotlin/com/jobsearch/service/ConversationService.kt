@@ -68,7 +68,6 @@ class ConversationService(
 
         val conversationMessages=chatMessageRepository.findMessagesByUserIds(currentUser.id!!,receiver.id!!)
 
-
         return conversationMessages
 
     }
