@@ -9,6 +9,8 @@ import { ROLES } from '../helpers/constants';
 import { useAuth } from '../helpers/userContext';
 import { MenuItem } from '@mui/material';
 import { paths } from '../router/paths';
+import { PersonalInvitation } from './PersonalInvitation';
+
 export default function CandidatesTable({ dataFromQuery,onRowSelectionChange }) {
 
 
