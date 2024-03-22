@@ -123,13 +123,13 @@ export default function CandidatesTable({ dataFromQuery,onRowSelectionChange }) 
         enableRowActions: true,
         positionActionsColumn: 'last',
         renderRowActionMenuItems: ({ row }) => [
-            <MenuItem key="edit" onClick={() => {
+            <MenuItem key="visit" onClick={() => {
                 console.log("row", row);
                 //navigate(`${paths.vacancies}/${row.original.id}`);
             }}>
                 Visit
             </MenuItem>,
-            <MenuItem>
+            <MenuItem key="invitation" >
             Send Invitation
             </MenuItem>
             

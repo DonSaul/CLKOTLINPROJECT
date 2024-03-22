@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import MessageBubble from './MessageBubble';
 import ChatInput from './ChatInput';
 import { Box } from '@mui/material';
@@ -7,7 +7,8 @@ import { useSendMessage } from '../../hooks/messaging/useSendMessage';
 import UserAvatar from '../UserAvatar';
 import { Typography } from '@mui/material';
 import { getRoleString } from '../../helpers/constants';
-import {CircularProgress} from '@mui/material';
+import { CircularProgress } from '@mui/material';
+import { truncateText } from '../../helpers/funHelpers';
 const ChatBox = ({ data, user, userData, onSendMessage, isLoadingConversation }) => {
     //console.log('Data prop:', data);
     //console.log("user data", userData);
@@ -22,19 +23,32 @@ const ChatBox = ({ data, user, userData, onSendMessage, isLoadingConversation })
 
     const { mutate: sendMessage } = useSendMessage();
 
+    const messagesEndRef = useRef(null)
 
-
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    }
+    /*
     useEffect(() => {
-        if (data?.length > 0) {
+        if (data?.length > 0 && userData) {
             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-            //console.log("chatMessages i n box", messages);
+            console.log("chatMessages i n box", chatContainerRef.current.scrollHeight);
+            scrollToBottom();
         }
 
-    }, [messages]);
+    }, [userData?.email]);
+*/
+
+    //this effect is amazing
+    useLayoutEffect(() => {
+        scrollToBottom();
+    }, [chatMessages]);
+
+
 
     useEffect(() => {
         if (data?.length > 0) {
-            console.log("message data", data)
+            //console.log("message data", data)
             setChatMessages(data);
         } else {
             setChatMessages([]);
@@ -102,7 +116,8 @@ const ChatBox = ({ data, user, userData, onSendMessage, isLoadingConversation })
                                     <span style={{ fontWeight: 'bold' }}>
                                         <i>{getRoleString(userData.roleId)}</i>
                                     </span>{' '}
-                                    {`${userData.firstName} ${userData.lastName} (${userData.email})`}
+                                    {`${truncateText(`${userData.firstName} ${userData.lastName}`, 25)}  (${userData.email})`}
+
                                 </Typography>
                             </Box>
                         </>
@@ -118,22 +133,27 @@ const ChatBox = ({ data, user, userData, onSendMessage, isLoadingConversation })
                         maxHeight: '500px',
                         overflowY: 'auto',
                         position: 'relative',
-                        bgcolor: '#E5E4E2'
+                        bgcolor: '#E5E4E2',
+                        height: '100%'
                     }}
                 >
                     {userData && (
                         <>
-                        
-                            {isLoadingConversation ? ( 
+
+                            {isLoadingConversation ? (
                                 <CircularProgress />
                             ) : (
                                 <>
-                                    {chatMessages?.length > 0 ? (
-                                        chatMessages.map((message, index) => (
-                                            <React.Fragment key={index}>
-                                                <MessageBubble key={index} data={message} />
-                                            </React.Fragment>
-                                        ))
+                                    {chatMessages?.length > 0 ? (<>
+                                    
+                                        
+                                        {chatMessages.map((message, index) => (
+                                        <React.Fragment key={index}>
+                                            <MessageBubble key={index} data={message} />
+                                        </React.Fragment>
+                                        ))}
+                                        <div ref={messagesEndRef} />
+                                        </>
                                     ) : (
                                         <p>No messages</p>
                                     )}

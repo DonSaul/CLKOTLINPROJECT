@@ -49,6 +49,7 @@ const UserAvatar = ({ user}) => {
       {userData && (
         <Tooltip title={userData ? `${userData.firstName} ${userData.lastName} (${userData.email})` : "No data"}>
         <Avatar sx={{ bgcolor: stringToColour(userData?.email || userData?.email) }}>
+          
          {hasName
             ? `${capitalizeFirstLetter(userData.firstName)}${capitalizeFirstLetter(userData.lastName)}`
             : ':('}
