@@ -1,7 +1,7 @@
 import React from 'react';
 import CandidatesFilter from '../components/ManagerSearch';
 import CandidatesTable from '../components/CandidatesTable';
-import {useState} from 'react';
+import { useState } from 'react';
 import CardContainer from '../components/CardContainer';
 import { useEffect } from 'react';
 import SendInvitation from '../components/SendInvitation';
@@ -36,7 +36,7 @@ const ManagerSearchPage = () => {
 
     return (
         <div>
-            <h1>Manager Search</h1>
+            <h1>Advanced candidate search</h1>
             <CandidatesFilter setData={setData} />
             <CardContainer width='xl'>
                 <CandidatesTable dataFromQuery={data}

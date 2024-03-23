@@ -1,5 +1,7 @@
 package com.jobsearch.service
 
+import com.jobsearch.dto.NotificationDTO
+import com.jobsearch.entity.NotificationTypeEnum
 import com.jobsearch.dto.VacancyRequestDTO
 import com.jobsearch.dto.VacancyResponseDTO
 import com.jobsearch.entity.Vacancy
@@ -15,7 +17,9 @@ import kotlin.jvm.optionals.getOrElse
 class VacancyService(
     val vacancyRepository: VacancyRepository,
     val jobFamilyService: JobFamilyService,
-    val userService: UserService
+    val userService: UserService,
+    val notificationService: NotificationService,
+    val interestService: InterestService
 ) {
     fun retrieveVacancy(vacancyId: Int): VacancyResponseDTO {
         val vacancy = vacancyRepository.findById(vacancyId)
@@ -29,7 +33,6 @@ class VacancyService(
         }
     }
 
-    @Transactional
     fun retrieveVacancyByManager(): List<VacancyResponseDTO> {
         val manager = userService.retrieveAuthenticatedUser()
         return vacancyRepository.findByManager(manager).map {
@@ -48,14 +51,35 @@ class VacancyService(
     fun createVacancy(vacancyDto: VacancyRequestDTO): VacancyResponseDTO {
         val selectedJobFamily = jobFamilyService.findByJobFamilyId(vacancyDto.jobFamilyId)
         val managerUser = userService.retrieveAuthenticatedUser()
+
         val vacancyEntity = vacancyDto.let {
             Vacancy(it.id, it.name, it.companyName, it.salaryExpectation, it.yearsOfExperience, it.description, selectedJobFamily, managerUser)
         }
 
         val newVacancy = vacancyRepository.save(vacancyEntity)
 
+        //notification about the new vacancy through email
+        notificateUsers(newVacancy)
+
+
+
         return mapToVacancyResponseDto(newVacancy)
     }
+    fun notificateUsers(newVacancy: Vacancy){
+        val users = newVacancy.jobFamily.id!!.let { interestService.getUsersByJobFamilyId(it) }
+        users.forEach { user ->
+            val notificationDTO = NotificationDTO(
+                type = NotificationTypeEnum.VACANCIES.id,
+                recipient = user.id!!,
+                subject = "New Vacancy Available",
+                content = "A new vacancy matching your interests is available: ${newVacancy.name}",
+                sender = newVacancy.manager.id!!,
+                vacancy = newVacancy.id!!
+            )
+            notificationService.triggerNotification(notificationDTO)
+        }
+    }
+
 
     @Transactional
     fun updateVacancy(vacancyId: Int, vacancyDto: VacancyRequestDTO): VacancyResponseDTO {
@@ -73,9 +97,11 @@ class VacancyService(
         vacancy.jobFamily = selectedJobFamily
 
         val updatedVacancy = vacancyRepository.save(vacancy)
-
         return mapToVacancyResponseDto(updatedVacancy)
     }
+
+
+
 
     @Transactional
     fun deleteVacancy(vacancyId: Int) {
@@ -84,7 +110,7 @@ class VacancyService(
         val manager = userService.retrieveAuthenticatedUser()
         if (vacancy.manager != manager ) throw ForbiddenException("You are not allowed to erase this vacancy.")
         vacancyRepository.delete(vacancy)
-    }
+}
 
     /**
      * Maps a Vacancy object to a VacancyResponseDTO object.
@@ -107,4 +133,5 @@ class VacancyService(
             )
         }
     }
+
 }
