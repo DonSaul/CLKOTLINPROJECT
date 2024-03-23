@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSendInvitation } from "../hooks/useSendInvitation";
 import { MenuItem, Button, TextField, Typography } from "@mui/material";
-import { getVacancyByManager } from "../hooks/useGetVacancyByManager";
+// import { getVacancyByManager } from "../hooks/useGetVacancyByManager";
 
 const SendInvitation = ({data}) => {
     console.log("data", data)
@@ -17,8 +17,8 @@ const SendInvitation = ({data}) => {
     // Get vacancies available for logged-in manager
     const fetchVacanciesForManager = async () => {
         try {
-            const managerVacancies = await getVacancyByManager();
-            setVacancies(managerVacancies);
+            // const managerVacancies = await getVacancyByManager();
+            // setVacancies(managerVacancies);
         } catch (error) {
             console.error('Error fetching vacancies for manager:', error);
         }
