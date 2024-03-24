@@ -20,7 +20,8 @@ import { ROLES } from "../helpers/constants";
 import NotAccess from "../pages/NotAccess";
 import VacancyView from "../pages/VacancyView";
 import ManagerSearchPage from "../pages/ManagerSearchPage";
-import { SendInvite } from "../pages/SendInvite";
+import InvitationPage from "../pages/InvitationPage";
+import { PersonalInvitation } from "../components/PersonalInvitation";
 
 const RoutesConfig = () => {
   return (
@@ -49,7 +50,7 @@ const RoutesConfig = () => {
       <Route element={<RequireAuth role={ROLES.MANAGER} />}>
         <Route path={paths.createVacancy} element={<CreateVacancy />} />
         <Route path={paths.managerSearchPage} element={<ManagerSearchPage />} />
-        <Route path={paths.sendInvitation} element={<SendInvite />} />
+        <Route path={paths.sendInvitation} element={<InvitationPage />} />
 
       </Route>
       <Route element={<RequireAuth role={ROLES.ADMIN} />}>

@@ -1,18 +1,22 @@
-import { useEffect, useState } from "react";
-import { useSendInvitation } from "../hooks/useSendInvitation";
-import { MenuItem, Button, TextField, Typography } from "@mui/material";
-import { getVacancyByManager } from "../hooks/useGetVacancyByManager";
 
-const SendInvitation = ({data}) => {
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getVacancyByManager } from "../hooks/useGetVacancyByManager";
+import { useSendInvitation } from "../hooks/useSendInvitation";
+import CardContainer from "./CardContainer";
+import { Select, MenuItem, Button, TextField, FormControl, InputLabel } from "@mui/material";
+
+export const PersonalInvitation = ({data}) => {
     console.log("data", data)
-    
+    const { id } = useParams();
     const { mutate } = useSendInvitation();
     const [subject, setSubject] = useState('');
     const [content, setContent] = useState('');
-    const [vacancyId, setVacancyId] = useState('');
-    const [vacancies, setVacancies] = useState([]);
+    const [vacancyId, setVacancyId] = useState();
+    const [vacancies, setVacancies] = useState([])
+    console.log("mutate", mutate);
 
-    // Get vacancies available for logged-in manager
+   // Get vacancies available for logged-in manager
     const fetchVacanciesForManager = async () => {
         try {
             const managerVacancies = await getVacancyByManager();
@@ -29,34 +33,20 @@ const SendInvitation = ({data}) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        let selectedCandidateIds = [];
+        let invitationData =
+        {
+            candidateId: id,
+            subject,
+            content,
+            vacancyId,
+        };
 
-        if (data){
-            selectedCandidateIds = Object.keys(data).filter(id => data[id]);
-    
-            console.log("Selected candidate IDs:", selectedCandidateIds);
-        } else {
-            return;
-        }
+        console.log("submit", invitationData);
 
-        for (let i = 0; i < selectedCandidateIds.length; i++) {
-            const candidateId = selectedCandidateIds[i];
-        
-            let invitationData = {
-                candidateId,
-                subject,
-                content,
-                vacancyId
-            };
-        
-            console.log("Sending invitation to candidate:", candidateId);
-            console.log("submit", invitationData)
-
-            try {
-                await mutate(invitationData)
-            } catch (error) {
-                console.error("Error sending invitation:", error);
-            }
+        try {
+            await mutate(invitationData);
+        } catch (error) {
+            console.error("Error sending invitation:", error);
         }
     };
 
@@ -100,13 +90,12 @@ const SendInvitation = ({data}) => {
                             {vacancy.name} - {vacancy.jobFamilyName}
                         </MenuItem>
                     ))}
-                </TextField>                            
-                <Button type="submit" variant="contained" color="primary" mt={2}>
+                </TextField> 
+                <Button type="submit" variant="contained" color="primary" >
                     Send
                 </Button>
             </form>
-        </>     
+        </>
     )
-};
+}
 
-export default SendInvitation;
