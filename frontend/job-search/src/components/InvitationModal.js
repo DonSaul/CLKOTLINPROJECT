@@ -17,14 +17,21 @@ const style = {
   p: 4,
 };
 
-const InvitationModal = ({children}) => {
+const InvitationModal = ({children, data}) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const dataIsSelected = data && Object.keys(data).length > 0;
+
   return (
     <div>
-      <Button mt={2} variant="contained" color="primary" onClick={handleOpen}>Send invitation</Button>
+      <Button 
+        mt={2} variant="contained" 
+        color="primary" 
+        onClick={handleOpen}
+        disabled={dataIsSelected ? false : true}
+      >Send invitation</Button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -32,10 +39,7 @@ const InvitationModal = ({children}) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-description" sx={{ m: 2 }}>
-            Please choose the vacancy you would like to send invitations to
-          </Typography>
-            {children}
+          {children}
         </Box>
       </Modal>
     </div>
