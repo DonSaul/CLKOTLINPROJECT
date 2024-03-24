@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # JobSearch Web Application Documentation
 
 ## Table of Contents
@@ -34,13 +33,19 @@ registration, and application submissions.
 
 Ensure you have the following installed:
 
-- SpringFramework -> [Spring initializr](https://start.spring.io/) ```implementation("org.springframework.boot:spring-boot-starter-web") version 3.2.2```
+SpringFramework.  [Spring initializr](https://start.spring.io/) ```implementation("org.springframework.boot:spring-boot-starter-web") version 3.2.2```
+
 - [React](https://es.react.dev/learn/installation). ```npm install version 9.6.2```
-- Spring Security -> [Add Dependency SpringSecurity](https://start.spring.io/) ```implementation("org.springframework.boot:spring-boot-starter-security")```
-- [Kotlin](https://oregoom.com/kotlin/instalar/).
-- PostgreSQL -> [Add Dependency PostgreSQL Driver](https://start.spring.io/) ```runtimeOnly("org.postgresql:postgresql")```
-- JWT(Json web token) -> ```implementation ("io.jsonwebtoken:jjwt:0.9.1")``` 
-- JVM -> ```kotlin("jvm") version "1.9.22"```
+- Spring
+  Security.  [Add Dependency SpringSecurity](https://start.spring.io/) ```implementation("org.springframework.boot:spring-boot-starter-security")```
+- Kotlin language. [Click HERE](https://oregoom.com/kotlin/instalar/).
+-
+
+PostgreSQL. [Add Dependency PostgreSQL Driver](https://start.spring.io/) ```runtimeOnly("org.postgresql:postgresql")```
+
+- JWT(Json web token). ```implementation ("io.jsonwebtoken:jjwt:0.9.1")```
+- JVM  ```kotlin("jvm") version "1.9.22"```
+
 ### Initial Setup and Configuration
 
 1. Clone the repository. `git clone https://github.com/DonSaul/CLKOTLINPROJECT.git`
@@ -89,167 +94,145 @@ Organized architecture for separation of concerns, such as:
 
 Robust security measures:
 
-- Authentication
-- Authorization
-- Encryption
-- Input validation
+| Atribute         | Implementation                                                            |
+|------------------|---------------------------------------------------------------------------|
+| Authentication   | implementation("io.jsonwebtoken:jjwt:0.9.1")                              |
+| Authorization    | implementation ("io.jsonwebtoken:jjwt:0.9.1")                             |
+| Encryption       | implementation("org.springframework.boot:spring-boot-starter-security")   |
+| Input validation | implementation("org.springframework.boot:spring-boot-starter-validation") |
+
+**We recommend initializing the project at https://start.spring.io/ to acquire the dependencies in an updated and more
+efficient way.**
 
 ## Advanced Functionalities
 
-1. ### Work Order Filtering
+### Search Candidates from Manager entity
 
-Advanced filtering options for job seekers.
+The `CandidateController` is responsible for handling requests related to candidate search.
 
-2. ### Search Technician By Name
+#### Endpoints
 
-Functionality to search for technicians.
+| Endpoint                    | Description                                        | HTTP Method | Query Parameters                                                                                                                                                                  | Response                                                                                                                                                                                                   |
+|-----------------------------|----------------------------------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `/api/v1/candidates/search` | Searches for candidates based on provided filters. | GET         | `salary` (optional): Candidate's expected salary. <br> `jobFamilyId` (optional): Candidate's job family ID. <br> `yearsOfExperience` (optional): Candidate's years of experience. | - HTTP Status Code: <br>   - 200 (OK): Candidates matching the criteria found. <br>   - 204 (No Content): No candidates matching the criteria found. <br> - Response Body: List of `CandidateDTO` objects. |
 
-3. ### Report Generation
+#### Related Classes
 
-Analytics and decision-making reports.
+- `CandidateDTO`: DTO representing candidate details.
+- `UserService`: Service providing logic for candidate search.
 
-4. ### Testing
+The `UserService` handles operations related to users and candidates.
 
-Comprehensive testing suite.
+#### Main Methods
 
-5. ### Login
-#### Authentication and Security Documentation
+| Method                  | Description                                         | Parameters                                                                                                                                                                        | Return                                                       |
+|-------------------------|-----------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------|
+| `searchCandidates`      | Searches for candidates based on provided criteria. | `salary` (optional): Candidate's expected salary. <br> `jobFamilyId` (optional): Candidate's job family ID. <br> `yearsOfExperience` (optional): Candidate's years of experience. | List of `CandidateDTO` objects matching the search criteria. |
+| `mapToUserCandidateDTO` | Maps a `Cv` object to a `CandidateDTO` object.      | `cvEntity`: Cv entity to be mapped. <br> `jobFamilies`: List of job families associated with the candidate.                                                                       | `CandidateDTO` object with candidate information.            |
 
-This document outlines the authentication and security mechanisms implemented in the JobSearch web application.
+#### Related Classes
 
-### Overview
+- `Cv`: Entity representing user's curriculum.
+- `JobFamily`: Entity representing a job family.
+- `CvRepository`: Repository for accessing curriculum data.
+
+The `CandidateDTO` represents the details of a candidate.
+
+#### Attributes
+
+- `id`: Candidate's identifier.
+- `firstName`: Candidate's first name.
+- `lastName`: Candidate's last name.
+- `email`: Candidate's email address.
+- `yearsOfExperience`: Candidate's years of experience.
+- `salaryExpectation`: Candidate's expected salary.
+- `jobFamilies`: List of job families associated with the candidate.
+
+## Authentication and Security
 
 The authentication process involves user registration, login, and token generation using JSON Web Tokens (JWT). Security
 measures include password encryption, token validation, and authorization for accessing protected resources.
 
-### AuthService 
+#### Security Features
 
-The `AuthService` class handles user authentication and registration.
+- **Password Encryption**: Encrypts user passwords using a password encoder for enhanced security.
+- **Token-Based Authentication**: Utilizes JWT tokens for authentication, ensuring a stateless and secure authentication
+  mechanism.
+- **Token Validation**: Validates JWT tokens to maintain authenticity and prevent tampering.
+- **Authorization**: Restricts access to protected resources based on user roles and permissions.
 
-Check the class:
-
-```kotlin
-@Service
-class AuthService(
-   private val userRepository: UserRepository,
-   val userService: UserService,
-) : UserDetailsService {
-   @Autowired
-   private lateinit var passwordEncoder: PasswordEncoder
-   @Autowired
-   private lateinit var jwtProvider: JwtProvider
-   fun register(userDto: UserDTO) {
-      userService.createUser(userDto)
-   }
-}
-```
-### JwtProvider
-The JwtProvider class generates and validates JWT tokens.
-```kotlin
-@Component
-class JwtProvider {
-   @Value("\${jwt.secret}")
-   private val jwtSecret: String? = null
-
-   @Value("\${jwt.expiration}")
-   private val jwtExpiration: Int? = null
-
-   fun generateJwtToken(userDetails: UserDetails): String {
-      val claims = Jwts.claims().setSubject(userDetails.username)
-      claims["roles"] = userDetails.authorities
-      return Jwts.builder()
-         .setClaims(claims)
-         .setIssuedAt(Date())
-         .setExpiration(Date(System.currentTimeMillis() + jwtExpiration!! * 1000))
-         .signWith(SignatureAlgorithm.HS512, jwtSecret)
-         .compact()
-   }
-   //we also implement validateJwtToken for the validation and getUserNameFromJwtToken 
-   //get the name based on the token
-}
-```
-
-### JwtAuthenticationFilter
-The JwtAuthenticationFilter intercepts HTTP requests and validates JWT tokens.
-```kotlin
-@Component
-class JwtAuthenticationFilter(
-    private val jwtProvider: JwtProvider,
-    private val userDetailsService: UserDetailsService,
-    private val userRepository: UserRepository,
-) : OncePerRequestFilter() {
-    // Method for filtering and validating JWT tokens in HTTP requests
-}
-```
-### AuthInterceptor
-The AuthInterceptor class intercepts HTTP requests and extracts JWT tokens.
-```kotlin
-@Component
-class AuthInterceptor : HandlerInterceptor {
-    // Method for extracting JWT tokens from HTTP requests
-}
-```
-
-### AuthController
-The AuthController class handles user registration and authentication endpoints.
-```kotlin
-@RestController
-@RequestMapping("/api/v1/auth")
-class AuthController(private val authService: AuthService) {
-    // Methods for registering and authenticating users
-}
-```
-
-### SecurityConfig
-The SecurityConfig class configures security settings and filters for HTTP requests.
-```kotlin
-@Configuration
-@EnableWebSecurity
-@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
-class SecurityConfig(private val userDetailsService: UserDetailsService) {
-    // Configuration for security filters and authentication manager
-}
-```
-### WebConfig
-The WebConfig class configures CORS settings for HTTP requests.
-```kotlin
-@Configuration
-@EnableWebMvc
-class WebConfig() : WebMvcConfigurer {
-    // Configuration for Cross-Origin Resource Sharing (CORS)
-}
-```
-
-### Security Features
-
-- **Password Encryption**: User passwords are encrypted using a password encoder to enhance security.
-- **Token-Based Authentication**: JWT tokens are used for authentication, providing a stateless and secure authentication mechanism.
-- **Token Validation**: JWT tokens are validated to ensure their authenticity and prevent tampering.
-- **Authorization**: Access to protected resources is restricted based on user roles and permissions.
-
-### Implementation Details
+#### Implementation Details
 
 - **User Registration**: Users can register for an account using the `/api/v1/auth/register` endpoint.
-- **User Authentication**: Users can authenticate using their credentials (username and password) via the `/api/v1/auth/login` endpoint.
-- **Token Generation**: Upon successful authentication, a JWT token is generated and returned to the client for subsequent requests.
-- **Token Validation**: JWT tokens are validated before granting access to protected resources, ensuring their integrity.
-- **User Role-Based Access Control**: Access to different endpoints is restricted based on user roles (e.g., candidate, manager, administrator).
+- **User Authentication**: Users can authenticate using their credentials (username and password) via
+  the `/api/v1/auth/login` endpoint.
+- **Token Generation**: Upon successful authentication, a JWT token is generated and returned to the client for
+  subsequent requests.
+- **Token Validation**: Validates JWT tokens before granting access to protected resources, ensuring integrity.
+- **User Role-Based Access Control**: Access to different endpoints is restricted based on user roles (e.g., candidate,
+  manager, administrator).
 
+### Summary Table
 
+| Component               | Description                                                 |
+|-------------------------|-------------------------------------------------------------|
+| AuthService             | Handles user authentication and registration.               |
+| JwtProvider             | Generates and validates JWT tokens.                         |
+| JwtAuthenticationFilter | Intercepts HTTP requests and validates JWT tokens.          |
+| AuthInterceptor         | Intercepts HTTP requests and extracts JWT tokens.           |
+| AuthController          | Manages user registration and authentication endpoints.     |
+| SecurityConfig          | Configures security settings and filters for HTTP requests. |
+| WebConfig               | Configures CORS settings for HTTP requests.                 |
 
+## Data Query
 
+The project utilizes PostgreSQL as the database management system (DBMS) for efficient data storage and retrieval.
 
-6. ### Data Query
+#### Database Schema
 
-Efficient database querying.
+The following tables are part of the database schema:
 
-7. ### Frontend
+| Table Name         | Description                                                        |
+|--------------------|--------------------------------------------------------------------|
+| application_status | Stores various application statuses such as "Not Applied"          |
+|                    | and "Accepted".                                                    |
+| applications       | Represents job applications submitted by candidates.               |
+| chat_messages      | Stores chat messages exchanged between users.                      |
+| conversations      | Manages conversations between users, containing multiple messages. |
+| cvs                | Contains CV (curriculum vitae) information of users.               |
+| interests          | Tracks user interests in specific job families.                    |
+| job_family         | Represents different job categories or families.                   |
+| notification       | Stores notifications sent to users regarding vacancies, messages,  |
+|                    | invitations, etc.                                                  |
+| notification_types | Defines types of notifications such as "vacancies" and "messages". |
+| person             | Contains basic personal information of users.                      |
+| project            | Represents projects listed in users' CVs.                          |
+| roles              | Stores user roles such as "candidate", "manager", and "admin".     |
+| skill              | Stores various skills that users possess.                          |
+| users              | Stores user account information including email, password, etc.    |
+| vacancy            | Represents job vacancies posted by companies.                      |
+
+#### Database Models
+
+The project includes various entity classes representing database tables:
+
+- `Application`: Represents job applications submitted by users.
+- `ChatMessage`: Stores chat messages exchanged between users.
+- `Conversation`: Manages conversations between users.
+- `Cv`: Contains information about users' curriculum vitae.
+- `Interest`: Tracks user interests in specific job families.
+- `JobFamily`: Represents different job categories or families.
+- `Notification`: Stores notifications sent to users.
+- `NotificationType`: Defines types of notifications.
+- `Person`: Contains basic personal information of users.
+- `Project`: Represents projects listed in users' CVs.
+- `Role`: Stores user roles.
+- `Skill`: Represents various skills that users possess.
+- `Status`: Stores application statuses.
+- `User`: Stores user account information.
+
+## Frontend
 
 User-friendly frontend development.
 
-8. ## License
-We need to add this license: [MIT License](https://opensource.org/licenses/MIT).
-=======
-# CLKOTLINPROJECT
-# here will be the docs
->>>>>>> f043cdeff057c62d4b7d1fe429551637ec1a9992
+
