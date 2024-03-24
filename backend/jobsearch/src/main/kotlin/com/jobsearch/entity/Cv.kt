@@ -27,7 +27,4 @@ class Cv(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     val user: User,
-
-
-
 )

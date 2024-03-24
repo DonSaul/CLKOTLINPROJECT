@@ -43,8 +43,6 @@ class InterestService(
         val existingInterests = interestRepository.findInterestsByUserId(userId)
 
         val matchingInterest = existingInterests.find { it.jobFamily.id == jobFamilyId }
-
-
         if (matchingInterest != null) {
             matchingInterest.jobFamily.id = jobFamilyId
             interestRepository.save(matchingInterest)
@@ -53,9 +51,6 @@ class InterestService(
 
     fun getJobFamilyByUserId(userId: Int): List<JobFamily> {
         val interests = interestRepository.getJobFamilyByUserId(userId)
-
-
-
         return interests
     }
 }
