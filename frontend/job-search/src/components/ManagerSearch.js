@@ -1,13 +1,8 @@
-import React, { useState } from 'react';
-import CardContainer from './CardContainer';
-import { TextField } from '@mui/material';
-import { Button } from '@mui/material';
-import { Grid } from '@mui/material';
-import useSearchCandidates from '../hooks/useSearchCandidates';
+import { Autocomplete, Button, Grid, TextField } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import useJobFamily from '../hooks/useJobFamily';
-import { Autocomplete } from '@mui/material';
-import { useEffect } from 'react';
-import JobFamilyAutocomplete from './JobFamilyAutocomplete';
+import useSearchCandidates from '../hooks/useSearchCandidates';
+import CardContainer from './CardContainer';
 
 export const CandidatesFilter = ({ onFilterChange, setData }) => {
   const [yearsOfExperience, setYearsOfExperience] = useState('');
@@ -44,19 +39,15 @@ export const CandidatesFilter = ({ onFilterChange, setData }) => {
     fetchData();
   }, []);
 
-
-
   const handleApplyFilter = async () => {
     try {
-        const fetchedData = await refetch(salary, jobFamily, yearsOfExperience);
-        console.log("fetched:", fetchedData);
-        setData(fetchedData.data);
+      const fetchedData = await refetch(salary, jobFamily, yearsOfExperience);
+      console.log("fetched:", fetchedData);
+      setData(fetchedData.data);
     } catch (error) {
-        console.error("Error fetching data:", error);
+      console.error("Error fetching data:", error);
     }
-};
-
-
+  };
   return (
     <div>
       <CardContainer>
@@ -83,11 +74,6 @@ export const CandidatesFilter = ({ onFilterChange, setData }) => {
               renderInput={(params) => <TextField {...params} label={`Select Job Family`} margin="normal" />}
             />
           </Grid>
-          {/* 
-                    <JobFamilyAutocomplete
-                            onChange={(e, newValue) => handleJobFamilyChange(newValue)}
-                            value={jobFamily}
-                        />*/}
 
           <Grid item xs={3}>
             <TextField

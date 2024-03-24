@@ -1,24 +1,21 @@
-import { useMemo, useState, useEffect } from 'react';
-import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import Button from '@mui/material/Button';
+import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
+import { useEffect, useMemo, useState } from 'react';
 // import { useApplyVacancy } from '../hooks/useApplyVacancy';
-import { useSendInvitation } from '../hooks/useSendInvitation';
-import { useGetCurrentUserCv } from '../hooks/useCV';
+import { MenuItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { ROLES } from '../helpers/constants';
 import { useAuth } from '../helpers/userContext';
-import { MenuItem } from '@mui/material';
+import { useSendInvitation } from '../hooks/useSendInvitation';
 import { paths } from '../router/paths';
 // import { PersonalInvitation } from './PersonalInvitation';
 
-export default function CandidatesTable({ dataFromQuery,onRowSelectionChange }) {
+export default function CandidatesTable({ dataFromQuery, onRowSelectionChange }) {
 
 
-    const {getUserRole} = useAuth();
-    const {mutate:sendInvitation, isError, isSuccess}=useSendInvitation();  //remove
-
+    const { getUserRole } = useAuth();
+    const { mutate: sendInvitation, isError, isSuccess } = useSendInvitation();  //remove
     const navigate = useNavigate();
-
     const columnsCandidates = useMemo(
         () => [
             {
@@ -54,15 +51,15 @@ export default function CandidatesTable({ dataFromQuery,onRowSelectionChange }) 
                 header: 'Salary',
             },
 
-        {
-            id: 'sendButton', 
-            header: 'Status',
-            Cell: ({ row }) => (
-                <Button variant="contained" color="primary" onClick={() => handleInvite(row.original)} disabled={getUserRole()!==ROLES.MANAGER}>
-                    Invite
-                </Button>
-            ),
-          },
+            {
+                id: 'sendButton',
+                header: 'Status',
+                Cell: ({ row }) => (
+                    <Button variant="contained" color="primary" onClick={() => handleInvite(row.original)} disabled={getUserRole() !== ROLES.MANAGER}>
+                        Invite
+                    </Button>
+                ),
+            },
         ],
         [],
     );
@@ -111,7 +108,7 @@ export default function CandidatesTable({ dataFromQuery,onRowSelectionChange }) 
             maxSize: 400,
             minSize: 80,
             size: 150, //default size is usually 180
-          },
+        },
         state: { rowSelection }, //manage your own state, pass it back to the table (optional)
         initialState: { columnVisibility: { vacancyId: false } },
         //enableHiding:false
