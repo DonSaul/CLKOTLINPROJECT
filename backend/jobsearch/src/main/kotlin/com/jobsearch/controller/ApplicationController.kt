@@ -2,45 +2,43 @@ package com.jobsearch.controller
 
 import com.jobsearch.dto.ApplicationDTO
 import com.jobsearch.service.ApplicationService
-import org.springframework.security.access.prepost.PostAuthorize
+import jakarta.validation.Valid
+import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/v1/application")
 class ApplicationController(val applicationService: ApplicationService) {
 
     @PostMapping
-    fun createApplication(@RequestBody applicationDTO: ApplicationDTO): ApplicationDTO {
+    @ResponseStatus(HttpStatus.CREATED)
+    fun createApplication(@Valid @RequestBody applicationDTO: ApplicationDTO): ApplicationDTO {
         return applicationService.createApplication(applicationDTO)
     }
 
     @GetMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
     fun retrieveApplication(@PathVariable("id") applicationId: Int): ApplicationDTO {
         return applicationService.retrieveApplication(applicationId)
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     fun retrieveAllApplication(): List<ApplicationDTO> {
         return applicationService.retrieveAllApplication()
     }
-@PreAuthorize("hasRole('manager')")
+    @PreAuthorize("hasRole('manager')")
     @PutMapping("{id}")
     fun updateApplication(
         @PathVariable("id") applicationId: Int,
-        @RequestBody applicationDTO: ApplicationDTO
+        @Valid @RequestBody applicationDTO: ApplicationDTO
     ): ApplicationDTO {
         return applicationService.updateApplicationStatus(applicationDTO)
     }
 
     @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteApplication(@PathVariable("id") applicationId: Int): String {
         return applicationService.deleteApplication(applicationId)
     }

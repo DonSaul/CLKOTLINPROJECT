@@ -23,6 +23,26 @@ const getDecodedToken = (token) => {
       return null;
     }
   };
+
+  const getFirstNameFromToken = (token) => {
+    try {
+      const decodedToken = getDecodedToken(token);
+      return decodedToken.first_name || null;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
+    }
+  };
+
+  const getLastNameFromToken = (token) => {
+    try {
+      const decodedToken = getDecodedToken(token);
+      return decodedToken.last_name || null;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
+    }
+  };
   
   const getRoleFromToken = (token) => {
     if (token) {
@@ -48,4 +68,4 @@ const getDecodedToken = (token) => {
       return null;
   };
   
-  export { getEmailFromToken, getRoleFromToken };
+  export { getEmailFromToken, getRoleFromToken ,getFirstNameFromToken,getLastNameFromToken};

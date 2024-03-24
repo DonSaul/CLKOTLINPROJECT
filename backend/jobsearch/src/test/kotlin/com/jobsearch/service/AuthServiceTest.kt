@@ -18,7 +18,6 @@ import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 class AuthServiceTest {
-
     @Mock
     private lateinit var userRepository: UserRepository
 
@@ -31,51 +30,51 @@ class AuthServiceTest {
     @InjectMocks
     private lateinit var authService: AuthService
 
+    companion object {
+        const val USERNAME = "Thorin"
+        const val PASSWORD = "password"
+        const val FIRST_NAME = "Thorin"
+        const val LAST_NAME = "OakShield"
+        const val ENCODED_PASSWORD = "encodedPassword"
+        const val MOCKED_TOKEN = "mockedToken"
+    }
+
     @Test
     fun testAuthenticate_ValidCredentials_ReturnsToken() {
-        val username = "Thorin"
-        val password = "password"
-        val firstName = "Thorin"
-        val lastname = "OakShield"
-        val encodedPassword = "encodedPassword"
-        val userDetails = UserDetailsImpl.build(User(email = username, firstName = "Thorin", lastName = "OakShield", password = encodedPassword))
+        val userDetails = UserDetailsImpl.build(User(email = USERNAME, firstName = FIRST_NAME, lastName = LAST_NAME, password = ENCODED_PASSWORD))
+        val user = User(email = USERNAME, firstName = FIRST_NAME, lastName = LAST_NAME, password = ENCODED_PASSWORD)
 
-        val user = User(email = username, firstName = firstName, lastName = lastname ,password = encodedPassword)
-        Mockito.`when`(userRepository.findByEmail(username)).thenReturn(Optional.of(user))
+        Mockito.`when`(userRepository.findByEmail(USERNAME)).thenReturn(Optional.of(user))
+        Mockito.`when`(passwordEncoder.matches(PASSWORD, ENCODED_PASSWORD)).thenReturn(true)
+        Mockito.`when`(jwtProvider.generateJwtToken(userDetails)).thenReturn(MOCKED_TOKEN)
 
-        Mockito.`when`(passwordEncoder.matches(password, encodedPassword)).thenReturn(true)
+        val token = authService.authenticate(USERNAME, PASSWORD)
+        assertEquals(MOCKED_TOKEN, token)
 
-        Mockito.`when`(jwtProvider.generateJwtToken(userDetails)).thenReturn("mockedToken")
-
-        val token = authService.authenticate(username, password)
-
-        assertEquals("mockedToken", token)
+        Mockito.verify(userRepository).findByEmail(USERNAME)
+        Mockito.verify(passwordEncoder).matches(PASSWORD, ENCODED_PASSWORD)
+        Mockito.verify(jwtProvider).generateJwtToken(userDetails)
     }
 
     @Test
     fun testAuthenticate_InvalidCredentials_ThrowsBadCredentialsException() {
-        val username = "test@example.com"
-        val password = "password"
-        val firstname = "Thorin"
-        val lastname = "OakShield"
-        val encodedPassword = "encodedPassword"
-        val userDetails = UserDetailsImpl.build(User(email = username, firstName = "Thorin", lastName = "OakShield", password = encodedPassword))
+        val userDetails = UserDetailsImpl.build(User(email = USERNAME, firstName = FIRST_NAME, lastName = LAST_NAME, password = ENCODED_PASSWORD))
+        val user = User(email = USERNAME, firstName = FIRST_NAME, lastName = LAST_NAME, password = ENCODED_PASSWORD)
 
-        val user = User(email = username, firstName = firstname, lastName = lastname,password = encodedPassword)
-        Mockito.`when`(userRepository.findByEmail(username)).thenReturn(Optional.of(user))
+        Mockito.`when`(userRepository.findByEmail(USERNAME)).thenReturn(Optional.of(user))
+        Mockito.`when`(passwordEncoder.matches(PASSWORD, ENCODED_PASSWORD)).thenReturn(false)
 
-        Mockito.`when`(passwordEncoder.matches(password, encodedPassword)).thenReturn(false)
-
-        assertThrows<BadCredentialsException> { authService.authenticate(username, password) }
+        assertThrows<BadCredentialsException> {
+            authService.authenticate(USERNAME, PASSWORD)
+        }
     }
 
     @Test
     fun testAuthenticate_UserNotFound_ThrowsUsernameNotFoundException() {
-        val username = "test@example.com"
-        val password = "password"
+        Mockito.`when`(userRepository.findByEmail(USERNAME)).thenReturn(Optional.empty())
 
-        Mockito.`when`(userRepository.findByEmail(username)).thenReturn(Optional.empty())
-
-        assertThrows<UsernameNotFoundException> { authService.authenticate(username, password) }
+        assertThrows<UsernameNotFoundException> {
+            authService.authenticate(USERNAME, PASSWORD)
+        }
     }
 }

@@ -2,7 +2,9 @@ package com.jobsearch.service
 
 import com.jobsearch.dto.ApplicationDTO
 import com.jobsearch.entity.Application
+import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.*
+import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 
 @Service
@@ -17,42 +19,47 @@ class ApplicationService(
 
 ) {
 
-
+    @Transactional
     fun createApplication(applicationDTO: ApplicationDTO): ApplicationDTO {
 
         val candidate = userService.retrieveAuthenticatedUser()
 
-        val defaultStatus= statusService.retrieveStatus(2)
+        val defaultStatus = statusRepository.findById(2).get()
 
         val cv = cvRepository.findFirstByUserOrderByIdDesc(candidate)
 
         val vacancy = vacancyRepository.findById(applicationDTO.vacancyId)
-            .orElseThrow { NoSuchElementException("Vacancy not found with ID: ${applicationDTO.vacancyId}") }
+            .orElseThrow { NotFoundException("Vacancy not found with ID: ${applicationDTO.vacancyId}") }
 
         val applicationEntity = Application(
             candidate = candidate,
             cv = cv,
             vacancy = vacancy,
-            applicationStatus = statusRepository.findById(2).get()
+            applicationStatus = defaultStatus
         )
+        if (candidateAlreadyApplied(applicationEntity)){
+            throw RuntimeException("Candidate have already applied to this vacancy")
+        } else {
+            val newApplication = applicationEntity.let { applicationRepository.save(it) }
 
-        val newApplication = applicationEntity.let { applicationRepository.save(it) }
+            return ApplicationDTO(
+                newApplication.id,
+                newApplication.candidate.id!!,
+                newApplication.cv.id!!,
+                newApplication.vacancy.id!!,
+                newApplication.applicationStatus.name,
+                newApplication.applicationStatus.id
+            )
+        }
 
-        return ApplicationDTO(
-            newApplication.id,
-            newApplication.candidate.id!!,
-            newApplication.cv.id!!,
-            newApplication.vacancy.id!!,
-            newApplication.applicationStatus.name,
-            newApplication.applicationStatus.id
-        )
+
 
     }
 
 
     fun retrieveApplication(applicationId: Int): ApplicationDTO {
         val application = applicationRepository.findById(applicationId)
-            .orElseThrow { NoSuchElementException("No application found with $applicationId") }
+            .orElseThrow { NotFoundException("No application found with $applicationId") }
 
 
         return mapToApplicationDTO(application)
@@ -68,10 +75,10 @@ class ApplicationService(
         }
     }
 
-
+    @Transactional
     fun updateApplicationStatus( applicationDTO: ApplicationDTO) : ApplicationDTO{
         val application = applicationRepository.findById(applicationDTO.applicationId!!)
-            .orElseThrow{NoSuchElementException("No application founded with id ${applicationDTO.applicationId}")}
+            .orElseThrow{NotFoundException("No application founded with id ${applicationDTO.applicationId}")}
 
 
         application.apply {
@@ -83,10 +90,10 @@ class ApplicationService(
         return mapToApplicationDTO(updatedApplication)
     }
 
-
+    @Transactional
     fun deleteApplication(applicationId: Int) : String{
         val application = applicationRepository.findById(applicationId)
-            .orElseThrow{NoSuchElementException("No application founded with id $applicationId")}
+            .orElseThrow{NotFoundException("No application founded with id $applicationId")}
 
         applicationRepository.delete(application)
 
@@ -106,6 +113,16 @@ class ApplicationService(
                     it.applicationStatus.id
             )
         }
+    }
+
+    fun candidateAlreadyApplied(applicationEntity: Application): Boolean {
+        val candidateApplicationList = applicationRepository.findByCandidate(applicationEntity.candidate)
+        for (application in candidateApplicationList){
+            if (application.vacancy == applicationEntity.vacancy){
+                return true
+            }
+        }
+        return false
     }
 
 }

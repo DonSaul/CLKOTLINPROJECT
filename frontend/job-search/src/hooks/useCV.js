@@ -73,11 +73,11 @@ export const useCV = () => {
         'Authorization': `Bearer ${token}`,
       },
     };
-    console.log('Request Data:', requestData);
+    //console.log('Request Data:', requestData);
 
     const response = await fetch(`${ENDPOINTS.userCv}`, requestData);
 
-    console.log('Request Data:', requestData);
+    //console.log('Request Data:', requestData);
     if (!response.ok) {
       throw new Error('Failed to fetch cv');
     }

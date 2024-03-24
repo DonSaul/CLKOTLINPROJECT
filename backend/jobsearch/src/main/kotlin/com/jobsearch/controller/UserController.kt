@@ -1,8 +1,9 @@
 package com.jobsearch.controller
 
-import com.jobsearch.dto.NotificationDTO
-import com.jobsearch.dto.UserDTO
+import com.jobsearch.dto.UserRequestDTO
+import com.jobsearch.dto.UserResponseDTO
 import com.jobsearch.service.UserService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -13,27 +14,27 @@ import org.springframework.web.bind.annotation.*
 class UserController(private val userService: UserService) {
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('admin')")
-    fun addUser(@RequestBody userDTO: UserDTO): ResponseEntity<UserDTO> {
+    @PreAuthorize("hasAuthority('admin')")
+    fun addUser(@Valid @RequestBody userDTO: UserRequestDTO): ResponseEntity<UserResponseDTO> {
         val user = userService.createUser(userDTO)
         return ResponseEntity(user, HttpStatus.CREATED)
     }
 
     @GetMapping("/{userId}")
-    fun retrieveUser(@PathVariable userId: Int): ResponseEntity<UserDTO> {
+    fun retrieveUser(@PathVariable userId: Int): ResponseEntity<UserResponseDTO> {
         val user = userService.retrieveUser(userId)
         return ResponseEntity(user, HttpStatus.OK)
     }
 
     @GetMapping("/all")
-    fun retrieveAllUsers(): ResponseEntity<List<UserDTO>> {
+    fun retrieveAllUsers(): ResponseEntity<List<UserResponseDTO>> {
         val users = userService.retrieveAllUsers()
         return ResponseEntity(users, HttpStatus.OK)
     }
 
     @PutMapping("/{userId}")
-    fun updateUser(@PathVariable userId: Int, @RequestBody userDTO: UserDTO): ResponseEntity<UserDTO> {
-        val updatedUser = userService.updateUser(userId, userDTO)
+    fun updateUser(@PathVariable userId: Int,@Valid @RequestBody userRequestDTO: UserRequestDTO): ResponseEntity<UserResponseDTO> {
+        val updatedUser = userService.updateUser(userId, userRequestDTO)
         return ResponseEntity(updatedUser, HttpStatus.OK)
     }
 
@@ -41,20 +42,5 @@ class UserController(private val userService: UserService) {
     fun deleteUser(@PathVariable userId: Int): ResponseEntity<String> {
         val result = userService.deleteUser(userId)
         return ResponseEntity(result, HttpStatus.OK)
-    }
-
-    @PutMapping("/{userId}")
-    fun updateUserNotificationActivated(@PathVariable userId: Int): ResponseEntity<UserDTO> {
-        val updatedUser = userService.activateNotifications(userId)
-        return ResponseEntity(updatedUser, HttpStatus.OK)
-    }
-
-    @PutMapping("/{userId}/activate-notification-type")
-    fun activateNotificationType(
-        @PathVariable userId: Int,
-        @RequestBody notificationTypeDTO: NotificationDTO
-    ): ResponseEntity<UserDTO> {
-        val updatedUser = userService.activatedNotificationTypes(userId, notificationTypeDTO)
-        return ResponseEntity(updatedUser, HttpStatus.OK)
     }
 }

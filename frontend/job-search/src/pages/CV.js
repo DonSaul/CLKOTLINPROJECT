@@ -19,19 +19,20 @@ import IdTester from '../components/IdTester';
 import JobFamilyAutocomplete from '../components/JobFamilyAutocomplete';
 
 import SnackbarNotification from '../components/SnackbarNotification';
+import { useAuth } from '../helpers/userContext';
 const CV = () => {
 
-  //Current user send id, when available
   const [id, setId] = useState(); 
   const [hasFetchedData, setHasFetchedData] = useState(false);
-  const { data: cvData, error: cvError, isLoading: isCvLoading } = useGetCurrentUserCv(id);
+  const { logout, getUserRole, isLoggedIn } = useAuth();
+  const { data: cvData, error: cvError, isLoading: isCvLoading, isSuccess:isCvSuccess } = useGetCurrentUserCv();
 
 
   //Standard data cv
   const [yearsOfExperience, setYearsOfExperience] = useState('');
   const [salaryExpectations, setSalaryExpectations] = useState('');
   const [education, setEducation] = useState('');
-  //const [project, setProject] = useState('');
+
 
   //tsting 
   const [projects, setProjects] = useState([{ name: '', description: '' }]);
@@ -50,28 +51,18 @@ const CV = () => {
   const { mutate, isError, isSuccess } = useCV();
   const { mutate:updateCVbyID } = useUpdateCV();
 
+//simple way to fetch
+  useEffect( () => {
 
-  //Notification test
-  // const [snackbarOpen, setSnackbarOpen] = useState(false);
-  // const [snackbarMessage, setSnackbarMessage] = useState('');
-  //  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-
-
-
-  useEffect(() => {
-    // Set initial state based on cvData when available
-    if (cvData && !hasFetchedData) {
-      console.log("CVDATA",cvData)
-      setId(cvData.id)
-      setYearsOfExperience(cvData.yearsOfExperience);
-      setSalaryExpectations(cvData.salaryExpectation);
-      setEducation(cvData.education);
-      setProjects(cvData.projects || [{ name: '', description: '' }]);
-      setHasFetchedData(true);
-      setSelectedSkillsArray(cvData.skills || []);
+    if (cvData) {
+      setCvData(cvData);
     }
-  }, [cvData,hasFetchedData]);
+    
 
+  },[cvData])
+
+ 
+//skills
   useEffect(() => {
     if (skills && selectedSkillsArray.length > 0) {
       console.log("entering condition", skills.filter(skill => !selectedSkillsArray.some(selected => selected.skillId === skill.skillId)))
@@ -81,10 +72,30 @@ const CV = () => {
       setAvailableSkills(skills);
     }
   }, [skills, selectedSkillsArray]);
-
-
-
+ 
   //Testing
+
+
+  const setCvData = (cvData) =>{
+
+      setId(cvData.id)
+      setYearsOfExperience(cvData.yearsOfExperience);
+      setSalaryExpectations(cvData.salaryExpectation);
+      setEducation(cvData.education);
+      setProjects(cvData.projects || [{ name: '', description: '' }]);
+      setSelectedSkillsArray(cvData.skills || []);
+
+  }
+
+  const clearCv= () =>{
+    setId('')
+    setYearsOfExperience('');
+    setSalaryExpectations('');
+    setEducation('');
+    setProjects([{ name: '', description: '' }]);
+    setSelectedSkillsArray([]);
+
+  }
 
   const handleRemoveSkill = (skillId) => {
     console.log(availableSkills);
@@ -115,9 +126,6 @@ const CV = () => {
     setProjects(updatedProjects);
   };
 
-  const handleSnackbarClose = () => {
-    //setSnackbarOpen(false);
-  };
 
   const updateCV = () => {
 
@@ -272,7 +280,7 @@ const CV = () => {
           ))}
 
           <Button onClick={addProjectField} variant="outlined" color="primary">
-            Add Project
+            Add Another Project
           </Button>
 
 
@@ -352,17 +360,6 @@ const CV = () => {
 
       </CardContainer>
 
-      {/*
-
-  <SnackbarNotification
-        open={snackbarOpen}
-        message={snackbarMessage}
-        onClose={handleSnackbarClose}
-        severity={snackbarSeverity}
-      />
-
-
-*/}
 
     </div>
   );
