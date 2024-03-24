@@ -3,6 +3,7 @@ package com.jobsearch.controller
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.jobsearch.dto.VacancyRequestDTO
 import com.jobsearch.dto.VacancyResponseDTO
+import com.jobsearch.response.StandardResponse
 import com.jobsearch.service.VacancyService
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -12,6 +13,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.test.web.servlet.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
@@ -23,31 +25,39 @@ class VacancyControllerUnitTest {
     @InjectMocks
     private lateinit var vacancyController: VacancyController
 
+
+    // Will be initialized in setUp
     lateinit var vacancyResponseDTO: VacancyResponseDTO
     lateinit var vacancyRequestDTO: VacancyRequestDTO
 
+
     @BeforeEach
     fun setUp() {
+        // Set up the vacancy response DTO
         vacancyResponseDTO = VacancyResponseDTO(
             id = 1,
-            name = "Vacante 1",
+            name = "Vacancy one",
             salaryExpectation = 10000,
             yearsOfExperience = 3,
             managerId = 1,
             jobFamilyId = 1,
-            jobFamilyName = "Developer",
+            jobFamilyName = "Information Technology",
             companyName = "Important Company",
-            description = "BLABLABLA"
+            description = "Vacancy one description"
         )
+
+        // Set up the vacancy request DTO
         vacancyRequestDTO = VacancyRequestDTO(
             id = null,
-            name = "Vacante 1",
+            name = "Vacancy one",
             salaryExpectation = 10000,
             yearsOfExperience = 3,
             jobFamilyId = 1,
             companyName = "Important Company",
-            description = "BLABLABLA"
+            description = "Vacancy one description"
         )
+
+        // Open mocks and setup the MockMvc
         MockitoAnnotations.openMocks(this)
         mockMvc = MockMvcBuilders.standaloneSetup(vacancyController).build()
     }
@@ -76,16 +86,20 @@ class VacancyControllerUnitTest {
 
     @Test
     fun `Should retrieve Vacancy with id 1 and return status 200`() {
-        val vacancyId = vacancyResponseDTO.id
-
         `when`(vacancyService.retrieveVacancy(anyInt())).thenReturn(vacancyResponseDTO)
-
+        val vacancyId = vacancyResponseDTO.id
+        // Perform a GET request to retrieve a Vacancy
         mockMvc.get("/api/v1/vacancy/{id}", vacancyId)
-            .andExpect() {
+
+        // Validate the response
+            .andExpect {
                 status { isOk() }
                 content { content().contentType(MediaType.APPLICATION_JSON) }
                 content { jacksonObjectMapper().writeValueAsString(vacancyResponseDTO) }
             }
+
+        // Verify that the service method to retrieve a Vacancy is called just once
+        verify(vacancyService, times(1)).retrieveVacancy(anyInt())
     }
 
 //    @Test
@@ -107,6 +121,7 @@ class VacancyControllerUnitTest {
     @Test
     fun `Should delete Vacancy with id 1 and return status 204`() {
         doNothing().`when`(vacancyService).deleteVacancy(1)
+        // Perform a DELETE request to delete a Vacancy
         val vacancyId = 1
         mockMvc.delete("/api/v1/vacancy/{id}", vacancyId)
             .andExpect {
