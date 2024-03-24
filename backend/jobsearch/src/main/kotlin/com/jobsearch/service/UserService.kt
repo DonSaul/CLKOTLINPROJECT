@@ -170,24 +170,25 @@ class UserService @Autowired constructor(
     fun findCandidatesByFilter(salary: Int?, jobFamilyId: Int?, yearsOfExperience: Int?): List<CandidateDTO> {
         val cvs = cvRepository.findCvByFilter(salary, yearsOfExperience)
 
-        return cvs.map { cv ->
+        return cvs.mapNotNull { cv ->
             val jobFamilies = cv.user.id?.let { interestService.getJobFamilyByUserId(it) }
-            println(jobFamilies)
-            mapToUserCandidateDTO(cv, jobFamilies)
+            if (jobFamilyId == null || jobFamilies?.any { it.id == jobFamilyId } == true) {
+                mapToUserCandidateDTO(cv, jobFamilies)
+            } else {
+                null
+            }
         }
     }
 
-    fun mapToUserCandidateDTO(cvEntity: Cv, jobFamilies: List<JobFamily>?): CandidateDTO {
-        return cvEntity.let {
-            CandidateDTO(
-                it.user.id!!,
-                it.user.firstName,
-                it.user.lastName,
-                it.user.email,
-                it.yearsOfExperience,
-                it.salaryExpectation,
-                jobFamilies!!
-            )
-        }
+    private fun mapToUserCandidateDTO(cvEntity: Cv, jobFamilies: List<JobFamily>?): CandidateDTO {
+        return CandidateDTO(
+            cvEntity.user.id!!,
+            cvEntity.user.firstName,
+            cvEntity.user.lastName,
+            cvEntity.user.email,
+            cvEntity.yearsOfExperience,
+            cvEntity.salaryExpectation,
+            jobFamilies ?: emptyList()
+        )
     }
 }
