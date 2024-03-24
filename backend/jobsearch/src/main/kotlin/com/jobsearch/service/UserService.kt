@@ -1,20 +1,27 @@
 package com.jobsearch.service
 
 import com.jobsearch.dto.CandidateDTO
+import com.jobsearch.dto.NotificationTypeDTO
 import com.jobsearch.dto.UserRequestDTO
 import com.jobsearch.dto.UserResponseDTO
 import com.jobsearch.entity.Cv
+import com.jobsearch.entity.Interest
+import com.jobsearch.entity.JobFamily
 import com.jobsearch.entity.User
+import com.jobsearch.repository.NotificationTypeRepository
 import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.CvRepository
 import com.jobsearch.repository.RoleRepository
 import com.jobsearch.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import kotlin.NoSuchElementException
 
 
 @Service
@@ -22,7 +29,9 @@ class UserService @Autowired constructor(
     private val userRepository: UserRepository,
     private val roleRepository: RoleRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val cvRepository: CvRepository
+    private val notificationTypeRepository: NotificationTypeRepository,
+    private val cvRepository: CvRepository,
+    private val interestService: InterestService
 ) {
     @Transactional
     fun createUser(userRequestDTO: UserRequestDTO): UserResponseDTO? {
@@ -40,7 +49,8 @@ class UserService @Autowired constructor(
             lastName = userRequestDTO.lastName,
             password = encodedPassword,
             email = userRequestDTO.email,
-            role = roleRepository.findById(roleId).get()
+            role = roleRepository.findById(roleId).get(),
+            resetPasswordToken = null
         )
 
         val newUser = userEntity.let { userRepository.save(it) }
@@ -52,6 +62,7 @@ class UserService @Autowired constructor(
         val user = userRepository.findById(userId)
             .orElseThrow { NotFoundException("No user found with id $userId") }
         return mapToUserResponseDTO(user)
+
     }
 
     @Transactional
@@ -101,17 +112,107 @@ class UserService @Autowired constructor(
                 it.firstName,
                 it.lastName,
                 it.email,
-                it.role!!.id!!
+                it.role!!.id!!,
+                it.notificationActivated,
+                it.activatedNotificationTypes,
+                it.resetPasswordToken
             )
         }
     }
 
+    fun activateNotifications(email: String): UserResponseDTO {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
+        user.notificationActivated = true
+
+        val updatedUser = userRepository.save(user)
+        return mapToUserResponseDTO(updatedUser)
+    }
+
+    fun deactivateNotifications(email: String): UserResponseDTO {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
+        user.notificationActivated = false
+
+        val updatedUser = userRepository.save(user)
+        return mapToUserResponseDTO(updatedUser)
+    }
+
+    fun activatedNotificationTypes(email: String, notificationTypeId: Int): UserResponseDTO {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
+
+        val notificationType = notificationTypeRepository.findByIdOrNull(notificationTypeId)
+            ?: throw NoSuchElementException("No notification type found with id $notificationTypeId")
+
+        user.activatedNotificationTypes = user.activatedNotificationTypes.plus(notificationType)
+
+        val updatedUser = userRepository.save(user)
+        return mapToUserResponseDTO(updatedUser)
+    }
+
+    fun deactivateNotificationTypes(email: String, notificationTypeId: Int): UserResponseDTO {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
+
+        val notificationType = notificationTypeRepository.findByIdOrNull(notificationTypeId)
+            ?: throw NoSuchElementException("No notification type found with id $notificationTypeId")
+
+        user.activatedNotificationTypes = user.activatedNotificationTypes.minus(notificationType)
+
+        val updatedUser = userRepository.save(user)
+        return mapToUserResponseDTO(updatedUser)
+    }
+
+    fun updateResetPasswordToken(token: String, email: String) {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
+        user.resetPasswordToken = token.toString()
+        userRepository.save(user)
+    }
+
+    fun updatePassword(user: User, newPassword: String) {
+        val passwordEncoder = BCryptPasswordEncoder()
+        val encodedPassword = passwordEncoder.encode(newPassword)
+        user.password = encodedPassword
+        user.resetPasswordToken = null
+        userRepository.save(user)
+    }
+
+
     fun findCandidatesByFilter(salary: Int?, jobFamilyId: Int?, yearsOfExperience: Int?): List<CandidateDTO> {
         val cvs = cvRepository.findCvByFilter(salary, yearsOfExperience)
-        val listsOfDto = cvs.map { mapToUserCandidateDTO (it) }
-        return listsOfDto
+
+        return cvs.map { cv ->
+            val jobFamilies = cv.user.id?.let { interestService.getJobFamilyByUserId(it) }
+            println(jobFamilies)
+            mapToUserCandidateDTO(cv, jobFamilies)
+        }
     }
-    fun mapToUserCandidateDTO(cvEntity: Cv): CandidateDTO {
+
+    fun getUserNotificationStatus(email: String): Boolean {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
+        return user.notificationActivated
+    }
+    fun getActivatedNotificationTypes(email: String): List<NotificationTypeDTO> {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
+
+        val activatedNotificationTypes = user.activatedNotificationTypes
+
+        val activatedNotificationTypeDTOs = activatedNotificationTypes.map { notificationType ->
+            NotificationTypeDTO(
+                id = notificationType?.id!!,
+                type = notificationType.type,
+
+            )
+        }
+
+        return activatedNotificationTypeDTOs
+    }
+
+    fun mapToUserCandidateDTO(cvEntity: Cv, jobFamilies: List<JobFamily>?): CandidateDTO {
         return cvEntity.let {
             CandidateDTO(
                 it.user.id!!,
@@ -119,7 +220,8 @@ class UserService @Autowired constructor(
                 it.user.lastName,
                 it.user.email,
                 it.yearsOfExperience,
-                it.salaryExpectation
+                it.salaryExpectation,
+                jobFamilies!!
             )
         }
     }

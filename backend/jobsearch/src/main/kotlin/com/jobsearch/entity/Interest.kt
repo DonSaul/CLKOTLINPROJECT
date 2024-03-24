@@ -11,9 +11,9 @@ data class Interest(
 
     @ManyToOne
     @JoinColumn(name = "jobFamily_id")
-    val jobFamily : JobFamily,
+    var jobFamily : JobFamily,
 
-    //Still discussing what relation use (many-to-many or one-to-many)
+
     @ManyToOne
     @JoinColumn(name = "userId")
     val user: User

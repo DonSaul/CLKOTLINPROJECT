@@ -37,6 +37,18 @@ class VacancyController(
     ): ResponseEntity<StandardResponse<List<VacancyResponseDTO>>>  {
         val dataBodyList = vacancyService.findVacanciesByFilter(salary, jobFamilyId, yearsOfExperience)
         return mapResponseEntity(dataBodyList)
+        val responseEntityList = vacancyService.findVacanciesByFilter(salary, jobFamilyId, yearsOfExperience)
+        val status = HttpStatus.OK
+//        if (responseEntityList.isEmpty()) {
+//            status = HttpStatus.NO_CONTENT
+//        }
+        val body = StandardResponse(
+            status = status.value(),
+            data = responseEntityList
+        )
+        return ResponseEntity
+            .status(status)
+            .body(body)
     }
 
 
