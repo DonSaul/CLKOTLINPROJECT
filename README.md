@@ -58,7 +58,17 @@ are for bug reports and feature requests only.**
 
 ## Contributors
 
-[![Contributors](https://contrib.nn.ci/api?repo=https://github.com/DonSaul/CLKOTLINPROJECT)](https://contrib.nn.ci/api?repo=https://github.com/DonSaul/CLKOTLINPROJECT)
+[<img src="https://github.com/jamirou.png?size=50" alt="jamirou" style="border-radius: 50%;">](https://github.com/jamirou)
+[<img src="https://github.com/s0alken.png?size=50" alt="s0alken" style="border-radius: 50%;">](https://github.com/s0alken)
+[<img src="https://github.com/Santisu.png?size=50" alt="Santisu" style="border-radius: 50%;">](https://github.com/Santisu)
+[<img src="https://github.com/RafaUribeG.png?size=50" alt="RafaUribeG" style="border-radius: 50%;">](https://github.com/RafaUribeG)
+[<img src="https://github.com/ndevia.png?size=50" alt="ndevia" style="border-radius: 50%;">](https://github.com/ndevia)
+
+
+[//]: # ([![]&#40;https://github.com/Gabe239.png?size=50&#41;]&#40;https://github.com/Gabe239&#41;)
+
+[//]: # ([![]&#40;https://github.com/EdgarAraya.png?size=50&#41;]&#40;https://github.com/EdgarAraya&#41;)
+
 _______________________________________________
 
 ## *documentation*
@@ -84,15 +94,16 @@ _______________________________________________
 ### Prerequisites
 
 Ensure you have the following installed:
-| Technology | Installation/Dependency | Version |
-| ------------------- | ------------------------------------------------------------- | ------- |
-| SpringFramework | [Spring initializr](https://start.spring.io/)                 | 3.2.2 |
-| React | [React Installation](https://es.react.dev/learn/installation) | 9.6.2 |
-| Spring Security | [Add Dependency SpringSecurity](https://start.spring.io/)     | |
-| Kotlin language | [Kotlin Installation](https://oregoom.com/kotlin/instalar/)   | |
-| PostgreSQL | [Add Dependency PostgreSQL Driver](https://start.spring.io/)  | |
-| JWT(Json web token) | | 0.9.1 |
-| JVM | | 1.9.22 |
+
+| Technology          | Installation/Dependency                                       | Version |
+|---------------------|---------------------------------------------------------------|---------|
+| SpringFramework     | [Spring initializr](https://start.spring.io/)                 | 3.2.2   |
+| React               | [React Installation](https://es.react.dev/learn/installation) | 9.6.2   |
+| Spring Security     | [Add Dependency SpringSecurity](https://start.spring.io/)     |         |
+| Kotlin language     | [Kotlin Installation](https://oregoom.com/kotlin/instalar/)   |         |
+| PostgreSQL          | [Add Dependency PostgreSQL Driver](https://start.spring.io/)  |         |
+| JWT(Json web token) |                                                               | 0.9.1   |
+| JVM                 |                                                               | 1.9.22  |
 
 ### Initial Setup and Configuration
 
