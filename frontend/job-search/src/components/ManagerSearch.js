@@ -1,69 +1,68 @@
-import { Autocomplete, Button, Grid, TextField } from '@mui/material';
+import { Autocomplete, Button, Grid, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import useJobFamily from '../hooks/useJobFamily';
 import useSearchCandidates from '../hooks/useSearchCandidates';
 import CardContainer from './CardContainer';
+import WorkIcon from '@mui/icons-material/Work';
+import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
+import DescriptionIcon from '@mui/icons-material/Description';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import BusinessIcon from '@mui/icons-material/Business';
+import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
+import { EmojiEventsTwoTone } from '@mui/icons-material';
 
 export const CandidatesFilter = ({ onFilterChange, setData }) => {
   const [yearsOfExperience, setYearsOfExperience] = useState('');
   const [jobFamily, setJobFamily] = useState('');
   const [salary, setSalary] = useState('');
-
-
   const { dataVacancies, refetch } = useSearchCandidates(salary, jobFamily, yearsOfExperience);
-
   const { data: jobFamilies } = useJobFamily();
 
   const handleYearsOfExperienceChange = (event) => {
     setYearsOfExperience(event.target.value);
   };
+
   const handleJobFamilyChange = (newValue) => {
     setJobFamily(newValue ? newValue.id : '');
   };
+
   const handleSalaryChange = (event) => {
     setSalary(event.target.value);
   };
 
-  //only for test
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const initialData = await refetch('', '', '');
-        console.log("Initial data fetched,n o params:", initialData);
-        setData(initialData.data);
-      } catch (error) {
-        console.error("Error fetching initial data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   const handleApplyFilter = async () => {
     try {
       const fetchedData = await refetch(salary, jobFamily, yearsOfExperience);
-      console.log("fetched:", fetchedData);
       setData(fetchedData.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
+
+  const handleResetFilter = () => {
+    setYearsOfExperience('');
+    setJobFamily('');
+    setSalary('');
+  };
+
   return (
     <div>
       <CardContainer>
+        <Typography variant="h6" align="center" gutterBottom>
+          <EmojiPeopleIcon fontSize="large" /> Advanced Candidate Search <WorkIcon fontSize="large" />
+        </Typography>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={3}>
             <TextField
-              label="Years of Experience"
+              label={<><EmojiEventsTwoTone /> Years of Experience</>}
+
               type="number"
               value={yearsOfExperience}
               onChange={handleYearsOfExperienceChange}
               fullWidth
               margin="normal"
-
             />
           </Grid>
-
           <Grid item xs={3}>
             <Autocomplete
               options={jobFamilies || []}
@@ -71,13 +70,12 @@ export const CandidatesFilter = ({ onFilterChange, setData }) => {
               value={jobFamilies?.find((job) => job.id === jobFamily) || null}
               isOptionEqualToValue={(option, value) => option.id === value?.id}
               onChange={(e, newValue) => handleJobFamilyChange(newValue)}
-              renderInput={(params) => <TextField {...params} label={`Select Job Family`} margin="normal" />}
+              renderInput={(params) => <TextField {...params} label={<><BusinessCenterIcon /> Job Family</>} margin="normal" />}
             />
           </Grid>
-
           <Grid item xs={3}>
             <TextField
-              label="Salary"
+              label={<><MonetizationOnIcon /> Salary</>}
               type="number"
               value={salary}
               onChange={handleSalaryChange}
@@ -85,15 +83,16 @@ export const CandidatesFilter = ({ onFilterChange, setData }) => {
               margin="normal"
             />
           </Grid>
-
           <Grid item xs={3}>
-            <Button onClick={handleApplyFilter} variant="contained" color="primary">
+            <Button onClick={handleApplyFilter} variant="contained" color="primary" style={{ marginRight: '8px' }}>
               Apply Filter
+            </Button>
+            <Button onClick={handleResetFilter} variant="contained" style={{ backgroundColor: '#CCCCCC', color: 'black' }}>
+              Reset
             </Button>
           </Grid>
         </Grid>
       </CardContainer>
-
     </div>
   );
 };
