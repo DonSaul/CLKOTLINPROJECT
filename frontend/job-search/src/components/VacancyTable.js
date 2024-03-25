@@ -46,6 +46,9 @@ export default function VacancyTable({dataFromQuery}) {
                 id: 'applyButton', 
                 header: 'Status',
                 Cell: ({ row }) => (
+                    row.original.isApplied 
+                    ? "Already applied"
+                    :
                     <Button variant="contained" color="primary" onClick={() => handleApply(row.original)}>
                         Apply
                     </Button>

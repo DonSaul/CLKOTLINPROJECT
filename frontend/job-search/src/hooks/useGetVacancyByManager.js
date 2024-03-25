@@ -8,7 +8,7 @@ const fetchVacancyByManager = async (token) => {
       'Authorization': `Bearer ${token}`,
     },
   });
-  console.log("RESPONSE:  ", response.satus)
+  console.log("RESPONSE:  ", response.status)
   
   if (!response.ok) {
     throw new Error('Failed to fetch vacancy information');

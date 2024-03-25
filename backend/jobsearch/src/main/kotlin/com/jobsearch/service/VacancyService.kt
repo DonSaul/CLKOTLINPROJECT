@@ -1,5 +1,7 @@
 package com.jobsearch.service
 
+import com.jobsearch.dto.JobFamilyDto
+import com.jobsearch.dto.UserResponseDTO
 import com.jobsearch.dto.VacancyRequestDTO
 import com.jobsearch.dto.VacancyResponseDTO
 import com.jobsearch.entity.Vacancy
@@ -14,7 +16,8 @@ import kotlin.jvm.optionals.getOrElse
 class VacancyService(
     val vacancyRepository: VacancyRepository,
     val jobFamilyService: JobFamilyService,
-    val userService: UserService
+    val userService: UserService,
+    val applicationService: ApplicationService,
 ) {
     fun retrieveVacancy(vacancyId: Int): VacancyResponseDTO {
         val vacancy = vacancyRepository.findById(vacancyId)
@@ -36,10 +39,18 @@ class VacancyService(
         }
     }
 
+    @Transactional
     fun findVacanciesByFilter(salary: Int?, jobFamilyId: Int?, yearsOfExperience: Int?): List<VacancyResponseDTO> {
         val vacancies = vacancyRepository.findVacanciesByFilters(salary, jobFamilyId, yearsOfExperience)
+        val vacanciesByCandidate = applicationService.retrieveApplicationByCandidate().map {
+            it.vacancy 
+        }
         return vacancies.map {
-            mapToVacancyResponseDto(it)
+            val vacancyResponseDTO = mapToVacancyResponseDto(it)
+            if (vacanciesByCandidate.contains(it)) {
+                vacancyResponseDTO.isApplied = true
+            }
+            vacancyResponseDTO
         }
     }
 
@@ -80,7 +91,7 @@ class VacancyService(
     @Transactional
     fun deleteVacancy(vacancyId: Int) {
         val vacancy = vacancyRepository.findById(vacancyId)
-            .getOrElse { throw NotFoundException("Vacancy not found or already deleted") }
+            .getOrElse { throw NotFoundException("Vacancy not found") }
         val manager = userService.retrieveAuthenticatedUser()
         if (vacancy.manager != manager ) throw ForbiddenException("You are not allowed to erase this vacancy.")
         vacancyRepository.delete(vacancy)
@@ -101,9 +112,16 @@ class VacancyService(
                 it.salaryExpectation,
                 it.yearsOfExperience,
                 it.description,
-                it.jobFamily.id,
-                it.jobFamily.name,
-                it.manager.id
+                it.jobFamily.let{ jobFamily -> JobFamilyDto(jobFamily.id, jobFamily.name) },
+                it.manager.let { user ->
+                    UserResponseDTO(
+                        user.id!!,
+                        user.firstName,
+                        user.lastName,
+                        user.email,
+                        user.role?.id!!
+                    )
+                }
             )
         }
     }

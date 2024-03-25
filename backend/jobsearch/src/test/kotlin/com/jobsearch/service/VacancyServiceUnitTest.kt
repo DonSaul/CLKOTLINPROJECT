@@ -1,5 +1,7 @@
 package com.jobsearch.service
 
+import com.jobsearch.dto.JobFamilyDto
+import com.jobsearch.dto.UserResponseDTO
 import com.jobsearch.dto.VacancyRequestDTO
 import com.jobsearch.dto.VacancyResponseDTO
 import com.jobsearch.entity.JobFamily
@@ -29,6 +31,8 @@ class VacancyServiceUnitTest {
     private lateinit var jobFamilyService: JobFamilyService
     @Mock
     private lateinit var userService: UserService
+    @Mock
+    private lateinit var applicationService: ApplicationService
     @InjectMocks
     private lateinit var vacancyService: VacancyService
 
@@ -67,9 +71,16 @@ class VacancyServiceUnitTest {
                 name = it.name,
                 salaryExpectation = it.salaryExpectation,
                 yearsOfExperience = it.yearsOfExperience,
-                managerId = it.manager.id!!,
-                jobFamilyId = it.jobFamily.id!!,
-                jobFamilyName = it.jobFamily.name,
+                manager = it.manager.run {
+                                         UserResponseDTO(
+                                             this.id!!,
+                                             this.firstName,
+                                             this.lastName,
+                                             this.email,
+                                             this.role!!.id!!
+                                         )
+                },
+                jobFamily = JobFamilyDto(it.jobFamily.id, it.jobFamily.name),
                 companyName = it.companyName,
                 description = it.description
             )
@@ -87,9 +98,9 @@ class VacancyServiceUnitTest {
     }
 
     @BeforeEach
-        fun setUp() {
-            MockitoAnnotations.openMocks(this)
-        }
+    fun setUp() {
+        MockitoAnnotations.openMocks(this)
+    }
 
     @Test
     fun `Should retrieve vacancy by id`() {

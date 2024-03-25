@@ -1,6 +1,8 @@
 package com.jobsearch.controller
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.jobsearch.dto.JobFamilyDto
+import com.jobsearch.dto.UserResponseDTO
 import com.jobsearch.dto.VacancyRequestDTO
 import com.jobsearch.dto.VacancyResponseDTO
 import com.jobsearch.service.VacancyService
@@ -28,14 +30,22 @@ class VacancyControllerUnitTest {
     private lateinit var vacancyService: VacancyService
     @InjectMocks
     private lateinit var vacancyController: VacancyController
+
+    private val managerUser = UserResponseDTO(
+            id = 1,
+            firstName= "Mana",
+            lastName = "Ger",
+            email= "mana@mana",
+            roleId = 2,
+    )
+
     private val vacancyResponseDTO = VacancyResponseDTO(
         id = 1,
         name = "Vacancy one",
         salaryExpectation = 10000,
         yearsOfExperience = 3,
-        managerId = 1,
-        jobFamilyId = 1,
-        jobFamilyName = "Information Technology",
+        manager = managerUser,
+        jobFamily = JobFamilyDto( id= 1, name = "Information Technology"),
         companyName = "Important Company",
         description = "Vacancy one description"
     )

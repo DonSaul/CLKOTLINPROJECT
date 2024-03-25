@@ -6,6 +6,7 @@ import com.jobsearch.dto.UserResponseDTO
 import com.jobsearch.entity.Application
 import com.jobsearch.entity.Cv
 import com.jobsearch.entity.User
+import com.jobsearch.repository.NotificationTypeRepository
 import com.jobsearch.exception.ForbiddenException
 import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.*
@@ -22,6 +23,8 @@ class UserService @Autowired constructor(
     private val userRepository: UserRepository,
     private val roleRepository: RoleRepository,
     private val passwordEncoder: PasswordEncoder,
+    private val notificationTypeRepository: NotificationTypeRepository,
+    private val interestService: InterestService,
     private val cvRepository: CvRepository,
     private val vacancyRepository: VacancyRepository,
     private val applicationRepository: ApplicationRepository
@@ -113,6 +116,7 @@ class UserService @Autowired constructor(
         val listsOfDto = cvs.map { mapToUserCandidateDTO (it) }
         return listsOfDto
     }
+
     fun findCandidatesByVacancyApplication(vacancyId: Int): List<CandidateDTO> {
         val vacancy = vacancyRepository.findById(vacancyId)
             .orElseThrow { NotFoundException("No vacancy found with id $vacancyId") }
@@ -143,6 +147,7 @@ class UserService @Autowired constructor(
                 it.candidate.email,
                 it.cv.yearsOfExperience,
                 it.cv.salaryExpectation,
+                it.cv.user.id?.let { cvUserId -> interestService.getJobFamilyByUserId(cvUserId) },
                 it.applicationStatus.name
             )
         }

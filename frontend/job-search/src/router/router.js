@@ -1,5 +1,7 @@
 import Login from "../pages/Login";
 import Register from "../pages/Register";
+import RecoverPassword from "../pages/RecoverPassword";
+import ChangePassword from "../pages/ChangePassword"
 import CV from "../pages/CV";
 import Vacancies from "../pages/Vacancies";
 import React from 'react';
@@ -18,6 +20,7 @@ import { ROLES } from "../helpers/constants";
 import NotAccess from "../pages/NotAccess";
 import VacancyView from "../pages/VacancyView";
 import ManagerSearchPage from "../pages/ManagerSearchPage";
+import { SendInvite } from "../pages/SendInvite";
 import ManagerVacanciesPage from "../pages/ManagerVacanciesPage";
 
 const RoutesConfig = () => {
@@ -26,6 +29,9 @@ const RoutesConfig = () => {
       <Route path="/" element={<Home />} />
       <Route path={paths.login} element={<Login />} />
       <Route path={paths.register} element={<Register />} />
+      <Route path={paths.recoverPassword} element={<RecoverPassword />}/>
+      <Route path={paths.changePassword} element={<ChangePassword />} />
+      
 
       <Route element={<RequireAuth />}>
         <Route path={paths.notifications} element={<Notifications />} />
@@ -44,7 +50,9 @@ const RoutesConfig = () => {
       <Route element={<RequireAuth role={ROLES.MANAGER} />}>
         <Route path={paths.createVacancy} element={<CreateVacancy />} />
         <Route path={paths.managerSearchPage} element={<ManagerSearchPage />} />
+        <Route path={paths.sendInvitation} element={<SendInvite />} />
         <Route path={paths.managerVacanciesPage} element={<ManagerVacanciesPage />} />
+
       </Route>
       <Route element={<RequireAuth role={ROLES.ADMIN} />}>
         <Route path={paths.createUser} element={<CreateUser />} />

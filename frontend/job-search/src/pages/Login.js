@@ -16,10 +16,10 @@ const Login = () => {
   let state = location.state;
 
 
-let fromPathname = state && state.from && state.from.pathname;
+ let fromPathname = state && state.from && state.from.pathname;
 
 
-let from = fromPathname || '/';
+ let from = fromPathname || '/';
 
 
   const { mutate, isError, isSuccess } = useLogin();
@@ -89,8 +89,13 @@ let from = fromPathname || '/';
       </form>
 
       <Typography variant="body2" sx={{ marginTop: 2 }}>
-        Don't have an account? <Link to="/register"> Register</Link>
+        Don't have an account?<Link to="/register"> Register </Link>
       </Typography>
+      
+      <Typography variant="body2">
+        Forgot your password? <Link to="/forgot-password">Click here</Link>
+      </Typography>
+      
     </CardContainer>
 
 

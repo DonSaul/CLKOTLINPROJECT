@@ -13,12 +13,12 @@ import { useAuth } from '../helpers/userContext';
 import { ROLES } from '../helpers/constants';
 import CandidatesTable from '../components/CandidatesTable';
 import { getCandidatesByApplication } from '../hooks/useGetCandidatesByApplication';
-import { useDeleteVacancy  } from '../hooks/useDeleteVacancy';
+// import { useDeleteVacancy  } from '../hooks/useDeleteVacancy';
 
 
 const VacancyView = () => {
     const { id } = useParams();
-    const { getUserRole } = useAuth();
+    const { getUserRole, getUserEmail } = useAuth();
     const { mutate:applyToVacancy, isError:isErrorApply, isSuccess:isSuccessApply} = useApplyVacancy();
     const { data: vacancyData, isLoading:isLoadingVacancy, isError:isErrorVacancy } = useGetVacancyById(id);
     const [candidates, setCandidates] = useState([]);
@@ -27,7 +27,6 @@ const VacancyView = () => {
     const fetchCandidates = async () => {
         try {
             const result = await getCandidatesByApplication(id);
-            console.log("RESULT: ", result)
             setCandidates(result);
         } catch (error) {
             console.error('Error fetching vacancies:', error);
@@ -49,7 +48,7 @@ const VacancyView = () => {
 
     const handleDelete = (rowData) => {
         console.log('Deleting vacancy:', rowData);
-        useDeleteVacancy(id);
+        // useDeleteVacancy(id);
     };
 
 
@@ -98,15 +97,20 @@ const VacancyView = () => {
                             </Grid>
                             <CardActions style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     { getUserRole() === ROLES.CANDIDATE && <Button variant="contained" color="primary" size="large" onClick={ handleApply }>Apply</Button>}
-                                    { getUserRole() === ROLES.MANAGER && <Button variant="contained" color="warning" size="large" onClick={ handleDelete }>Delete Vacancy</Button>}
+                                    { 
+                                    vacancyData.manager.email === getUserEmail() 
+                                    ? (<Button variant="contained" color="warning" size="large" onClick={ handleDelete }>Delete Vacancy</Button>)
+                                    : null
+                                    }
                             </CardActions>
                         </CardContent>
-                        { getUserRole() === ROLES.MANAGER && (
-                            <CardContent>
+                        { vacancyData.manager.email === getUserEmail() 
+                           ?( <CardContent>
                                 <Typography variant="subtitle1" style={{ fontSize: '1.2rem' }}>Candidates that applied</Typography>
                                 <CandidatesTable dataFromQuery={candidates}></CandidatesTable>
-                            </CardContent>
-                        )}
+                            </CardContent>)
+                            : null
+                        }
                         
                     </>
                 ) : (

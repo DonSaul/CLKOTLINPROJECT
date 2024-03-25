@@ -118,8 +118,7 @@ class VacancyControllerIntgTest {
         }
         // Then
         response
-            .andDo { print() }
-            .andExpect {
+                .andExpect {
                 status { isCreated() }
                 content { contentType(MediaType.APPLICATION_JSON) }
                 jsonPath("$.data.id") { isNumber() }
@@ -128,7 +127,7 @@ class VacancyControllerIntgTest {
                 jsonPath("$.data.salaryExpectation") { value(VACANCY_ENTITY.salaryExpectation) }
                 jsonPath("$.data.yearsOfExperience") { value(VACANCY_ENTITY.yearsOfExperience) }
                 jsonPath("$.data.description") { value(VACANCY_ENTITY.description) }
-                jsonPath("$.data.jobFamilyId") { value(JOB_FAMILY.id) }
+                jsonPath("$.data.jobFamily") { value(JOB_FAMILY) }
             }
     }
 
@@ -291,8 +290,7 @@ class VacancyControllerIntgTest {
             jsonPath("$.data.salaryExpectation") { value(savedVacancy.salaryExpectation) }
             jsonPath("$.data.yearsOfExperience") { value(savedVacancy.yearsOfExperience) }
             jsonPath("$.data.description") { value(savedVacancy.description) }
-            jsonPath("$.data.jobFamilyId") { value(savedVacancy.jobFamily.id) }
-            jsonPath("$.data.jobFamilyName") { value(savedVacancy.jobFamily.name) }
+            jsonPath("$.data.jobFamily") { value(savedVacancy.jobFamily) }
             jsonPath("$.data.managerId") { value(savedVacancy.manager.id) }
         }
     }
