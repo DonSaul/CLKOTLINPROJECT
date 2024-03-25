@@ -58,16 +58,15 @@ are for bug reports and feature requests only.**
 
 ## Contributors
 
-[<img src="https://github.com/jamirou.png?size=50" alt="jamirou" style="border-radius: 50%;">](https://github.com/jamirou)
-[<img src="https://github.com/s0alken.png?size=50" alt="s0alken" style="border-radius: 50%;">](https://github.com/s0alken)
-[<img src="https://github.com/Santisu.png?size=50" alt="Santisu" style="border-radius: 50%;">](https://github.com/Santisu)
-[<img src="https://github.com/RafaUribeG.png?size=50" alt="RafaUribeG" style="border-radius: 50%;">](https://github.com/RafaUribeG)
-[<img src="https://github.com/ndevia.png?size=50" alt="ndevia" style="border-radius: 50%;">](https://github.com/ndevia)
+[<img src="https://github.com/jamirou.png?size=60" alt="jamirou" style="border-radius: 50%;">](https://github.com/jamirou)
+[<img src="https://github.com/s0alken.png?size=60" alt="s0alken" style="border-radius: 50%;">](https://github.com/s0alken)
+[<img src="https://github.com/Santisu.png?size=60" alt="Santisu" style="border-radius: 50%;">](https://github.com/Santisu)
+[<img src="https://github.com/RafaUribeG.png?size=60" alt="RafaUribeG" style="border-radius: 50%;">](https://github.com/RafaUribeG)
+[<img src="https://github.com/ndevia.png?size=60" alt="ndevia" style="border-radius: 50%;">](https://github.com/ndevia)
 
-
-[//]: # ([![]&#40;https://github.com/Gabe239.png?size=50&#41;]&#40;https://github.com/Gabe239&#41;)
-
-[//]: # ([![]&#40;https://github.com/EdgarAraya.png?size=50&#41;]&#40;https://github.com/EdgarAraya&#41;)
+[//]: # (Please add a profile photo )
+[//]: # ([![]&#40;https://github.com/Gabe239.png?size=60&#41;]&#40;https://github.com/Gabe239&#41;)
+[//]: # ([![]&#40;https://github.com/EdgarAraya.png?size=60&#41;]&#40;https://github.com/EdgarAraya&#41;)
 
 _______________________________________________
 
@@ -113,6 +112,8 @@ Ensure you have the following installed:
 4. Run the application.
 
 ## Basic Usage
+
+
 
 ### Basic Operations and examples as a Candidate
 
@@ -186,7 +187,7 @@ Robust security measures:
 ## Advanced Functionalities
 
 ### Search Candidates from Manager entity
-
+  ![VdeosinttuloHechoconClipchamp-ezgif com-video-to-gif-converter](https://github.com/jamirou/Personal_Schedule/assets/48457084/98542f4e-6334-43ef-9c3e-3e6c4fdd013f)
 The **CandidateController** is responsible for handling requests related to candidate search.
 
 #### Endpoints
