@@ -34,14 +34,26 @@ class VacancyController(
         @RequestParam(required = false) jobFamilyId: Int?,
         @RequestParam(required = false) yearsOfExperience: Int?
     ): ResponseEntity<StandardResponse<List<VacancyResponseDTO>>>  {
+        val responseEntityList = vacancyService.findVacanciesByFilter(salary, jobFamilyId, yearsOfExperience)
+        val status = HttpStatus.OK
+//        if (responseEntityList.isEmpty()) {
+//            status = HttpStatus.NO_CONTENT
+//        }
+        val body = StandardResponse(
+            status = status.value(),
+            data = responseEntityList
+        )
+        return ResponseEntity
+            .status(status)
+            .body(body)
         val dataBodyList = vacancyService.findVacanciesByFilter(salary, jobFamilyId, yearsOfExperience)
         return mapResponseEntity(dataBodyList)
     }
 
     @GetMapping("/my-vacancies")
     fun retrieveVacancyByManager(): ResponseEntity<StandardResponse<List<VacancyResponseDTO>>>  {
-        val dataBodyList = vacancyService.retrieveVacancyByManager()
-        return mapResponseEntity(dataBodyList)
+        val dataBodylist = vacancyService.retrieveVacancyByManager()
+        return mapResponseEntity(dataBodylist)
     }
     @PostMapping
     fun createVacancy(@RequestBody @Valid vacancyDto: VacancyRequestDTO): ResponseEntity<StandardResponse<VacancyResponseDTO>> {

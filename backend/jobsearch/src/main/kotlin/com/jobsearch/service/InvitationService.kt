@@ -37,11 +37,11 @@ class InvitationService(
 
         val currentDateTime = LocalDateTime.now()
 
-        val defaultSubject = "Default Subject"
-        val defaultContent = "Default content"
+//        val defaultSubject = "Default Subject"
+//        val defaultContent = "Default content"
 
         val invitationEntity = invitationDTO.let {
-            Invitation(it.id, candidate, defaultSubject, defaultContent, currentDateTime, it.sent, managerUser, vacancy)
+            Invitation(it.id, candidate, it.subject, it.content, currentDateTime, it.sent, managerUser, vacancy)
         }
 
         val newInvitation = invitationRepository.save(invitationEntity)

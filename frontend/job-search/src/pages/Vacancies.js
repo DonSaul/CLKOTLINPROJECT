@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import VacancyTable from '../components/VacancyTable';
-import { VacancyFilter } from '../components/VacancyFilter';
 import CardContainer from '../components/CardContainer';
+import { VacancyFilter } from '../components/VacancyFilter';
+import VacancyTable from '../components/VacancyTable';
 
 const Vacancies = () => {
 
 
-  const [data,setData]=useState([]);
+  const [data, setData] = useState([]);
 
 
   return (
@@ -14,9 +14,9 @@ const Vacancies = () => {
       <VacancyFilter setData={setData}></VacancyFilter>
 
       <CardContainer>
-      <VacancyTable dataFromQuery={data}></VacancyTable>
+        <VacancyTable dataFromQuery={data}></VacancyTable>
       </CardContainer>
-      
+
     </div>
   );
 };

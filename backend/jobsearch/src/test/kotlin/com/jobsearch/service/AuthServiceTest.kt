@@ -48,7 +48,8 @@ class AuthServiceUnitTest {
          "juanHarry",
           "password",
           "test@example.com",
-        role = Role(1, "user")
+        role = Role(1, "user"),
+        resetPasswordToken = "ResetPasswordToken"
     )
 
     @BeforeEach

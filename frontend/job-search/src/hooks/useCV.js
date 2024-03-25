@@ -85,7 +85,9 @@ export const useCV = () => {
   };
 
   export const useGetCurrentUserCv = () => {
-    return useQuery('cv-user', fetchCVByUser);
+    return useQuery('cv-user', fetchCVByUser, {
+      refetchOnWindowFocus: false, // possible fix
+    });
   };
   
 

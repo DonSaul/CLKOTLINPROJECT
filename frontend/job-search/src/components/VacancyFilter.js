@@ -1,22 +1,20 @@
-import React, { useState } from 'react';
-import CardContainer from './CardContainer';
-import { TextField } from '@mui/material';
-import { Button } from '@mui/material';
-import { Grid } from '@mui/material';
+import { Autocomplete, Button, Grid, TextField, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import useGetVacancies from '../hooks/useGetVacancies';
 import useJobFamily from '../hooks/useJobFamily';
-import {Autocomplete} from '@mui/material';
-import { useEffect } from 'react';
-import JobFamilyAutocomplete from './JobFamilyAutocomplete';
+import CardContainer from './CardContainer';
+import WorkIcon from '@mui/icons-material/Work';
+import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
+import EmojiEventsTwoToneIcon from '@mui/icons-material/EmojiEventsTwoTone';
+import { EmojiEventsTwoTone } from '@mui/icons-material';
 
 export const VacancyFilter = ({ onFilterChange, setData }) => {
     const [yearsOfExperience, setYearsOfExperience] = useState('');
     const [jobFamily, setJobFamily] = useState('');
     const [salary, setSalary] = useState('');
-
-
     const { dataVacancies, refetch } = useGetVacancies(salary, jobFamily, yearsOfExperience);
-
     const { data: jobFamilies } = useJobFamily();
 
     const handleYearsOfExperienceChange = (event) => {
@@ -40,12 +38,9 @@ export const VacancyFilter = ({ onFilterChange, setData }) => {
                 console.error("Error fetching initial data:", error);
             }
         };
-    
+
         fetchData();
-    }, []); 
-    
-
-
+    }, []);
     const handleApplyFilter = async () => {
         try {
             const fetchedData = await refetch(salary, jobFamily, yearsOfExperience);
@@ -56,19 +51,26 @@ export const VacancyFilter = ({ onFilterChange, setData }) => {
             console.error("Error fetching data:", error);
         }
     };
-
     return (
         <div>
             <CardContainer>
+                <Typography variant="h6" align="center" gutterBottom>
+                    <WorkIcon fontSize="large" /> Search Vacancies <EmojiPeopleIcon fontSize="large" />
+                </Typography>
                 <Grid container spacing={2} alignItems="center">
                     <Grid item xs={3}>
                         <TextField
-                            label="Years of Experience"
+                            label={<><EmojiEventsTwoToneIcon /> Years of Experience</>}
+
                             type="number"
                             value={yearsOfExperience}
                             onChange={handleYearsOfExperienceChange}
                             fullWidth
+<<<<<<< HEAD
                             margin="normal"   
+=======
+                            margin="normal"
+>>>>>>> origin/develop
                         />
                     </Grid>
                     <Grid item xs={3}>
@@ -76,14 +78,20 @@ export const VacancyFilter = ({ onFilterChange, setData }) => {
                             options={jobFamilies || []}
                             getOptionLabel={(option) => option.name || ''}
                             value={jobFamilies?.find((job) => job.id === jobFamily) || null}
-                            isOptionEqualToValue={(option, value) => option.id === value?.id}  
+                            isOptionEqualToValue={(option, value) => option.id === value?.id}
                             onChange={(e, newValue) => handleJobFamilyChange(newValue)}
+<<<<<<< HEAD
                             renderInput={(params) => <TextField {...params} label={`Select Job Family`} margin="normal"/>}
                         />
+=======
+                            renderInput={(params) => <TextField {...params} label={<><BusinessCenterIcon /> Job Family</>} margin="normal" />}
+                        />
+
+>>>>>>> origin/develop
                     </Grid>
                     <Grid item xs={3}>
                         <TextField
-                            label="Salary"
+                            label={<><MonetizationOnIcon /> Salary</>}
                             type="number"
                             value={salary}
                             onChange={handleSalaryChange}

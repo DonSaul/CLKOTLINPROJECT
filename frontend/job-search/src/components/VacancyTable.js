@@ -1,29 +1,28 @@
-import { useMemo, useState, useEffect } from 'react';
-import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
+import { MenuItem } from '@mui/material';
 import Button from '@mui/material/Button';
-import { useApplyVacancy } from '../hooks/useApplyVacancy';
-import { useGetCurrentUserCv } from '../hooks/useCV';
+import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROLES } from '../helpers/constants';
 import { useAuth } from '../helpers/userContext';
-import { MenuItem } from '@mui/material';
+import { useApplyVacancy } from '../hooks/useApplyVacancy';
 import { paths } from '../router/paths';
-export default function VacancyTable({dataFromQuery}) {
+export default function VacancyTable({ dataFromQuery }) {
 
 
-    const {getUserRole} = useAuth();
-    const {mutate:applyToVacancy, isError, isSuccess}=useApplyVacancy();
+    const { getUserRole } = useAuth();
+    const { mutate: applyToVacancy, isError, isSuccess } = useApplyVacancy();
 
     const navigate = useNavigate();
 
     const columnsVacancies = useMemo(() => {
         const columns = [
-            { 
+            {
                 accessorKey: 'jobFamilyName',
                 header: 'Category',
             },
             {
-                accessorKey: 'name', 
+                accessorKey: 'name',
                 header: 'Name',
             },
             {
@@ -31,22 +30,22 @@ export default function VacancyTable({dataFromQuery}) {
                 header: 'Years of experience',
             },
             {
-                accessorKey: 'salaryExpectation', 
+                accessorKey: 'salaryExpectation',
                 header: 'Salary',
             },
             {
-                accessorKey: 'vacancyId', 
+                accessorKey: 'vacancyId',
                 header: 'ID',
                 hidden: true,
             },
         ];
-    
+
         if (getUserRole() === ROLES.CANDIDATE) {
             columns.push({
-                id: 'applyButton', 
+                id: 'applyButton',
                 header: 'Status',
                 Cell: ({ row }) => (
-                    row.original.isApplied 
+                    row.original.isApplied
                     ? "Already applied"
                     :
                     <Button variant="contained" color="primary" onClick={() => handleApply(row.original)}>
@@ -55,21 +54,21 @@ export default function VacancyTable({dataFromQuery}) {
                 )
             });
         }
-    
+
         return columns;
     }, []);
-    
+
 
     //optionally, you can manage any/all of the table state yourself
     const [rowSelection, setRowSelection] = useState({});
 
     useEffect(() => {
-        //do something when the row selection changes
+        console.log("rowSelection", rowSelection);
     }, [rowSelection]);
 
     const handleApply = (rowData) => {
         console.log('Applying to vacancy:', rowData);
-        let applicationData=
+        let applicationData =
         {
             vacancyId:rowData.id,
         }
@@ -77,14 +76,14 @@ export default function VacancyTable({dataFromQuery}) {
       };
 
     const table = useMaterialReactTable({
-        columns:columnsVacancies,
-        data:dataFromQuery?  dataFromQuery: [],
-        hiddenColumns:['id'],
+        columns: columnsVacancies,
+        data: dataFromQuery ? dataFromQuery : [],
+        hiddenColumns: ['id'],
         enableGlobalFilter: false,
-        enableColumnFilters:false,
+        enableColumnFilters: false,
         //enableColumnOrdering: true, //enable some features
         enableRowSelection: false,
-        enableHiding:false,
+        enableHiding: false,
         enablePagination: true, //disable a default feature
         onRowSelectionChange: setRowSelection, //hoist internal state to your own state (optional)
         state: { rowSelection }, //manage your own state, pass it back to the table (optional)
@@ -96,7 +95,7 @@ export default function VacancyTable({dataFromQuery}) {
                 console.log("row",row);
                 navigate(`${paths.vacancies}/${row.original.id}`);
                 }}>
-            Visit 
+            Visit
             </MenuItem>,
             <MenuItem key="delete" onClick={() => console.info('Delete')}>
             Delete

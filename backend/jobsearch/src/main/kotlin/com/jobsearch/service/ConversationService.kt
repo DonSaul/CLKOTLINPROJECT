@@ -33,7 +33,7 @@ class ConversationService(
                     user2 = conversation.user2,
                     lastMessage = conversation.getLastMessage()
             )
-        }
+        }.sortedByDescending { it.lastMessage?.date }
     }
 
     fun sendMessage(chatMessageRequestDTO: ChatMessageRequestDTO): ChatMessageDTO {
@@ -67,7 +67,6 @@ class ConversationService(
                 .orElseThrow { NoSuchElementException("No user found with email ${email}") }
 
         val conversationMessages=chatMessageRepository.findMessagesByUserIds(currentUser.id!!,receiver.id!!)
-
 
         return conversationMessages
 

@@ -1,7 +1,7 @@
 
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getVacancyByManager } from "../hooks/useGetVacancyByManager";
+// import { getVacancyByManager } from "../hooks/useGetVacancyByManager";
 import { useSendInvitation } from "../hooks/useSendInvitation";
 import CardContainer from "../components/CardContainer";
 import { Select, MenuItem, Autocomplete, Button, TextField, FormControl, InputLabel } from "@mui/material";
@@ -21,7 +21,7 @@ export const SendInvite = ({data}) => {
     useEffect(() => {
         const fetchVacancies = async () => {
             try {
-                const data = await getVacancyByManager();
+                // const data = await getVacancyByManager();
                 setVacancies(data); 
             } catch (error) {
                 console.error('Error fetching vacancies:', error);

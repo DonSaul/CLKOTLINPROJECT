@@ -1,5 +1,7 @@
 package com.jobsearch.service
 
+import com.jobsearch.dto.NotificationDTO
+import com.jobsearch.entity.NotificationTypeEnum
 import com.jobsearch.dto.JobFamilyDto
 import com.jobsearch.dto.UserResponseDTO
 import com.jobsearch.dto.VacancyRequestDTO
@@ -17,7 +19,8 @@ class VacancyService(
     val vacancyRepository: VacancyRepository,
     val jobFamilyService: JobFamilyService,
     val userService: UserService,
-    val applicationService: ApplicationService,
+    val notificationService: NotificationService,
+    val interestService: InterestService
 ) {
     fun retrieveVacancy(vacancyId: Int): VacancyResponseDTO {
         val vacancy = vacancyRepository.findById(vacancyId)
@@ -43,7 +46,7 @@ class VacancyService(
     fun findVacanciesByFilter(salary: Int?, jobFamilyId: Int?, yearsOfExperience: Int?): List<VacancyResponseDTO> {
         val vacancies = vacancyRepository.findVacanciesByFilters(salary, jobFamilyId, yearsOfExperience)
         val vacanciesByCandidate = applicationService.retrieveApplicationByCandidate().map {
-            it.vacancy 
+            it.vacancy
         }
         return vacancies.map {
             val vacancyResponseDTO = mapToVacancyResponseDto(it)
@@ -65,8 +68,28 @@ class VacancyService(
 
         val newVacancy = vacancyRepository.save(vacancyEntity)
 
+        //notification about the new vacancy through email
+        notificateUsers(newVacancy)
+
+
+
         return mapToVacancyResponseDto(newVacancy)
     }
+    fun notificateUsers(newVacancy: Vacancy){
+        val users = newVacancy.jobFamily.id!!.let { interestService.getUsersByJobFamilyId(it) }
+        users.forEach { user ->
+            val notificationDTO = NotificationDTO(
+                type = NotificationTypeEnum.VACANCIES.id,
+                recipient = user.id!!,
+                subject = "New Vacancy Available",
+                content = "A new vacancy matching your interests is available: ${newVacancy.name}",
+                sender = newVacancy.manager.id!!,
+                vacancy = newVacancy.id!!
+            )
+            notificationService.triggerNotification(notificationDTO)
+        }
+    }
+
 
     @Transactional
     fun updateVacancy(vacancyId: Int, vacancyDto: VacancyRequestDTO): VacancyResponseDTO {
@@ -84,7 +107,6 @@ class VacancyService(
         vacancy.jobFamily = selectedJobFamily
 
         val updatedVacancy = vacancyRepository.save(vacancy)
-
         return mapToVacancyResponseDto(updatedVacancy)
     }
 
