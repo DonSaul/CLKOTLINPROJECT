@@ -14,3 +14,4 @@ data class CandidateDTO(
     val aplicationStatus : String? = null
 )
 //    val jobFamilyId: Int,
+//    val jobFamilyName: String
