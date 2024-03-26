@@ -11,7 +11,7 @@ import { useNotificationTypes } from '../hooks/notifications/useNotificationType
 import { Button, ButtonGroup } from '@mui/material';
 import Badge from '@mui/material/Badge'; // Import Badge component
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import Toolbar from '../components/Toolbar';
+import MainToolbar from '../components/MainToolbar';
 
 const Notifications = () => {
   const { user } = useAuth();

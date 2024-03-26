@@ -40,7 +40,13 @@ import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import { Search } from '@mui/icons-material';
 import { useNotificationData } from '../hooks/notifications/useNotificationByEmailInterval';
 import Badge from '@mui/material/Badge'; // Import Badge component
-export default function ButtonAppBar() {
+
+ 
+
+
+
+export default function MainToolbar() {
+
   const { logout, getUserRole, isLoggedIn, user } = useAuth();
   const notifications = useNotificationData(user?.email); // Fetch notifications data
   const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
@@ -54,12 +60,7 @@ export default function ButtonAppBar() {
   }, [notifications]);
 
 
-
-export default function MainToolbar() {
-  const { logout, getUserRole, isLoggedIn } = useAuth();
-
-
-  const location =useLocation();
+  
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
