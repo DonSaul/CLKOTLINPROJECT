@@ -18,6 +18,10 @@ export default function VacancyTable({ dataFromQuery }) {
     const columnsVacancies = useMemo(
         () => [
             {
+                accessorKey: 'companyName',
+                header: 'Company',
+            },
+            {
                 accessorKey: 'jobFamilyName',
                 header: 'Category',
             },

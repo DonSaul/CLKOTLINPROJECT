@@ -31,7 +31,7 @@ import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ChatIcon from '@mui/icons-material/Chat';
 import { useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState,useEffect } from 'react';
 import HomeIcon from '@mui/icons-material/Home';
 import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
 import { paths } from '../router/paths';
@@ -55,6 +55,11 @@ export default function ButtonAppBar() {
 
 
 
+export default function MainToolbar() {
+  const { logout, getUserRole, isLoggedIn } = useAuth();
+
+
+  const location =useLocation();
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
@@ -65,7 +70,6 @@ export default function ButtonAppBar() {
     color: 'white',
     fontWeight: 'bold',
   };
-
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -104,7 +108,7 @@ export default function ButtonAppBar() {
                 <Tab key="vacancies" icon={<BusinessCenterIcon />} label="Vacancies" component={Link} to={paths.vacancies} />,
                 <Tab key="createVacancy" label="Create Vacancy" icon={<PostAddIcon></PostAddIcon>} component={Link} to={paths.createVacancy} />,
                 <Tab key="managerSearchPage" label="Search Candidates" icon={<Search></Search>} component={Link} to={paths.managerSearchPage} />
-              ],
+            ],
               getUserRole() === ROLES.CANDIDATE && [
                 <Tab key="vacancies" icon={<BusinessCenterIcon />} label="Vacancies" component={Link} to={paths.vacancies} />,
                 <Tab key="myCV" icon={<AssignmentIndIcon />} label="My CV" component={Link} to={paths.cv} />,
@@ -132,6 +136,8 @@ export default function ButtonAppBar() {
                 <Tab key="register" icon={<HowToRegIcon />} label="Register" component={Link} to={paths.register} />,
               ]}
           </Tabs>
+          
+          
         </Toolbar>
       </AppBar>
     </Box>
