@@ -6,7 +6,7 @@ import CV from "../pages/CV";
 import Vacancies from "../pages/Vacancies";
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import ButtonAppBar from "../components/Toolbar";
+import MainToolbar from "../components/MainToolbar";
 import { CreateVacancy } from "../pages/CreateVacancy";
 import { CreateUser } from "../pages/CreateUser";
 import Home from "../pages/Home";
@@ -21,6 +21,8 @@ import NotAccess from "../pages/NotAccess";
 import VacancyView from "../pages/VacancyView";
 import ManagerSearchPage from "../pages/ManagerSearchPage";
 import { SendInvite } from "../pages/SendInvite";
+import Footer from "../components/layout/Footer";
+import Layout from "../components/layout/Layout";
 
 const RoutesConfig = () => {
   return (
@@ -28,9 +30,9 @@ const RoutesConfig = () => {
       <Route path="/" element={<Home />} />
       <Route path={paths.login} element={<Login />} />
       <Route path={paths.register} element={<Register />} />
-      <Route path={paths.recoverPassword} element={<RecoverPassword />}/>
+      <Route path={paths.recoverPassword} element={<RecoverPassword />} />
       <Route path={paths.changePassword} element={<ChangePassword />} />
-      
+
 
       <Route element={<RequireAuth />}>
         <Route path={paths.notifications} element={<Notifications />} />
@@ -63,13 +65,18 @@ const RoutesConfig = () => {
   );
 };
 
+
+
+/*
 const RouterWrapper = () => {
   return <Router>
 
-    <ButtonAppBar></ButtonAppBar>
+    <Layout>
+      <RoutesConfig></RoutesConfig>
 
-    {RoutesConfig()}
+    </Layout>
+
   </Router>;
 };
-
-export default RouterWrapper;
+*/
+export default RoutesConfig;
