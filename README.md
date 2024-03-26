@@ -101,7 +101,6 @@ are for bug reports and feature requests only.**
 </div>
 
 
-
 ## Acknowledgements
 
 <div style="display: inline-block; overflow: hidden; border-radius: 50%; width: 70px; height: 70px;">
