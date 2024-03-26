@@ -1,10 +1,10 @@
 package com.jobsearch.service
 
 import com.jobsearch.dto.CandidateDTO
+import com.jobsearch.dto.ProfileDTO
 import com.jobsearch.dto.UserRequestDTO
 import com.jobsearch.dto.UserResponseDTO
 import com.jobsearch.entity.Cv
-import com.jobsearch.entity.Interest
 import com.jobsearch.entity.JobFamily
 import com.jobsearch.entity.User
 import com.jobsearch.repository.NotificationTypeRepository
@@ -70,6 +70,39 @@ class UserService @Autowired constructor(
         return users.map {
             mapToUserResponseDTO(it)
         }
+    }
+
+    @Transactional
+    fun getUserProfileInfo(userId: Int): ProfileDTO {
+        val user = userRepository.findById(userId)
+            .orElseThrow { NotFoundException("No user found with id $userId") }
+        return ProfileDTO(
+            firstName = user.firstName,
+            lastName = user.lastName,
+            email = user.email,
+            roleId = user.role?.id ?: -1
+        )
+    }
+
+    @Transactional
+    fun updateUserProfile(userId: Int, updatedProfile: ProfileDTO): ProfileDTO {
+        val user = userRepository.findById(userId)
+            .orElseThrow { NotFoundException("No user found with id $userId") }
+
+        // Update profile
+        user.apply {
+            firstName = updatedProfile.firstName
+            lastName = updatedProfile.lastName
+            email = updatedProfile.email
+        }
+
+        val updatedUserProfile = userRepository.save(user)
+        return ProfileDTO(
+            firstName = updatedUserProfile.firstName,
+            lastName = updatedUserProfile.lastName,
+            email = updatedProfile.email,
+            roleId = updatedUserProfile.role?.id ?: -1
+        )
     }
 
     @Transactional
