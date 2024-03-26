@@ -291,7 +291,7 @@ class VacancyControllerIntgTest {
             jsonPath("$.data.yearsOfExperience") { value(savedVacancy.yearsOfExperience) }
             jsonPath("$.data.description") { value(savedVacancy.description) }
             jsonPath("$.data.jobFamily") { value(savedVacancy.jobFamily) }
-            jsonPath("$.data.managerId") { value(savedVacancy.manager.id) }
+            jsonPath("$.data.manager.id") { value(savedVacancy.manager.id) }
         }
     }
     @Test

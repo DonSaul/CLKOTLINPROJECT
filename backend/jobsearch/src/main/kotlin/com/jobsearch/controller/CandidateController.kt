@@ -1,10 +1,8 @@
 package com.jobsearch.controller
 
 import com.jobsearch.dto.*
-import com.jobsearch.repository.CandidateService
 import org.springframework.http.ResponseEntity
 import com.jobsearch.response.StandardResponse
-import com.jobsearch.service.CandidateServiceImpl
 import com.jobsearch.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize

@@ -20,7 +20,8 @@ class VacancyService(
     val jobFamilyService: JobFamilyService,
     val userService: UserService,
     val notificationService: NotificationService,
-    val interestService: InterestService
+    val interestService: InterestService,
+    val applicationService: ApplicationService,
 ) {
     fun retrieveVacancy(vacancyId: Int): VacancyResponseDTO {
         val vacancy = vacancyRepository.findById(vacancyId)
