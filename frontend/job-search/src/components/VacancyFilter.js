@@ -66,11 +66,7 @@ export const VacancyFilter = ({ onFilterChange, setData }) => {
                             value={yearsOfExperience}
                             onChange={handleYearsOfExperienceChange}
                             fullWidth
-<<<<<<< HEAD
-                            margin="normal"   
-=======
                             margin="normal"
->>>>>>> origin/develop
                         />
                     </Grid>
                     <Grid item xs={3}>
@@ -80,14 +76,9 @@ export const VacancyFilter = ({ onFilterChange, setData }) => {
                             value={jobFamilies?.find((job) => job.id === jobFamily) || null}
                             isOptionEqualToValue={(option, value) => option.id === value?.id}
                             onChange={(e, newValue) => handleJobFamilyChange(newValue)}
-<<<<<<< HEAD
-                            renderInput={(params) => <TextField {...params} label={`Select Job Family`} margin="normal"/>}
-                        />
-=======
                             renderInput={(params) => <TextField {...params} label={<><BusinessCenterIcon /> Job Family</>} margin="normal" />}
                         />
 
->>>>>>> origin/develop
                     </Grid>
                     <Grid item xs={3}>
                         <TextField
