@@ -1,6 +1,7 @@
 package com.jobsearch.service
 
 import com.jobsearch.dto.CandidateDTO
+import com.jobsearch.dto.NotificationTypeDTO
 import com.jobsearch.dto.UserRequestDTO
 import com.jobsearch.dto.UserResponseDTO
 import com.jobsearch.entity.Application
@@ -117,33 +118,45 @@ class UserService @Autowired constructor(
         }
     }
 
-    //!needs test!
-    fun activateNotifications(userId: Int): UserResponseDTO {
-        val user = userRepository.findById(userId)
-            .orElseThrow { NoSuchElementException("No user found with id $userId") }
+    fun activateNotifications(email: String): UserResponseDTO {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
         user.notificationActivated = true
 
         val updatedUser = userRepository.save(user)
         return mapToUserResponseDTO(updatedUser)
     }
 
-    fun deactivateNotifications(userId: Int): UserResponseDTO {
-        val user = userRepository.findById(userId)
-            .orElseThrow { NoSuchElementException("No user found with id $userId") }
+    fun deactivateNotifications(email: String): UserResponseDTO {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
         user.notificationActivated = false
 
         val updatedUser = userRepository.save(user)
         return mapToUserResponseDTO(updatedUser)
     }
 
-    fun activatedNotificationTypes(userId: Int, notificationTypeId: Int): UserResponseDTO {
-        val user = userRepository.findById(userId)
-            .orElseThrow { NoSuchElementException("No user found with id $userId") }
+    fun activatedNotificationTypes(email: String, notificationTypeId: Int): UserResponseDTO {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
 
         val notificationType = notificationTypeRepository.findByIdOrNull(notificationTypeId)
             ?: throw NoSuchElementException("No notification type found with id $notificationTypeId")
 
         user.activatedNotificationTypes = user.activatedNotificationTypes.plus(notificationType)
+
+        val updatedUser = userRepository.save(user)
+        return mapToUserResponseDTO(updatedUser)
+    }
+
+    fun deactivateNotificationTypes(email: String, notificationTypeId: Int): UserResponseDTO {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
+
+        val notificationType = notificationTypeRepository.findByIdOrNull(notificationTypeId)
+            ?: throw NoSuchElementException("No notification type found with id $notificationTypeId")
+
+        user.activatedNotificationTypes = user.activatedNotificationTypes.minus(notificationType)
 
         val updatedUser = userRepository.save(user)
         return mapToUserResponseDTO(updatedUser)
@@ -178,7 +191,30 @@ class UserService @Autowired constructor(
         }
     }
 
-    private fun mapToUserCandidateDTO(cvEntity: Cv, jobFamilies: List<JobFamily>?): CandidateDTO {
+    fun getUserNotificationStatus(email: String): Boolean {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
+        return user.notificationActivated
+    }
+    fun getActivatedNotificationTypes(email: String): List<NotificationTypeDTO> {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
+
+        val activatedNotificationTypes = user.activatedNotificationTypes
+
+        val activatedNotificationTypeDTOs = activatedNotificationTypes.map { notificationType ->
+            NotificationTypeDTO(
+                id = notificationType?.id!!,
+                type = notificationType.type,
+
+            )
+        }
+
+        return activatedNotificationTypeDTOs
+    }
+
+
+    fun mapToUserCandidateDTO(cvEntity: Cv, jobFamilies: List<JobFamily>?): CandidateDTO {
         return CandidateDTO(
             cvEntity.user.id!!,
             cvEntity.user.firstName,

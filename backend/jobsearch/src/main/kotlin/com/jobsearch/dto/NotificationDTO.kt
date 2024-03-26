@@ -12,5 +12,7 @@ data class NotificationDTO(
     var sentDateTime: LocalDateTime = LocalDateTime.now(),
     var sent: Boolean = false,
     var sender: Int? = null,
-    var vacancy: Int? = null
-)
+    var vacancy: Int? = null,
+    var read: Boolean? = false,
+
+    )

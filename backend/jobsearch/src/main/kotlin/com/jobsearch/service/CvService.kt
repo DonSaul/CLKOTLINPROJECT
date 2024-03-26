@@ -15,7 +15,8 @@ class CvService(
     private val cvRepository: CvRepository,
     private val skillRepository: SkillRepository,
     private val jobFamilyRepository: JobFamilyRepository,
-    private val userService: UserService) {
+    private val userService: UserService,
+    private val interestService: InterestService,) {
 
     @Transactional
     fun createCv(cvDTO: CvRequestDTO): CvResponseDTO {
@@ -146,9 +147,8 @@ class CvService(
     fun deleteCv(cvId: Int): String {
         val cv = cvRepository.findById(cvId)
             .orElseThrow { NotFoundException("No CV found with id $cvId") }
-
+        cv.projects?.forEach { project -> interestService.deleteInterestByUserIdAndJobFamilyId(project.jobFamily.id!!, cv.user.id!!) }
         cvRepository.delete(cv)
-
         return "Cv deleted successfully"
     }
 
