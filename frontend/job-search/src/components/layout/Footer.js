@@ -16,17 +16,15 @@ const Footer = () => {
             </Grid>
             {/* Members Grid */}
             <Grid item xs={12} sm={4}>
-                <Typography variant="body1">
-                    <div>
-                        <Typography variant="body1">Edgar Araya</Typography>
-                        <Typography variant="body1">Natalia Devia</Typography>
-                        <Typography variant="body1">Rodrigo Molina</Typography>
-                        <Typography variant="body1">Gabriel Urbina</Typography>
-                        <Typography variant="body1">Rafael Uribe</Typography>
-                        <Typography variant="body1">Esteban Santibañez</Typography>
-                        <Typography variant="body1">Jamiro Manriquez</Typography>
-                    </div>
-                </Typography>
+                <div>
+                    <Typography variant="body1">Edgar Araya</Typography>
+                    <Typography variant="body1">Natalia Devia</Typography>
+                    <Typography variant="body1">Rodrigo Molina</Typography>
+                    <Typography variant="body1">Gabriel Urbina</Typography>
+                    <Typography variant="body1">Rafael Uribe</Typography>
+                    <Typography variant="body1">Esteban Santibañez</Typography>
+                    <Typography variant="body1">Jamiro Manriquez</Typography>
+                </div>
             </Grid>
             {/* Other information */}
             <Grid item xs={12} sm={4}>

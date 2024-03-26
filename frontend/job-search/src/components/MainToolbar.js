@@ -81,7 +81,7 @@ export default function MainToolbar() {
               },
             }}
           >
-            {isLoggedIn ? [
+            {isLoggedIn() ? [
               <Tab key="home" icon={<HomeIcon />} label="Home"  component={Link} to="/" />,
               
               getUserRole() === ROLES.ADMIN && (
