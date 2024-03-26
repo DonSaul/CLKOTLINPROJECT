@@ -58,15 +58,13 @@ are for bug reports and feature requests only.**
 
 ## Contributors
 
-[<img src="https://github.com/jamirou.png?size=60" alt="jamirou" style="border-radius: 50%;">](https://github.com/jamirou)
-[<img src="https://github.com/s0alken.png?size=60" alt="s0alken" style="border-radius: 50%;">](https://github.com/s0alken)
-[<img src="https://github.com/Santisu.png?size=60" alt="Santisu" style="border-radius: 50%;">](https://github.com/Santisu)
-[<img src="https://github.com/RafaUribeG.png?size=60" alt="RafaUribeG" style="border-radius: 50%;">](https://github.com/RafaUribeG)
-[<img src="https://github.com/ndevia.png?size=60" alt="ndevia" style="border-radius: 50%;">](https://github.com/ndevia)
-[<img src="https://github.com/Gabe239.png?size=60" alt="Gabe239" style="border-radius: 50%;">](https://github.com/Gabe239)
-[<img src="https://github.com/EdgarAraya.png?size=60" alt="EdgarAraya" style="border-radius: 50%;">](https://github.com/EdgarAraya)
-
-[//]: # (Please add a profile photo )
+[<img src="https://github.com/jamirou.png?size=70" alt="jamirou" style="border-radius: 50%;">](https://github.com/jamirou)
+[<img src="https://github.com/s0alken.png?size=70" alt="s0alken" style="border-radius: 50%;">](https://github.com/s0alken)
+[<img src="https://github.com/Santisu.png?size=70" alt="Santisu" style="border-radius: 50%;">](https://github.com/Santisu)
+[<img src="https://github.com/RafaUribeG.png?size=70" alt="RafaUribeG" style="border-radius: 50%;">](https://github.com/RafaUribeG)
+[<img src="https://github.com/ndevia.png?size=70" alt="ndevia" style="border-radius: 50%;">](https://github.com/ndevia)
+[<img src="https://github.com/Gabe239.png?size=70" alt="Gabe239" style="border-radius: 50%;">](https://github.com/Gabe239)
+[<img src="https://github.com/EdgarAraya.png?size=70" alt="EdgarAraya" style="border-radius: 50%;">](https://github.com/EdgarAraya)
 
 _______________________________________________
 

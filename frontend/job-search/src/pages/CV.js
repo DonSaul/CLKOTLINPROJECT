@@ -22,10 +22,10 @@ import SnackbarNotification from '../components/SnackbarNotification';
 import { useAuth } from '../helpers/userContext';
 const CV = () => {
 
-  const [id, setId] = useState(); 
+  const [id, setId] = useState();
   const [hasFetchedData, setHasFetchedData] = useState(false);
   const { logout, getUserRole, isLoggedIn } = useAuth();
-  const { data: cvData, error: cvError, isLoading: isCvLoading, isSuccess:isCvSuccess } = useGetCurrentUserCv();
+  const { data: cvData, error: cvError, isLoading: isCvLoading, isSuccess: isCvSuccess } = useGetCurrentUserCv();
 
 
   //Standard data cv
@@ -49,17 +49,17 @@ const CV = () => {
 
   //mutation
   const { mutate, isError, isSuccess } = useCV();
-  const { mutate:updateCVbyID } = useUpdateCV();
+  const { mutate: updateCVbyID } = useUpdateCV();
 
-//simple way to fetch
-useEffect(() => {
-  if (cvData) {
-    setCvData(cvData);
-  }
-}, [cvData]);
+  //simple way to fetch
+  useEffect(() => {
+    if (cvData) {
+      setCvData(cvData);
+    }
+  }, [cvData]);
 
- 
-//skills
+
+  //skills
   useEffect(() => {
     if (skills && selectedSkillsArray.length > 0) {
       console.log("entering condition", skills.filter(skill => !selectedSkillsArray.some(selected => selected.skillId === skill.skillId)))
@@ -69,22 +69,21 @@ useEffect(() => {
       setAvailableSkills(skills);
     }
   }, [skills, selectedSkillsArray]);
- 
+
   //Testing
 
+  const setCvData = (cvData) => {
 
-  const setCvData = (cvData) =>{
-
-      setId(cvData.id)
-      setYearsOfExperience(cvData.yearsOfExperience);
-      setSalaryExpectations(cvData.salaryExpectation);
-      setEducation(cvData.education);
-      setProjects(cvData.projects || [{ name: '', description: '' }]);
-      setSelectedSkillsArray(cvData.skills || []);
+    setId(cvData.id)
+    setYearsOfExperience(cvData.yearsOfExperience);
+    setSalaryExpectations(cvData.salaryExpectation);
+    setEducation(cvData.education);
+    setProjects(cvData.projects || [{ name: '', description: '' }]);
+    setSelectedSkillsArray(cvData.skills || []);
 
   }
 
-  const clearCv= () =>{
+  const clearCv = () => {
     setId('')
     setYearsOfExperience('');
     setSalaryExpectations('');
@@ -128,14 +127,8 @@ useEffect(() => {
 
 
     updateCVbyID()
-    
+
   };
-
-
-
-
-
-
 
 
   const handleSubmit = async (event) => {
@@ -159,7 +152,7 @@ useEffect(() => {
       name: project.name,
       description: project.description,
       jobFamilyId: project?.jobFamily?.id,
-      projectId:project?.projectId
+      projectId: project?.projectId
     }));
 
     const formData = {
@@ -171,22 +164,18 @@ useEffect(() => {
       id
     };
 
-
     try {
       if (id) {
-        
+
         await updateCVbyID(formData);
       } else {
-       
+
         await mutate(formData);
       }
     } catch (error) {
-     
+
       console.error('Error:', error);
     }
- 
-
-
 
   };
 
@@ -197,7 +186,7 @@ useEffect(() => {
       <CardContainer>
         <h1>Curriculum</h1>
 
-  
+
         <h2>General</h2>
         <form onSubmit={handleSubmit}>
           <TextField
@@ -249,25 +238,14 @@ useEffect(() => {
                 margin="normal"
                 required
               />
-               <Autocomplete
+              <Autocomplete
                 options={jobFamilies || []}
                 getOptionLabel={(option) => option.name || ''}
                 value={project.jobFamily || null}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
                 onChange={(e, newValue) => handleProjectChange(index, 'jobFamily', newValue)}
-                renderInput={(params) => <TextField {...params} label={`Select Job Family for Project`} margin="normal"/>}
+                renderInput={(params) => <TextField {...params} label={`Select Job Family for Project`} margin="normal" />}
               />
-
-              {/* 
-              <JobFamilyAutocomplete 
-              onChange={(e,newValue) => handleProjectChange(index, 'jobFamily', newValue)}
-              label={`Select Job Family for Project`}
-              value={project.jobFamily || null}
-              />*/}
-
-             
-
-
               {projects.length > 1 && (
                 <Button onClick={() => removeProjectField(index)} variant="outlined" color="secondary">
                   Remove Project
@@ -279,19 +257,6 @@ useEffect(() => {
           <Button onClick={addProjectField} variant="outlined" color="primary">
             Add Another Project
           </Button>
-
-
-
-
-          {/*  <TextField
-            label="Projects"
-            type="text"
-            value={project}
-            onChange={(e) => setProject(e.target.value)}
-            fullWidth
-            margin="normal"
-          />
-*/}
 
           <h2>Skills</h2>
           <Autocomplete
@@ -347,8 +312,8 @@ useEffect(() => {
 
 
           <Button type="submit" variant="contained" color="primary" >
-        {id ? 'Update CV' : 'Save CV'}
-      </Button>
+            {id ? 'Update CV' : 'Save CV'}
+          </Button>
 
         </form>
 
