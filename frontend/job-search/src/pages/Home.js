@@ -13,7 +13,7 @@ const Home = () => {
 
                 { isLoggedIn? (<>
 
-                    Hello {getUserEmail()}
+                    Hello {getUserEmail()}!
 
 
 
