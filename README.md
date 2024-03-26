@@ -66,6 +66,13 @@ are for bug reports and feature requests only.**
 [<img src="https://github.com/Gabe239.png?size=70" alt="Gabe239" style="border-radius: 50%;">](https://github.com/Gabe239)
 [<img src="https://github.com/EdgarAraya.png?size=70" alt="EdgarAraya" style="border-radius: 50%;">](https://github.com/EdgarAraya)
 
+## Acknowledgements
+[<img src="https://github.com/DonSaul.png?size=70" alt="DonSaul" style="border-radius: 50%;">](https://github.com/DonSaul)
+
+We would like to express our sincere gratitude to [**@DonSaul**](https://github.com/DonSaul) for his invaluable guidance and mentorship throughout the development of this project. His expertise, insights, and support have been instrumental in shaping our journey and helping us overcome various challenges.
+
+Thank you, [**@DonSaul**](https://github.com/DonSaul), for being an exceptional mentor and for believing in our potential.
+
 _______________________________________________
 
 ## *documentation*

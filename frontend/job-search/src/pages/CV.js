@@ -1,24 +1,16 @@
-import React from 'react';
+import { Autocomplete, TextField } from '@mui/material';
+import React, { useState } from 'react';
 import useSkills from '../hooks/useSkills';
-import { Autocomplete } from '@mui/material';
-import { useState } from 'react';
-import { TextField } from '@mui/material';
 //import { Button } from '@mui/base';
+import { Box } from '@mui/material';
+import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import { useEffect } from 'react';
-import Button from '@mui/material/Button';
-import SimpleContainer from '../components/SimpleContainer';
 import CardContainer from '../components/CardContainer';
-import { useCV, useUpdateCV } from '../hooks/useCV';
-import { Box } from '@mui/material';
-import { Typography } from '@mui/material';
+import { useCV, useGetCurrentUserCv, useUpdateCV } from '../hooks/useCV';
 import useJobFamily from '../hooks/useJobFamily';
-import { useGetCurrentUserCv } from '../hooks/useCV';
 
-import IdTester from '../components/IdTester';
-import JobFamilyAutocomplete from '../components/JobFamilyAutocomplete';
 
-import SnackbarNotification from '../components/SnackbarNotification';
 import { useAuth } from '../helpers/userContext';
 const CV = () => {
 
@@ -69,8 +61,6 @@ const CV = () => {
       setAvailableSkills(skills);
     }
   }, [skills, selectedSkillsArray]);
-
-  //Testing
 
   const setCvData = (cvData) => {
 
@@ -130,7 +120,6 @@ const CV = () => {
 
   };
 
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -163,7 +152,6 @@ const CV = () => {
       projects: formattedProjects,
       id
     };
-
     try {
       if (id) {
 
@@ -176,7 +164,6 @@ const CV = () => {
 
       console.error('Error:', error);
     }
-
   };
 
   return (
@@ -197,6 +184,7 @@ const CV = () => {
             fullWidth
             margin="normal"
             required
+            sx={{ width: '65%', margin: 'auto', marginBottom: '16px' }}
           />
           <TextField
             label="Education"
@@ -206,6 +194,7 @@ const CV = () => {
             fullWidth
             margin="normal"
             required
+            sx={{ width: '65%', margin: 'auto', marginBottom: '16px' }}
           />
 
           <TextField
@@ -216,12 +205,13 @@ const CV = () => {
             fullWidth
             margin="normal"
             required
+            sx={{ width: '65%', margin: 'auto', marginBottom: '16px' }}
           />
 
 
           <h2>Projects</h2>
           {projects.map((project, index) => (
-            <Box key={index} sx={{ border: '1px solid grey', padding: 2, marginBottom: 2 }}>
+            <Box key={index} sx={{ border: '0px solid grey', padding: 2, marginBottom: 2 }}>
               <TextField
                 label={`Project ${index + 1} Name`}
                 value={project.name}
@@ -229,6 +219,7 @@ const CV = () => {
                 fullWidth
                 margin="normal"
                 required
+                sx={{ width: '65%', margin: 'auto', marginBottom: '16px' }}
               />
               <TextField
                 label={`Project ${index + 1} Description`}
@@ -237,6 +228,7 @@ const CV = () => {
                 fullWidth
                 margin="normal"
                 required
+                sx={{ width: '65%', margin: 'auto', marginBottom: '16px' }}
               />
               <Autocomplete
                 options={jobFamilies || []}
@@ -244,7 +236,9 @@ const CV = () => {
                 value={project.jobFamily || null}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
                 onChange={(e, newValue) => handleProjectChange(index, 'jobFamily', newValue)}
-                renderInput={(params) => <TextField {...params} label={`Select Job Family for Project`} margin="normal" />}
+                renderInput={(params) => <TextField {...params} label={`Select Job Family for Project`} margin="normal"
+                  sx={{ width: '65%', margin: 'auto', marginBottom: '16px' }}
+                />}
               />
               {projects.length > 1 && (
                 <Button onClick={() => removeProjectField(index)} variant="outlined" color="secondary">
@@ -257,7 +251,6 @@ const CV = () => {
           <Button onClick={addProjectField} variant="outlined" color="primary">
             Add Another Project
           </Button>
-
           <h2>Skills</h2>
           <Autocomplete
             id="skills-autocomplete"
@@ -275,19 +268,16 @@ const CV = () => {
             }
             }
             renderInput={(params) =>
-              <TextField {...params} label="Add skills" />
+              <TextField {...params} label="Add skills" 
+              sx={{ width: '65%', margin: 'auto', marginBottom: '16px' }}
+              />
             }
           />
-
-
-
-
-
 
           <Box
             mx="auto"
             height="auto"
-            width="80%"
+            width="75%"
             my={4}
             display="flex"
             flexDirection="column"
@@ -316,13 +306,7 @@ const CV = () => {
           </Button>
 
         </form>
-
-
-
-
       </CardContainer>
-
-
     </div>
   );
 };
