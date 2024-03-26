@@ -13,7 +13,7 @@ const Vacancies = () => {
     <div >
       <VacancyFilter setData={setData}></VacancyFilter>
 
-      <CardContainer>
+      <CardContainer width='xl'>
         <VacancyTable dataFromQuery={data}></VacancyTable>
       </CardContainer>
 
