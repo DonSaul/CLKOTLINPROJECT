@@ -1,6 +1,8 @@
 package com.jobsearch.controller
 
-import com.jobsearch.dto.UserDTO
+
+import com.jobsearch.dto.UserRequestDTO
+import com.jobsearch.dto.UserResponseDTO
 import com.jobsearch.service.UserService
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
@@ -11,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ActiveProfiles
 
 
@@ -26,13 +29,14 @@ class UserControllerTest {
     private lateinit var userController: UserController
 
     @Test
+    @WithMockUser(authorities = ["admin"])
     fun `should create a new user`() {
-        val userDTO = UserDTO(null, "John", "Doe", "john@example.com", "password", 1)
-        val createdUser = UserDTO(1, "John", "Doe", "john@example.com", "password", 1)
+        val userRequestDTO = UserRequestDTO(null, "John", "Doe", "john@example.com", "password", 1)
+        val createdUser = UserResponseDTO(1, "John", "Doe", "john@example.com", 1)
 
-        Mockito.`when`(userService.createUser(userDTO)).thenReturn(createdUser)
+        Mockito.`when`(userService.createUser(userRequestDTO)).thenReturn(createdUser)
 
-        val responseEntity: ResponseEntity<UserDTO> = userController.addUser(userDTO)
+        val responseEntity: ResponseEntity<UserResponseDTO> = userController.addUser(userRequestDTO)
 
         assertEquals(HttpStatus.CREATED, responseEntity.statusCode)
         assertNotNull(responseEntity.body)
@@ -43,12 +47,12 @@ class UserControllerTest {
     @Test
     fun `should retrieve a user`() {
         val userId = 1
-        val retrieveUser = UserDTO(userId, "Saul", "Olguin", "saul@saul.com", "asas", 1)
+        val retrieveUser = UserResponseDTO(userId, "Saul", "Olguin", "saul@saul.com",  1)
 
         Mockito.`when`(userService.retrieveUser(userId)).thenReturn(retrieveUser)
 
         println("Before calling retrieveUser in UserController")
-        val responseEntity: ResponseEntity<UserDTO> = userController.retrieveUser(userId)
+        val responseEntity: ResponseEntity<UserResponseDTO> = userController.retrieveUser(userId)
         println("After calling retrieveUser in UserController")
 
         assertEquals(HttpStatus.OK, responseEntity.statusCode)
@@ -58,12 +62,12 @@ class UserControllerTest {
 
     @Test
     fun `should retrieve all users`() {
-        val user1 = UserDTO(1, "Saul", "Olguin", "saul@saul.com", "asas", 1)
-        val user2 = UserDTO(2, "Otro", "Usuario", "otro@usuario.com", "pass123", 2)
+        val user1 = UserResponseDTO(1, "Saul", "Olguin", "saul@saul.com",  1)
+        val user2 = UserResponseDTO(2, "Otro", "Usuario", "otro@usuario.com",  2)
 
         Mockito.`when`(userService.retrieveAllUsers()).thenReturn(listOf(user1, user2))
 
-        val responseEntity: ResponseEntity<List<UserDTO>> = userController.retrieveAllUsers()
+        val responseEntity: ResponseEntity<List<UserResponseDTO>> = userController.retrieveAllUsers()
 
         assertEquals(HttpStatus.OK, responseEntity.statusCode)
         assertNotNull(responseEntity.body)
@@ -79,22 +83,22 @@ class UserControllerTest {
     @Test
     fun `should update a user`() {
         val userId = 1
-        val updatedUser = UserDTO(userId, "Mario", "Bros", "mario@example.com", "password", 1)
+        val updatedUser = UserRequestDTO(userId, "Mario", "Bros", "mario@example.com",  "password", 1)
+        val updatedUserResponse = UserResponseDTO(userId, "Mario", "Brother", "marioBros@example.com", 1)
 
-        Mockito.`when`(userService.updateUser(userId, updatedUser)).thenReturn(updatedUser)
+        Mockito.`when`(userService.updateUser(userId, updatedUser)).thenReturn(updatedUserResponse)
 
         println("Before calling updateUser in UserController")
-        val responseEntity : ResponseEntity<UserDTO> = userController.updateUser(userId, updatedUser)
+        val responseEntity : ResponseEntity<UserResponseDTO> = userController.updateUser(userId, updatedUser)
         println("After calling updateUser in UserController")
 
         assertEquals(HttpStatus.OK, responseEntity.statusCode)
         assertNotNull(responseEntity.body)
 
-
-        println("Expected User: $updatedUser")
+        println("Expected User: $updatedUserResponse")
         println("Actual User: ${responseEntity.body}")
 
-        assertEquals(updatedUser, responseEntity.body)
+        assertEquals(updatedUserResponse, responseEntity.body)
     }
 
 
