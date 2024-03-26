@@ -215,19 +215,8 @@ class UserService @Autowired constructor(
         return activatedNotificationTypeDTOs
     }
 
+
     fun mapToUserCandidateDTO(cvEntity: Cv, jobFamilies: List<JobFamily>?): CandidateDTO {
-        return cvEntity.let {
-            CandidateDTO(
-                it.user.id!!,
-                it.user.firstName,
-                it.user.lastName,
-                it.user.email,
-                it.yearsOfExperience,
-                it.salaryExpectation,
-                jobFamilies!!
-            )
-        }
-    private fun mapToUserCandidateDTO(cvEntity: Cv, jobFamilies: List<JobFamily>?): CandidateDTO {
         return CandidateDTO(
             cvEntity.user.id!!,
             cvEntity.user.firstName,
