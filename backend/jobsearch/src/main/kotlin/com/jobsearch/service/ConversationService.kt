@@ -74,19 +74,17 @@ class ConversationService(
         val sender = userService.retrieveAuthenticatedUser()
         val receiver = userRepository.findByEmail(email)
             .orElseThrow { NoSuchElementException("No user found with email $email") }
-
         try {
             if (!isNotificationThrottled(sender.id!!, receiver.id!!)) {
                 val notificationDTO = NotificationDTO(
                     type = NotificationTypeEnum.MESSAGES.id,
                     recipient = receiver.id,
                     subject = "New Message",
-                    content = "There is a new message by: ${receiver.email}",
+                    content = "There is a new message sent by: ${receiver.email}",
                     sender = sender.id,
                     vacancy = null
                 )
                 notificationService.triggerNotification(notificationDTO)
-
             }
         } catch (e: Exception) {
             println("Error sending notification: ${e.message}")
@@ -149,7 +147,7 @@ class ConversationService(
     private fun isNotificationThrottled(senderId: Int, receiverId: Int): Boolean {
         val lastNotificationTime = getLastNotificationTime(senderId, receiverId)
         val currentTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
-        val minTimeBetweenNotifications = 3600 // this is in seconds
+        val minTimeBetweenNotifications = 1 // this is in seconds
 
         val diffSeconds = lastNotificationTime.let { currentTime - it }
 

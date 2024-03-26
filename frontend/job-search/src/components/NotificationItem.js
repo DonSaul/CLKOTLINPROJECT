@@ -1,15 +1,34 @@
-import React from 'react';
-import { Typography } from '@mui/material';
+import React, { useState } from 'react';
 
-const NotificationItem = ({ notifications }) => {
-  if (!notifications || notifications.length === 0) {
-    return <Typography>No notifications found</Typography>;
-  }
+import { ENDPOINTS } from '../helpers/endpoints';
+import { Typography, Checkbox, Button } from '@mui/material';
 
-  return (
-    <div>
-      {notifications.map(notification => {
-        const date = new Date(notification.sentDateTime);
+const NotificationItem = ({ notification, onNotificationRead, isRead}) => {
+  const [markingAsRead, setMarkingAsRead] = useState(false);
+
+  const handleMarkAsRead = async () => {
+    setMarkingAsRead(true);
+    try {
+      const response = await fetch(`${ENDPOINTS.notificationRead}/${notification.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to mark notification as read');
+      }
+
+      onNotificationRead(notification.id); // Update globally
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    } finally {
+      setMarkingAsRead(false);
+    }
+  };
+
+  const date = new Date(notification.sentDateTime);
 
         date.setHours(date.getHours() - 3);
         // Extract date components
@@ -28,23 +47,27 @@ const NotificationItem = ({ notifications }) => {
         const formattedDateWithOffset = new Date(date.getTime());
 const dateString = formattedDateWithOffset.toISOString().slice(0, 19).replace('T', ' ') + ' GMT-3';
 
-        return (
-          <div key={notification.id}>
-            <Typography sx={{ fontSize: 14, textAlign: 'left' }}>Subject: {notification.subject}</Typography>
-            <Typography sx={{ fontSize: 14, textAlign: 'left' }}>Type: {notification.type.type}</Typography>
-            {notification.sender && (
-              <Typography sx={{ fontSize: 14, textAlign: 'left' }}>
-                Sender: {notification.sender.email}
-              </Typography>
-            )}
-            <Typography sx={{ fontSize: 14, textAlign: 'left' }}>Content: {notification.content}</Typography>
-            <Typography sx={{ fontSize: 14, textAlign: 'left' }}>
-              Date: {dateString}
-            </Typography>
-            <hr />
-          </div>
-        );
-      })}
+  return (
+    <div style={{ opacity: isRead ? 0.5 : 1 }}> {/* Apply different opacity based on whether notification is read */}
+      <Typography sx={{ fontSize: 14, textAlign: 'left' }}>Subject: {notification.subject}</Typography>
+      <Typography sx={{ fontSize: 14, textAlign: 'left' }}>Type: {notification.type.type}</Typography>
+      {notification.sender && (
+        <Typography sx={{ fontSize: 14, textAlign: 'left' }}>
+          Sender: {notification.sender.email}
+        </Typography>
+      )}
+      <Typography sx={{ fontSize: 14, textAlign: 'left' }}>Content: {notification.content}</Typography>
+      <Typography sx={{ fontSize: 14, textAlign: 'left' }}>Date: {dateString}</Typography>
+      <Button
+        variant="contained"
+        color="primary"
+        disabled={markingAsRead}
+        onClick={handleMarkAsRead}
+        sx={{ marginTop: '8px' }}
+      >
+        Mark as Read
+      </Button>
+      <hr />
     </div>
   );
 };

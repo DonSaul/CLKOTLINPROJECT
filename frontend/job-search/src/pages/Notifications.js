@@ -9,6 +9,9 @@ import { useNotificationActivated } from '../hooks/notifications/useGetCurrentOn
 import { useNotificationTypeUpdater } from '../hooks/notifications/useNotificationTypesUpdated';
 import { useNotificationTypes } from '../hooks/notifications/useNotificationTypes';
 import { Button, ButtonGroup } from '@mui/material';
+import Badge from '@mui/material/Badge'; // Import Badge component
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import Toolbar from '../components/Toolbar';
 
 const Notifications = () => {
   const { user } = useAuth();
@@ -22,14 +25,9 @@ const Notifications = () => {
   const [vacancyChecked, setVacancyChecked] = useState(false);
   const [invitationChecked, setInvitationChecked] = useState(false);
   const [messageChecked, setMessageChecked] = useState(false);
-
-  //Pagination
   const [currentPage, setCurrentPage] = useState(1);
+  const [readNotifications, setReadNotifications] = useState([]);
   const itemsPerPage = 4;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = notifications.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(notifications.length / itemsPerPage);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -56,15 +54,18 @@ const Notifications = () => {
   useEffect(() => {
     if (!loading && notificationActivated !== null) {
       setInitialCheckboxValue(notificationActivated);
-      // Set the initial state for each notification type based on fetched data
       const vacancyType = notificationTypes.find(type => type.id === 1);
       const invitationType = notificationTypes.find(type => type.id === 2);
       const messageType = notificationTypes.find(type => type.id === 3);
       if (vacancyType) setVacancyChecked(true);
       if (invitationType) setInvitationChecked(true);
       if (messageType) setMessageChecked(true);
+      if (notifications.length > 0) {
+        const readNotificationIds = notifications.filter(notification => notification.read).map(notification => notification.id);
+        setReadNotifications(readNotificationIds);
+      }
     }
-  }, [notificationActivated, loading, notificationTypes]);
+  }, [notificationActivated, loading, notificationTypes, notifications]);
 
   if (loading || loadingType) {
     return <CircularProgress />;
@@ -100,8 +101,15 @@ const Notifications = () => {
       )}
       {initialCheckboxValue ? (
         <CardContainer width='sm'>
-          {currentItems.length > 0 ? (
-            <NotificationItem notifications={currentItems} />
+          {notifications && notifications.length > 0 ? (
+            notifications.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(notification => (
+              <NotificationItem
+                key={notification.id}
+                notification={notification}
+                onNotificationRead={() => setReadNotifications([...readNotifications, notification.id])}
+                isRead={readNotifications.includes(notification.id)}
+              />
+            ))
           ) : (
             <p>No notifications found</p>
           )}
@@ -116,12 +124,12 @@ const Notifications = () => {
             </Button>
             <Button style={{ color: 'black' }}>{currentPage}</Button>
             <Button style={{ color: 'black' }}>of</Button>
-            <Button style={{ color: 'black' }}>{totalPages}</Button>
+            <Button style={{ color: 'black' }}>{Math.ceil((notifications ? notifications.length : 0) / itemsPerPage)}</Button>
             <Button
               variant="contained"
               color="primary"
               onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentItems.length < itemsPerPage}
+              disabled={(notifications ? notifications.length : 0) <= currentPage * itemsPerPage}
             >
               Next
             </Button>
@@ -134,6 +142,7 @@ const Notifications = () => {
           </CardContainer>
         </div>
       )}
+   
     </div>
   );
 };

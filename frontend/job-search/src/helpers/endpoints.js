@@ -13,6 +13,7 @@ export const ENDPOINTS = {
   activateNotification: createUrl("users/notification"),
   notification: createUrl("notifications/recipient"),
   notificationIsActive: createUrl("users/notificationStatus"),
+  notificationRead: createUrl("notifications/markAsRead"),
   notificationTypes: createUrl("users/activatedNotificationTypes"),
   updateNotificationType: createUrl("users/activateNotificationType"),
   getSkills: createUrl("skills"),
