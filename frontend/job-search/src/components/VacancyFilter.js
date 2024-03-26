@@ -69,7 +69,6 @@ export const VacancyFilter = ({ onFilterChange, setData }) => {
                             margin="normal"
                         />
                     </Grid>
-
                     <Grid item xs={3}>
                         <Autocomplete
                             options={jobFamilies || []}
@@ -91,7 +90,6 @@ export const VacancyFilter = ({ onFilterChange, setData }) => {
                             margin="normal"
                         />
                     </Grid>
-
                     <Grid item xs={3}>
                         <Button onClick={handleApplyFilter} variant="contained" color="primary">
                             Apply Filter

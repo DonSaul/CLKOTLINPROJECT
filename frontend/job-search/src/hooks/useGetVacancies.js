@@ -3,7 +3,7 @@ import { ENDPOINTS } from '../helpers/endpoints';
 import { AUTH_TOKEN_NAME } from '../helpers/constants';
 
 
-const fetchVacancies = async (salary, jobFamilyId, yearsOfExperience) => {
+const fetchVacancies = async (salary,jobFamilyId,yearsOfExperience) => {
   let token = localStorage.getItem(AUTH_TOKEN_NAME);
 
   const queryParameters = new URLSearchParams({
@@ -12,15 +12,15 @@ const fetchVacancies = async (salary, jobFamilyId, yearsOfExperience) => {
     yearsOfExperience: yearsOfExperience || '',
   });
 
-  const response = await fetch(`${ENDPOINTS.searchVacancies}?${queryParameters}`, {
+  const response = await fetch(`${ENDPOINTS.searchVacancies}?${queryParameters}`,{
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`,
     },
   });
-  console.log("vacancy response", response);
+  console.log("vacancy response",response);
 
-  if (!response.ok) {
+  if (!response.ok && response.status !== 204) {
     throw new Error('Failed to fetch vacancies');
   }
   let responseData = await response.json()
@@ -28,8 +28,8 @@ const fetchVacancies = async (salary, jobFamilyId, yearsOfExperience) => {
 };
 
 const useGetVacancies = (salary, jobFamily, yearsOfExperience) => {
-  return useQuery('vacancies', () => fetchVacancies(salary, jobFamily, yearsOfExperience), {
-    // enabled: false,
-  });
-};
+    return useQuery('vacancies', () => fetchVacancies(salary, jobFamily, yearsOfExperience), {
+     // enabled: false,
+    });
+  };
 export default useGetVacancies;

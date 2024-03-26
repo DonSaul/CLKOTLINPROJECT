@@ -54,9 +54,3 @@ INSERT INTO application_status (id, name) VALUES (2, 'Applied') ON CONFLICT DO N
 INSERT INTO application_status (id, name) VALUES (3, 'In Process') ON CONFLICT DO NOTHING;
 INSERT INTO application_status (id, name) VALUES (4, 'Accepted') ON CONFLICT DO NOTHING;
 INSERT INTO application_status (id, name) VALUES (5, 'Rejected') ON CONFLICT DO NOTHING;
-
---Notifications Types
-INSERT INTO notification_types (id, type) VALUES (1, 'vacancies') ON CONFLICT DO NOTHING;
-INSERT INTO notification_types (id, type) VALUES (2, 'invitations') ON CONFLICT DO NOTHING;
-INSERT INTO notification_types (id, type) VALUES (3, 'messages') ON CONFLICT DO NOTHING;
-INSERT INTO notification_types (id, type) VALUES (4, 'forgotPassword') ON CONFLICT DO NOTHING;

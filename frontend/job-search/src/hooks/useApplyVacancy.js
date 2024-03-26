@@ -8,7 +8,6 @@ import { toast } from 'react-toastify';
 const addApplication = async (data) => {
   let token = localStorage.getItem(AUTH_TOKEN_NAME);
 
-
   const res = await fetch(ENDPOINTS.application, {
     method: 'POST',
     headers: {
@@ -29,7 +28,9 @@ export const useApplyVacancy = () => {
 
         if (res.status===403){
           toast.error('You are not allowed to do that'); 
-        } else{
+        } else if(res.status===404){ 
+          toast.warn("Remember to check your CV")
+        } else {
           toast.success("Applied successfully!")
         }
 

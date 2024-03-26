@@ -1,5 +1,6 @@
 package com.jobsearch.entity
 
+import com.jobsearch.dto.UserResponseDTO
 import jakarta.persistence.*
 
 @Entity

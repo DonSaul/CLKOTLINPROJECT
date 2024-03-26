@@ -21,10 +21,11 @@ class RecoverPasswordService @Autowired constructor(
     private val userService: UserService,
     private val expirableToken: ExpirableToken
 ){
+
+
+
     @Value("\${token.expiration.minutes}")
     private val expirationMinutes: Long = 5
-
-
     fun sendRecoverPassword(email: String){
 
         try {
@@ -50,16 +51,11 @@ class RecoverPasswordService @Autowired constructor(
     }
 
     fun changePassword(token: String, newPassword: String) {
-        // Check if the token is valid and not expired
         if (expirableToken.isExpired(token)) {
             throw RuntimeException("The provided token has expired")
         }
-
-        // Fetch the user associated with the token
         val user = userRepository.findByResetPasswordToken(token)
             .orElseThrow { NotFoundException("No user found with token: $token") }
-
-        // Update the user's password
         userService.updatePassword(user, newPassword)
     }
 
