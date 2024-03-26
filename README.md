@@ -63,10 +63,10 @@ are for bug reports and feature requests only.**
 [<img src="https://github.com/Santisu.png?size=60" alt="Santisu" style="border-radius: 50%;">](https://github.com/Santisu)
 [<img src="https://github.com/RafaUribeG.png?size=60" alt="RafaUribeG" style="border-radius: 50%;">](https://github.com/RafaUribeG)
 [<img src="https://github.com/ndevia.png?size=60" alt="ndevia" style="border-radius: 50%;">](https://github.com/ndevia)
-[<img src="https://github.com/Gabe239.png?size=60" alt="ndevia" style="border-radius: 50%;">](https://github.com/Gabe239)
+[<img src="https://github.com/Gabe239.png?size=60" alt="Gabe239" style="border-radius: 50%;">](https://github.com/Gabe239)
+[<img src="https://github.com/EdgarAraya.png?size=60" alt="EdgarAraya" style="border-radius: 50%;">](https://github.com/EdgarAraya)
 
 [//]: # (Please add a profile photo )
-[//]: # ([![]&#40;https://github.com/EdgarAraya.png?size=60&#41;]&#40;https://github.com/EdgarAraya&#41;)
 
 _______________________________________________
 
