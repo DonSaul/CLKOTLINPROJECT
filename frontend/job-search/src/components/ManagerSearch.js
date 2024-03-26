@@ -11,7 +11,7 @@ import BusinessIcon from '@mui/icons-material/Business';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import { EmojiEventsTwoTone } from '@mui/icons-material';
 
-export const CandidatesFilter = ({ onFilterChange, setData }) => {
+export const CandidatesFilter = ({ setData }) => {
   const [yearsOfExperience, setYearsOfExperience] = useState('');
   const [jobFamily, setJobFamily] = useState('');
   const [salary, setSalary] = useState('');
@@ -45,6 +45,16 @@ export const CandidatesFilter = ({ onFilterChange, setData }) => {
     setSalary('');
   };
 
+  // Ejecutar la búsqueda al cargar la página
+  useEffect(() => {
+    handleApplyFilter();
+  }, []);
+
+  // Ejecutar la búsqueda cada vez que cambie algún filtro
+  useEffect(() => {
+    handleApplyFilter();
+  }, [yearsOfExperience, jobFamily, salary]);
+
   return (
     <div>
       <CardContainer>
@@ -55,7 +65,6 @@ export const CandidatesFilter = ({ onFilterChange, setData }) => {
           <Grid item xs={3}>
             <TextField
               label={<><EmojiEventsTwoTone /> Years of Experience</>}
-
               type="number"
               value={yearsOfExperience}
               onChange={handleYearsOfExperienceChange}
