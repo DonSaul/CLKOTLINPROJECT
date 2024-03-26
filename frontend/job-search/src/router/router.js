@@ -2,6 +2,7 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import RecoverPassword from "../pages/RecoverPassword";
 import ChangePassword from "../pages/ChangePassword"
+import { UpdateVacancy } from "../pages/UpdateVacancy";
 import CV from "../pages/CV";
 import Vacancies from "../pages/Vacancies";
 import React from 'react';
@@ -21,6 +22,7 @@ import NotAccess from "../pages/NotAccess";
 import VacancyView from "../pages/VacancyView";
 import ManagerSearchPage from "../pages/ManagerSearchPage";
 import { SendInvite } from "../pages/SendInvite";
+import ManagerVacanciesPage from "../pages/ManagerVacanciesPage";
 import Footer from "../components/layout/Footer";
 import Layout from "../components/layout/Layout";
 
@@ -52,6 +54,8 @@ const RoutesConfig = () => {
         <Route path={paths.createVacancy} element={<CreateVacancy />} />
         <Route path={paths.managerSearchPage} element={<ManagerSearchPage />} />
         <Route path={paths.sendInvitation} element={<SendInvite />} />
+        <Route path={paths.managerVacanciesPage} element={<ManagerVacanciesPage />} />
+        <Route path={paths.updateVacancy} element={<UpdateVacancy />} />
 
       </Route>
       <Route element={<RequireAuth role={ROLES.ADMIN} />}>

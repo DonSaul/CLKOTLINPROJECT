@@ -23,7 +23,7 @@ export default function CandidatesTable({ dataFromQuery, onRowSelectionChange })
                 header: 'Categories',
                 Cell: ({ row }) => (
                     <div>
-                        {row.original.jobFamilies.map((jobFamily) => (
+                        {row.original.jobFamilies?.map((jobFamily) => (
                             <div key={jobFamily.id}>{jobFamily.name}</div>
                         ))}
                     </div>
@@ -48,18 +48,19 @@ export default function CandidatesTable({ dataFromQuery, onRowSelectionChange })
             },
             {
                 accessorKey: 'salaryExpectation',
-                header: 'Salary',
+                header: 'Salary Expectation',
             },
-
-            {
-                id: 'sendButton',
-                header: 'Status',
-                Cell: ({ row }) => (
-                    <Button variant="contained" color="primary" onClick={() => handleInvite(row.original)} disabled={getUserRole() !== ROLES.MANAGER}>
-                        Invite
-                    </Button>
-                ),
-            },
+        {
+            id: 'sendButton',
+            header: 'Status',
+            Cell: ({ row }) => (
+                 row.original.aplicationStatus
+                ? row.original.aplicationStatus
+                : (<Button variant="contained" color="primary" onClick={() => handleInvite(row.original)} disabled={getUserRole()!==ROLES.MANAGER}>
+                    Invite
+                </Button>)
+            ),
+          },
         ],
         [],
     );
@@ -113,18 +114,14 @@ export default function CandidatesTable({ dataFromQuery, onRowSelectionChange })
         initialState: { columnVisibility: { vacancyId: false } },
         //enableHiding:false
         enableRowActions: true,
-        positionActionsColumn: 'last',
         renderRowActionMenuItems: ({ row }) => [
-            <MenuItem key="edit" onClick={() => {
-                console.log("row", row);
-                //navigate(`${paths.vacancies}/${row.original.id}`);
-            }}>
-                Visit
-            </MenuItem>,
-            <MenuItem>
-                Send Invitation
-            </MenuItem>
-        ],
+    <MenuItem key="edit" onClick={() => {
+        console.log("row",row);
+        navigate(`${paths.vacancies}/${row.original.id}`);
+        }}>
+      View Profile
+    </MenuItem>,
+  ],
 
     });
 

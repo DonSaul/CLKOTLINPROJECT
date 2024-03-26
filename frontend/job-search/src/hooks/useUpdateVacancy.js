@@ -5,11 +5,10 @@ import { AUTH_TOKEN_NAME } from '../helpers/constants';
 import { toast } from 'react-toastify';
 
 
-const addApplication = async (data) => {
+const updateVacancy = async (data) => {
   let token = localStorage.getItem(AUTH_TOKEN_NAME);
-
-  const res = await fetch(ENDPOINTS.application, {
-    method: 'POST',
+  const res = await fetch(`${ENDPOINTS.vacancy}/${data.id}`,{
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`,
@@ -20,18 +19,16 @@ const addApplication = async (data) => {
   return res;
 };
 
-export const useApplyVacancy = () => {
-    return useMutation(addApplication, {
+export const useUpdateVacancy = () => {
+    return useMutation(updateVacancy, {
       onSuccess: (res) => {
         
-        console.log("onSuccess res:",res);
+        console.log("UPDATE RES:",res);
 
         if (res.status===403){
           toast.error('You are not allowed to do that'); 
-        } else if(res.status===404){ 
-          toast.warn("Remember to check your CV")
-        } else {
-          toast.success("Applied successfully!")
+        } else{
+          toast.success("Vacancy updated successfully!")
         }
 
       },
@@ -42,7 +39,7 @@ export const useApplyVacancy = () => {
         
       },
       onError: (_err, data, context) => {
-        toast.error("Error on application!")
+        toast.error("Error saving vacancy!")
         console.log("Error on mutation",_err);
         console.log("Error data:",data);
       },

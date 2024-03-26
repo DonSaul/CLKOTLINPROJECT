@@ -188,7 +188,6 @@ class JobsearchApplication {
 					val vacancyEntity = vacancyDto.let {
 						Vacancy(it.id, it.name, it.companyName, it.salaryExpectation, it.yearsOfExperience, it.description, selectedJobFamily, managerUser!!)
 					}
-
 					vacancyService.vacancyRepository.save(vacancyEntity)
 				}
 			}

@@ -5,7 +5,7 @@ import InvitationModal from '../components/InvitationModal';
 import CandidatesFilter from '../components/ManagerSearch';
 import SendInvitation from '../components/SendInvitation';
 
-const ManagerSearchPage = () => {
+const ManagerSearchPage = ( {vacancyId} ) => {
 
     const [data, setData] = useState([]);
     const [rowsSelected, setRowsSelected] = useState();
@@ -23,7 +23,7 @@ const ManagerSearchPage = () => {
 
     return (
         <div>
-            <CandidatesFilter setData={setData} />
+            <CandidatesFilter setData={setData} vacancyId={ vacancyId }/>
             <CardContainer width='xl'>
                 <CandidatesTable dataFromQuery={data}
                     onRowSelectionChange={handleRowSelectionChange}

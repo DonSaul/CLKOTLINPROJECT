@@ -13,10 +13,10 @@ export const paths = {
     vacancyDetails: '/vacancies/:id',
     notifications:'/notifications',
     messaging:'/messaging',
-    createVacancy:'/vacancies/new',
+    createVacancy:'/vacancies/new/',
+    updateVacancy:'/vacancies/update/:id',
     managerVacanciesPage: '/vacancies/manage',
     createUser:'/admin/users/new',
     sendInvitation:'/users/:id/send-invitation',
-    notAccess:'/no-access'
-
+    notAccess:'/no-access',
 }

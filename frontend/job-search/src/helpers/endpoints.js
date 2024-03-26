@@ -19,6 +19,7 @@ export const ENDPOINTS = {
   getSkills: createUrl("skills"),
   register:createUrl("auth/register"),
   searchCandidates:createUrl("candidates/search"),
+  getCandidatesByApplication:createUrl("candidates/vacancy"),
   getSkills:createUrl("skills"),
   submitCV:createUrl("cvs"),
   login:createUrl("auth/login"),

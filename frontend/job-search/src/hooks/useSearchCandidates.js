@@ -20,7 +20,6 @@ const fetchCandidates = async (salary, jobFamilyId, yearsOfExperience) => {
     if (!response.ok) {
         throw new Error('Search failed');
     }
-
     const candidates = await response.json();
     return candidates.data;
 };
