@@ -55,6 +55,7 @@ and managers. The project is a product of SoftServe's project lab, where we focu
 
 Please visit our [issues discussions](https://github.com/DonSaul/CLKOTLINPROJECT/issues) for general questions. **Issues
 are for bug reports and feature requests only.**
+--------------------------------------------------------
 
 ## Contributors
 
@@ -67,11 +68,15 @@ are for bug reports and feature requests only.**
 [<img src="https://github.com/EdgarAraya.png?size=70" alt="EdgarAraya" style="border-radius: 50%;">](https://github.com/EdgarAraya)
 
 ## Acknowledgements
+
 [<img src="https://github.com/DonSaul.png?size=70" alt="DonSaul" style="border-radius: 50%;">](https://github.com/DonSaul)
 
-We would like to express our sincere gratitude to [**@DonSaul**](https://github.com/DonSaul) for his invaluable guidance and mentorship throughout the development of this project. His expertise, insights, and support have been instrumental in shaping our journey and helping us overcome various challenges.
+We would like to express our sincere gratitude to [**@DonSaul**](https://github.com/DonSaul) for his invaluable guidance
+and mentorship throughout the development of this project. His expertise, insights, and support have been instrumental
+in shaping our journey and helping us overcome various challenges.
 
-Thank you, [**@DonSaul**](https://github.com/DonSaul), for being an exceptional mentor and for believing in our potential.
+Thank you, [**@DonSaul**](https://github.com/DonSaul), for being an exceptional mentor and for believing in our
+potential.
 
 _______________________________________________
 
@@ -92,6 +97,9 @@ _______________________________________________
    5.1. [Data Query](#data-query) <br>
    5.2. [Communication](#communication-between-frontend-and-backend) <br>
    5.3. [Frontend files](#frontend-helper-files) <br>
+   5.4. [Router files](#router-files) <br>
+   5.5. [ApplicationController](#application-controller) <br>
+--------------------------------------------------------
 
 ## Getting Started
 
@@ -115,6 +123,7 @@ Ensure you have the following installed:
 2. Install dependencies. [follow the Prerequisites step](#prerequisites)
 3. Configure application properties.
 4. Run the application.
+--------------------------------------------------------
 
 ## Basic Usage
 
@@ -176,7 +185,7 @@ Organized architecture for separation of concerns, such as:
 | **Code Reusability**       | The API Rest architecture promotes code reusability through the use of separate components. For example, business logic encapsulated in the Controller can be reused across different views, enhancing development efficiency and reducing duplication of code.               |
 | **Testability**            | With REST, each component can be tested independently, leading to more effective testing strategies. Unit tests can be written for the Controller logic, while integration tests can be performed on the interaction between the Model, View, and Controller components.      |
 
-## Security Features and Best Practices
+### Security Features and Best Practices
 
 Robust security measures:
 
@@ -187,7 +196,7 @@ Robust security measures:
 | Encryption       | implementation("org.springframework.boot:spring-boot-starter-security")   |
 | Input validation | implementation("org.springframework.boot:spring-boot-starter-validation") |
 
-## Advanced Functionalities
+### Advanced Functionalities
 
 ### Search Candidates from Manager entity
 
@@ -231,8 +240,9 @@ The `CandidateDTO` represents the details of a candidate.
 - `yearsOfExperience`: Candidate's years of experience.
 - `salaryExpectation`: Candidate's expected salary.
 - `jobFamilies`: List of job families associated with the candidate.
+--------------------------------------------------------
 
-## Authentication and Security
+### Authentication and Security
 
 The authentication process involves user registration, login, and token generation using JSON Web Tokens (JWT). Security
 measures include password encryption, token validation, and authorization for accessing protected resources.
@@ -267,12 +277,14 @@ measures include password encryption, token validation, and authorization for ac
 | AuthController          | Manages user registration and authentication endpoints.     |
 | SecurityConfig          | Configures security settings and filters for HTTP requests. |
 | WebConfig               | Configures CORS settings for HTTP requests.                 |
+--------------------------------------------------------
 
-## Data Query
+### Data Query
 
 The project utilizes PostgreSQL as the database management system (DBMS) for efficient data storage and retrieval.
 
-#### Database Schema
+
+### Database Schema
 
 The following tables are part of the database schema:
 
@@ -295,6 +307,7 @@ The following tables are part of the database schema:
 | skill              | Stores various skills that users possess.                          |
 | users              | Stores user account information including email, password, etc.    |
 | vacancy            | Represents job vacancies posted by companies.                      |
+--------------------------------------------------------
 
 ### Communication between Frontend and Backend
 
@@ -307,6 +320,7 @@ authentication mechanisms are defined and utilized. The backend processes these 
 responses, which the frontend utilizes to update the user interface and display information to the user. The
 communication between the frontend and backend is based on a set of RESTful endpoints defined in the backend, which the
 frontend utilizes to perform various operations.
+--------------------------------------------------------
 
 ### Frontend Helper Files
 
@@ -323,6 +337,7 @@ the application. Here's an overview:
 
 These helper files play a crucial role in managing authentication, API communication, and user context within the
 frontend application.
+--------------------------------------------------------
 
 ### Router Files
 
@@ -337,3 +352,20 @@ breakdown:
 
 These router files ensure proper navigation and access control within the frontend application, enhancing overall user
 experience and security.
+--------------------------------------------------------
+### ApplicationController
+
+This controller handles requests related to applications in the backend of the application.
+
+#### Endpoints
+
+| HTTP Method | URL                        | Description                           | Input Parameters                        | Response Codes                                                                                                        |
+|-------------|----------------------------|---------------------------------------|-----------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| POST        | `/api/v1/application`      | Creates a new application.            | `ApplicationDTO` Object                 | `201 Created`: If the application is successfully created.<br>Other possible error codes.                             |
+| GET         | `/api/v1/application/{id}` | Retrieves an application by its ID.   | Application ID                          | `200 OK`: If the application is found and returned successfully.<br>`404 Not Found`: If the application is not found. |
+| GET         | `/api/v1/application`      | Retrieves all applications.           | -                                       | `200 OK`: If applications are retrieved successfully.<br>Other possible error codes.                                  |
+| PUT         | `/api/v1/application/{id}` | Updates the status of an application. | Application ID, `ApplicationDTO` Object | `200 OK`: If the application is updated successfully.<br>Other possible error codes.                                  |
+| DELETE      | `/api/v1/application/{id}` | Deletes an application.               | Application ID                          | `204 No Content`: If the application is deleted successfully.<br>Other possible error codes.                          |
+
+- All endpoints are protected with authorization.
+- Users with the 'manager' role can access endpoints to update and delete applications.
