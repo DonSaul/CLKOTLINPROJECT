@@ -38,7 +38,6 @@ import { paths } from '../router/paths';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import { Search } from '@mui/icons-material';
-<<<<<<<<< Temporary merge branch 1:frontend/job-search/src/components/Toolbar.js
 import { useNotificationData } from '../hooks/notifications/useNotificationByEmailInterval';
 import Badge from '@mui/material/Badge'; // Import Badge component
 
@@ -59,11 +58,6 @@ export default function MainToolbar() {
       setUnreadNotificationsCount(count);
     }
   }, [notifications]);
-
-=========
-export default function MainToolbar() {
-  const { logout, getUserRole, isLoggedIn } = useAuth();
->>>>>>>>> Temporary merge branch 2:frontend/job-search/src/components/MainToolbar.js
 
 
   const [value, setValue] = useState(0);
@@ -105,7 +99,7 @@ export default function MainToolbar() {
               },
             }}
           >
-            {isLoggedIn ? [
+            {isLoggedIn() ? [
               <Tab key="home" icon={<HomeIcon />} label="Home" component={Link} to="/" />,
 
               getUserRole() === ROLES.ADMIN && (
