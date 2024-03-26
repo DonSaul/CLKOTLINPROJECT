@@ -26,4 +26,13 @@ interface VacancyRepository: JpaRepository<Vacancy, Int> {
      * @return a list of vacancies filtered by the given manager
      */
     fun findByManager(manager: User): List<Vacancy>
+
+    /**
+     * Checks if a vacancy with the given ID exists.
+     *
+     * @param id the ID of the vacancy to check
+     * @return true if the vacancy exists, false otherwise
+     */
+    override fun existsById(id: Int): Boolean
+
 }
