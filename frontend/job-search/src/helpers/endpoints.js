@@ -10,8 +10,12 @@ export const ENDPOINTS = {
   register: createUrl("auth/register"),
   recoverPassword: createUrl("recoverPassword/forgotPassword"),
   changePassword: createUrl("recoverPassword/changePassword"),
-  activateNotification: createUrl("users/updateNotificationActivated/"),
-  notification: createUrl("notifications/all"),
+  activateNotification: createUrl("users/notification"),
+  notification: createUrl("notifications/recipient"),
+  notificationIsActive: createUrl("users/notificationStatus"),
+  notificationRead: createUrl("notifications/markAsRead"),
+  notificationTypes: createUrl("users/activatedNotificationTypes"),
+  updateNotificationType: createUrl("users/activateNotificationType"),
   getSkills: createUrl("skills"),
   register:createUrl("auth/register"),
   searchCandidates:createUrl("candidates/search"),
@@ -30,5 +34,6 @@ export const ENDPOINTS = {
   getConversations:createUrl("conversation/user/all"),
   getCurrentConversationMessages:createUrl("conversation/messages"),
   sendMessage:createUrl("conversation/send-message"),
+  sendMessageNotification:createUrl("conversation/sendMessageNotification"),
   invitation:createUrl("invitations")
 };
