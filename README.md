@@ -3,7 +3,17 @@
 ![logo](https://www.dice.com/binaries/medium/content/gallery/dice/insights/2015/06/Screen-Shot-2015-06-22-at-10.41.14-AM.png)
 
 🗂️ **JobSearch** is a web platform for employment and management aimed at facilitating interaction between candidates
+
 and managers. The project is a product of SoftServe's project lab, where we focus on learning and improving our skills.
+
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=flat&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
+[![Kotlin](https://img.shields.io/badge/Kotlin-007396?style=flat&logo=kotlin&logoColor=white)](https://kotlinlang.org/)
+[![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=white)](https://reactjs.org/)
+[![Spring](https://img.shields.io/badge/Spring_Framework-6DB33F?style=flat&logo=spring&logoColor=white)](https://spring.io/)
+[![RESTful API](https://img.shields.io/badge/RESTful_API-005571?style=flat&logo=rest&logoColor=white)](https://restfulapi.net/)
+[![Pull request](https://img.shields.io/badge/PRs-welcome-success?style=flat)](https://github.com/DonSaul/CLKOTLINPROJECT/pulls)
+
 
 ## Features
 
