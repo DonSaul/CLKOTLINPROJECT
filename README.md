@@ -58,20 +58,64 @@ are for bug reports and feature requests only.**
 
 ## Contributors
 
-[<img src="https://github.com/jamirou.png?size=70" alt="jamirou" style="border-radius: 50%;">](https://github.com/jamirou)
-[<img src="https://github.com/s0alken.png?size=70" alt="s0alken" style="border-radius: 50%;">](https://github.com/s0alken)
-[<img src="https://github.com/Santisu.png?size=70" alt="Santisu" style="border-radius: 50%;">](https://github.com/Santisu)
-[<img src="https://github.com/RafaUribeG.png?size=70" alt="RafaUribeG" style="border-radius: 50%;">](https://github.com/RafaUribeG)
-[<img src="https://github.com/ndevia.png?size=70" alt="ndevia" style="border-radius: 50%;">](https://github.com/ndevia)
-[<img src="https://github.com/Gabe239.png?size=70" alt="Gabe239" style="border-radius: 50%;">](https://github.com/Gabe239)
-[<img src="https://github.com/EdgarAraya.png?size=70" alt="EdgarAraya" style="border-radius: 50%;">](https://github.com/EdgarAraya)
+<div style="display: inline-block; overflow: hidden; border-radius: 50%; width: 70px; height: 70px;">
+    <a href="https://github.com/jamirou">
+        <img src="https://github.com/jamirou.png?size=70" alt="jamirou" style="width: 100%; height: auto;">
+    </a>
+</div>
+
+<div style="display: inline-block; overflow: hidden; border-radius: 50%; width: 70px; height: 70px;">
+    <a href="https://github.com/s0alken">
+        <img src="https://github.com/s0alken.png?size=70" alt="s0alken" style="width: 100%; height: auto;">
+    </a>
+</div>
+
+<div style="display: inline-block; overflow: hidden; border-radius: 50%; width: 70px; height: 70px;">
+    <a href="https://github.com/EdgarAraya">
+        <img src="https://github.com/EdgarAraya.png?size=70" alt="EdgarAraya" style="width: 100%; height: auto;">
+    </a>
+</div>
+
+<div style="display: inline-block; overflow: hidden; border-radius: 50%; width: 70px; height: 70px;">
+    <a href="https://github.com/Gabe239">
+        <img src="https://github.com/Gabe239.png?size=70" alt="Gabe239" style="width: 100%; height: auto;">
+    </a>
+</div>
+
+<div style="display: inline-block; overflow: hidden; border-radius: 50%; width: 70px; height: 70px;">
+    <a href="https://github.com/Santisu">
+        <img src="https://github.com/Santisu.png?size=70" alt="Santisu" style="width: 100%; height: auto;">
+    </a>
+</div>
+
+<div style="display: inline-block; overflow: hidden; border-radius: 50%; width: 70px; height: 70px;">
+    <a href="https://github.com/RafaUribeG">
+        <img src="https://github.com/RafaUribeG.png?size=70" alt="RafaUribeG" style="width: 100%; height: auto;">
+    </a>
+</div>
+
+<div style="display: inline-block; overflow: hidden; border-radius: 50%; width: 70px; height: 70px;">
+    <a href="https://github.com/ndevia">
+        <img src="https://github.com/ndevia.png?size=70" alt="ndevia" style="width: 100%; height: auto;">
+    </a>
+</div>
+
+
 
 ## Acknowledgements
-[<img src="https://github.com/DonSaul.png?size=70" alt="DonSaul" style="border-radius: 50%;">](https://github.com/DonSaul)
 
-We would like to express our sincere gratitude to [**@DonSaul**](https://github.com/DonSaul) for his invaluable guidance and mentorship throughout the development of this project. His expertise, insights, and support have been instrumental in shaping our journey and helping us overcome various challenges.
+<div style="display: inline-block; overflow: hidden; border-radius: 50%; width: 70px; height: 70px;">
+    <a href="https://github.com/DonSaul">
+        <img src="https://github.com/DonSaul.png?size=70" alt="DonSaul" style="width: 100%; height: auto;">
+    </a>
+</div>
 
-Thank you, [**@DonSaul**](https://github.com/DonSaul), for being an exceptional mentor and for believing in our potential.
+We would like to express our sincere gratitude to [**@DonSaul**](https://github.com/DonSaul) for his invaluable guidance
+and mentorship throughout the development of this project. His expertise, insights, and support have been instrumental
+in shaping our journey and helping us overcome various challenges.
+
+Thank you, [**@DonSaul**](https://github.com/DonSaul), for being an exceptional mentor and for believing in our
+potential.
 
 _______________________________________________
 
