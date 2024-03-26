@@ -67,16 +67,4 @@ const RoutesConfig = () => {
 
 
 
-/*
-const RouterWrapper = () => {
-  return <Router>
-
-    <Layout>
-      <RoutesConfig></RoutesConfig>
-
-    </Layout>
-
-  </Router>;
-};
-*/
 export default RoutesConfig;

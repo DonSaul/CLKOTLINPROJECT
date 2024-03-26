@@ -17,12 +17,12 @@ function App() {
       <Router>
 
         <Layout>
-          
+
           <RoutesConfig></RoutesConfig>
 
         </Layout>
 
-      </Router>;
+      </Router>
 
 
 
