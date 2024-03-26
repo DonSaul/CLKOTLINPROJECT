@@ -66,20 +66,19 @@ export default function ButtonAppBar() {
     fontWeight: 'bold',
   };
 
-
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar sx={{
+        <Toolbar sx={{ 
           justifyContent: 'center',
           //color:'white' ,
-          backgroundColor: '#122670'
+          backgroundColor:'#122670'
         }}
         >
 
           <Tabs
             // orientation="horizontal" 
-            variant="standard"
+             variant="standard"
             value={value}
             onChange={handleChange}
             centered
@@ -95,8 +94,8 @@ export default function ButtonAppBar() {
             }}
           >
             {isLoggedIn ? [
-              <Tab key="home" icon={<HomeIcon />} label="Home" component={Link} to="/" />,
-
+              <Tab key="home" icon={<HomeIcon />} label="Home"  component={Link} to="/" />,
+              
               getUserRole() === ROLES.ADMIN && (
                 <Tab key="createUser" label="Create User" icon={<GroupAddIcon></GroupAddIcon>} component={Link} to={paths.createUser} />
               ),
@@ -104,7 +103,7 @@ export default function ButtonAppBar() {
                 <Tab key="vacancies" icon={<BusinessCenterIcon />} label="Vacancies" component={Link} to={paths.vacancies} />,
                 <Tab key="createVacancy" label="Create Vacancy" icon={<PostAddIcon></PostAddIcon>} component={Link} to={paths.createVacancy} />,
                 <Tab key="managerSearchPage" label="Search Candidates" icon={<Search></Search>} component={Link} to={paths.managerSearchPage} />
-              ],
+            ],
               getUserRole() === ROLES.CANDIDATE && [
                 <Tab key="vacancies" icon={<BusinessCenterIcon />} label="Vacancies" component={Link} to={paths.vacancies} />,
                 <Tab key="myCV" icon={<AssignmentIndIcon />} label="My CV" component={Link} to={paths.cv} />,
@@ -126,12 +125,14 @@ export default function ButtonAppBar() {
               <Tab key="myProfile" label="My profile" icon={<UserAvatar></UserAvatar>} component={Link} to={paths.profile} />,
               <Tab key="logout" label="Logout" icon={<LogoutIcon />} onClick={logout} component={Link} to={paths.login} />,
             ] :
-
-              [
-                <Tab key="login" icon={<LoginIcon />} label="Login" component={Link} to={paths.login} />,
-                <Tab key="register" icon={<HowToRegIcon />} label="Register" component={Link} to={paths.register} />,
-              ]}
+            
+            [
+              <Tab key="login" icon={<LoginIcon />} label="Login" component={Link} to={paths.login} />,
+              <Tab key="register" icon={<HowToRegIcon />} label="Register" component={Link} to={paths.register} />,
+            ]}
           </Tabs>
+          
+          
         </Toolbar>
       </AppBar>
     </Box>
