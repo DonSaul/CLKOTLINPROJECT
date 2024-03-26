@@ -79,6 +79,8 @@ export default function VacancyTable({ dataFromQuery }) {
 
         applyToVacancy(applicationData);
 
+        
+
 
 
     };

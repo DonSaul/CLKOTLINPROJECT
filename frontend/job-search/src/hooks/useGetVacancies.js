@@ -6,7 +6,6 @@ import { AUTH_TOKEN_NAME } from '../helpers/constants';
 const fetchVacancies = async (salary, jobFamilyId, yearsOfExperience) => {
   let token = localStorage.getItem(AUTH_TOKEN_NAME);
 
-  console.log("token", token)
   const queryParameters = new URLSearchParams({
     salary: salary || '',
     jobFamilyId: jobFamilyId || '',
@@ -25,7 +24,6 @@ const fetchVacancies = async (salary, jobFamilyId, yearsOfExperience) => {
     throw new Error('Failed to fetch vacancies');
   }
   let responseData = await response.json()
-  console.log("FDSFDS" + responseData)
   return responseData.data;
 };
 

@@ -13,7 +13,7 @@ import useJobFamily from '../hooks/useJobFamily';
 
 import { useAuth } from '../helpers/userContext';
 const CV = () => {
-
+  const [firstSave,setFirstSave] = useState(false);
   const [id, setId] = useState();
   const [hasFetchedData, setHasFetchedData] = useState(false);
   const { logout, getUserRole, isLoggedIn } = useAuth();
@@ -159,6 +159,8 @@ const CV = () => {
       } else {
 
         await mutate(formData);
+
+        setFirstSave(true);
       }
     } catch (error) {
 
@@ -302,7 +304,7 @@ const CV = () => {
 
 
           <Button type="submit" variant="contained" color="primary" >
-            {id ? 'Update CV' : 'Save CV'}
+            {id || firstSave ? 'Update CV' : 'Save CV'}
           </Button>
 
         </form>
