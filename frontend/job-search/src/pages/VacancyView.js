@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CardContainer from '../components/CardContainer';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'; // Importa useNavigate en lugar de useHistory
 import { useGetVacancyById } from '../hooks/useGetVacancy';
 import { Button, Card, CardHeader, Typography } from '@mui/material';
 import { CardContent } from '@mui/material';
@@ -13,15 +13,19 @@ import { useAuth } from '../helpers/userContext';
 import { ROLES } from '../helpers/constants';
 import CandidatesTable from '../components/CandidatesTable';
 import { getCandidatesByApplication } from '../hooks/useGetCandidatesByApplication';
-// import { useDeleteVacancy  } from '../hooks/useDeleteVacancy';
-
+import { useDeleteVacancy } from '../hooks/useDeleteVacancy';
+import { CreateVacancy } from './CreateVacancy';
+import { paths } from '../router/paths';
 
 const VacancyView = () => {
     const { id } = useParams();
     const { getUserRole, getUserEmail } = useAuth();
-    const { mutate:applyToVacancy, isError:isErrorApply, isSuccess:isSuccessApply} = useApplyVacancy();
-    const { data: vacancyData, isLoading:isLoadingVacancy, isError:isErrorVacancy } = useGetVacancyById(id);
+    const { mutate: applyToVacancy, isError: isErrorApply, isSuccess: isSuccessApply } = useApplyVacancy();
+    const { data: vacancyData, isLoading: isLoadingVacancy, isError: isErrorVacancy } = useGetVacancyById(id);
     const [candidates, setCandidates] = useState([]);
+    const { mutate: deleteVacancy } = useDeleteVacancy();
+    const navigate = useNavigate();
+
     console.log('Vacancy Data:', vacancyData);
 
     const fetchCandidates = async () => {
@@ -32,34 +36,36 @@ const VacancyView = () => {
             console.error('Error fetching vacancies:', error);
         }
     };
-    
+
     useEffect(() => {
         fetchCandidates();
     }, []);
 
-
     const handleApply = (rowData) => {
         console.log('Applying to vacancy:', rowData);
-        let applicationData={
-            vacancyId:id
+        let applicationData = {
+            vacancyId: id
         }
         applyToVacancy(applicationData);
-      };
+    };
 
     const handleDelete = (rowData) => {
         console.log('Deleting vacancy:', rowData);
-        // useDeleteVacancy(id);
+        deleteVacancy(id);
     };
 
+    const handleUpdate = () => {
+        navigate(`${paths.vacancies}/update/${vacancyData.id}`)
+    };
 
     return (
         <>
             <CardContainer width='xl'>
-                { vacancyData ? (
+                {vacancyData ? (
                     <>
                         <CardHeader title={vacancyData.name} subheader={vacancyData.companyName} />
                         <CardContent>
-                        <Typography variant="subtitle1" style={{ fontSize: '1.2rem' }}>Job Description:</Typography>
+                            <Typography variant="subtitle1" style={{ fontSize: '1.2rem' }}>Job Description:</Typography>
                             <Box mb={2}>{vacancyData.description}</Box>
 
                             <Grid mb={4} container spacing={2} style={{ display: 'flex' }}>
@@ -69,7 +75,7 @@ const VacancyView = () => {
                                             <b>Job Family </b>
                                         </Stack>
                                         <Stack>
-                                            {vacancyData.jobFamilyName}
+                                            {vacancyData.jobFamily.name}
                                         </Stack>
 
                                     </Stack>
@@ -96,22 +102,32 @@ const VacancyView = () => {
                                 </Grid>
                             </Grid>
                             <CardActions style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    { getUserRole() === ROLES.CANDIDATE && <Button variant="contained" color="primary" size="large" onClick={ handleApply }>Apply</Button>}
-                                    { 
-                                    vacancyData.manager.email === getUserEmail() 
-                                    ? (<Button variant="contained" color="warning" size="large" onClick={ handleDelete }>Delete Vacancy</Button>)
-                                    : null
-                                    }
+                                {getUserRole() === ROLES.CANDIDATE && (
+                                    <Button variant="contained" color="primary" size="large" onClick={handleApply}>
+                                        Apply
+                                    </Button>
+                                )}
+                                {vacancyData.manager.email === getUserEmail() && (
+                                    <>
+                                        <Button variant="contained" color="warning" size="large" onClick={handleDelete}>
+                                            Delete Vacancy
+                                        </Button>
+                                        <Button variant="contained" color="warning" size="large" onClick={handleUpdate}>
+                                            Update Vacancy
+                                        </Button>
+                                    </>
+                                )}
                             </CardActions>
+
                         </CardContent>
-                        { vacancyData.manager.email === getUserEmail() 
-                           ?( <CardContent>
+                        {vacancyData.manager.email === getUserEmail()
+                            ? (<CardContent>
                                 <Typography variant="subtitle1" style={{ fontSize: '1.2rem' }}>Candidates that applied</Typography>
                                 <CandidatesTable dataFromQuery={candidates}></CandidatesTable>
                             </CardContent>)
                             : null
                         }
-                        
+
                     </>
                 ) : (
                     <CardContent>

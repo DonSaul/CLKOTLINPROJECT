@@ -18,7 +18,7 @@ export default function VacancyTable({ dataFromQuery }) {
     const columnsVacancies = useMemo(() => {
         const columns = [
             {
-                accessorKey: 'jobFamilyName',
+                accessorKey: 'jobFamily.name',
                 header: 'Category',
             },
             {
@@ -96,8 +96,8 @@ export default function VacancyTable({ dataFromQuery }) {
                 navigate(`${paths.vacancies}/${row.original.id}`);
                 }}>
             Visit
-            </MenuItem>,
-            <MenuItem key="delete" onClick={() => console.info('Delete')}>
+            </MenuItem>,               
+            <MenuItem key="edit" onClick={() => console.info('Delete')}>
             Delete
             </MenuItem>,
         ],

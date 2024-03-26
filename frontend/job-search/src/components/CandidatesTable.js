@@ -48,17 +48,7 @@ export default function CandidatesTable({ dataFromQuery, onRowSelectionChange })
             },
             {
                 accessorKey: 'salaryExpectation',
-                header: 'Salary',
-            },
-
-            {
-                id: 'sendButton',
-                header: 'Status',
-                Cell: ({ row }) => (
-                    <Button variant="contained" color="primary" onClick={() => handleInvite(row.original)} disabled={getUserRole() !== ROLES.MANAGER}>
-                        Invite
-                    </Button>
-                ),
+                header: 'Salary Expectation',
             },
         {
             id: 'sendButton',

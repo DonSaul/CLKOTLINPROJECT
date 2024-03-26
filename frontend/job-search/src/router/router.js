@@ -2,6 +2,7 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import RecoverPassword from "../pages/RecoverPassword";
 import ChangePassword from "../pages/ChangePassword"
+import { UpdateVacancy } from "../pages/UpdateVacancy";
 import CV from "../pages/CV";
 import Vacancies from "../pages/Vacancies";
 import React from 'react';
@@ -52,6 +53,7 @@ const RoutesConfig = () => {
         <Route path={paths.managerSearchPage} element={<ManagerSearchPage />} />
         <Route path={paths.sendInvitation} element={<SendInvite />} />
         <Route path={paths.managerVacanciesPage} element={<ManagerVacanciesPage />} />
+        <Route path={paths.updateVacancy} element={<UpdateVacancy />} />
 
       </Route>
       <Route element={<RequireAuth role={ROLES.ADMIN} />}>
