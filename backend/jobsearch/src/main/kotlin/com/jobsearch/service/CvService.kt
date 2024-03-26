@@ -18,7 +18,7 @@ class CvService(
     private val jobFamilyRepository: JobFamilyRepository,
     private val userService: UserService,
     private val interestService: InterestService,
-    private val userRepository: UserRepository) {
+   ) {
 
     @Transactional
     fun createCv(cvDTO: CvRequestDTO): CvResponseDTO {
@@ -184,6 +184,7 @@ class CvService(
         return mapToCvDTO(cv)
     }
 
+    //readded private
     private fun mapToCvDTO(cv: Cv): CvResponseDTO {
         return CvResponseDTO(
             id = cv.id!!,

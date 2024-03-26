@@ -30,7 +30,8 @@ class UserService @Autowired constructor(
     private val passwordEncoder: PasswordEncoder,
     private val notificationTypeRepository: NotificationTypeRepository,
     private val cvRepository: CvRepository,
-    private val interestService: InterestService
+    private val interestService: InterestService,
+//    private val cvService: CvService
 ) {
     @Transactional
     fun createUser(userRequestDTO: UserRequestDTO): UserResponseDTO? {
@@ -73,14 +74,33 @@ class UserService @Autowired constructor(
     }
 
     @Transactional
+    fun getAllProfiles(): List<ProfileDTO> {
+        val users = userRepository.findAll()
+        val profiles = mutableListOf<ProfileDTO>()
+
+        for (user in users) {
+            val profileDTO = mapToProfileDTO(user)
+            profiles.add(profileDTO)
+        }
+        return profiles
+    }
+
+    private fun mapToProfileDTO(user: User): ProfileDTO {
+        return ProfileDTO(user.firstName, user.lastName, user.email)
+    }
+
+    @Transactional
     fun getUserProfileInfo(userId: Int): ProfileDTO {
         val user = userRepository.findById(userId)
             .orElseThrow { NotFoundException("No user found with id $userId") }
+//        val cv =  cvRepository.findByUser(user).last()
+
         return ProfileDTO(
             firstName = user.firstName,
             lastName = user.lastName,
             email = user.email,
-            roleId = user.role?.id ?: -1
+//            roleId = user.role?.id ?: -1
+//            cv = cvService.mapToCvDTO(cv)
         )
     }
 
@@ -88,12 +108,13 @@ class UserService @Autowired constructor(
     fun updateUserProfile(userId: Int, updatedProfile: ProfileDTO): ProfileDTO {
         val user = userRepository.findById(userId)
             .orElseThrow { NotFoundException("No user found with id $userId") }
-
-        // Update profile
-        user.apply {
-            firstName = updatedProfile.firstName
-            lastName = updatedProfile.lastName
-            email = updatedProfile.email
+        if (userId === user.id) {
+            // Update profile
+            user.apply {
+                firstName = updatedProfile.firstName
+                lastName = updatedProfile.lastName
+                email = updatedProfile.email
+            }
         }
 
         val updatedUserProfile = userRepository.save(user)
@@ -101,7 +122,7 @@ class UserService @Autowired constructor(
             firstName = updatedUserProfile.firstName,
             lastName = updatedUserProfile.lastName,
             email = updatedProfile.email,
-            roleId = updatedUserProfile.role?.id ?: -1
+           // roleId = updatedUserProfile.role?.id ?: -1
         )
     }
 

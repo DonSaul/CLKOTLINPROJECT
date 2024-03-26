@@ -11,6 +11,11 @@ import org.springframework.web.bind.annotation.*
 class ProfileController(
     private val userService: UserService
 ) {
+    @GetMapping()
+    fun getAllProfiles(): ResponseEntity<List<ProfileDTO>> {
+        val profiles = userService.getAllProfiles()
+        return ResponseEntity.ok(profiles)
+    }
 
      @GetMapping("/my-profile")
      fun getMyProfileInfo(): ResponseEntity<ProfileDTO> {

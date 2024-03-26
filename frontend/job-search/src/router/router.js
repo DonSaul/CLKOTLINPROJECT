@@ -21,6 +21,7 @@ import NotAccess from "../pages/NotAccess";
 import VacancyView from "../pages/VacancyView";
 import ManagerSearchPage from "../pages/ManagerSearchPage";
 import { SendInvite } from "../pages/SendInvite";
+import CandidateProfile from "../pages/CandidateProfile";
 
 const RoutesConfig = () => {
   return (
@@ -38,7 +39,7 @@ const RoutesConfig = () => {
         <Route path={paths.profile} element={<Profile />} />
         <Route path={paths.vacancies} element={<Vacancies />} />
         <Route path={paths.vacancyDetails} element={<VacancyView />} />
-
+        <Route path={paths.candidateProfile} element={<CandidateProfile />} />
       </Route>
 
 
