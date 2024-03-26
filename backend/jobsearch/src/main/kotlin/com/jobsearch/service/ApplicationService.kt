@@ -2,6 +2,7 @@ package com.jobsearch.service
 
 import com.jobsearch.dto.ApplicationDTO
 import com.jobsearch.entity.Application
+import com.jobsearch.entity.Vacancy
 import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.*
 import jakarta.transaction.Transactional
@@ -108,6 +109,10 @@ class ApplicationService(
             println(application.vacancy.name)
         }
         return candidateApplicationList
+    }
+    fun retrieveApplicationByVacancy(vacancy: Vacancy): List<Application> {
+        val vacancyApplicationList = applicationRepository.findByVacancy(vacancy)
+        return vacancyApplicationList
     }
 
     fun mapToApplicationDTO(application: Application): ApplicationDTO {

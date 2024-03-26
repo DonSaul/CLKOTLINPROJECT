@@ -117,6 +117,10 @@ class VacancyService(
             .getOrElse { throw NotFoundException("Vacancy not found") }
         val manager = userService.retrieveAuthenticatedUser()
         if (vacancy.manager != manager ) throw ForbiddenException("You are not allowed to erase this vacancy.")
+        val applicationList = applicationService.retrieveApplicationByVacancy(vacancy)
+        applicationList.forEach {
+            applicationService.deleteApplication(it.id!!)
+        }
         vacancyRepository.delete(vacancy)
     }
 
