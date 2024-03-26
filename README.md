@@ -3,58 +3,67 @@
 ![logo](https://www.dice.com/binaries/medium/content/gallery/dice/insights/2015/06/Screen-Shot-2015-06-22-at-10.41.14-AM.png)
 
 🗂️ **JobSearch** is a web platform for employment and management aimed at facilitating interaction between candidates
-
 and managers. The project is a product of SoftServe's project lab, where we focus on learning and improving our skills.
 
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=flat&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
+[![Material Design](https://img.shields.io/badge/Material_Design-757575?style=flat&logo=material-design&logoColor=white)](https://material.io/)
 [![Kotlin](https://img.shields.io/badge/Kotlin-007396?style=flat&logo=kotlin&logoColor=white)](https://kotlinlang.org/)
 [![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=white)](https://reactjs.org/)
 [![Spring](https://img.shields.io/badge/Spring_Framework-6DB33F?style=flat&logo=spring&logoColor=white)](https://spring.io/)
-[![RESTful API](https://img.shields.io/badge/RESTful_API-005571?style=flat&logo=rest&logoColor=white)](https://restfulapi.net/)
 [![Pull request](https://img.shields.io/badge/PRs-welcome-success?style=flat)](https://github.com/DonSaul/CLKOTLINPROJECT/pulls)
-
+[![RESTful API](https://img.shields.io/badge/RESTful_API-005571?style=flat&logo=http&logoColor=white)](https://restfulapi.net/)
 
 ## Features
 
 ### User Authentication and Authorization:
 
-- Users can register an account with their Last Name, First Name, password, and email.
-- Users can log in with their credentials.
-- Different roles (candidate, manager, admin) with specific permissions are supported.
-- Managers can create new user accounts with specific roles.
+| Feature                                                               | Description                                                                         |
+|-----------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| Users can register an account                                         | 📝 Users provide Last Name, First Name, password, and email to create an account.   |
+| Users can log in                                                      | 🔑 Users can log in using their credentials.                                        |
+| Different roles (candidate, manager, admin) with specific permissions | 🛡️ Supports roles with specific permissions such as candidate, manager, and admin. |
+| Managers can create new user accounts with specific roles             | 🧾 Managers have the ability to create new user accounts with predefined roles.     |
 
 ### Candidate Features:
 
-- Candidates can create and manage their CV, including information about years of experience, projects, education, and
-  salary expectation.
-- Candidates can search for vacancies based on job family, years of experience, and salary expectation.
-- Candidates can apply to vacancies that match their skills and expectations.
+| Feature                                   | Description                                                                                                                            |
+|-------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| Candidates can create and manage their CV | 📄 Candidates can add and update information about their years of experience, projects, education, and salary expectation in their CV. |
+| Candidates can search for vacancies       | 🔍 Candidates can search for job vacancies based on job family, years of experience, and salary expectation.                           |
+| Candidates can apply to vacancies         | 📋 Candidates can apply to vacancies that match their skills and expectations.                                                         |
 
 ### Manager Features:
 
-- Managers can create and manage vacancies, including job family, company name, description, required years of
-  experience, and salary.
-- Managers can search for candidates based on filters such as years of experience, job family, and salary expectation.
-- Managers can send vacancy invitations to candidates who match the job requirements.
+| Feature                                             | Description                                                                                                                                  |
+|-----------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| Managers can create and manage vacancies            | 📋 Managers can create and manage job vacancies, specifying job family, company name, description, required years of experience, and salary. |
+| Managers can search for candidates                  | 🔍 Managers can search for candidates based on filters such as years of experience, job family, and salary expectation.                      |
+| Managers can send vacancy invitations to candidates | 💌 Managers can invite candidates who match the job requirements to apply for vacancies.                                                     |
 
 ### Communication Features:
 
-- Users can communicate with other users (managers or candidates) within the app.
-- Users receive email notifications for important actions such as new vacancies, invitations, and messages.
-- Users can respond to messages and notifications directly from the email.
+| Feature                                         | Description                                                                                                  |
+|-------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| Users can communicate with other users          | 💬 Users can send and receive messages within the app.                                                       |
+| Users receive email notifications               | 📧 Users receive email notifications for important actions such as new vacancies, invitations, and messages. |
+| Users can respond to messages and notifications | ✉️ Users can respond to messages and notifications directly from their email.                                |
 
 ### Integration and Testing:
 
-- All features are seamlessly integrated to ensure they work together.
-- Thorough testing is conducted to identify and fix any bugs or issues.
-- The codebase is optimized and refined for better performance and reliability.
+| Feature                     | Description                                                                         |
+|-----------------------------|-------------------------------------------------------------------------------------|
+| Seamless integration        | 🔄 All features are seamlessly integrated to ensure they work together effectively. |
+| Thorough testing            | 🕵️‍♂️ Thorough testing is conducted to identify and fix any bugs or issues.        |
+| Optimization and refinement | 🛠️ The codebase is optimized and refined for better performance and reliability.   |
 
 ### Documentation and Finalization:
 
-- The codebase is thoroughly documented, including APIs and usage instructions, for future reference.
-- Any remaining tasks or bug fixes are finalized before deployment.
-- The project is prepared for deployment and ensured to be production-ready.
+| Feature                | Description                                                                                            |
+|------------------------|--------------------------------------------------------------------------------------------------------|
+| Thorough documentation | 📚 The codebase is thoroughly documented, including APIs and usage instructions, for future reference. |
+| Finalization           | 🎉 Any remaining tasks or bug fixes are finalized before deployment.                                   |
+| Production readiness   | 🚀 The project is prepared for deployment and ensured to be production-ready.                          |
 
 ## Links
 
@@ -109,6 +118,7 @@ _______________________________________________
    5.3. [Frontend files](#frontend-helper-files) <br>
    5.4. [Router files](#router-files) <br>
    5.5. [ApplicationController](#application-controller) <br>
+
 --------------------------------------------------------
 
 ## Getting Started
@@ -133,6 +143,7 @@ Ensure you have the following installed:
 2. Install dependencies. [follow the Prerequisites step](#prerequisites)
 3. Configure application properties.
 4. Run the application.
+
 --------------------------------------------------------
 
 ## Basic Usage
@@ -250,6 +261,7 @@ The `CandidateDTO` represents the details of a candidate.
 - `yearsOfExperience`: Candidate's years of experience.
 - `salaryExpectation`: Candidate's expected salary.
 - `jobFamilies`: List of job families associated with the candidate.
+
 --------------------------------------------------------
 
 ### Authentication and Security
@@ -287,12 +299,12 @@ measures include password encryption, token validation, and authorization for ac
 | AuthController          | Manages user registration and authentication endpoints.     |
 | SecurityConfig          | Configures security settings and filters for HTTP requests. |
 | WebConfig               | Configures CORS settings for HTTP requests.                 |
+
 --------------------------------------------------------
 
 ### Data Query
 
 The project utilizes PostgreSQL as the database management system (DBMS) for efficient data storage and retrieval.
-
 
 ### Database Schema
 
@@ -317,6 +329,7 @@ The following tables are part of the database schema:
 | skill              | Stores various skills that users possess.                          |
 | users              | Stores user account information including email, password, etc.    |
 | vacancy            | Represents job vacancies posted by companies.                      |
+
 --------------------------------------------------------
 
 ### Communication between Frontend and Backend
@@ -363,6 +376,7 @@ breakdown:
 These router files ensure proper navigation and access control within the frontend application, enhancing overall user
 experience and security.
 --------------------------------------------------------
+
 ### ApplicationController
 
 This controller handles requests related to applications in the backend of the application.
