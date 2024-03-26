@@ -43,7 +43,9 @@ class VacancyServiceUnitTest {
             lastName = "Ger",
             email = "manager@mail.com",
             password = "test123",
-            role = Role(1,"manager")
+            role = Role(1,"manager"),
+            resetPasswordToken = "ResetPasswordToken"
+
         )
         val MANAGER_2 = User(
             id = 2,
@@ -51,7 +53,8 @@ class VacancyServiceUnitTest {
             lastName = "Ger2",
             email = "manager2@mail.com",
             password = "test123",
-            role = Role(1,"manager")
+            role = Role(1,"manager"),
+            resetPasswordToken = "ResetPasswordToken"
         )
         val VACANCY_1 = Vacancy(
             id = 1,

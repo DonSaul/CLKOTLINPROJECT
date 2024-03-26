@@ -19,6 +19,7 @@ import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.*
+
 /**
  * Integration test for VacancyController.
  * Uses H2 database for testing with hardcoded base data contained in data.sql file.
@@ -30,10 +31,13 @@ import org.springframework.test.web.servlet.*
 class VacancyControllerIntgTest {
     @Autowired
     lateinit var mockMvc: MockMvc
+
     @Autowired
     lateinit var vacancyRepository: VacancyRepository
+
     @Autowired
     lateinit var userRepository: UserRepository
+
     @Autowired
     lateinit var objectMapper: ObjectMapper
 
@@ -54,7 +58,8 @@ class VacancyControllerIntgTest {
             lastName = "Ger",
             email = "manager1@mail.com",
             password = "test123",
-            role = Role(1,"manager")
+            role = Role(1, "manager"),
+            resetPasswordToken = "ResetPasswordToken"
         )
         val MANAGER_2 = User(
             id = null,
@@ -62,15 +67,18 @@ class VacancyControllerIntgTest {
             lastName = "Ger2",
             email = "manager2@mail.com",
             password = "test123",
-            role = Role(1,"manager")
+            role = Role(1, "manager"),
+            resetPasswordToken = "ResetPasswordToken"
         )
+
         val CANDIDATE_1 = User(
             id = null,
             firstName = "Cand",
             lastName = "Ide",
             email = "candidate1@mail.com",
             password = "test123",
-            role = Role(2,"candidate")
+            role = Role(2, "candidate"),
+            resetPasswordToken = "ResetPasswordToken"
         )
         val VACANCY_ENTITY = Vacancy(
             id = null,
@@ -82,7 +90,7 @@ class VacancyControllerIntgTest {
             jobFamily = JOB_FAMILY,
             manager = MANAGER_1
         )
-        val VACANCY_REQUEST = VACANCY_ENTITY.let{
+        val VACANCY_REQUEST = VACANCY_ENTITY.let {
             VacancyRequestDTO(
                 id = null,
                 name = it.name,
@@ -150,8 +158,8 @@ class VacancyControllerIntgTest {
             .andDo { print() }
             // Check that the response status is forbidden
             .andExpect {
-            status { isForbidden() }
-        }
+                status { isForbidden() }
+            }
     }
 
     @Test
@@ -196,8 +204,8 @@ class VacancyControllerIntgTest {
             .andDo { print() }
             // Check that the response status is forbidden
             .andExpect {
-            status { isForbidden() }
-        }
+                status { isForbidden() }
+            }
     }
 
     @Test
@@ -218,8 +226,8 @@ class VacancyControllerIntgTest {
             .andDo { print() }
             // Check that the response status is forbidden
             .andExpect {
-            status { isForbidden() }
-        }
+                status { isForbidden() }
+            }
     }
 
     @Test
@@ -239,8 +247,8 @@ class VacancyControllerIntgTest {
             .andDo { print() }
             // Check that the response status is not found
             .andExpect {
-            status { isNotFound() }
-        }
+                status { isNotFound() }
+            }
     }
 
     @Test
@@ -256,8 +264,8 @@ class VacancyControllerIntgTest {
             .andDo { print() }
             // Check that the response status is no content
             .andExpect {
-            status { isNoContent() }
-        }
+                status { isNoContent() }
+            }
     }
 
     @Test
@@ -273,8 +281,8 @@ class VacancyControllerIntgTest {
             .andDo { print() }
             // Check that the response status is forbidden
             .andExpect {
-            status { isForbidden() }
-        }
+                status { isForbidden() }
+            }
     }
 
     @Test
@@ -290,8 +298,8 @@ class VacancyControllerIntgTest {
             .andDo { print() }
             // Check that the response status is no content
             .andExpect {
-            status { isNoContent() }
-        }
+                status { isNoContent() }
+            }
     }
 
     @Test
@@ -306,18 +314,19 @@ class VacancyControllerIntgTest {
             .andDo { print() }
             // Check that the response status is ok and body contains the expected data
             .andExpect {
-            status { isOk() }
-            content { contentType(MediaType.APPLICATION_JSON) }
-            jsonPath("$.data.name") { value(savedVacancy.name) }
-            jsonPath("$.data.companyName") { value(savedVacancy.companyName) }
-            jsonPath("$.data.salaryExpectation") { value(savedVacancy.salaryExpectation) }
-            jsonPath("$.data.yearsOfExperience") { value(savedVacancy.yearsOfExperience) }
-            jsonPath("$.data.description") { value(savedVacancy.description) }
-            jsonPath("$.data.jobFamilyId") { value(savedVacancy.jobFamily.id) }
-            jsonPath("$.data.jobFamilyName") { value(savedVacancy.jobFamily.name) }
-            jsonPath("$.data.managerId") { value(savedVacancy.manager.id) }
-        }
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                jsonPath("$.data.name") { value(savedVacancy.name) }
+                jsonPath("$.data.companyName") { value(savedVacancy.companyName) }
+                jsonPath("$.data.salaryExpectation") { value(savedVacancy.salaryExpectation) }
+                jsonPath("$.data.yearsOfExperience") { value(savedVacancy.yearsOfExperience) }
+                jsonPath("$.data.description") { value(savedVacancy.description) }
+                jsonPath("$.data.jobFamilyId") { value(savedVacancy.jobFamily.id) }
+                jsonPath("$.data.jobFamilyName") { value(savedVacancy.jobFamily.name) }
+                jsonPath("$.data.managerId") { value(savedVacancy.manager.id) }
+            }
     }
+
     @Test
     @WithMockUser(username = "candidate1@mail.com", authorities = ["candidate"])
     fun `Should return 404 if vacancy is not found`() {
@@ -331,8 +340,8 @@ class VacancyControllerIntgTest {
             .andDo { print() }
             // Check that the response status is not found
             .andExpect {
-            status { isNotFound() }
-        }
+                status { isNotFound() }
+            }
     }
 
     @Test
@@ -349,12 +358,12 @@ class VacancyControllerIntgTest {
         response
             .andDo { print() }
             .andExpect {
-            status { isOk() }
-            content { contentType(MediaType.APPLICATION_JSON) }
-            jsonPath("$.data[0].name") { value(savedVacancy1.name) }
-            jsonPath("$.data[1].name") { value(savedVacancy2.name) }
-            jsonPath("$.data[2].name") { value(savedVacancy3.name) }
-        }
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                jsonPath("$.data[0].name") { value(savedVacancy1.name) }
+                jsonPath("$.data[1].name") { value(savedVacancy2.name) }
+                jsonPath("$.data[2].name") { value(savedVacancy3.name) }
+            }
     }
 
     @Test
@@ -372,10 +381,10 @@ class VacancyControllerIntgTest {
             .andDo { print() }
             // Check that the response status is ok and body contains the expected data
             .andExpect {
-            status { isOk() }
-            content { contentType(MediaType.APPLICATION_JSON) }
-            jsonPath("$.data", hasSize<Int>(3)) // Ensure the response list has a size of 3
-        }
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                jsonPath("$.data", hasSize<Int>(3)) // Ensure the response list has a size of 3
+            }
     }
 
     @Test
@@ -384,7 +393,8 @@ class VacancyControllerIntgTest {
         // given
         val savedVacancy1 = vacancyRepository.save(VACANCY_ENTITY.copy(name = "Vacancy one", salaryExpectation = 4000))
         val savedVacancy2 = vacancyRepository.save(VACANCY_ENTITY.copy(name = "Vacancy two", salaryExpectation = 3000))
-        val savedVacancy3 = vacancyRepository.save(VACANCY_ENTITY.copy(name = "Vacancy three", salaryExpectation = 8000))
+        val savedVacancy3 =
+            vacancyRepository.save(VACANCY_ENTITY.copy(name = "Vacancy three", salaryExpectation = 8000))
         val savedVacancy4 = vacancyRepository.save(VACANCY_ENTITY.copy(name = "Vacancy four", salaryExpectation = 9000))
         // when
         val response = mockMvc.get("/api/v1/vacancy/search?salary=5000")
@@ -392,9 +402,9 @@ class VacancyControllerIntgTest {
         response
             .andDo { print() }
             .andExpect {
-            status { isOk() }
-            content { contentType(MediaType.APPLICATION_JSON) }
-            jsonPath("$.data", hasSize<Int>(2)) // Ensure the response list has a size of 2
-        }
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                jsonPath("$.data", hasSize<Int>(2)) // Ensure the response list has a size of 2
+            }
     }
 }

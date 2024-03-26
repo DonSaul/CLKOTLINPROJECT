@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
-import { ENDPOINTS } from '../helpers/endpoints';
 import { AUTH_TOKEN_NAME } from '../helpers/constants';
+import { ENDPOINTS } from '../helpers/endpoints';
 
 const fetchCandidates = async (salary, jobFamilyId, yearsOfExperience) => {
     let token = localStorage.getItem(AUTH_TOKEN_NAME);
@@ -15,7 +15,6 @@ const fetchCandidates = async (salary, jobFamilyId, yearsOfExperience) => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
         },
-        // body: JSON.stringify(filters),
     });
 
     if (!response.ok) {
@@ -23,12 +22,11 @@ const fetchCandidates = async (salary, jobFamilyId, yearsOfExperience) => {
     }
 
     const candidates = await response.json();
-    // console.log(candidates)
     return candidates.data;
 };
 
-const useSearchCandidates = (salary, jobFamily, yearsOfExperience) => {
-    return useQuery('searchCandidates', () => fetchCandidates(salary, jobFamily, yearsOfExperience));
+const useSearchCandidates = (salary, jobFamilyId, yearsOfExperience) => {
+    return useQuery('searchCandidates', () => fetchCandidates(salary, jobFamilyId, yearsOfExperience));
 };
 
 export default useSearchCandidates;

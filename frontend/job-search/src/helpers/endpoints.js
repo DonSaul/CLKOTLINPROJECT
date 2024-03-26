@@ -26,6 +26,7 @@ export const ENDPOINTS = {
   users:createUrl("users"),
   vacancy:createUrl("vacancy"),
   searchVacancies:createUrl("vacancy/search"),
+  getVacanciesByManager:createUrl("vacancy/my-vacancies"),
   userCv:createUrl("my-account/cv"),
   createUser:createUrl("users/create"),
   application:createUrl("application"),
@@ -34,4 +35,5 @@ export const ENDPOINTS = {
   getCurrentConversationMessages:createUrl("conversation/messages"),
   sendMessage:createUrl("conversation/send-message"),
   sendMessageNotification:createUrl("conversation/sendMessageNotification")
+  invitation:createUrl("invitations")
 };

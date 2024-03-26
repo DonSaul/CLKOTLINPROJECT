@@ -21,8 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
-class SecurityConfig {
-
+class SecurityConfig(private val userDetailsService: UserDetailsService) {
 
     @Autowired
     private lateinit var authService: AuthService
@@ -32,8 +31,6 @@ class SecurityConfig {
 
     @Autowired
     lateinit var jwtAuthenticationFilter: JwtAuthenticationFilter
-
-
 
     @Bean
     @Throws(Exception::class)
@@ -51,13 +48,16 @@ class SecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/api/v1/vacancy").authenticated()
                     .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/**").authenticated()
                     .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/search").authenticated()
-                    .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/manage").hasAuthority("manager")
+                    .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/my-vacancies").hasAuthority("manager")
                     .requestMatchers(HttpMethod.POST, "/api/v1/vacancy").hasAuthority("manager")
                     .requestMatchers(HttpMethod.GET, "/api/v1/candidates/search").hasAuthority("manager")
+                    .requestMatchers(HttpMethod.GET, "/api/v1/candidates/vacancy/**").hasAuthority("manager")
                     .requestMatchers(HttpMethod.PUT, "/api/v1/vacancy/**").hasAuthority("manager")
                     .requestMatchers(HttpMethod.DELETE, "/api/v1/vacancy/**").hasAuthority("manager")
+//                    .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/manage").hasAuthority("manager")
                     .requestMatchers("/api/v1/job-family/**").permitAll()
                     .requestMatchers("/api/v1/application-status/**").permitAll()
+                    .requestMatchers("/api/v1/invitations/**").permitAll()
                     .requestMatchers("/api/v1/notifications/**").permitAll()
                     .requestMatchers("/api/v1/recoverPassword/**").permitAll()
                     .requestMatchers("api/v1/conversation/**").permitAll()

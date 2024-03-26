@@ -43,8 +43,6 @@ class InterestService(
         val existingInterests = interestRepository.findInterestsByUserId(userId)
 
         val matchingInterest = existingInterests.find { it.jobFamily.id == jobFamilyId }
-
-
         if (matchingInterest != null) {
             matchingInterest.jobFamily.id = jobFamilyId
             interestRepository.save(matchingInterest)
