@@ -55,22 +55,4 @@ class CandidateController(private val userService: UserService) {
             .status(status)
             .body(body)
     }
-
-    @GetMapping("/vacancy/{vacancy_id}")
-    fun getCandidatesByVacancy(
-        @PathVariable("vacancy_id") vacancyId: Int
-    ): ResponseEntity<StandardResponse<List<CandidateDTO>>>  {
-        val responseEntityList = userService.findCandidatesByVacancyApplication(vacancyId)
-        var status = HttpStatus.OK
-        if (responseEntityList.isEmpty()) {
-            status = HttpStatus.NO_CONTENT
-        }
-        val body = StandardResponse(
-            status = status.value(),
-            data = responseEntityList
-        )
-        return ResponseEntity
-            .status(status)
-            .body(body)
-    }
 }

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Positive
 
 
 data class VacancyRequestDTO(
+    val id: Int? = null,
     @get:NotBlank(message = "Vacancy name must not be blank")
     var name: String,
     @get:NotBlank(message = "Company name must not be blank")

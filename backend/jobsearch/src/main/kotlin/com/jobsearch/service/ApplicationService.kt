@@ -27,7 +27,7 @@ class ApplicationService(
 
         val defaultStatus = statusRepository.findById(2).get()
 
-        val cv = cvRepository.findFirstByUserOrderByIdDesc(candidate)
+        val cv = cvRepository.findFirstByUserOrderByIdDesc(candidate) ?: throw NotFoundException("No CV found for this user")
 
         val vacancy = vacancyRepository.findById(applicationDTO.vacancyId)
             .orElseThrow { NotFoundException("Vacancy not found with ID: ${applicationDTO.vacancyId}") }

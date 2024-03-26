@@ -167,7 +167,7 @@ class CvService(
     fun retrieveMyAccountsLastCv(): CvResponseDTO {
         val cv = cvRepository.findFirstByUserOrderByIdDesc(userService.retrieveAuthenticatedUser())
 
-        return mapToCvDTO(cv)
+        return mapToCvDTO(cv!!)
     }
 
     private fun mapToCvDTO(cv: Cv): CvResponseDTO {

@@ -16,6 +16,7 @@ import { getCandidatesByApplication } from '../hooks/useGetCandidatesByApplicati
 import { useDeleteVacancy } from '../hooks/useDeleteVacancy';
 import { CreateVacancy } from './CreateVacancy';
 import { paths } from '../router/paths';
+import ManagerSearchPage from './ManagerSearchPage';
 
 const VacancyView = () => {
     const { id } = useParams();
@@ -28,18 +29,18 @@ const VacancyView = () => {
 
     console.log('Vacancy Data:', vacancyData);
 
-    const fetchCandidates = async () => {
-        try {
-            const result = await getCandidatesByApplication(id);
-            setCandidates(result);
-        } catch (error) {
-            console.error('Error fetching vacancies:', error);
-        }
-    };
+    // const fetchCandidates = async () => {
+    //     try {
+    //         const result = await getCandidatesByApplication(id);
+    //         setCandidates(result);
+    //     } catch (error) {
+    //         console.error('Error fetching vacancies:', error);
+    //     }
+    // };
 
-    useEffect(() => {
-        fetchCandidates();
-    }, []);
+    // useEffect(() => {
+    //     fetchCandidates();
+    // }, []);
 
     const handleApply = (rowData) => {
         console.log('Applying to vacancy:', rowData);
@@ -123,7 +124,8 @@ const VacancyView = () => {
                         {vacancyData.manager.email === getUserEmail()
                             ? (<CardContent>
                                 <Typography variant="subtitle1" style={{ fontSize: '1.2rem' }}>Candidates that applied</Typography>
-                                <CandidatesTable dataFromQuery={candidates}></CandidatesTable>
+                                {/* <CandidatesTable dataFromQuery={candidates}></CandidatesTable> */}
+                                <ManagerSearchPage vacancyId={id}></ManagerSearchPage>
                             </CardContent>)
                             : null
                         }

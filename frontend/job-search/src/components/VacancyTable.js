@@ -52,7 +52,7 @@ export default function VacancyTable({ dataFromQuery }) {
                     row.original.isApplied
                     ? "Already applied"
                     :
-                    <Button variant="contained" color="primary" onClick={() => handleApply(row.original)}>
+                    <Button id={row.original.id} variant="contained" color="primary" onClick={() => handleApply(row.original)}>
                         Apply
                     </Button>
                 )
@@ -77,6 +77,7 @@ export default function VacancyTable({ dataFromQuery }) {
             vacancyId:rowData.id,
         }
         applyToVacancy(applicationData);
+        window.location.reload();
       };
 
     const table = useMaterialReactTable({
