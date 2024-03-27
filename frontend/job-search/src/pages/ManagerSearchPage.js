@@ -23,7 +23,6 @@ const ManagerSearchPage = () => {
 
     return (
         <div>
-            <h1>Advanced candidate search</h1>
             <CandidatesFilter setData={setData} />
             <CardContainer width='xl'>
                 <CandidatesTable dataFromQuery={data}
@@ -34,6 +33,7 @@ const ManagerSearchPage = () => {
                 </InvitationModal>
             </CardContainer>
         </div>
+
     );
 };
 
