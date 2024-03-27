@@ -102,13 +102,9 @@ class ApplicationService(
 
     }
 
-    fun retrieveApplicationByCandidate(): List<Application> {
+    fun retrieveApplicationByAuthenticatedCandidate(): List<Application> {
         val candidate = userService.retrieveAuthenticatedUser()
-        val candidateApplicationList = applicationRepository.findByCandidate(candidate)
-        for (application in candidateApplicationList){
-            println(application.vacancy.name)
-        }
-        return candidateApplicationList
+        return applicationRepository.findByCandidate(candidate)
     }
     fun retrieveApplicationByVacancy(vacancy: Vacancy): List<Application> {
         val vacancyApplicationList = applicationRepository.findByVacancy(vacancy)
@@ -129,13 +125,8 @@ class ApplicationService(
     }
 
     private fun candidateAlreadyApplied(applicationEntity: Application): Boolean {
-        val candidateApplicationList = applicationRepository.findByCandidate(applicationEntity.candidate)
-        for (application in candidateApplicationList){
-            if (application.vacancy == applicationEntity.vacancy){
-                return true
-            }
-        }
-        return false
+        val application =
+            applicationRepository.findFirstByCandidateAndVacancy(applicationEntity.candidate, applicationEntity.vacancy)
+        return application != null
     }
-
 }

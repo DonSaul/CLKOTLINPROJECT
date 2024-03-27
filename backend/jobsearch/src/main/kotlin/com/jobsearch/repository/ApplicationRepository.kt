@@ -9,4 +9,5 @@ interface ApplicationRepository: JpaRepository<Application, Int> {
 
     fun findByCandidate(candidate: User): List<Application>
     fun findByVacancy(vacancy: Vacancy): List<Application>
+    fun findFirstByCandidateAndVacancy(candidate: User, vacancy: Vacancy): Application?
 }

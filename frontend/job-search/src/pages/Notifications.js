@@ -99,17 +99,15 @@ const Notifications = () => {
       {initialCheckboxValue ? (
         <CardContainer width='sm'>
           {notifications && notifications.length > 0 ? (
-            notifications.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(notification => (
-              <NotificationItem
-                key={notification.id}
-                notification={notification}
-                onNotificationRead={() => setReadNotifications([...readNotifications, notification.id])}
-                isRead={readNotifications.includes(notification.id)}
-              />
-            ))
-          ) : (
-            <p>No notifications found</p>
-          )}
+        <>
+          {notifications.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(notification => (
+            <NotificationItem
+              key={notification.id}
+              notification={notification}
+              onNotificationRead={() => setReadNotifications([...readNotifications, notification.id])}
+              isRead={readNotifications.includes(notification.id)}
+            />
+          ))}
           <ButtonGroup>
             <Button
               variant="contained"
@@ -131,6 +129,8 @@ const Notifications = () => {
               Next
             </Button>
           </ButtonGroup>
+        </>
+      ) : (<p>No notifications found</p> )}
         </CardContainer>
       ) : (
         <div>

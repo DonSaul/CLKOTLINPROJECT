@@ -9,6 +9,7 @@ import com.jobsearch.dto.VacancyResponseDTO
 import com.jobsearch.entity.Vacancy
 import com.jobsearch.exception.ForbiddenException
 import com.jobsearch.exception.NotFoundException
+import com.jobsearch.repository.ApplicationRepository
 import com.jobsearch.repository.VacancyRepository
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
@@ -17,6 +18,7 @@ import kotlin.jvm.optionals.getOrElse
 @Service
 class VacancyService(
     val vacancyRepository: VacancyRepository,
+    val applicationRepository: ApplicationRepository,
     val jobFamilyService: JobFamilyService,
     val userService: UserService,
     val notificationService: NotificationService,
@@ -43,18 +45,13 @@ class VacancyService(
         }
     }
 
-    @Transactional
     fun findVacanciesByFilter(salary: Int?, jobFamilyId: Int?, yearsOfExperience: Int?): List<VacancyResponseDTO> {
         val vacancies = vacancyRepository.findVacanciesByFilters(salary, jobFamilyId, yearsOfExperience)
-        val vacanciesByCandidate = applicationService.retrieveApplicationByCandidate().map {
+        val vacanciesByCandidate = applicationService.retrieveApplicationByAuthenticatedCandidate().map {
             it.vacancy
         }
         return vacancies.map {
-            val vacancyResponseDTO = mapToVacancyResponseDto(it)
-            if (vacanciesByCandidate.contains(it)) {
-                vacancyResponseDTO.isApplied = true
-            }
-            vacancyResponseDTO
+            mapToVacancyResponseDto(it)
         }
     }
 
@@ -148,10 +145,13 @@ class VacancyService(
                         user.email,
                         user.role?.id!!
                     )
+                },
+                it.let {
+                    val user = userService.retrieveAuthenticatedUser()
+                    val application = applicationRepository.findFirstByCandidateAndVacancy(user, it)
+                    application != null
                 }
             )
         }
     }
-
-
 }
