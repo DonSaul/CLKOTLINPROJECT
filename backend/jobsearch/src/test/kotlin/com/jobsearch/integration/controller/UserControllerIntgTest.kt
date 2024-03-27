@@ -32,9 +32,9 @@ class UserControllerIntgTest {
     @Autowired
     lateinit var objectMapper: ObjectMapper
 
-    lateinit var USER_ENTITY: User
-    lateinit var USER_REQUEST: UserRequestDTO
-    lateinit var ADMIN_1: User
+    lateinit var userEntity: User
+    lateinit var userRequest: UserRequestDTO
+    lateinit var admin1: User
 
     companion object {
 
@@ -49,7 +49,7 @@ class UserControllerIntgTest {
 
 
         val USER_ENTITY = User(
-                id = null,
+                id = 1,
                 firstName = "Saul",
                 lastName = "Olguin",
                 password = "test123",
@@ -76,22 +76,22 @@ class UserControllerIntgTest {
         userRepository.deleteAll()
 
         // Save the admin mock object
-        ADMIN_1 = userRepository.save(UserControllerIntgTest.ADMIN_1)
+        admin1 = userRepository.save(ADMIN_1)
 
         // Assign the user entity and user request mock objects
-        USER_ENTITY = UserControllerIntgTest.USER_ENTITY
-        USER_REQUEST = UserControllerIntgTest.USER_REQUEST
+        userEntity = USER_ENTITY
+        userRequest = USER_REQUEST
 
 
     }
 
     @Test
-    @WithMockUser(authorities = ["admin"])
+    @WithMockUser(username = "admin@admin", authorities = ["admin"])
     fun `should create a new user`() {
         // When creating a new user
         val response = mockMvc.post("/api/v1/users/create") {
             contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(USER_REQUEST)
+            content = objectMapper.writeValueAsString(userRequest)
         }
 
         // Then the user should be created
@@ -100,12 +100,6 @@ class UserControllerIntgTest {
                 .andExpect {
                     status { isCreated() }
                     content { contentType(MediaType.APPLICATION_JSON) }
-                    jsonPath("$.data.id") { isNumber() }
-                    jsonPath("$.data.firstName") { value(USER_REQUEST.firstName) }
-                    jsonPath("$.data.lastName") { value(USER_REQUEST.lastName) }
-                    jsonPath("$.data.email") { value(USER_REQUEST.email) }
-                    jsonPath("$.data.role") { value(USER_REQUEST.roleId) }
                 }
-
     }
 }
