@@ -9,7 +9,7 @@ import Button from '@mui/material/Button';
 import CardContainer from '../components/CardContainer';
 import { Box } from '@mui/material';
 import useJobFamily from '../hooks/useJobFamily';
-import { useGetCurrentUserCv, useCV, useUpdateCV  } from '../hooks/useCV';
+import { useGetCurrentUserCv, useCV, useUpdateCV } from '../hooks/useCV';
 
 import dayjs from 'dayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
@@ -66,15 +66,15 @@ const CV = () => {
     }
   }, [skills, selectedSkillsArray]);
 
-  //Testing
-
   const setCvData = (cvData) => {
 
     setId(cvData.id)
     setYearsOfExperience(cvData.yearsOfExperience);
     setSalaryExpectation(cvData.salaryExpectation);
     setEducation(cvData.education);
-    setJobs(cvData.jobs);
+    setJobs(cvData.jobs.map(({ startDate, endDate, ...rest }) => {
+      return { ...rest, startDate: dayjs(startDate), endDate: dayjs(endDate) }
+    }));
     setProjects(cvData.projects);
     setSelectedSkillsArray(cvData.skills);
 
@@ -142,7 +142,7 @@ const CV = () => {
         jobFamilyId: jobFamily.id
       }
     })
-    
+
     const formatedProjects = projects.map(({ jobFamily, ...rest }) => ({ ...rest, jobFamilyId: jobFamily.id }))
     const skillIds = selectedSkillsArray.map(skill => skill.skillId)
 
@@ -223,7 +223,7 @@ const CV = () => {
                           <DatePicker
                             slotProps={{ textField: { fullWidth: true } }}
                             label={`Job ${index + 1} Start Date`}
-                            value={dayjs(job.startDate)}
+                            value={job.startDate}
                             onChange={value => handleJobChange(index, 'startDate', value)}
                           />
                         </DemoContainer>
@@ -235,7 +235,7 @@ const CV = () => {
                           <DatePicker
                             slotProps={{ textField: { fullWidth: true } }}
                             label={`Job ${index + 1} End Date`}
-                            value={dayjs(job.endDate)}
+                            value={job.endDate}
                             onChange={value => handleJobChange(index, 'endDate', value)}
                           />
                         </DemoContainer>
