@@ -32,7 +32,7 @@ class UserService @Autowired constructor(
     private val passwordEncoder: PasswordEncoder,
     private val notificationTypeRepository: NotificationTypeRepository,
     private val interestService: InterestService,
-    private val cvRepository: CvRepository,
+    val cvRepository: CvRepository,
     private val notificationTypeService: NotificationTypeService,
     private val vacancyRepository: VacancyRepository,
     private val applicationRepository: ApplicationRepository
@@ -219,7 +219,6 @@ class UserService @Autowired constructor(
 
             )
         }
-
         return activatedNotificationTypeDTOs
     }
 
@@ -242,7 +241,6 @@ class UserService @Autowired constructor(
         if (vacancy.manager != user) throw ForbiddenException("You are not authorized to perform this action")
         val applications = applicationRepository.findByVacancy(vacancy)
         return applications.map { mapToUserCandidateDTO(it) }
-
     }
 
     fun mapToUserCandidateDTO(application: Application): CandidateDTO {
