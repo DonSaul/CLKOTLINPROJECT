@@ -74,7 +74,6 @@ and managers. The project is a product of SoftServe's project lab, where we focu
 
 Please visit our [issues discussions](https://github.com/DonSaul/CLKOTLINPROJECT/issues) for general questions. **Issues
 are for bug reports and feature requests only.**
---------------------------------------------------------
 
 ## Contributors
 
