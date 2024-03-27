@@ -185,7 +185,7 @@ class CvService(
     }
 
 
-    fun mapToCvDTO(cv: Cv): CvResponseDTO {
+    private fun mapToCvDTO(cv: Cv): CvResponseDTO {
         return CvResponseDTO(
             id = cv.id!!,
             yearsOfExperience = cv.yearsOfExperience,

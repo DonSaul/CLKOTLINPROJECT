@@ -69,21 +69,21 @@ class UserService @Autowired constructor(
         }
     }
 
-    @Transactional
-    fun getAllProfiles(): List<ProfileDTO> {
-        val users = userRepository.findAll()
-        val profiles = mutableListOf<ProfileDTO>()
-
-        for (user in users) {
-            val profileDTO = mapToProfileDTO(user)
-            profiles.add(profileDTO)
-        }
-        return profiles
-    }
-
-    private fun mapToProfileDTO(user: User): ProfileDTO {
-        return ProfileDTO(user.firstName, user.lastName, user.email)
-    }
+//    @Transactional
+//    fun getAllProfiles(): List<ProfileDTO> {
+//        val users = userRepository.findAll()
+//        val profiles = mutableListOf<ProfileDTO>()
+//
+//        for (user in users) {
+//            val profileDTO = mapToProfileDTO(user)
+//            profiles.add(profileDTO)
+//        }
+//        return profiles
+//    }
+//
+//    private fun mapToProfileDTO(user: User): ProfileDTO {
+//        return ProfileDTO(user.firstName, user.lastName, user.email, user.role, user.cv)
+//    }
 
     fun getUserProfileInfo(userId: Int): ProfileDTO {
         val user = userRepository.findById(userId)
@@ -94,32 +94,32 @@ class UserService @Autowired constructor(
             firstName = user.firstName,
             lastName = user.lastName,
             email = user.email,
-//            roleId = user.role?.id ?: -1
+            roleId = user.role?.id ?: -1,
             cv = mapToCvDTO(cv)
         )
     }
 
-//    @Transactional
-//    fun updateUserProfile(userId: Int, updatedProfile: ProfileDTO): ProfileDTO {
-//        val user = userRepository.findById(userId)
-//            .orElseThrow { NotFoundException("No user found with id $userId") }
-//        if (userId === user.id) {
-//            // Update profile
-//            user.apply {
-//                firstName = updatedProfile.firstName
-//                lastName = updatedProfile.lastName
-//                email = updatedProfile.email
-//            }
-//        }
-//
-//        val updatedUserProfile = userRepository.save(user)
-//        return ProfileDTO(
-//            firstName = updatedUserProfile.firstName,
-//            lastName = updatedUserProfile.lastName,
-//            email = updatedProfile.email,
-//           // roleId = updatedUserProfile.role?.id ?: -1
-//        )
-//    }
+    @Transactional
+    fun updateUserProfile(userId: Int, updatedProfile: ProfileDTO): ProfileDTO {
+        val user = userRepository.findById(userId)
+            .orElseThrow { NotFoundException("No user found with id $userId") }
+        if (userId === user.id) {
+            // Update profile
+            user.apply {
+                firstName = updatedProfile.firstName
+                lastName = updatedProfile.lastName
+                email = updatedProfile.email
+            }
+        }
+
+        val updatedUserProfile = userRepository.save(user)
+        return ProfileDTO(
+            firstName = updatedUserProfile.firstName,
+            lastName = updatedUserProfile.lastName,
+            email = updatedProfile.email,
+            roleId = updatedUserProfile.role?.id ?: -1
+        )
+    }
 
     @Transactional
     fun updateUser(userId: Int, userRequestDTO: UserRequestDTO): UserResponseDTO {
