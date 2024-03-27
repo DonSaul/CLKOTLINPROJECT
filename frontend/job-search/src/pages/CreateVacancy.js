@@ -11,6 +11,8 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import BusinessIcon from '@mui/icons-material/Business';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
+import { useNavigate } from "react-router-dom";
+import { paths } from "../router/paths";
 
 export const CreateVacancy = () => {
     const { mutate } = useCreateVacancy();
@@ -21,7 +23,7 @@ export const CreateVacancy = () => {
     const [salaryExpectation, setSalaryExpectation] = useState('');
     const [yearsOfExperience, setYearsOfExperience] = useState('');
     const [jobFamily, setJobFamily] = useState('');
-
+    const navigate=useNavigate();
     const handleJobFamilyChange = (newValue) => {
         setJobFamily(newValue ? newValue.id : '');
     };
@@ -40,6 +42,8 @@ export const CreateVacancy = () => {
 
         try {
             await mutate(vacancyData);
+            navigate(paths.managerVacanciesPage);
+            
         } catch {
             // Handle error
         }

@@ -3,6 +3,7 @@ import CardContainer from '../components/CardContainer';
 import { VacancyFilter } from '../components/VacancyFilter';
 import VacancyTable from '../components/VacancyTable';
 import { CircularProgress } from '@mui/material';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Vacancies = () => {
 
@@ -19,7 +20,7 @@ const Vacancies = () => {
 
         {isLoadingVacancies ?
           (
-          <CircularProgress />
+            <LoadingSpinner></LoadingSpinner>
           )
           :
           (<>

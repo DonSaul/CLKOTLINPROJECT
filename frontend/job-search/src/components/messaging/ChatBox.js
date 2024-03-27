@@ -9,10 +9,10 @@ import { Typography } from '@mui/material';
 import { getRoleString } from '../../helpers/constants';
 import { CircularProgress } from '@mui/material';
 import { truncateText } from '../../helpers/funHelpers';
+import LoadingSpinner from '../LoadingSpinner';
 const ChatBox = ({ data, user, userData, onSendMessage, isLoadingConversation }) => {
 
     const { getUserEmail, getUserFirstName, getUserLastName } = useAuth();
-
 
     const messages = data?.data || [];
 
@@ -32,8 +32,6 @@ const ChatBox = ({ data, user, userData, onSendMessage, isLoadingConversation })
         scrollToBottom();
     }, [chatMessages]);
 
-
-
     useEffect(() => {
         if (data?.length > 0) {
            
@@ -45,28 +43,20 @@ const ChatBox = ({ data, user, userData, onSendMessage, isLoadingConversation })
     }, [data]);
 
 
-
-
     const handleSendMessage = (newMessage) => {
-
 
         let dataMessage = {
             message: newMessage,
             receiverUserName: user
         }
 
-
-
-
         setChatMessages(prevMessages => [
             ...prevMessages,
             { message: newMessage, date: new Date(), sender: { firstName: getUserFirstName(), lastName: getUserLastName(), email: getUserEmail() } }
         ]);
 
-
         sendMessage(dataMessage);
 
-  
     };
 
     return (
@@ -122,14 +112,13 @@ const ChatBox = ({ data, user, userData, onSendMessage, isLoadingConversation })
                 >
                     {userData && (
                         <>
-
+                                
                             {isLoadingConversation ? (
-                                <CircularProgress />
+                               <LoadingSpinner></LoadingSpinner>
                             ) : (
                                 <>
+                                
                                     {chatMessages?.length > 0 ? (<>
-                                    
-                                        
                                         {chatMessages.map((message, index) => (
                                         <React.Fragment key={index}>
                                             <MessageBubble key={index} data={message} />
