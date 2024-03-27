@@ -111,7 +111,7 @@ export default function MainToolbar() {
                 <Tab key="createVacancy" label="Create Vacancy" icon={<PostAddIcon></PostAddIcon>} component={Link} to={paths.createVacancy} />,
                 <Tab key="managerSearchPage" label="Search Candidates" icon={<Search></Search>} component={Link} to={paths.managerSearchPage} />,
                 <Tab key="managerSearchPage" label="My Vacancies" icon={<DoneAllIcon></DoneAllIcon>} component={Link} to={paths.managerVacanciesPage} />
-            ],
+              ],
               getUserRole() === ROLES.CANDIDATE && [
                 <Tab key="vacancies" icon={<BusinessCenterIcon />} label="Vacancies" component={Link} to={paths.vacancies} />,
                 <Tab key="myCV" icon={<AssignmentIndIcon />} label="My CV" component={Link} to={paths.cv} />,
@@ -125,7 +125,7 @@ export default function MainToolbar() {
                   </Badge>
                 }
                 label="Notifications"
-                labelPlacement="bottom"
+                //labelPlacement="bottom"
                 component={Link}
                 to={paths.notifications}
                 value={paths.notifications}

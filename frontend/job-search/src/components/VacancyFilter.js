@@ -10,12 +10,18 @@ import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import EmojiEventsTwoToneIcon from '@mui/icons-material/EmojiEventsTwoTone';
 import { EmojiEventsTwoTone } from '@mui/icons-material';
 
-export const VacancyFilter = ({ onFilterChange, setData }) => {
+export const VacancyFilter = ({ onFilterChange, setData, setIsLoadingVacancies }) => {
     const [yearsOfExperience, setYearsOfExperience] = useState('');
     const [jobFamily, setJobFamily] = useState('');
     const [salary, setSalary] = useState('');
-    const { dataVacancies, refetch } = useGetVacancies(salary, jobFamily, yearsOfExperience);
+    const { dataVacancies, refetch, isLoading } = useGetVacancies(salary, jobFamily, yearsOfExperience);
     const { data: jobFamilies } = useJobFamily();
+
+    useEffect(() => {
+        setIsLoadingVacancies(isLoading); 
+      }, [isLoading, setIsLoadingVacancies]);
+
+
 
     const handleYearsOfExperienceChange = (event) => {
         setYearsOfExperience(event.target.value);
