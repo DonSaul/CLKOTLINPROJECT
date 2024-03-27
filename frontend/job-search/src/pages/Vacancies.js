@@ -25,7 +25,7 @@ const Vacancies = () => {
           :
           (<>
 
-            <VacancyTable dataFromQuery={data}></VacancyTable>
+            {data ? <VacancyTable dataFromQuery={data}></VacancyTable> : <p>No vacancies Found!</p>}
 
           </>)}
 

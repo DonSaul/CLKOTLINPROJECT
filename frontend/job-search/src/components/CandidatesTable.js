@@ -80,6 +80,7 @@ export default function CandidatesTable({ dataFromQuery, onRowSelectionChange, f
 
     const handleInvite = (rowData) => {
         const candidateId = rowData.id;
+        console.log("data in row",rowData);
         console.log('Sending invitation to candidate:', candidateId);
         navigate(`${paths.sendInvitation.replace(':id', candidateId)}`);
     };
@@ -116,12 +117,16 @@ export default function CandidatesTable({ dataFromQuery, onRowSelectionChange, f
         //enableHiding:false
         enableRowActions: true,
         renderRowActionMenuItems: ({ row }) => [
-    <MenuItem key="edit" onClick={() => {
-        navigate(`${paths.vacancies}/${row.original.id}`);
-        }}>
-      View Profile
-    </MenuItem>,
-  ],
+            <MenuItem key="edit" onClick={() => {
+                console.log("row", row);
+                navigate(`${paths.profiles}/${row.original.id}`);
+            }}>
+                Visit
+            </MenuItem>,
+            <MenuItem>
+                Send Invitation
+            </MenuItem>
+        ],
 
     });
 

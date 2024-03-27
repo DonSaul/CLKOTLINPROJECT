@@ -18,7 +18,7 @@ import { CreateVacancy } from './CreateVacancy';
 import { paths } from '../router/paths';
 import ManagerSearchPage from './ManagerSearchPage';
 import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
-
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const VacancyView = () => {
     const { id } = useParams();
@@ -38,8 +38,8 @@ const VacancyView = () => {
             console.error('Error fetching vacancies:', error);
         }
     };
-    
-     
+
+
 
     useEffect(() => {
         fetchCandidates();
@@ -61,106 +61,122 @@ const VacancyView = () => {
 
     const handleOpenDeleteModal = () => {
         setOpenDeleteModal(true);
-      };
-    
-      const handleCloseDeleteModal = () => {
+    };
+
+    const handleCloseDeleteModal = () => {
         setOpenDeleteModal(false);
-      };
-    
-      const handleConfirmDelete = () => {
+    };
+
+    const handleConfirmDelete = () => {
         deleteVacancy(id);
         handleCloseDeleteModal();
-        navigate(paths.vacancies); 
-      };
+        navigate(paths.vacancies);
+    };
     return (
         <>
             <CardContainer width='xl'>
-                {vacancyData ? (
-                    <>
-                        <CardHeader title={vacancyData.name} subheader={vacancyData.companyName} />
-                        <CardContent>
-                            <Typography variant="subtitle1" style={{ fontSize: '1.2rem' }}>Job Description:</Typography>
-                            <Box mb={2}>{vacancyData.description}</Box>
 
-                            <Grid mb={4} container spacing={2} style={{ display: 'flex' }}>
-                                <Grid item xs={4} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <Stack direction="row" spacing={2}>
-                                        <Stack>
-                                            <b>Job Family </b>
-                                        </Stack>
-                                        <Stack>
-                                            {vacancyData.jobFamily.name}
-                                        </Stack>
+                {isLoadingVacancy ?
+                    (<>
 
-                                    </Stack>
-                                </Grid>
-                                <Grid item xs={4} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <Stack direction="row" spacing={2}>
-                                        <Stack>
-                                            <b>Salary Expectation </b>
-                                        </Stack>
-                                        <Stack>
-                                            {vacancyData.salaryExpectation}
-                                        </Stack>
-                                    </Stack>
-                                </Grid>
-                                <Grid item xs={4} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <Stack direction="row" spacing={2} >
-                                        <Stack>
-                                            <b>Years of Experience </b>
-                                        </Stack>
-                                        <Stack>
-                                            {vacancyData.yearsOfExperience}
-                                        </Stack>
-                                    </Stack>
-                                </Grid>
-                            </Grid>
-                            <CardActions style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                {getUserRole() === ROLES.CANDIDATE && (
-                                    <div id={vacancyData.id}>
-                                    { vacancyData.isApplied 
-                                    ? appliedMessage
-                                    : (<Button variant="contained" color="primary" size="large" onClick={handleApply}>
-                                        Apply
-                                    </Button>)}
-                                    </div>
-                                )} 
-                                {vacancyData.manager.email === getUserEmail() && (
-                                    <>
-                                        <Button variant="contained" color="warning" size="large" onClick={handleOpenDeleteModal}>
-                                        Delete Vacancy
-                                        </Button>
+                        <LoadingSpinner></LoadingSpinner>
+                    </>)
 
-                                        <Button variant="contained" color="warning" size="large" onClick={handleUpdate}>
-                                            Update Vacancy
-                                        </Button>
-                                    </>
-                                )}
-                                {<DeleteConfirmationModal
-                                    open={openDeleteModal}
-                                    onClose={handleCloseDeleteModal}
-                                    onConfirm={handleConfirmDelete}
-                                />
+                    :
+
+
+                    (<>
+                   {vacancyData ? (
+                            <>
+                                <CardHeader title={vacancyData.name} subheader={vacancyData.companyName} />
+                                <CardContent>
+                                    <Typography variant="subtitle1" style={{ fontSize: '1.2rem' }}>Job Description:</Typography>
+                                    <Box mb={2}>{vacancyData.description}</Box>
+
+                                    <Grid mb={4} container spacing={2} style={{ display: 'flex' }}>
+                                        <Grid item xs={4} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <Stack direction="row" spacing={2}>
+                                                <Stack>
+                                                    <b>Job Family </b>
+                                                </Stack>
+                                                <Stack>
+                                                    {vacancyData.jobFamily.name}
+                                                </Stack>
+
+                                            </Stack>
+                                        </Grid>
+                                        <Grid item xs={4} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <Stack direction="row" spacing={2}>
+                                                <Stack>
+                                                    <b>Salary Expectation </b>
+                                                </Stack>
+                                                <Stack>
+                                                    {vacancyData.salaryExpectation}
+                                                </Stack>
+                                            </Stack>
+                                        </Grid>
+                                        <Grid item xs={4} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <Stack direction="row" spacing={2} >
+                                                <Stack>
+                                                    <b>Years of Experience </b>
+                                                </Stack>
+                                                <Stack>
+                                                    {vacancyData.yearsOfExperience}
+                                                </Stack>
+                                            </Stack>
+                                        </Grid>
+                                    </Grid>
+                                    <CardActions style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        {getUserRole() === ROLES.CANDIDATE && (
+                                            <div id={vacancyData.id}>
+                                                {vacancyData.isApplied
+                                                    ? appliedMessage
+                                                    : (<Button variant="contained" color="primary" size="large" onClick={handleApply}>
+                                                        Apply
+                                                    </Button>)}
+                                            </div>
+                                        )}
+                                        {vacancyData.manager.email === getUserEmail() && (
+                                            <>
+                                                <Button variant="contained" color="warning" size="large" onClick={handleOpenDeleteModal}>
+                                                    Delete Vacancy
+                                                </Button>
+
+                                                <Button variant="contained" color="warning" size="large" onClick={handleUpdate}>
+                                                    Update Vacancy
+                                                </Button>
+                                            </>
+                                        )}
+                                        {<DeleteConfirmationModal
+                                            open={openDeleteModal}
+                                            onClose={handleCloseDeleteModal}
+                                            onConfirm={handleConfirmDelete}
+                                        />
+                                        }
+                                    </CardActions>
+
+                                </CardContent>
+                                {vacancyData.manager.email === getUserEmail()
+                                    ? (<CardContent>
+                                        <Typography variant="subtitle1" style={{ fontSize: '1.2rem' }}>Candidates that applied</Typography>
+                                        <CandidatesTable dataFromQuery={candidates} fromVacancyView={true}></CandidatesTable>
+                                    </CardContent>)
+                                    : null
                                 }
-                            </CardActions>
 
-                        </CardContent>
-                        {vacancyData.manager.email === getUserEmail()
-                            ? (<CardContent>
-                                <Typography variant="subtitle1" style={{ fontSize: '1.2rem' }}>Candidates that applied</Typography>
-                                <CandidatesTable dataFromQuery={candidates} fromVacancyView={true}></CandidatesTable>
-                            </CardContent>)
-                            : null
-                        }
+                            </>
+                        ) : (
+                            <CardContent>
+                                <Typography variant="h6" color="textSecondary" align="center">
+                                    No Vacancy Found
+                                </Typography>
+                            </CardContent>
+                        )}
+                    </>)}
 
-                    </>
-                ) : (
-                    <CardContent>
-                        <Typography variant="h6" color="textSecondary" align="center">
-                            No Vacancy Found
-                        </Typography>
-                    </CardContent>
-                )}
+
+
+
 
             </CardContainer>
 
