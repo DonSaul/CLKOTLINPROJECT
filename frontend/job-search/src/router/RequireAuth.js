@@ -7,8 +7,7 @@ import { Outlet } from "react-router-dom";
 export function RequireAuth({role}) {
     let auth = useAuth();
     let location = useLocation();
-    //console.log("required role",role,"userRole",auth.getUserRole());
-  
+ 
     if (!auth.isLoggedIn) {
    
       console.log("Not loggued in");
