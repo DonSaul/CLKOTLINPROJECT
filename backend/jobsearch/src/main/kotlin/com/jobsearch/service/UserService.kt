@@ -6,6 +6,7 @@ import com.jobsearch.dto.UserRequestDTO
 import com.jobsearch.dto.UserResponseDTO
 import com.jobsearch.entity.Application
 import com.jobsearch.entity.Cv
+import com.jobsearch.entity.Interest
 import com.jobsearch.entity.JobFamily
 import com.jobsearch.entity.User
 import com.jobsearch.exception.ForbiddenException
@@ -19,6 +20,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import kotlin.NoSuchElementException
+import com.jobsearch.entity.NotificationTypeEnum
+
 
 
 @Service
@@ -29,6 +33,7 @@ class UserService @Autowired constructor(
     private val notificationTypeRepository: NotificationTypeRepository,
     private val interestService: InterestService,
     private val cvRepository: CvRepository,
+    private val notificationTypeService: NotificationTypeService,
     private val vacancyRepository: VacancyRepository,
     private val applicationRepository: ApplicationRepository
 ) {
@@ -41,6 +46,9 @@ class UserService @Autowired constructor(
             return null
         }
 
+        val activatedNotificationTypeEnums = setOf(NotificationTypeEnum.VACANCIES, NotificationTypeEnum.INVITATIONS, NotificationTypeEnum.MESSAGES)
+        val notificationTypes = activatedNotificationTypeEnums.map{notificationTypeService.findByIdAndReturnsEntity(it.id)}.toSet()
+
         val encodedPassword = passwordEncoder.encode(userRequestDTO.password)
         val roleId = userRequestDTO.roleId ?: 1
         val userEntity = User(
@@ -49,6 +57,7 @@ class UserService @Autowired constructor(
             password = encodedPassword,
             email = userRequestDTO.email,
             role = roleRepository.findById(roleId).get(),
+            activatedNotificationTypes = notificationTypes ,
             resetPasswordToken = null
         )
 
@@ -61,6 +70,7 @@ class UserService @Autowired constructor(
         val user = userRepository.findById(userId)
             .orElseThrow { NotFoundException("No user found with id $userId") }
         return mapToUserResponseDTO(user)
+
     }
 
     @Transactional

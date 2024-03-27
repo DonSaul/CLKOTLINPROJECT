@@ -9,14 +9,16 @@ import { useNotificationActivated } from '../hooks/notifications/useGetCurrentOn
 import { useNotificationTypeUpdater } from '../hooks/notifications/useNotificationTypesUpdated';
 import { useNotificationTypes } from '../hooks/notifications/useNotificationTypes';
 import { Button, ButtonGroup } from '@mui/material';
+import {NOTIFICATION_TYPES} from '../helpers/constants';
 
 const Notifications = () => {
-  const { user } = useAuth();
-  const notifications = useNotificationData(user?.email);
-  const { notificationActivated, loading } = useNotificationActivated(user?.email);
-  const { notificationTypes, loadingType } = useNotificationTypes(user?.email);
-  const handleCheckboxChange = useNotificationUpdater(user?.email);
-  const handleCheckboxNotificationType = useNotificationTypeUpdater(user?.email);
+  const { getUserEmail } = useAuth();
+  console.log(getUserEmail())
+  const notifications = useNotificationData(getUserEmail());
+  const { notificationActivated} = useNotificationActivated(getUserEmail());
+  const { notificationTypes} = useNotificationTypes(getUserEmail());
+  const handleCheckboxChange = useNotificationUpdater(getUserEmail());
+  const handleCheckboxNotificationType = useNotificationTypeUpdater(getUserEmail());
 
   const [initialCheckboxValue, setInitialCheckboxValue] = useState(false);
   const [vacancyChecked, setVacancyChecked] = useState(false);
@@ -25,7 +27,7 @@ const Notifications = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [readNotifications, setReadNotifications] = useState([]);
   const itemsPerPage = 4;
-
+ 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -33,27 +35,27 @@ const Notifications = () => {
   const handleVacancyCheckboxChange = (event) => {
     const newValue = event.target.checked;
     setVacancyChecked(newValue);
-    handleCheckboxNotificationType(newValue, 1);
+    handleCheckboxNotificationType(newValue, NOTIFICATION_TYPES.VACANCIES);
   };
 
   const handleInvitationCheckboxChange = (event) => {
     const newValue = event.target.checked;
     setInvitationChecked(newValue);
-    handleCheckboxNotificationType(newValue, 2);
+    handleCheckboxNotificationType(newValue, NOTIFICATION_TYPES.INVITATIONS);
   };
 
   const handleMessageCheckboxChange = (event) => {
     const newValue = event.target.checked;
     setMessageChecked(newValue);
-    handleCheckboxNotificationType(newValue, 3);
+    handleCheckboxNotificationType(newValue, NOTIFICATION_TYPES.MESSAGES);
   };
 
   useEffect(() => {
-    if (!loading && notificationActivated !== null) {
+    if (notificationActivated !== null) {
       setInitialCheckboxValue(notificationActivated);
-      const vacancyType = notificationTypes.find(type => type.id === 1);
-      const invitationType = notificationTypes.find(type => type.id === 2);
-      const messageType = notificationTypes.find(type => type.id === 3);
+      const vacancyType = notificationTypes.find(type => type.id === NOTIFICATION_TYPES.VACANCIES);
+      const invitationType = notificationTypes.find(type => type.id === NOTIFICATION_TYPES.INVITATIONS);
+      const messageType = notificationTypes.find(type => type.id === NOTIFICATION_TYPES.MESSAGES);
       if (vacancyType) setVacancyChecked(true);
       if (invitationType) setInvitationChecked(true);
       if (messageType) setMessageChecked(true);
@@ -62,11 +64,9 @@ const Notifications = () => {
         setReadNotifications(readNotificationIds);
       }
     }
-  }, [notificationActivated, loading, notificationTypes, notifications]);
+  }, [notificationActivated, notificationTypes, notifications]);
 
-  if (loading || loadingType) {
-    return <CircularProgress />;
-  }
+ 
 
   return (
     <div>
