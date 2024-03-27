@@ -25,12 +25,9 @@ const Layout = ({ children }) => {
             </Grid>
 
             {/* Footer */}
-            <Grid item>
-                
-                <Grid container justify="center">
-                    <Footer></Footer>
-                </Grid>
-            </Grid>
+
+            <Footer ></Footer>
+            
         </Grid>
     );
 }
