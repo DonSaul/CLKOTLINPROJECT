@@ -13,7 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
@@ -24,12 +23,8 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
 
     @Autowired
     private lateinit var authService: AuthService
-
     @Autowired
-    lateinit var passwordEncoder: PasswordEncoder
-
-    @Autowired
-    lateinit var jwtAuthenticationFilter: JwtAuthenticationFilter
+    private lateinit var jwtAuthenticationFilter: JwtAuthenticationFilter
 
     @Bean
     @Throws(Exception::class)
@@ -43,15 +38,14 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
                     .requestMatchers("/api/v1/application/**").authenticated()
                     .requestMatchers("/api/v1/cvs/**").authenticated()
                     .requestMatchers("/api/v1/skills/**").permitAll()
-                    // Vacancy endpoints
                     .requestMatchers(HttpMethod.GET, "/api/v1/vacancy").authenticated()
                     .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/**").authenticated()
                     .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/search").authenticated()
                     .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/manage").hasAuthority("manager")
                     .requestMatchers(HttpMethod.POST, "/api/v1/vacancy").hasAuthority("manager")
-                    .requestMatchers(HttpMethod.GET, "/api/v1/candidates/search").hasAuthority("manager")
                     .requestMatchers(HttpMethod.PUT, "/api/v1/vacancy/**").hasAuthority("manager")
                     .requestMatchers(HttpMethod.DELETE, "/api/v1/vacancy/**").hasAuthority("manager")
+                    .requestMatchers(HttpMethod.GET, "/api/v1/candidates/search").hasAuthority("manager")
                     .requestMatchers("/api/v1/job-family/**").permitAll()
                     .requestMatchers("/api/v1/application-status/**").permitAll()
                     .anyRequest().authenticated()
@@ -61,13 +55,13 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
     }
 
     @Autowired
-    fun configureGlobal(auth: AuthenticationManagerBuilder) {
+    private fun configureGlobal(auth: AuthenticationManagerBuilder) {
         auth.userDetailsService(UserDetailsService { username ->
             val user = authService.findByUsername(username)
             if (user != null) {
                 User.withUsername(user.email)
                     .password(user.password)
-                    .roles(user.role?.name)
+                    .roles(user.role.name)
                     .build()
             } else {
                 throw UsernameNotFoundException("User not found.")
