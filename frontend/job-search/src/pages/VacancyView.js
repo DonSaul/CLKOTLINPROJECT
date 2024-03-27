@@ -42,12 +42,16 @@ const VacancyView = () => {
     //     fetchCandidates();
     // }, []);
 
+
+    const appliedMessage = "Applied"
     const handleApply = (rowData) => {
         console.log('Applying to vacancy:', rowData);
         let applicationData = {
             vacancyId: id
         }
         applyToVacancy(applicationData);
+        const buttonDiv = document.getElementById(vacancyData.id);
+        buttonDiv.innerHTML = appliedMessage;
     };
 
     const handleDelete = (rowData) => {
@@ -104,9 +108,13 @@ const VacancyView = () => {
                             </Grid>
                             <CardActions style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                 {getUserRole() === ROLES.CANDIDATE && (
-                                    <Button variant="contained" color="primary" size="large" onClick={handleApply}>
+                                    <div id={vacancyData.id}>
+                                    { vacancyData.isApplied 
+                                    ? appliedMessage
+                                    : (<Button variant="contained" color="primary" size="large" onClick={handleApply}>
                                         Apply
-                                    </Button>
+                                    </Button>)}
+                                    </div>
                                 )}
                                 {vacancyData.manager.email === getUserEmail() && (
                                     <>
