@@ -6,6 +6,7 @@ import com.jobsearch.entity.Notification
 import com.jobsearch.service.NotificationService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -22,15 +23,24 @@ class NotificationController(private val notificationService: NotificationServic
         notificationService.triggerNotification(notificationDTO)
         return ResponseEntity.status(HttpStatus.CREATED).body("Notification triggered successfully")
     }
-
-    @GetMapping("/recipient/{recipientId}")
-    fun getNotificationsByRecipientId(@PathVariable recipientId: Int): List<NotificationDTO> {
-        return notificationService.getNotificationsByRecipientId(recipientId)
+    @Transactional
+    @GetMapping("/recipient/{email}")
+    fun getNotificationsByRecipientEmail(@PathVariable email: String):ResponseEntity<List<Notification>> {
+        val notifications = notificationService.getNotificationsByRecipientUsername(email)
+        return ResponseEntity(notifications, HttpStatus.OK)
     }
 
+    @Transactional
     @GetMapping("/all")
     fun retrieveAllNotifications(): ResponseEntity<List<Notification>> {
         val notifications = notificationService.retrieveAllNotifications()
          return ResponseEntity(notifications, HttpStatus.OK)
+    }
+
+    @Transactional
+    @PutMapping("/markAsRead/{notificationId}")
+    fun markNotificationAsRead(@PathVariable notificationId: Int): ResponseEntity<String> {
+        notificationService.markNotificationAsRead(notificationId)
+        return ResponseEntity.status(HttpStatus.OK).body("Notification marked as read")
     }
 }

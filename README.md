@@ -5,46 +5,65 @@
 🗂️ **JobSearch** is a web platform for employment and management aimed at facilitating interaction between candidates
 and managers. The project is a product of SoftServe's project lab, where we focus on learning and improving our skills.
 
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=flat&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
+[![Material Design](https://img.shields.io/badge/Material_Design-757575?style=flat&logo=material-design&logoColor=white)](https://material.io/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-007396?style=flat&logo=kotlin&logoColor=white)](https://kotlinlang.org/)
+[![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=white)](https://reactjs.org/)
+[![Spring](https://img.shields.io/badge/Spring_Framework-6DB33F?style=flat&logo=spring&logoColor=white)](https://spring.io/)
+[![Pull request](https://img.shields.io/badge/PRs-welcome-success?style=flat)](https://github.com/DonSaul/CLKOTLINPROJECT/pulls)
+[![RESTful API](https://img.shields.io/badge/RESTful_API-005571?style=flat&logo=http&logoColor=white)](https://restfulapi.net/)
+
 ## Features
 
 ### User Authentication and Authorization:
 
-- Users can register an account with their Last Name, First Name, password, and email.
-- Users can log in with their credentials.
-- Different roles (candidate, manager, admin) with specific permissions are supported.
-- Managers can create new user accounts with specific roles.
+| Feature                                                               | Description                                                                         |
+|-----------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| Users can register an account                                         | 📝 Users provide Last Name, First Name, password, and email to create an account.   |
+| Users can log in                                                      | 🔑 Users can log in using their credentials.                                        |
+| Different roles (candidate, manager, admin) with specific permissions | 🛡️ Supports roles with specific permissions such as candidate, manager, and admin. |
+| Managers can create new user accounts with specific roles             | 🧾 Managers have the ability to create new user accounts with predefined roles.     |
 
 ### Candidate Features:
 
-- Candidates can create and manage their CV, including information about years of experience, projects, education, and
-  salary expectation.
-- Candidates can search for vacancies based on job family, years of experience, and salary expectation.
-- Candidates can apply to vacancies that match their skills and expectations.
+| Feature                                   | Description                                                                                                                            |
+|-------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| Candidates can create and manage their CV | 📄 Candidates can add and update information about their years of experience, projects, education, and salary expectation in their CV. |
+| Candidates can search for vacancies       | 🔍 Candidates can search for job vacancies based on job family, years of experience, and salary expectation.                           |
+| Candidates can apply to vacancies         | 📋 Candidates can apply to vacancies that match their skills and expectations.                                                         |
 
 ### Manager Features:
 
-- Managers can create and manage vacancies, including job family, company name, description, required years of
-  experience, and salary.
-- Managers can search for candidates based on filters such as years of experience, job family, and salary expectation.
-- Managers can send vacancy invitations to candidates who match the job requirements.
+| Feature                                             | Description                                                                                                                                  |
+|-----------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| Managers can create and manage vacancies            | 📋 Managers can create and manage job vacancies, specifying job family, company name, description, required years of experience, and salary. |
+| Managers can search for candidates                  | 🔍 Managers can search for candidates based on filters such as years of experience, job family, and salary expectation.                      |
+| Managers can send vacancy invitations to candidates | 💌 Managers can invite candidates who match the job requirements to apply for vacancies.                                                     |
 
 ### Communication Features:
 
-- Users can communicate with other users (managers or candidates) within the app.
-- Users receive email notifications for important actions such as new vacancies, invitations, and messages.
-- Users can respond to messages and notifications directly from the email.
+| Feature                                         | Description                                                                                                  |
+|-------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| Users can communicate with other users          | 💬 Users can send and receive messages within the app.                                                       |
+| Users receive email notifications               | 📧 Users receive email notifications for important actions such as new vacancies, invitations, and messages. |
+| Users can respond to messages and notifications | ✉️ Users can respond to messages and notifications directly from their email.                                |
 
 ### Integration and Testing:
 
-- All features are seamlessly integrated to ensure they work together.
-- Thorough testing is conducted to identify and fix any bugs or issues.
-- The codebase is optimized and refined for better performance and reliability.
+| Feature                     | Description                                                                         |
+|-----------------------------|-------------------------------------------------------------------------------------|
+| Seamless integration        | 🔄 All features are seamlessly integrated to ensure they work together effectively. |
+| Thorough testing            | 🕵️‍♂️ Thorough testing is conducted to identify and fix any bugs or issues.        |
+| Optimization and refinement | 🛠️ The codebase is optimized and refined for better performance and reliability.   |
 
 ### Documentation and Finalization:
 
-- The codebase is thoroughly documented, including APIs and usage instructions, for future reference.
-- Any remaining tasks or bug fixes are finalized before deployment.
-- The project is prepared for deployment and ensured to be production-ready.
+| Feature                | Description                                                                                            |
+|------------------------|--------------------------------------------------------------------------------------------------------|
+| Thorough documentation | 📚 The codebase is thoroughly documented, including APIs and usage instructions, for future reference. |
+| Finalization           | 🎉 Any remaining tasks or bug fixes are finalized before deployment.                                   |
+| Production readiness   | 🚀 The project is prepared for deployment and ensured to be production-ready.                          |
 
 ## Links
 
@@ -55,18 +74,28 @@ and managers. The project is a product of SoftServe's project lab, where we focu
 
 Please visit our [issues discussions](https://github.com/DonSaul/CLKOTLINPROJECT/issues) for general questions. **Issues
 are for bug reports and feature requests only.**
+--------------------------------------------------------
 
 ## Contributors
 
-[<img src="https://github.com/jamirou.png?size=60" alt="jamirou" style="border-radius: 50%;">](https://github.com/jamirou)
-[<img src="https://github.com/s0alken.png?size=60" alt="s0alken" style="border-radius: 50%;">](https://github.com/s0alken)
-[<img src="https://github.com/Santisu.png?size=60" alt="Santisu" style="border-radius: 50%;">](https://github.com/Santisu)
-[<img src="https://github.com/RafaUribeG.png?size=60" alt="RafaUribeG" style="border-radius: 50%;">](https://github.com/RafaUribeG)
-[<img src="https://github.com/ndevia.png?size=60" alt="ndevia" style="border-radius: 50%;">](https://github.com/ndevia)
-[<img src="https://github.com/Gabe239.png?size=60" alt="ndevia" style="border-radius: 50%;">](https://github.com/Gabe239)
+[<img src="https://github.com/jamirou.png?size=70" alt="jamirou" style="border-radius: 50%;">](https://github.com/jamirou)
+[<img src="https://github.com/s0alken.png?size=70" alt="s0alken" style="border-radius: 50%;">](https://github.com/s0alken)
+[<img src="https://github.com/Santisu.png?size=70" alt="Santisu" style="border-radius: 50%;">](https://github.com/Santisu)
+[<img src="https://github.com/RafaUribeG.png?size=70" alt="RafaUribeG" style="border-radius: 50%;">](https://github.com/RafaUribeG)
+[<img src="https://github.com/ndevia.png?size=70" alt="ndevia" style="border-radius: 50%;">](https://github.com/ndevia)
+[<img src="https://github.com/Gabe239.png?size=70" alt="Gabe239" style="border-radius: 50%;">](https://github.com/Gabe239)
+[<img src="https://github.com/EdgarAraya.png?size=70" alt="EdgarAraya" style="border-radius: 50%;">](https://github.com/EdgarAraya)
 
-[//]: # (Please add a profile photo )
-[//]: # ([![]&#40;https://github.com/EdgarAraya.png?size=60&#41;]&#40;https://github.com/EdgarAraya&#41;)
+## Acknowledgements
+
+[<img src="https://github.com/DonSaul.png?size=70" alt="DonSaul" style="border-radius: 50%;">](https://github.com/DonSaul)
+
+We would like to express our sincere gratitude to [**@DonSaul**](https://github.com/DonSaul) for his invaluable guidance
+and mentorship throughout the development of this project. His expertise, insights, and support have been instrumental
+in shaping our journey and helping us overcome various challenges.
+
+Thank you, [**@DonSaul**](https://github.com/DonSaul), for being an exceptional mentor and for believing in our
+potential.
 
 _______________________________________________
 
@@ -87,6 +116,10 @@ _______________________________________________
    5.1. [Data Query](#data-query) <br>
    5.2. [Communication](#communication-between-frontend-and-backend) <br>
    5.3. [Frontend files](#frontend-helper-files) <br>
+   5.4. [Router files](#router-files) <br>
+   5.5. [ApplicationController](#application-controller) <br>
+
+--------------------------------------------------------
 
 ## Getting Started
 
@@ -110,6 +143,8 @@ Ensure you have the following installed:
 2. Install dependencies. [follow the Prerequisites step](#prerequisites)
 3. Configure application properties.
 4. Run the application.
+
+--------------------------------------------------------
 
 ## Basic Usage
 
@@ -171,7 +206,7 @@ Organized architecture for separation of concerns, such as:
 | **Code Reusability**       | The API Rest architecture promotes code reusability through the use of separate components. For example, business logic encapsulated in the Controller can be reused across different views, enhancing development efficiency and reducing duplication of code.               |
 | **Testability**            | With REST, each component can be tested independently, leading to more effective testing strategies. Unit tests can be written for the Controller logic, while integration tests can be performed on the interaction between the Model, View, and Controller components.      |
 
-## Security Features and Best Practices
+### Security Features and Best Practices
 
 Robust security measures:
 
@@ -182,7 +217,7 @@ Robust security measures:
 | Encryption       | implementation("org.springframework.boot:spring-boot-starter-security")   |
 | Input validation | implementation("org.springframework.boot:spring-boot-starter-validation") |
 
-## Advanced Functionalities
+### Advanced Functionalities
 
 ### Search Candidates from Manager entity
 
@@ -227,7 +262,9 @@ The `CandidateDTO` represents the details of a candidate.
 - `salaryExpectation`: Candidate's expected salary.
 - `jobFamilies`: List of job families associated with the candidate.
 
-## Authentication and Security
+--------------------------------------------------------
+
+### Authentication and Security
 
 The authentication process involves user registration, login, and token generation using JSON Web Tokens (JWT). Security
 measures include password encryption, token validation, and authorization for accessing protected resources.
@@ -263,11 +300,13 @@ measures include password encryption, token validation, and authorization for ac
 | SecurityConfig          | Configures security settings and filters for HTTP requests. |
 | WebConfig               | Configures CORS settings for HTTP requests.                 |
 
-## Data Query
+--------------------------------------------------------
+
+### Data Query
 
 The project utilizes PostgreSQL as the database management system (DBMS) for efficient data storage and retrieval.
 
-#### Database Schema
+### Database Schema
 
 The following tables are part of the database schema:
 
@@ -291,6 +330,8 @@ The following tables are part of the database schema:
 | users              | Stores user account information including email, password, etc.    |
 | vacancy            | Represents job vacancies posted by companies.                      |
 
+--------------------------------------------------------
+
 ### Communication between Frontend and Backend
 
 The frontend and backend of JobSearch communicate via HTTP requests using the RESTful protocol. When a user interacts
@@ -302,6 +343,7 @@ authentication mechanisms are defined and utilized. The backend processes these 
 responses, which the frontend utilizes to update the user interface and display information to the user. The
 communication between the frontend and backend is based on a set of RESTful endpoints defined in the backend, which the
 frontend utilizes to perform various operations.
+--------------------------------------------------------
 
 ### Frontend Helper Files
 
@@ -318,6 +360,7 @@ the application. Here's an overview:
 
 These helper files play a crucial role in managing authentication, API communication, and user context within the
 frontend application.
+--------------------------------------------------------
 
 ### Router Files
 
@@ -332,3 +375,21 @@ breakdown:
 
 These router files ensure proper navigation and access control within the frontend application, enhancing overall user
 experience and security.
+--------------------------------------------------------
+
+### ApplicationController
+
+This controller handles requests related to applications in the backend of the application.
+
+#### Endpoints
+
+| HTTP Method | URL                        | Description                           | Input Parameters                        | Response Codes                                                                                                        |
+|-------------|----------------------------|---------------------------------------|-----------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| POST        | `/api/v1/application`      | Creates a new application.            | `ApplicationDTO` Object                 | `201 Created`: If the application is successfully created.<br>Other possible error codes.                             |
+| GET         | `/api/v1/application/{id}` | Retrieves an application by its ID.   | Application ID                          | `200 OK`: If the application is found and returned successfully.<br>`404 Not Found`: If the application is not found. |
+| GET         | `/api/v1/application`      | Retrieves all applications.           | -                                       | `200 OK`: If applications are retrieved successfully.<br>Other possible error codes.                                  |
+| PUT         | `/api/v1/application/{id}` | Updates the status of an application. | Application ID, `ApplicationDTO` Object | `200 OK`: If the application is updated successfully.<br>Other possible error codes.                                  |
+| DELETE      | `/api/v1/application/{id}` | Deletes an application.               | Application ID                          | `204 No Content`: If the application is deleted successfully.<br>Other possible error codes.                          |
+
+- All endpoints are protected with authorization.
+- Users with the 'manager' role can access endpoints to update and delete applications.

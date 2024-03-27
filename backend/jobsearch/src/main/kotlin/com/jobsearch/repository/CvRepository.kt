@@ -12,7 +12,7 @@ interface CvRepository : JpaRepository<Cv, Int> {
 
     fun findByUserAndId(user: User, id: Int): Cv
 
-    fun findFirstByUserOrderByIdDesc(user: User): Cv
+    fun findFirstByUserOrderByIdDesc(user: User): Cv?
 
     @Query("SELECT v FROM Cv v WHERE v.id IN (SELECT MAX(v2.id) FROM Cv v2 GROUP BY v2.user) " +
             "AND (:salary IS NULL OR v.salaryExpectation >= :salary) " +

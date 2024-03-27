@@ -1,6 +1,7 @@
 package com.jobsearch.entity
 
 import jakarta.persistence.*
+import org.springframework.data.jpa.repository.Query
 
 @Entity
 @Table(name = "applications")

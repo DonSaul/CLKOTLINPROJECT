@@ -45,6 +45,13 @@ INSERT INTO job_family (id, name) VALUES (8, 'Education') ON CONFLICT DO NOTHING
 INSERT INTO job_family (id, name) VALUES (9, 'Art and Design') ON CONFLICT DO NOTHING;
 INSERT INTO job_family (id, name) VALUES (10, 'Legal') ON CONFLICT DO NOTHING;
 
+INSERT INTO notification_types (id, type) VALUES (1, 'vacancies') ON CONFLICT DO NOTHING;
+INSERT INTO notification_types (id, type) VALUES (2, 'invitations') ON CONFLICT DO NOTHING;
+INSERT INTO notification_types (id, type) VALUES (3, 'messages') ON CONFLICT DO NOTHING;
+INSERT INTO notification_types (id, type) VALUES (4, 'forgotPassword') ON CONFLICT DO NOTHING;
+
+
+
 --Hard coded user
 --INSERT INTO users (id,email,first_name,last_name,password) VALUES ('saul@gmail.com','Saul','Olguin','1234') ON CONFLICT DO NOTHING;
 
@@ -54,9 +61,3 @@ INSERT INTO application_status (id, name) VALUES (2, 'Applied') ON CONFLICT DO N
 INSERT INTO application_status (id, name) VALUES (3, 'In Process') ON CONFLICT DO NOTHING;
 INSERT INTO application_status (id, name) VALUES (4, 'Accepted') ON CONFLICT DO NOTHING;
 INSERT INTO application_status (id, name) VALUES (5, 'Rejected') ON CONFLICT DO NOTHING;
-
---Notifications Types
-INSERT INTO notification_types (id, type) VALUES (1, 'vacancies') ON CONFLICT DO NOTHING;
-INSERT INTO notification_types (id, type) VALUES (2, 'invitations') ON CONFLICT DO NOTHING;
-INSERT INTO notification_types (id, type) VALUES (3, 'messages') ON CONFLICT DO NOTHING;
-INSERT INTO notification_types (id, type) VALUES (4, 'forgotPassword') ON CONFLICT DO NOTHING;

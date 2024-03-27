@@ -2,11 +2,12 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import RecoverPassword from "../pages/RecoverPassword";
 import ChangePassword from "../pages/ChangePassword"
+import { UpdateVacancy } from "../pages/UpdateVacancy";
 import CV from "../pages/CV";
 import Vacancies from "../pages/Vacancies";
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import ButtonAppBar from "../components/Toolbar";
+import MainToolbar from "../components/MainToolbar";
 import { CreateVacancy } from "../pages/CreateVacancy";
 import { CreateUser } from "../pages/CreateUser";
 import Home from "../pages/Home";
@@ -23,6 +24,9 @@ import ManagerSearchPage from "../pages/ManagerSearchPage";
 import { SendInvite } from "../pages/SendInvite";
 import CandidateProfile from "../pages/CandidateProfile";
 import CandidateProfileInfo from "../components/CandidateProfileInfo";
+import ManagerVacanciesPage from "../pages/ManagerVacanciesPage";
+import Footer from "../components/layout/Footer";
+import Layout from "../components/layout/Layout";
 
 const RoutesConfig = () => {
   return (
@@ -30,9 +34,9 @@ const RoutesConfig = () => {
       <Route path="/" element={<Home />} />
       <Route path={paths.login} element={<Login />} />
       <Route path={paths.register} element={<Register />} />
-      <Route path={paths.recoverPassword} element={<RecoverPassword />}/>
+      <Route path={paths.recoverPassword} element={<RecoverPassword />} />
       <Route path={paths.changePassword} element={<ChangePassword />} />
-      
+
 
       <Route element={<RequireAuth />}>
         <Route path={paths.notifications} element={<Notifications />} />
@@ -54,6 +58,8 @@ const RoutesConfig = () => {
         <Route path={paths.createVacancy} element={<CreateVacancy />} />
         <Route path={paths.managerSearchPage} element={<ManagerSearchPage />} />
         <Route path={paths.sendInvitation} element={<SendInvite />} />
+        <Route path={paths.managerVacanciesPage} element={<ManagerVacanciesPage />} />
+        <Route path={paths.updateVacancy} element={<UpdateVacancy />} />
 
       </Route>
       <Route element={<RequireAuth role={ROLES.ADMIN} />}>
@@ -67,13 +73,6 @@ const RoutesConfig = () => {
   );
 };
 
-const RouterWrapper = () => {
-  return <Router>
 
-    <ButtonAppBar></ButtonAppBar>
 
-    {RoutesConfig()}
-  </Router>;
-};
-
-export default RouterWrapper;
+export default RoutesConfig;

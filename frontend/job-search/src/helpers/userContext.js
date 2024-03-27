@@ -1,7 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AUTH_TOKEN_NAME } from './constants';
-import { isLoggedIn as checkIsLoggedIn } from '../api/login';
 import { getEmailFromToken,getFirstNameFromToken,getLastNameFromToken,getRoleFromToken } from './tokenHelper';
 import { toast } from 'react-toastify';
 import { queryClient } from './queryClient';
@@ -10,17 +9,20 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(checkIsLoggedIn());
- // const navigate = useNavigate();
 
   const logout = () => {
     localStorage.removeItem(AUTH_TOKEN_NAME);
     setUser(null);
-    setIsLoggedIn(false);
+    //setIsLoggedIn(false);
     queryClient.clear();
     toast.success("You are now logged out!");
    
   };
+
+   const isLoggedIn = () => {
+
+    return !!localStorage.getItem(AUTH_TOKEN_NAME);
+};
 
   const login = (data) =>{
 
@@ -29,8 +31,7 @@ export const AuthProvider = ({ children }) => {
         email:getEmailFromToken(localStorage.getItem(AUTH_TOKEN_NAME)),
         roleId:getRoleFromToken(localStorage.getItem(AUTH_TOKEN_NAME))
     });
-    setIsLoggedIn(true);
-    
+   
   }
 
   const getUserEmail = () =>{
@@ -75,8 +76,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   const contextValue = {
-    user,
-    setUser,
     logout,
     isLoggedIn,
     getUserRole,

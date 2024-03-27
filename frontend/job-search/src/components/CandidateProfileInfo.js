@@ -1,10 +1,10 @@
 
 import { useParams } from 'react-router-dom';
 import { useGetCandidateProfile } from '../hooks/profile/useGetCandidateProfile';
-import { getUserRole } from '../api/login';
+
 import { ROLES } from '../helpers/constants';
 import { Box, Typography, Card, Button } from '@mui/material';
-import { TableCell, Table, TableHead, TableRow, TableContainer, TableBody, Paper } from '@mui/material';
+import { TableCell, Table, TableHead, TableRow, TableContainer, TableBody } from '@mui/material';
 
 const CandidateProfileInfo = () => {
     const { id } = useParams();

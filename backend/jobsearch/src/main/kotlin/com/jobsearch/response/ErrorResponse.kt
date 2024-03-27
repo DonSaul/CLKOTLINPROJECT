@@ -1,7 +1,8 @@
 package com.jobsearch.response
 
-class ErrorResponse(
-    val status: Int,
-    val message: String,
-    val timeStamp: Long
+class ErrorResponse<T>(
+    val data: T? = null,
+    val status: Int = 500,
+    val message: String = "Error",
+    val timeStamp: Long = System.currentTimeMillis()
 )

@@ -7,21 +7,16 @@ import { Outlet } from "react-router-dom";
 export function RequireAuth({role}) {
     let auth = useAuth();
     let location = useLocation();
-    console.log("required role",role,"userRole",auth.getUserRole());
+    //console.log("required role",role,"userRole",auth.getUserRole());
   
     if (!auth.isLoggedIn) {
    
       console.log("Not loggued in");
       return <Navigate to={paths.login} state={{ from: location }} />;
     } 
-    
     if (role && auth.getUserRole()!==role){
       console.log("Not Authorized");
       return <Navigate to={paths.notAccess} />;
     }
-
-
-
-  
     return <Outlet />;
   }

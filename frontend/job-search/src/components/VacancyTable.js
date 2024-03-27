@@ -7,18 +7,33 @@ import { ROLES } from '../helpers/constants';
 import { useAuth } from '../helpers/userContext';
 import { useApplyVacancy } from '../hooks/useApplyVacancy';
 import { paths } from '../router/paths';
+import { useDeleteVacancy } from '../hooks/useDeleteVacancy';
+import DeleteConfirmationModal from './DeleteConfirmationModal';
+
 export default function VacancyTable({ dataFromQuery }) {
 
 
     const { getUserRole } = useAuth();
     const { mutate: applyToVacancy, isError, isSuccess } = useApplyVacancy();
+    const [openDeleteModal, setOpenDeleteModal] = useState(false);
+    const { mutate: deleteVacancy } = useDeleteVacancy();
+    const [selectedId, setSelectedId] = useState(null);
+    const [vacancies, setVacancies] = useState(dataFromQuery);
 
     const navigate = useNavigate();
 
-    const columnsVacancies = useMemo(
-        () => [
+    useEffect(() => {
+        setVacancies(dataFromQuery);
+    }, [dataFromQuery]);
+
+    const columnsVacancies = useMemo(() => {
+        const columns = [
             {
-                accessorKey: 'jobFamilyName',
+                accessorKey: 'companyName',
+                header: 'Company',
+            },
+            {
+                accessorKey: 'jobFamily.name',
                 header: 'Category',
             },
             {
@@ -28,7 +43,6 @@ export default function VacancyTable({ dataFromQuery }) {
             {
                 accessorKey: 'yearsOfExperience',
                 header: 'Years of experience',
-
             },
             {
                 accessorKey: 'salaryExpectation',
@@ -39,18 +53,29 @@ export default function VacancyTable({ dataFromQuery }) {
                 header: 'ID',
                 hidden: true,
             },
-            {
+        ];
+
+        if (getUserRole() === ROLES.CANDIDATE) {
+            columns.push({
                 id: 'applyButton',
                 header: 'Status',
                 Cell: ({ row }) => (
-                    <Button variant="contained" color="primary" onClick={() => handleApply(row.original)} disabled={getUserRole() !== ROLES.CANDIDATE}>
+                    row.original.isApplied
+                    ? appliedMessage
+                    :
+                    <div id={row.original.id}>
+                    <Button variant="contained" color="primary" onClick={() => handleApply(row.original)}>
                         Apply
                     </Button>
-                ),
-            },
-        ],
-        [],
-    );
+                    </div>
+                    
+                )
+            });
+        }
+
+        return columns;
+    }, []);
+
 
     //optionally, you can manage any/all of the table state yourself
     const [rowSelection, setRowSelection] = useState({});
@@ -60,57 +85,81 @@ export default function VacancyTable({ dataFromQuery }) {
     }, [rowSelection]);
 
     const handleApply = (rowData) => {
-
         console.log('Applying to vacancy:', rowData);
-
-
         let applicationData =
         {
-            vacancyId: rowData.id,
-
-
-
+            vacancyId:rowData.id,
         }
-
-
         applyToVacancy(applicationData);
-
-
-
+        const buttonDiv = document.getElementById(rowData.id);
+        buttonDiv.innerHTML = appliedMessage;
     };
+    const appliedMessage = "Applied"
 
-    const table = useMaterialReactTable({
+    const handleOpenDeleteModal = () => {
+        setOpenDeleteModal(true);
+      };
+    
+      const handleCloseDeleteModal = () => {
+        setOpenDeleteModal(false);
+      };
+    
+      const handleConfirmDelete = () => {
+        deleteVacancy(selectedId);
+        setVacancies(vacancies.filter(vacancy => vacancy.id !== selectedId));
+        handleCloseDeleteModal();
+      };
+
+      const table = useMaterialReactTable({
         columns: columnsVacancies,
-        data: dataFromQuery ? dataFromQuery : [],
+        data: vacancies,
         hiddenColumns: ['id'],
         enableGlobalFilter: false,
         enableColumnFilters: false,
-        //enableColumnOrdering: true, //enable some features
         enableRowSelection: false,
         enableHiding: false,
-        enablePagination: true, //disable a default feature
-        onRowSelectionChange: setRowSelection, //hoist internal state to your own state (optional)
-        state: { rowSelection }, //manage your own state, pass it back to the table (optional)
+        enablePagination: true,
+        onRowSelectionChange: setRowSelection,
+        state: { rowSelection },
         initialState: { columnVisibility: { vacancyId: false } },
-        //enableHiding:false
         enableRowActions: true,
-        renderRowActionMenuItems: ({ row }) => [
-            <MenuItem key="edit" onClick={() => {
-                console.log("row", row);
-                navigate(`${paths.vacancies}/${row.original.id}`);
-            }}>
-                Visit
-            </MenuItem>,
-        ],
-
+        renderRowActionMenuItems: ({ row }) => {
+            const deleteMenuItem = getUserRole() === ROLES.MANAGER ? (
+                <MenuItem key="edit" onClick={() => {
+                    setSelectedId(row.original.id);
+                    console.log("selectedId",selectedId)
+                    handleOpenDeleteModal();
+                }}>
+                    Delete
+                </MenuItem>
+            ) : null;
+    
+            return [
+                <MenuItem key="view" onClick={() => {
+                    console.log("row", row);
+                    navigate(`${paths.vacancies}/${row.original.id}`);
+                }}>
+                    View
+                </MenuItem>,
+                deleteMenuItem
+            ];
+        }
     });
+    
 
     const someEventHandler = () => {
         //read the table state during an event from the table instance
         console.log(table.getState().sorting);
     }
 
-    return (
-        <MaterialReactTable table={table} /> //other more lightweight MRT sub components also available
+    return (<>
+        <MaterialReactTable table={table} />
+        {<DeleteConfirmationModal
+            open={openDeleteModal}
+            onClose={handleCloseDeleteModal}
+            onConfirm={handleConfirmDelete}
+        />
+        }
+        </>
     );
 }

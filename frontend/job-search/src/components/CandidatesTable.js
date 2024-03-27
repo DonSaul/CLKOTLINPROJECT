@@ -10,7 +10,7 @@ import { useSendInvitation } from '../hooks/useSendInvitation';
 import { paths } from '../router/paths';
 // import { PersonalInvitation } from './PersonalInvitation';
 
-export default function CandidatesTable({ dataFromQuery, onRowSelectionChange }) {
+export default function CandidatesTable({ dataFromQuery, onRowSelectionChange, fromVacancyView }) {
 
 
     const { getUserRole } = useAuth();
@@ -23,7 +23,7 @@ export default function CandidatesTable({ dataFromQuery, onRowSelectionChange })
                 header: 'Categories',
                 Cell: ({ row }) => (
                     <div>
-                        {row.original.jobFamilies.map((jobFamily) => (
+                        {row.original.jobFamilies?.map((jobFamily) => (
                             <div key={jobFamily.id}>{jobFamily.name}</div>
                         ))}
                     </div>
@@ -48,18 +48,19 @@ export default function CandidatesTable({ dataFromQuery, onRowSelectionChange })
             },
             {
                 accessorKey: 'salaryExpectation',
-                header: 'Salary',
+                header: 'Salary Expectation',
             },
-
-            {
-                id: 'sendButton',
-                header: 'Status',
-                Cell: ({ row }) => (
-                    <Button variant="contained" color="primary" onClick={() => handleInvite(row.original)} disabled={getUserRole() !== ROLES.MANAGER}>
-                        Invite
-                    </Button>
-                ),
-            },
+        {
+            id: 'sendButton',
+            header: 'Status',
+            Cell: ({ row }) => (
+                 row.original.aplicationStatus
+                ? row.original.aplicationStatus
+                : (<Button variant="contained" color="primary" onClick={() => handleInvite(row.original)} disabled={getUserRole()!==ROLES.MANAGER}>
+                    Invite
+                </Button>)
+            ),
+          },
         ],
         [],
     );
@@ -68,7 +69,7 @@ export default function CandidatesTable({ dataFromQuery, onRowSelectionChange })
     const [rowSelection, setRowSelection] = useState({});
 
     const handleRowSelectionChange = (selectedRowIds) => {
-        //console.log("selected", selectedRowIds)
+       
         setRowSelection(selectedRowIds);
         onRowSelectionChange(selectedRowIds);
     };
@@ -90,7 +91,8 @@ export default function CandidatesTable({ dataFromQuery, onRowSelectionChange })
         enableGlobalFilter: false,
         enableColumnFilters: false,
         //enableColumnOrdering: true, //enable some features
-        enableRowSelection: true,
+        enableRowSelection: fromVacancyView
+     ? false : true,
         getRowId: (originalRow) => originalRow.id,
         //onRowSelectionChange: handleRowSelectionChange,
         enableHiding: false,
@@ -113,7 +115,6 @@ export default function CandidatesTable({ dataFromQuery, onRowSelectionChange })
         initialState: { columnVisibility: { vacancyId: false } },
         //enableHiding:false
         enableRowActions: true,
-        positionActionsColumn: 'last',
         renderRowActionMenuItems: ({ row }) => [
             <MenuItem key="edit" onClick={() => {
                 console.log("row", row);
@@ -130,7 +131,7 @@ export default function CandidatesTable({ dataFromQuery, onRowSelectionChange })
 
     const someEventHandler = () => {
         //read the table state during an event from the table instance
-        console.log(table.getState().sorting);
+        // console.log(table.getState().sorting);
     }
 
     return (

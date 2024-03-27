@@ -1,10 +1,12 @@
 import { TextField, Button, Typography, Link } from '@mui/material';
 import useRecoverPassword from '../hooks/useRecoverPassword';
+import CardContainer from '../components/CardContainer';
 
 const RecoverPassword = () => {
     const { email, setEmail, message, handleSubmit } = useRecoverPassword();
 
     return (
+      <CardContainer width="xs">
         <div>
           <h2>Recover Password</h2>
           <form onSubmit={handleSubmit} style={{ maxWidth: '300px', margin: '0 auto' }}>
@@ -32,6 +34,7 @@ const RecoverPassword = () => {
             Remember your password? <Link to="/login">Login</Link>
           </Typography>
         </div>
+        </CardContainer>
       );
     }
 
