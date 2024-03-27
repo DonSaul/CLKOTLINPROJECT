@@ -41,6 +41,8 @@ const RoutesConfig = () => {
         <Route path={paths.vacancies} element={<Vacancies />} />
         <Route path={paths.vacancyDetails} element={<VacancyView />} />
         <Route path={paths.candidateProfile} element={<CandidateProfileInfo />} />
+        <Route path={paths.profile} element={<Profile />} />
+
       </Route>
 
 

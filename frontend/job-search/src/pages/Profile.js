@@ -8,12 +8,9 @@ const Profile = () => {
 
     return (
         <div>
-            <h3>Profile</h3>
-            <CardContainer width='xs'>
-                <UserAvatar></UserAvatar>
-                <CurrentUserInfo></CurrentUserInfo>
-                
-            </CardContainer>
+            
+            <CurrentUserInfo></CurrentUserInfo>
+                  
 
         </div>
     );

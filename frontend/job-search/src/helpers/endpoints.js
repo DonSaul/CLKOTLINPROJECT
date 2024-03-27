@@ -32,4 +32,5 @@ export const ENDPOINTS = {
   sendMessage:createUrl("conversation/send-message"),
   invitation:createUrl("invitations"),
   candidateProfile:createUrl("profiles"),
+  profile:createUrl("profiles/my-profile"),
 };
