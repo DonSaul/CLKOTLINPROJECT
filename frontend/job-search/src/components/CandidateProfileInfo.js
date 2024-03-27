@@ -1,15 +1,16 @@
 
 import { useParams } from 'react-router-dom';
 import { useGetCandidateProfile } from '../hooks/profile/useGetCandidateProfile';
-
+import { useAuth } from'../helpers/userContext';
 import { ROLES } from '../helpers/constants';
 import { Box, Typography, Card, Button } from '@mui/material';
 import { TableCell, Table, TableHead, TableRow, TableContainer, TableBody } from '@mui/material';
+import UserAvatar from './UserAvatar';
 
 const CandidateProfileInfo = () => {
     const { id } = useParams();
     const { data: profileData, isLoading: isLoadingProfile, isError: isErrorProfile } = useGetCandidateProfile(id);
-    
+    const { getUserRole } = useAuth();
     const { firstName, lastName, email, cv } = profileData || {};
     console.log(id);
     console.log(profileData);
@@ -19,8 +20,8 @@ const CandidateProfileInfo = () => {
             <h3>Profile</h3>
             <Box sx={{ mt:5 }}>
                 <Card elevation={3} sx={{ display: "inline-block", width: 400, borderRadius: 8, boxShadow: 8, mx: 2, py: 5 }}>
-                    <Box sx={{ width: 100, height:100, backgroundColor: "lightgray", mx: 18 }}>
-                        Profile picture here?
+                    <Box sx={{ width: 100, height:100, mx: 18 }}>
+                        <UserAvatar user={{ firstName, lastName, email }}></UserAvatar>
                     </Box>
                     <Box sx={{ my: 3 }}>
                         <Typography variant="h6" gutterBottom>

@@ -1,9 +1,6 @@
 package com.jobsearch.service
 
-import com.jobsearch.dto.CandidateDTO
-import com.jobsearch.dto.NotificationTypeDTO
-import com.jobsearch.dto.UserRequestDTO
-import com.jobsearch.dto.UserResponseDTO
+import com.jobsearch.dto.*
 import com.jobsearch.entity.Application
 import com.jobsearch.entity.Cv
 import com.jobsearch.entity.JobFamily
@@ -106,7 +103,13 @@ class UserService @Autowired constructor(
             lastName = user.lastName,
             email = user.email,
             roleId = user.role?.id ?: -1,
-            cv = mapToCvDTO(cv)
+            cv = cv.let {
+                if (it != null) {
+                    mapToCvDTO(it)
+                } else {
+                    null
+                }
+            }
         )
     }
 

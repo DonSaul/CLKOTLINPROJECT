@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Box, Typography, Card, Button } from '@mui/material';
 import { useGetCurrentUserProfile } from '../hooks/profile/useGetCurrentUserProfile'
+import LoadingSpinner from './LoadingSpinner';
 
 
 const CurrentUserInfo = () => {
@@ -14,7 +15,7 @@ const CurrentUserInfo = () => {
     }, [data]);
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <LoadingSpinner></LoadingSpinner>;
     }
 
     if (isError) {
