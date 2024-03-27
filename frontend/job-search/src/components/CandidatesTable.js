@@ -10,7 +10,7 @@ import { useSendInvitation } from '../hooks/useSendInvitation';
 import { paths } from '../router/paths';
 // import { PersonalInvitation } from './PersonalInvitation';
 
-export default function CandidatesTable({ dataFromQuery, onRowSelectionChange }) {
+export default function CandidatesTable({ dataFromQuery, onRowSelectionChange, fromVacancyView }) {
 
 
     const { getUserRole } = useAuth();
@@ -91,7 +91,8 @@ export default function CandidatesTable({ dataFromQuery, onRowSelectionChange })
         enableGlobalFilter: false,
         enableColumnFilters: false,
         //enableColumnOrdering: true, //enable some features
-        enableRowSelection: true,
+        enableRowSelection: fromVacancyView
+     ? false : true,
         getRowId: (originalRow) => originalRow.id,
         //onRowSelectionChange: handleRowSelectionChange,
         enableHiding: false,
@@ -116,7 +117,6 @@ export default function CandidatesTable({ dataFromQuery, onRowSelectionChange })
         enableRowActions: true,
         renderRowActionMenuItems: ({ row }) => [
     <MenuItem key="edit" onClick={() => {
-        console.log("row",row);
         navigate(`${paths.vacancies}/${row.original.id}`);
         }}>
       View Profile
@@ -127,7 +127,7 @@ export default function CandidatesTable({ dataFromQuery, onRowSelectionChange })
 
     const someEventHandler = () => {
         //read the table state during an event from the table instance
-        console.log(table.getState().sorting);
+        // console.log(table.getState().sorting);
     }
 
     return (

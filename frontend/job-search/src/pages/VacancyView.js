@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CardContainer from '../components/CardContainer';
-import { useParams, useNavigate } from 'react-router-dom'; // Importa useNavigate en lugar de useHistory
+import { useParams, useNavigate } from 'react-router-dom';
 import { useGetVacancyById } from '../hooks/useGetVacancy';
 import { Button, Card, CardHeader, Typography } from '@mui/material';
 import { CardContent } from '@mui/material';
@@ -29,18 +29,18 @@ const VacancyView = () => {
 
     console.log('Vacancy Data:', vacancyData);
 
-    // const fetchCandidates = async () => {
-    //     try {
-    //         const result = await getCandidatesByApplication(id);
-    //         setCandidates(result);
-    //     } catch (error) {
-    //         console.error('Error fetching vacancies:', error);
-    //     }
-    // };
+    const fetchCandidates = async () => {
+        try {
+            const result = await getCandidatesByApplication(id);
+            setCandidates(result);
+        } catch (error) {
+            console.error('Error fetching vacancies:', error);
+        }
+    };
 
-    // useEffect(() => {
-    //     fetchCandidates();
-    // }, []);
+    useEffect(() => {
+        fetchCandidates();
+    }, []);
 
 
     const appliedMessage = "Applied"
@@ -132,8 +132,7 @@ const VacancyView = () => {
                         {vacancyData.manager.email === getUserEmail()
                             ? (<CardContent>
                                 <Typography variant="subtitle1" style={{ fontSize: '1.2rem' }}>Candidates that applied</Typography>
-                                {/* <CandidatesTable dataFromQuery={candidates}></CandidatesTable> */}
-                                <ManagerSearchPage vacancyId={id}></ManagerSearchPage>
+                                <CandidatesTable dataFromQuery={candidates} fromVacancyView={true}></CandidatesTable>
                             </CardContent>)
                             : null
                         }

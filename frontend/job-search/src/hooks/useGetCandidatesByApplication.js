@@ -2,7 +2,6 @@ import { ENDPOINTS } from '../helpers/endpoints';
 import { AUTH_TOKEN_NAME } from '../helpers/constants';
 
 const fetchCandidatesByApplication = async (id, token) => {
-  console.log("ID getCandidatesByApplication:  ", `${ENDPOINTS.getCandidatesByApplication}/${id}`)
   const response = await fetch(`${ENDPOINTS.getCandidatesByApplication}/${id}`, {
     headers: {
       'Content-Type': 'application/json',
