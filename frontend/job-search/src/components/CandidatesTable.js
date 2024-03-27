@@ -80,6 +80,7 @@ export default function CandidatesTable({ dataFromQuery, onRowSelectionChange, f
 
     const handleInvite = (rowData) => {
         const candidateId = rowData.id;
+        console.log("data in row",rowData);
         console.log('Sending invitation to candidate:', candidateId);
         navigate(`${paths.sendInvitation.replace(':id', candidateId)}`);
     };
