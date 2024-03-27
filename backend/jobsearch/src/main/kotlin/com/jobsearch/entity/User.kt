@@ -20,7 +20,7 @@ data class User(
     var role: Role? = null,
 
     @Column(name = "notification_activated", nullable = false)
-    var notificationActivated: Boolean = false,
+    var notificationActivated: Boolean = true,
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

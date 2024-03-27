@@ -26,4 +26,9 @@ export const ROLES = {
     }
   };
 
+  export const NOTIFICATION_TYPES = {
+    VACANCIES:1,
+    INVITATIONS:2,
+    MESSAGES:3
+  }
   

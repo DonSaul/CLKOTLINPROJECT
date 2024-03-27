@@ -76,7 +76,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   const contextValue = {
-    user,
     logout,
     isLoggedIn,
     getUserRole,

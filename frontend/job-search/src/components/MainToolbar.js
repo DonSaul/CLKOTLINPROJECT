@@ -49,10 +49,9 @@ import Badge from '@mui/material/Badge'; // Import Badge component
 
 export default function MainToolbar() {
 
-  const { logout, getUserRole, isLoggedIn, user } = useAuth();
-  const notifications = useNotificationData(user?.email); // Fetch notifications data
+  const { logout, getUserRole, isLoggedIn, user, getUserEmail } = useAuth();
+  const notifications = useNotificationData(getUserEmail()); // Fetch notifications data
   const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
-  const location = useLocation();
 
   useEffect(() => {
     if (notifications) {
@@ -65,7 +64,6 @@ export default function MainToolbar() {
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
-    //console.log("valuetab",newValue);
     setValue(newValue);
   };
   const tabStyles = {
