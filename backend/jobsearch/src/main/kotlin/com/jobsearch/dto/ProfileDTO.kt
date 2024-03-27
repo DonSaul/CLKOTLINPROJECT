@@ -5,7 +5,7 @@ class ProfileDTO(
     var lastName: String,
     var email: String,
 //    var roleId: Int,
-//    var cv: CvResponseDTO? = null,
+    var cv: CvResponseDTO? = null,
 
 ) {
 }

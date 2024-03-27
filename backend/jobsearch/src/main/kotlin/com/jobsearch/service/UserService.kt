@@ -1,9 +1,6 @@
 package com.jobsearch.service
 
-import com.jobsearch.dto.CandidateDTO
-import com.jobsearch.dto.ProfileDTO
-import com.jobsearch.dto.UserRequestDTO
-import com.jobsearch.dto.UserResponseDTO
+import com.jobsearch.dto.*
 import com.jobsearch.entity.Cv
 import com.jobsearch.entity.JobFamily
 import com.jobsearch.entity.User
@@ -31,7 +28,6 @@ class UserService @Autowired constructor(
     private val notificationTypeRepository: NotificationTypeRepository,
     private val cvRepository: CvRepository,
     private val interestService: InterestService,
-//    private val cvService: CvService
 ) {
     @Transactional
     fun createUser(userRequestDTO: UserRequestDTO): UserResponseDTO? {
@@ -89,42 +85,41 @@ class UserService @Autowired constructor(
         return ProfileDTO(user.firstName, user.lastName, user.email)
     }
 
-    @Transactional
     fun getUserProfileInfo(userId: Int): ProfileDTO {
         val user = userRepository.findById(userId)
             .orElseThrow { NotFoundException("No user found with id $userId") }
-//        val cv =  cvRepository.findByUser(user).last()
+        val cv =  cvRepository.findFirstByUserOrderByIdDesc(user)
 
         return ProfileDTO(
             firstName = user.firstName,
             lastName = user.lastName,
             email = user.email,
 //            roleId = user.role?.id ?: -1
-//            cv = cvService.mapToCvDTO(cv)
+            cv = mapToCvDTO(cv)
         )
     }
 
-    @Transactional
-    fun updateUserProfile(userId: Int, updatedProfile: ProfileDTO): ProfileDTO {
-        val user = userRepository.findById(userId)
-            .orElseThrow { NotFoundException("No user found with id $userId") }
-        if (userId === user.id) {
-            // Update profile
-            user.apply {
-                firstName = updatedProfile.firstName
-                lastName = updatedProfile.lastName
-                email = updatedProfile.email
-            }
-        }
-
-        val updatedUserProfile = userRepository.save(user)
-        return ProfileDTO(
-            firstName = updatedUserProfile.firstName,
-            lastName = updatedUserProfile.lastName,
-            email = updatedProfile.email,
-           // roleId = updatedUserProfile.role?.id ?: -1
-        )
-    }
+//    @Transactional
+//    fun updateUserProfile(userId: Int, updatedProfile: ProfileDTO): ProfileDTO {
+//        val user = userRepository.findById(userId)
+//            .orElseThrow { NotFoundException("No user found with id $userId") }
+//        if (userId === user.id) {
+//            // Update profile
+//            user.apply {
+//                firstName = updatedProfile.firstName
+//                lastName = updatedProfile.lastName
+//                email = updatedProfile.email
+//            }
+//        }
+//
+//        val updatedUserProfile = userRepository.save(user)
+//        return ProfileDTO(
+//            firstName = updatedUserProfile.firstName,
+//            lastName = updatedUserProfile.lastName,
+//            email = updatedProfile.email,
+//           // roleId = updatedUserProfile.role?.id ?: -1
+//        )
+//    }
 
     @Transactional
     fun updateUser(userId: Int, userRequestDTO: UserRequestDTO): UserResponseDTO {
@@ -245,4 +240,31 @@ class UserService @Autowired constructor(
             jobFamilies ?: emptyList()
         )
     }
+
+    fun mapToCvDTO(cv: Cv): CvResponseDTO {
+        return CvResponseDTO(
+            id = cv.id!!,
+            yearsOfExperience = cv.yearsOfExperience,
+            salaryExpectation = cv.salaryExpectation,
+            education = cv.education,
+            projects = cv.projects?.map { project ->
+                ProjectResponseDTO(
+                    projectId = project.projectId!!,
+                    name = project.name,
+                    description = project.description,
+                    jobFamily = JobFamilyDto(
+                        id = project.jobFamily.id!!,
+                        name = project.jobFamily.name
+                    )
+                )
+            }?.toSet() ?: emptySet(),
+            skills = cv.skills?.map { skill ->
+                SkillDTO(
+                    skillId = skill.skillId!!,
+                    name = skill.name
+                )
+            }?.toSet() ?: emptySet()
+        )
+    }
 }
+
