@@ -117,7 +117,7 @@ export default function CandidatesTable({ dataFromQuery, onRowSelectionChange })
         renderRowActionMenuItems: ({ row }) => [
             <MenuItem key="edit" onClick={() => {
                 console.log("row", row);
-                //navigate(`${paths.vacancies}/${row.original.id}`);
+                navigate(`${paths.profiles}/${row.original.id}`);
             }}>
                 Visit
             </MenuItem>,

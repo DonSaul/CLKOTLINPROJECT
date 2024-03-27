@@ -31,5 +31,5 @@ export const ENDPOINTS = {
   getCurrentConversationMessages:createUrl("conversation/messages"),
   sendMessage:createUrl("conversation/send-message"),
   invitation:createUrl("invitations"),
-  userProfile:createUrl("profiles"),
+  candidateProfile:createUrl("profiles"),
 };

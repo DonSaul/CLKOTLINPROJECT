@@ -18,6 +18,7 @@ export const paths = {
     createUser:'/admin/users/new',
     sendInvitation:'/users/:id/send-invitation',
     notAccess:'/no-access',
+    profiles:'/profiles',
     candidateProfile:'/profiles/:id' ,
 
 }
