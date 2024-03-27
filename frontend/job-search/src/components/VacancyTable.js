@@ -7,13 +7,24 @@ import { ROLES } from '../helpers/constants';
 import { useAuth } from '../helpers/userContext';
 import { useApplyVacancy } from '../hooks/useApplyVacancy';
 import { paths } from '../router/paths';
+import { useDeleteVacancy } from '../hooks/useDeleteVacancy';
+import DeleteConfirmationModal from './DeleteConfirmationModal';
+
 export default function VacancyTable({ dataFromQuery }) {
 
 
     const { getUserRole } = useAuth();
     const { mutate: applyToVacancy, isError, isSuccess } = useApplyVacancy();
+    const [openDeleteModal, setOpenDeleteModal] = useState(false);
+    const { mutate: deleteVacancy } = useDeleteVacancy();
+    const [selectedId, setSelectedId] = useState(null);
+    const [vacancies, setVacancies] = useState(dataFromQuery);
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        setVacancies(dataFromQuery);
+    }, [dataFromQuery]);
 
     const columnsVacancies = useMemo(() => {
         const columns = [
@@ -53,7 +64,7 @@ export default function VacancyTable({ dataFromQuery }) {
                     ? appliedMessage
                     :
                     <div id={row.original.id}>
-                        <Button variant="contained" color="primary" onClick={() => handleApply(row.original)}>
+                    <Button variant="contained" color="primary" onClick={() => handleApply(row.original)}>
                         Apply
                     </Button>
                     </div>
@@ -85,41 +96,70 @@ export default function VacancyTable({ dataFromQuery }) {
     };
     const appliedMessage = "Applied"
 
-    const table = useMaterialReactTable({
+    const handleOpenDeleteModal = () => {
+        setOpenDeleteModal(true);
+      };
+    
+      const handleCloseDeleteModal = () => {
+        setOpenDeleteModal(false);
+      };
+    
+      const handleConfirmDelete = () => {
+        deleteVacancy(selectedId);
+        setVacancies(vacancies.filter(vacancy => vacancy.id !== selectedId));
+        handleCloseDeleteModal();
+      };
+
+      const table = useMaterialReactTable({
         columns: columnsVacancies,
-        data: dataFromQuery ? dataFromQuery : [],
+        data: vacancies,
         hiddenColumns: ['id'],
         enableGlobalFilter: false,
         enableColumnFilters: false,
-        //enableColumnOrdering: true, //enable some features
         enableRowSelection: false,
         enableHiding: false,
-        enablePagination: true, //disable a default feature
-        onRowSelectionChange: setRowSelection, //hoist internal state to your own state (optional)
-        state: { rowSelection }, //manage your own state, pass it back to the table (optional)
+        enablePagination: true,
+        onRowSelectionChange: setRowSelection,
+        state: { rowSelection },
         initialState: { columnVisibility: { vacancyId: false } },
-        //enableHiding:false
         enableRowActions: true,
-        renderRowActionMenuItems: ({ row }) => [
-            <MenuItem key="edit" onClick={() => {
-                console.log("row",row);
-                navigate(`${paths.vacancies}/${row.original.id}`);
+        renderRowActionMenuItems: ({ row }) => {
+            const deleteMenuItem = getUserRole() === ROLES.MANAGER ? (
+                <MenuItem key="edit" onClick={() => {
+                    setSelectedId(row.original.id);
+                    console.log("selectedId",selectedId)
+                    handleOpenDeleteModal();
                 }}>
-            Visit
-            </MenuItem>,               
-            <MenuItem key="edit" onClick={() => console.info('Delete')}>
-            Delete
-            </MenuItem>,
-        ],
-        
+                    Delete
+                </MenuItem>
+            ) : null;
+    
+            return [
+                <MenuItem key="view" onClick={() => {
+                    console.log("row", row);
+                    navigate(`${paths.vacancies}/${row.original.id}`);
+                }}>
+                    View
+                </MenuItem>,
+                deleteMenuItem
+            ];
+        }
     });
+    
 
     const someEventHandler = () => {
         //read the table state during an event from the table instance
         console.log(table.getState().sorting);
     }
 
-    return (
-        <MaterialReactTable table={table} /> //other more lightweight MRT sub components also available
+    return (<>
+        <MaterialReactTable table={table} />
+        {<DeleteConfirmationModal
+            open={openDeleteModal}
+            onClose={handleCloseDeleteModal}
+            onConfirm={handleConfirmDelete}
+        />
+        }
+        </>
     );
 }

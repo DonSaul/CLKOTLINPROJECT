@@ -17,6 +17,8 @@ import { useDeleteVacancy } from '../hooks/useDeleteVacancy';
 import { CreateVacancy } from './CreateVacancy';
 import { paths } from '../router/paths';
 import ManagerSearchPage from './ManagerSearchPage';
+import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
+
 
 const VacancyView = () => {
     const { id } = useParams();
@@ -25,10 +27,9 @@ const VacancyView = () => {
     const { data: vacancyData, isLoading: isLoadingVacancy, isError: isErrorVacancy } = useGetVacancyById(id);
     const [candidates, setCandidates] = useState([]);
     const { mutate: deleteVacancy } = useDeleteVacancy();
+    const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const navigate = useNavigate();
-
-    console.log('Vacancy Data:', vacancyData);
-
+    const appliedMessage = "Applied"
     const fetchCandidates = async () => {
         try {
             const result = await getCandidatesByApplication(id);
@@ -37,13 +38,13 @@ const VacancyView = () => {
             console.error('Error fetching vacancies:', error);
         }
     };
+    
+     
 
     useEffect(() => {
         fetchCandidates();
     }, []);
 
-
-    const appliedMessage = "Applied"
     const handleApply = (rowData) => {
         console.log('Applying to vacancy:', rowData);
         let applicationData = {
@@ -54,15 +55,23 @@ const VacancyView = () => {
         buttonDiv.innerHTML = appliedMessage;
     };
 
-    const handleDelete = (rowData) => {
-        console.log('Deleting vacancy:', rowData);
-        deleteVacancy(id);
-    };
-
     const handleUpdate = () => {
         navigate(`${paths.vacancies}/update/${vacancyData.id}`)
     };
 
+    const handleOpenDeleteModal = () => {
+        setOpenDeleteModal(true);
+      };
+    
+      const handleCloseDeleteModal = () => {
+        setOpenDeleteModal(false);
+      };
+    
+      const handleConfirmDelete = () => {
+        deleteVacancy(id);
+        handleCloseDeleteModal();
+        navigate(paths.vacancies); 
+      };
     return (
         <>
             <CardContainer width='xl'>
@@ -115,17 +124,24 @@ const VacancyView = () => {
                                         Apply
                                     </Button>)}
                                     </div>
-                                )}
+                                )} 
                                 {vacancyData.manager.email === getUserEmail() && (
                                     <>
-                                        <Button variant="contained" color="warning" size="large" onClick={handleDelete}>
-                                            Delete Vacancy
+                                        <Button variant="contained" color="warning" size="large" onClick={handleOpenDeleteModal}>
+                                        Delete Vacancy
                                         </Button>
+
                                         <Button variant="contained" color="warning" size="large" onClick={handleUpdate}>
                                             Update Vacancy
                                         </Button>
                                     </>
                                 )}
+                                {<DeleteConfirmationModal
+                                    open={openDeleteModal}
+                                    onClose={handleCloseDeleteModal}
+                                    onConfirm={handleConfirmDelete}
+                                />
+                                }
                             </CardActions>
 
                         </CardContent>
