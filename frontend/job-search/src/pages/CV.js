@@ -54,10 +54,8 @@ const CV = () => {
   //skills
   useEffect(() => {
     if (skills && selectedSkillsArray.length > 0) {
-      console.log("entering condition", skills.filter(skill => !selectedSkillsArray.some(selected => selected.skillId === skill.skillId)))
       setAvailableSkills(skills.filter(skill => !selectedSkillsArray.some(selected => selected.skillId === skill.skillId)));
     } else if (skills) {
-      console.log("no selected")
       setAvailableSkills(skills);
     }
   }, [skills, selectedSkillsArray]);
@@ -84,14 +82,11 @@ const CV = () => {
   }
 
   const handleRemoveSkill = (skillId) => {
-    console.log(availableSkills);
+
     setSelectedSkillsArray((prevArray) => prevArray.filter((skill) => skill.skillId !== skillId));
   };
 
-  const handleSendSkills = () => {
 
-    console.log('Sending skills test:', selectedSkillsArray.map((skill) => skill.skillId));
-  };
 
 
   const addProjectField = () => {

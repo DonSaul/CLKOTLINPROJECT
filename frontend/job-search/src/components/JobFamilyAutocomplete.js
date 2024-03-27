@@ -20,8 +20,6 @@ const JobFamilyAutocomplete = ({value, onChange,label = 'Select Job Family for P
           value={jobFamilies?.find((option) => getOptionValue(option) === value) || null}
           isOptionEqualToValue={(option, val) => getOptionValue(option) === val}
           onChange={(e, newValue) => {
-            console.log("job families",jobFamilies)
-            console.log("new value autocomplete jib",newValue)
             onChange(newValue)} }
           renderInput={(params) => <TextField {...params} label={label} margin="normal"/>}
         />

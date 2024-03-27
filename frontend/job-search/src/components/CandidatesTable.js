@@ -69,7 +69,7 @@ export default function CandidatesTable({ dataFromQuery, onRowSelectionChange })
     const [rowSelection, setRowSelection] = useState({});
 
     const handleRowSelectionChange = (selectedRowIds) => {
-        //console.log("selected", selectedRowIds)
+       
         setRowSelection(selectedRowIds);
         onRowSelectionChange(selectedRowIds);
     };

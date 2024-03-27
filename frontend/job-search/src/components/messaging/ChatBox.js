@@ -10,14 +10,13 @@ import { getRoleString } from '../../helpers/constants';
 import { CircularProgress } from '@mui/material';
 import { truncateText } from '../../helpers/funHelpers';
 const ChatBox = ({ data, user, userData, onSendMessage, isLoadingConversation }) => {
-    //console.log('Data prop:', data);
-    //console.log("user data", userData);
+
     const { getUserEmail, getUserFirstName, getUserLastName } = useAuth();
 
 
     const messages = data?.data || [];
 
-    //const [chatMessages, setChatMessages] = useState(messages ? messages : []);
+
     const [chatMessages, setChatMessages] = useState([]);
     const chatContainerRef = useRef();
 
@@ -28,18 +27,7 @@ const ChatBox = ({ data, user, userData, onSendMessage, isLoadingConversation })
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
     }
-    /*
-    useEffect(() => {
-        if (data?.length > 0 && userData) {
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-            console.log("chatMessages i n box", chatContainerRef.current.scrollHeight);
-            scrollToBottom();
-        }
 
-    }, [userData?.email]);
-*/
-
-    //this effect is amazing
     useLayoutEffect(() => {
         scrollToBottom();
     }, [chatMessages]);
@@ -48,7 +36,7 @@ const ChatBox = ({ data, user, userData, onSendMessage, isLoadingConversation })
 
     useEffect(() => {
         if (data?.length > 0) {
-            //console.log("message data", data)
+           
             setChatMessages(data);
         } else {
             setChatMessages([]);
@@ -61,9 +49,7 @@ const ChatBox = ({ data, user, userData, onSendMessage, isLoadingConversation })
 
     const handleSendMessage = (newMessage) => {
 
-        //console.log("message", newMessage);
-        //console.log("selectedconversation", user);
-        //console.log("messages", updatedMessages);
+
         let dataMessage = {
             message: newMessage,
             receiverUserName: user
@@ -76,16 +62,13 @@ const ChatBox = ({ data, user, userData, onSendMessage, isLoadingConversation })
             ...prevMessages,
             { message: newMessage, date: new Date(), sender: { firstName: getUserFirstName(), lastName: getUserLastName(), email: getUserEmail() } }
         ]);
-        //console.log("out of sync messages:", chatMessages);
+
 
         sendMessage(dataMessage);
 
-        //onSendMessage();
+  
     };
 
-
-
-    //console.log('Type of chatMessages:', typeof data);
     return (
         <>
             <Box sx={{

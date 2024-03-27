@@ -52,7 +52,6 @@ const Messaging = () => {
     useEffect(() => {
 
         if (selectedConversation) {
-            //console.log("YES ", currentConversation)
             fetchConversation();
         }
 
@@ -67,7 +66,6 @@ const Messaging = () => {
         let interval;
         if (selectedConversation) {
             interval = setInterval(() => {
-                //console.log("running again...");
                 fetchAllConversations();
             }, 1000);
         }
@@ -78,7 +76,6 @@ const Messaging = () => {
         let interval;
         if (selectedConversation) {
             interval = setInterval(() => {
-                //console.log("running current conversation...");
                 fetchConversation();
             }, 1000);
         }
