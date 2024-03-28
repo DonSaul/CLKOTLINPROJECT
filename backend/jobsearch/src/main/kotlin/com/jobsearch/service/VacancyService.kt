@@ -4,6 +4,7 @@ import com.jobsearch.dto.JobFamilyDto
 import com.jobsearch.dto.UserResponseDTO
 import com.jobsearch.dto.VacancyRequestDTO
 import com.jobsearch.dto.VacancyResponseDTO
+import com.jobsearch.entity.RoleEnum
 import com.jobsearch.entity.Vacancy
 import com.jobsearch.exception.ForbiddenException
 import com.jobsearch.exception.NotFoundException
@@ -48,7 +49,7 @@ class VacancyService(
     fun createVacancy(vacancyDto: VacancyRequestDTO): VacancyResponseDTO {
         val selectedJobFamily = jobFamilyService.findByJobFamilyId(vacancyDto.jobFamilyId)
         val managerUser = userService.retrieveAuthenticatedUser()
-        if (managerUser.role?.name != "manager") throw ForbiddenException("You are not allowed to create a new vacancy.")
+        if (managerUser.role?.name != RoleEnum.MANAGER.roleName) throw ForbiddenException("You are not allowed to create a new vacancy.")
         val vacancyEntity = vacancyDto.let {
             Vacancy(null, it.name, it.companyName, it.salaryExpectation, it.yearsOfExperience, it.description, selectedJobFamily, managerUser)
         }
