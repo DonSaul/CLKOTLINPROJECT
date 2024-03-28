@@ -50,7 +50,7 @@ const Footer = () => {
             {/* Members Grid */}
             <Grid item xs={12} sm={4}>
                 <div style={{ textAlign: 'center' }}>
-                    <Typography variant="body1">Made with 🤍 by:</Typography>
+                    <Typography variant="body1">Made with <span style={{ color: 'transparent', textShadow: '0 0 0 #ef457c' }}>🤍</span> by:</Typography>
                     <Typography variant="body2" style={{ marginLeft: '10px' }}>
                         {/* Render the first three members */}
                         {firstThreeMembers.map((name, index) => (
