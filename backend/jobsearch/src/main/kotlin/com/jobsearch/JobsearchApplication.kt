@@ -210,19 +210,29 @@ class JobsearchApplication {
             }
             //Some cv here
 
-            // Managerio Mangolio
-            val user = com.jobsearch.entity.User(1, "Mangolio", "Managerio", "1234", "mana@mana")
-            val managerioMangolioUser =
-                userService.retrieveAllUsers().find { it.firstName == "Managerio" && it.lastName == "Mangolio" }
-            val managerioMangolioCv = managerioMangolioUser?.let {
-                Cv(
+            // CAn can
+            /*
+            val candidateUser: User? = candidate.let { can ->
+                userRepository.findById(can.id!!).orElse(null)
+            }
+
+            val userHasCV = cvRepository.findFirstByUserOrderByIdDesc(candidateUser!!)
+
+            if (userHasCV==null){
+
+                val userCV = Cv(
                     yearsOfExperience = 5,
                     salaryExpectation = 70000,
                     education = "Licenciatura en Ingeniería Informática",
-                    user = user,
+                    user = candidateUser,
                 )
+                userCV.let { cvRepository.save(it) }
+
+
             }
-            managerioMangolioCv?.let { cvRepository.save(it) }
+
+            */
+
         }
     }
 }
