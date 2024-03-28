@@ -48,7 +48,7 @@ class JobsearchApplication {
 
             val manager = userService.createUser(userRequestDTO)
 
-            val admin = UserRequestDTO(
+            val adminRequestDTO = UserRequestDTO(
                 firstName = "Admino",
                 lastName = "Admalio",
                 email = "admin@admin",
@@ -56,9 +56,9 @@ class JobsearchApplication {
                 roleId = 3
             )
 
-            userService.createUser(admin)
+            val admin = userService.createUser(adminRequestDTO)
 
-            val candidate = UserRequestDTO(
+            val candidateRequestDTO = UserRequestDTO(
                 firstName = "Can",
                 lastName = "Didate",
                 email = "can@can",
@@ -66,7 +66,7 @@ class JobsearchApplication {
                 roleId = 1
             )
 
-            userService.createUser(candidate)
+            val candidate = userService.createUser(candidateRequestDTO)
 
 
             //Vacancies for mana@mana
@@ -208,11 +208,9 @@ class JobsearchApplication {
                 }
             }
             //Some cv here
-
             // CAn can
-
-            val candidateUser: User? = candidate.let { can ->
-                userRepository.findByEmail(can.email).orElse(null)
+            val candidateUser: User? = candidate?.let { can ->
+                userRepository.findById(can.id).orElse(null)
             }
 
             val userHasCV = cvRepository.findFirstByUserOrderByIdDesc(candidateUser!!)
@@ -266,10 +264,6 @@ class JobsearchApplication {
 
                 )
                 overrideService.createCvOverride(cvRequest)
-
-
-
-
 
 
             }
