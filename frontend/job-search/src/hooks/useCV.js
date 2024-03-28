@@ -29,7 +29,9 @@ export const useCV = () => {
 
         if (res.status===403){
           toast.error('You are not allowed to do that'); 
-        } else{
+        } else if (res.status===400){
+          toast.error('Invalid CV Data!'); 
+        } else {
           toast.success("CV created successfully!")
         }
 
@@ -115,7 +117,9 @@ export const useCV = () => {
 
         if (res.status===403){
           toast.error('You are not allowed to do that'); 
-        } else{
+        } else if (res.status===400){
+          toast.error('Invalid CV Data!'); 
+        } else {
           toast.success("CV updated successfully!")
         }
       },
