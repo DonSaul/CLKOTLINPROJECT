@@ -86,12 +86,10 @@ export const useCV = () => {
 
   export const useGetCurrentUserCv = () => {
     return useQuery('cv-user', fetchCVByUser, {
-      refetchOnWindowFocus: false, // possible fix
+      refetchOnWindowFocus: false
     });
   };
   
-
-
 
   const updateCV = async (data) => {
     let token = localStorage.getItem(AUTH_TOKEN_NAME);

@@ -22,6 +22,8 @@ import NotAccess from "../pages/NotAccess";
 import VacancyView from "../pages/VacancyView";
 import ManagerSearchPage from "../pages/ManagerSearchPage";
 import { SendInvite } from "../pages/SendInvite";
+import CandidateProfile from "../pages/CandidateProfile";
+import CandidateProfileInfo from "../components/CandidateProfileInfo";
 import ManagerVacanciesPage from "../pages/ManagerVacanciesPage";
 import Footer from "../components/layout/Footer";
 import Layout from "../components/layout/Layout";
@@ -42,6 +44,8 @@ const RoutesConfig = () => {
         <Route path={paths.profile} element={<Profile />} />
         <Route path={paths.vacancies} element={<Vacancies />} />
         <Route path={paths.vacancyDetails} element={<VacancyView />} />
+        <Route path={paths.candidateProfile} element={<CandidateProfileInfo />} />
+        <Route path={paths.profile} element={<Profile />} />
 
       </Route>
 
