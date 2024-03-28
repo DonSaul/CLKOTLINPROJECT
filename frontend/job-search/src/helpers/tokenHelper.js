@@ -7,6 +7,8 @@ const getDecodedToken = (token) => {
     try {
       const payload = token.split('.')[1];
       const decodedPayload = atob(payload);
+
+      
       return JSON.parse(decodedPayload);
     } catch (error) {
       console.error('Error decoding token:', error);
@@ -17,6 +19,7 @@ const getDecodedToken = (token) => {
   const getEmailFromToken = (token) => {
     try {
       const decodedToken = getDecodedToken(token);
+     
       return decodedToken.sub || null;
     } catch (error) {
       console.error('Error decoding token:', error);
@@ -38,6 +41,18 @@ const getDecodedToken = (token) => {
     try {
       const decodedToken = getDecodedToken(token);
       return decodedToken.last_name || null;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
+    }
+  };
+
+  const getIdFromToken = (token) => {
+    try {
+      const decodedToken = getDecodedToken(token);
+
+     
+      return decodedToken.id || null;
     } catch (error) {
       console.error('Error decoding token:', error);
       return null;
@@ -68,4 +83,4 @@ const getDecodedToken = (token) => {
       return null;
   };
   
-  export { getEmailFromToken, getRoleFromToken ,getFirstNameFromToken,getLastNameFromToken};
+  export { getEmailFromToken, getRoleFromToken ,getFirstNameFromToken,getLastNameFromToken, getIdFromToken};

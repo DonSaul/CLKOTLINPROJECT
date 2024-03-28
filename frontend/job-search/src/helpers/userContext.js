@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AUTH_TOKEN_NAME } from './constants';
-import { getEmailFromToken,getFirstNameFromToken,getLastNameFromToken,getRoleFromToken } from './tokenHelper';
+import { getEmailFromToken,getFirstNameFromToken,getLastNameFromToken,getRoleFromToken, getIdFromToken } from './tokenHelper';
 import { toast } from 'react-toastify';
 import { queryClient } from './queryClient';
 
@@ -45,6 +45,14 @@ export const AuthProvider = ({ children }) => {
   }
 
 
+  const getUserIdFromToken =() =>{
+    return getIdFromToken(localStorage.getItem(AUTH_TOKEN_NAME));
+  }
+
+
+
+
+
   const getUserRole = (override = false, role) => {
     const authToken = localStorage.getItem(AUTH_TOKEN_NAME);
 
@@ -82,7 +90,8 @@ export const AuthProvider = ({ children }) => {
     login,
     getUserEmail,
     getUserFirstName,
-    getUserLastName
+    getUserLastName,
+    getUserIdFromToken
   };
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;

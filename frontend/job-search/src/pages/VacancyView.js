@@ -157,10 +157,12 @@ const VacancyView = () => {
 
                                 </CardContent>
                                 {vacancyData.manager.email === getUserEmail()
-                                    ? (<CardContent>
-                                        <Typography variant="subtitle1" style={{ fontSize: '1.2rem' }}>Candidates that applied</Typography>
-                                        <CandidatesTable dataFromQuery={candidates} fromVacancyView={true}></CandidatesTable>
-                                    </CardContent>)
+                                    ? (<CardContent style={{ padding: '20px', background: '#f5f5f5' }}> 
+                                    <div style={{ marginBottom: '20px' }}>
+                                        <Typography variant="h5" style={{ marginBottom: '10px' }}>Candidates that applied</Typography>
+                                        <CandidatesTable dataFromQuery={candidates} fromVacancyView={true} />
+                                    </div>
+                                </CardContent>)
                                     : null
                                 }
 

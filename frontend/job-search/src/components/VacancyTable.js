@@ -9,11 +9,12 @@ import { useApplyVacancy } from '../hooks/useApplyVacancy';
 import { paths } from '../router/paths';
 import { useDeleteVacancy } from '../hooks/useDeleteVacancy';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
+import { toast } from 'react-toastify';
 
 export default function VacancyTable({ dataFromQuery }) {
 
 
-    const { getUserRole } = useAuth();
+    const { getUserRole, getUserIdFromToken } = useAuth();
     const { mutate: applyToVacancy, isError, isSuccess } = useApplyVacancy();
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const { mutate: deleteVacancy } = useDeleteVacancy();
@@ -104,10 +105,14 @@ export default function VacancyTable({ dataFromQuery }) {
         setOpenDeleteModal(false);
       };
     
-      const handleConfirmDelete = () => {
-        deleteVacancy(selectedId);
-        setVacancies(vacancies.filter(vacancy => vacancy.id !== selectedId));
-        handleCloseDeleteModal();
+      const handleConfirmDelete = async() => {
+        try {
+            await deleteVacancy(selectedId);
+            setVacancies(vacancies.filter(vacancy => vacancy.id !== selectedId));
+            handleCloseDeleteModal();
+        } catch (error) {
+            toast.error('Error deleting vacancy:', error);
+        }
       };
 
       const table = useMaterialReactTable({
@@ -121,17 +126,25 @@ export default function VacancyTable({ dataFromQuery }) {
         enablePagination: true,
         onRowSelectionChange: setRowSelection,
         state: { rowSelection },
-        initialState: { columnVisibility: { vacancyId: false } },
+        initialState: { columnVisibility: { vacancyId: false }, density: 'compact', },
         enableRowActions: true,
         renderRowActionMenuItems: ({ row }) => {
             const deleteMenuItem = getUserRole() === ROLES.MANAGER ? (
-                <MenuItem key="edit" onClick={() => {
+                getUserIdFromToken() === row.original.manager.id &&
+                (<MenuItem key="edit" onClick={() => {
                     setSelectedId(row.original.id);
                     console.log("selectedId",selectedId)
                     handleOpenDeleteModal();
                 }}>
                     Delete
-                </MenuItem>
+                </MenuItem>)
+                // <MenuItem key="edit" onClick={() => {
+                //         setSelectedId(row.original.id);
+                //         console.log("selectedId",selectedId)
+                //         handleOpenDeleteModal();
+                //     }}>
+                //         Delete
+                //     </MenuItem>
             ) : null;
     
             return [

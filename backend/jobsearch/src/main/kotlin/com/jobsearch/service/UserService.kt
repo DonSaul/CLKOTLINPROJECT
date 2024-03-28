@@ -1,12 +1,10 @@
 package com.jobsearch.service
 
 import com.jobsearch.dto.*
-import com.jobsearch.entity.Application
-import com.jobsearch.entity.Cv
-import com.jobsearch.entity.JobFamily
-import com.jobsearch.entity.User
+import com.jobsearch.entity.*
 import com.jobsearch.exception.ForbiddenException
 import com.jobsearch.exception.NotFoundException
+import com.jobsearch.mapper.CvMapper
 import com.jobsearch.repository.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -16,9 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import kotlin.NoSuchElementException
-import com.jobsearch.entity.NotificationTypeEnum
-
 
 
 @Service
@@ -31,7 +26,8 @@ class UserService @Autowired constructor(
     val cvRepository: CvRepository,
     private val notificationTypeService: NotificationTypeService,
     private val vacancyRepository: VacancyRepository,
-    private val applicationRepository: ApplicationRepository
+    private val applicationRepository: ApplicationRepository,
+    private val cvMapper: CvMapper
 ) {
     @Transactional
     fun createUser(userRequestDTO: UserRequestDTO): UserResponseDTO? {
@@ -39,7 +35,7 @@ class UserService @Autowired constructor(
         val existingUser = userRepository.findByEmail(userRequestDTO.email)
 
         if (existingUser.isPresent) {
-            return null
+            return mapToUserResponseDTO(existingUser.get())
         }
 
         val activatedNotificationTypeEnums = setOf(NotificationTypeEnum.VACANCIES, NotificationTypeEnum.INVITATIONS, NotificationTypeEnum.MESSAGES)
@@ -105,7 +101,7 @@ class UserService @Autowired constructor(
             roleId = user.role?.id ?: -1,
             cv = cv.let {
                 if (it != null) {
-                    mapToCvDTO(it)
+                    cvMapper.mapToDto(it)
                 } else {
                     null
                 }
@@ -293,10 +289,10 @@ class UserService @Autowired constructor(
         val user = retrieveAuthenticatedUser()
         if (vacancy.manager != user) throw ForbiddenException("You are not authorized to perform this action")
         val applications = applicationRepository.findByVacancy(vacancy)
-        return applications.map { mapToUserCandidateDTO(it) }
+        return applications.map { mapToUserCandidateDTOAplication(it) }
     }
 
-    fun mapToUserCandidateDTO(application: Application): CandidateDTO {
+    fun mapToUserCandidateDTOAplication(application: Application): CandidateDTO {
         return application.let {
             CandidateDTO(
                 it.candidate.id!!,
@@ -311,31 +307,5 @@ class UserService @Autowired constructor(
         }
     }
 
-
-    fun mapToCvDTO(cv: Cv): CvResponseDTO {
-        return CvResponseDTO(
-            id = cv.id!!,
-            yearsOfExperience = cv.yearsOfExperience,
-            salaryExpectation = cv.salaryExpectation,
-            education = cv.education,
-            projects = cv.projects?.map { project ->
-                ProjectResponseDTO(
-                    projectId = project.projectId!!,
-                    name = project.name,
-                    description = project.description,
-                    jobFamily = JobFamilyDto(
-                        id = project.jobFamily.id!!,
-                        name = project.jobFamily.name
-                    )
-                )
-            }?.toSet() ?: emptySet(),
-            skills = cv.skills?.map { skill ->
-                SkillDTO(
-                    skillId = skill.skillId!!,
-                    name = skill.name
-                )
-            }?.toSet() ?: emptySet()
-        )
-    }
 }
 
