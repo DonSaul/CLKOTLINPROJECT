@@ -5,5 +5,5 @@ data class UserResponseDTO(
     val firstName: String,
     val lastName: String,
     val email: String,
-    val roleId: Int
+    val roleId: Int,
 )

@@ -35,6 +35,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("javax.xml.bind:jaxb-api:2.3.1")
 	implementation ("io.jsonwebtoken:jjwt:0.9.1")
+	implementation("org.glassfish.jersey.core:jersey-common:3.1.5")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
