@@ -35,7 +35,7 @@ class UserService @Autowired constructor(
         val existingUser = userRepository.findByEmail(userRequestDTO.email)
 
         if (existingUser.isPresent) {
-            return null
+            return mapToUserResponseDTO(existingUser.get())
         }
 
         val activatedNotificationTypeEnums = setOf(NotificationTypeEnum.VACANCIES, NotificationTypeEnum.INVITATIONS, NotificationTypeEnum.MESSAGES)
