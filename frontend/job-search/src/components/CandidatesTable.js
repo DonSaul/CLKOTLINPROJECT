@@ -9,16 +9,30 @@ import { useAuth } from '../helpers/userContext';
 import { useSendInvitation } from '../hooks/useSendInvitation';
 import { paths } from '../router/paths';
 // import { PersonalInvitation } from './PersonalInvitation';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 export default function CandidatesTable({ dataFromQuery, onRowSelectionChange, fromVacancyView }) {
 
 
     const { getUserRole } = useAuth();
-    const { mutate: sendInvitation, isError, isSuccess } = useSendInvitation();  //remove
+    const { mutate: sendInvitation, isError, isSuccess } = useSendInvitation();
     const navigate = useNavigate();
     const columnsCandidates = useMemo(
         () => [
-            {
+             {
+                accessorKey: 'viewProfile',
+                header: 'View Profile',
+                Cell: ({ row }) => (
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <VisibilityIcon
+                            key="viewEye"
+                            onClick={() => navigate(`${paths.profiles}/${row.original.id}`)}
+                            style={{ cursor: 'pointer' }} 
+                        />
+                    </div>
+                ),
+                },
+                {
                 accessorKey: 'jobFamilies',
                 header: 'Categories',
                 Cell: ({ row }) => (
@@ -113,21 +127,9 @@ export default function CandidatesTable({ dataFromQuery, onRowSelectionChange, f
             size: 150, //default size is usually 180
         },
         state: { rowSelection }, //manage your own state, pass it back to the table (optional)
-        initialState: { columnVisibility: { vacancyId: false } },
+        initialState: { columnVisibility: { vacancyId: false }, density: 'compact', },
         //enableHiding:false
-        enableRowActions: true,
-        renderRowActionMenuItems: ({ row }) => [
-            <MenuItem key="edit" onClick={() => {
-                console.log("row", row);
-                navigate(`${paths.profiles}/${row.original.id}`);
-            }}>
-                Visit
-            </MenuItem>,
-            <MenuItem>
-                Send Invitation
-            </MenuItem>
-        ],
-
+        enableRowActions: false,
     });
 
     const someEventHandler = () => {
