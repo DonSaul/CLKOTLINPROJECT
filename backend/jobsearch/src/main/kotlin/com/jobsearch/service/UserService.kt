@@ -293,10 +293,10 @@ class UserService @Autowired constructor(
         val user = retrieveAuthenticatedUser()
         if (vacancy.manager != user) throw ForbiddenException("You are not authorized to perform this action")
         val applications = applicationRepository.findByVacancy(vacancy)
-        return applications.map { mapToUserCandidateDTO(it) }
+        return applications.map { mapToUserCandidateDTOAplication(it) }
     }
 
-    fun mapToUserCandidateDTO(application: Application): CandidateDTO {
+    fun mapToUserCandidateDTOAplication(application: Application): CandidateDTO {
         return application.let {
             CandidateDTO(
                 it.candidate.id!!,

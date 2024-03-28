@@ -344,7 +344,7 @@ const CV = () => {
                   flexWrap="wrap"
                   gap={.5}
                   p={2}
-                  sx={{ border: '2px solid grey' }}
+                  sx={{ borderRadius: '4px', border: '1px solid #1976d2' }}
                 >
                   {selectedSkillsArray.map((skill) => (
                     <Chip
