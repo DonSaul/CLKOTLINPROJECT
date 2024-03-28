@@ -1,10 +1,12 @@
 package com.jobsearch.service
 
-import com.jobsearch.dto.*
+import com.jobsearch.dto.CvRequestDTO
+import com.jobsearch.dto.CvResponseDTO
 import com.jobsearch.entity.Cv
 import com.jobsearch.entity.Job
 import com.jobsearch.entity.Project
 import com.jobsearch.exception.NotFoundException
+import com.jobsearch.mapper.CvMapper
 import com.jobsearch.repository.CvRepository
 import com.jobsearch.repository.JobFamilyRepository
 import com.jobsearch.repository.SkillRepository
@@ -17,7 +19,9 @@ class CvService(
     private val skillRepository: SkillRepository,
     private val jobFamilyRepository: JobFamilyRepository,
     private val userService: UserService,
-    private val interestService: InterestService,) {
+    private val interestService: InterestService,
+    private val cvMapper: CvMapper
+) {
 
     @Transactional
     fun createCv(cvDTO: CvRequestDTO): CvResponseDTO {
@@ -78,7 +82,7 @@ class CvService(
 
         val newCv = cvRepository.save(cv)
 
-        return mapToCvDTO(newCv)
+        return cvMapper.mapToDto(newCv)
     }
 
 
@@ -86,13 +90,13 @@ class CvService(
         val cv = cvRepository.findById(cvId)
             .orElseThrow { NotFoundException("No CV found with id $cvId") }
 
-        return mapToCvDTO(cv)
+        return cvMapper.mapToDto(cv)
     }
 
     fun retrieveAllCvs(): List<CvResponseDTO> {
         val cvs = cvRepository.findAll()
 
-        return cvs.map { mapToCvDTO(it) }
+        return cvs.map { cvMapper.mapToDto(it) }
     }
 
     @Transactional
@@ -193,7 +197,7 @@ class CvService(
 
         val updatedCv = cvRepository.save(cv)
 
-        return mapToCvDTO(updatedCv)
+        return cvMapper.mapToDto(updatedCv)
     }
 
     fun deleteCv(cvId: Int): String {
@@ -208,58 +212,18 @@ class CvService(
     fun retrieveAllMyAccountsCvs(): List<CvResponseDTO> {
         val cvs = cvRepository.findByUser(userService.retrieveAuthenticatedUser())
 
-        return cvs.map { mapToCvDTO(it) }
+        return cvs.map { cvMapper.mapToDto(it) }
     }
 
     fun retrieveMyAccountsCv(cvId: Int): CvResponseDTO {
         val cv = cvRepository.findByUserAndId(userService.retrieveAuthenticatedUser(), cvId)
 
-        return mapToCvDTO(cv)
+        return cvMapper.mapToDto(cv)
     }
 
     fun retrieveMyAccountsLastCv(): CvResponseDTO {
         val cv = cvRepository.findFirstByUserOrderByIdDesc(userService.retrieveAuthenticatedUser())
 
-        return mapToCvDTO(cv!!)
-    }
-
-
-    private fun mapToCvDTO(cv: Cv): CvResponseDTO {
-        return CvResponseDTO(
-            id = cv.id!!,
-            yearsOfExperience = cv.yearsOfExperience,
-            salaryExpectation = cv.salaryExpectation,
-            education = cv.education,
-            jobs = cv.jobs?.map { job ->
-                JobResponseDTO(
-                    id = job.id!!,
-                    startDate = job.startDate,
-                    endDate = job.endDate,
-                    position = job.position,
-                    description = job.description,
-                    jobFamily = JobFamilyDto(
-                        id = job.jobFamily.id!!,
-                        name = job.jobFamily.name
-                    )
-                )
-            }?.toSet() ?: emptySet(),
-            projects = cv.projects?.map { project ->
-                ProjectResponseDTO(
-                    id = project.id!!,
-                    name = project.name,
-                    description = project.description,
-                    jobFamily = JobFamilyDto(
-                        id = project.jobFamily.id!!,
-                        name = project.jobFamily.name
-                    )
-                )
-            }?.toSet() ?: emptySet(),
-            skills = cv.skills?.map { skill ->
-                SkillDTO(
-                    skillId = skill.skillId!!,
-                    name = skill.name
-                )
-            }?.toSet() ?: emptySet()
-        )
+        return cvMapper.mapToDto(cv!!)
     }
 }
