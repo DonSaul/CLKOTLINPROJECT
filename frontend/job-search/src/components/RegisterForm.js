@@ -10,6 +10,8 @@ import { useRegister } from '../hooks/useRegister';
 import { ROLES } from '../helpers/constants';
 import { useNavigate } from 'react-router-dom';
 import { useCreateUser } from '../hooks/useCreateUser';
+import TextFieldPassword from './TextFieldPassword';
+
 const RegisterForm = ({ variant = 'register', title = 'Sign up to find a Job' }) => {
 
   const [firstName, setFirstName] = useState('');
@@ -18,17 +20,17 @@ const RegisterForm = ({ variant = 'register', title = 'Sign up to find a Job' })
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('Candidate');
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const navigate= useNavigate()
+  const navigate = useNavigate()
 
   const { mutate, isError, isSuccess } = useRegister();
-  const {mutate:createUser,isError:creationError,isSuccess:creationSuccess}= useCreateUser();
+  const { mutate: createUser, isError: creationError, isSuccess: creationSuccess } = useCreateUser();
 
 
   useEffect(() => {
     if (isSuccess) {
-      console.log("variant,",variant)
-      if (variant=='register'){
-        
+      console.log("variant,", variant)
+      if (variant == 'register') {
+
         navigate("/login")
       }
 
@@ -65,30 +67,30 @@ const RegisterForm = ({ variant = 'register', title = 'Sign up to find a Job' })
     };
 
 
-    if (variant==='create'){
+    if (variant === 'create') {
 
       try {
         await createUser(formData);
 
-      } catch(error){
-        
-      }
-     
+      } catch (error) {
 
-    }else {
+      }
+
+
+    } else {
       try {
         await mutate(formData);
-        console.log("variant,",variant)
-  
+        console.log("variant,", variant)
+
       } catch (error) {
-  
-  
+
+
       }
 
 
     }
 
-   
+
 
 
 
@@ -130,14 +132,9 @@ const RegisterForm = ({ variant = 'register', title = 'Sign up to find a Job' })
         margin="normal"
       />
 
-      <TextField
-        label="Password"
-        type="password"
-        value={password}
+      <TextFieldPassword
+        password={password}
         onChange={(e) => setPassword(e.target.value)}
-        required
-        fullWidth
-        margin="normal"
       />
 
       <Stack direction="row" spacing={1} style={{ marginBottom: '10px' }}>
