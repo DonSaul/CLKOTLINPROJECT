@@ -1,7 +1,10 @@
 package com.jobsearch.service
 
 import com.jobsearch.dto.*
-import com.jobsearch.entity.*
+import com.jobsearch.entity.Application
+import com.jobsearch.entity.Cv
+import com.jobsearch.entity.NotificationTypeEnum
+import com.jobsearch.entity.User
 import com.jobsearch.exception.ForbiddenException
 import com.jobsearch.exception.NotFoundException
 import com.jobsearch.mapper.CvMapper
@@ -239,16 +242,9 @@ class UserService @Autowired constructor(
 
 
     fun findCandidatesByFilter(salary: Int?, jobFamilyId: Int?, yearsOfExperience: Int?): List<CandidateDTO> {
-        val cvs = cvRepository.findCvByFilter(salary, yearsOfExperience)
+        val cvs = cvRepository.findCvByFilter(salary, jobFamilyId, yearsOfExperience)
 
-        return cvs.mapNotNull { cv ->
-            val jobFamilies = cv.user.id?.let { interestService.getJobFamilyByUserId(it) }
-            if (jobFamilyId == null || jobFamilies?.any { it.id == jobFamilyId } == true) {
-                mapToUserCandidateDTO(cv, jobFamilies)
-            } else {
-                null
-            }
-        }
+        return cvs.map { cv -> mapToUserCandidateDTO(cv) }
     }
 
     fun getUserNotificationStatus(email: String): Boolean {
@@ -273,7 +269,13 @@ class UserService @Autowired constructor(
     }
 
 
-    fun mapToUserCandidateDTO(cvEntity: Cv, jobFamilies: List<JobFamily>?): CandidateDTO {
+    fun mapToUserCandidateDTO(cvEntity: Cv): CandidateDTO {
+
+        val jobFamiliesSorted = (cvEntity.jobs?.map { it.jobFamily }?.toSet() ?: emptySet()) +
+                (cvEntity.projects?.map { it.jobFamily }?.toSet() ?: emptySet())
+
+        val jobFamilies = jobFamiliesSorted.sortedBy { it.name }.toList()
+
         return CandidateDTO(
             cvEntity.user.id!!,
             cvEntity.user.firstName,
@@ -281,7 +283,7 @@ class UserService @Autowired constructor(
             cvEntity.user.email,
             cvEntity.yearsOfExperience,
             cvEntity.salaryExpectation,
-            jobFamilies ?: emptyList()
+            jobFamilies
         )
     }
     fun findCandidatesByVacancyApplication(vacancyId: Int): List<CandidateDTO> {
