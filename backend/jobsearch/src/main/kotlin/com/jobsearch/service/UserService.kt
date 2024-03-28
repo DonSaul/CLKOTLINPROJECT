@@ -1,10 +1,7 @@
 package com.jobsearch.service
 
 import com.jobsearch.dto.*
-import com.jobsearch.entity.Application
-import com.jobsearch.entity.Cv
-import com.jobsearch.entity.NotificationTypeEnum
-import com.jobsearch.entity.User
+import com.jobsearch.entity.*
 import com.jobsearch.exception.ForbiddenException
 import com.jobsearch.exception.NotFoundException
 import com.jobsearch.mapper.CvMapper
