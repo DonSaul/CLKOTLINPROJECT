@@ -42,32 +42,37 @@ class CvService(
 
         // Adding jobs to CV
         cvDTO.jobs.forEach { jobDTO ->
-
-            cv.jobs?.add(
-                Job(
-                    cv = cv,
-                    startDate = jobDTO.startDate,
-                    endDate = jobDTO.endDate,
-                    position = jobDTO.position,
-                    description = jobDTO.description,
-                    jobFamily = jobFamilyRepository.findById(jobDTO.jobFamilyId)
-                        .orElseThrow { NotFoundException("No Job Family found with id ${jobDTO.jobFamilyId}") }
+            val jobFamily = jobFamilyRepository.findById(jobDTO.jobFamilyId).orElse(null)
+            interestService.createInterest(jobFamily.id!!, cv.user.id!!)
+            jobFamily?.let {
+                cv.jobs?.add(
+                    Job(
+                        cv = cv,
+                        startDate = jobDTO.startDate,
+                        endDate = jobDTO.endDate,
+                        position = jobDTO.position,
+                        description = jobDTO.description,
+                        jobFamily = it
+                    )
                 )
-            )
+            }
         }
 
         // Adding projects to CV
         cvDTO.projects.forEach { projectDTO ->
+            val jobFamily = jobFamilyRepository.findById(projectDTO.jobFamilyId).orElse(null)
 
-            cv.projects?.add(
-                Project(
-                    cv = cv,
-                    name = projectDTO.name,
-                    description = projectDTO.description,
-                    jobFamily = jobFamilyRepository.findById(projectDTO.jobFamilyId)
-                        .orElseThrow { NotFoundException("No Job Family found with id ${projectDTO.jobFamilyId}") }
+            interestService.createInterest(jobFamily.id!!, cv.user.id!!)
+            jobFamily?.let {
+                cv.projects?.add(
+                    Project(
+                        cv = cv,
+                        name = projectDTO.name,
+                        description = projectDTO.description,
+                        jobFamily = it
+                    )
                 )
-            )
+            }
         }
 
         // Adding skills to CV
