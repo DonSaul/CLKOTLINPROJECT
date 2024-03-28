@@ -2,10 +2,10 @@ import { useQuery } from 'react-query';
 import { AUTH_TOKEN_NAME } from '../helpers/constants';
 import { ENDPOINTS } from '../helpers/endpoints';
 
-const fetchCandidates = async (salary, jobFamilyId, yearsOfExperience) => {
+const fetchCandidates = async (salaryExpectation, jobFamilyId, yearsOfExperience) => {
     let token = localStorage.getItem(AUTH_TOKEN_NAME);
     const queryParameters = new URLSearchParams({
-        salary: salary || '',
+        salaryExpectation: salaryExpectation || '',
         jobFamilyId: jobFamilyId || '',
         yearsOfExperience: yearsOfExperience || '',
     });
@@ -24,8 +24,8 @@ const fetchCandidates = async (salary, jobFamilyId, yearsOfExperience) => {
     return candidates.data;
 };
 
-const useSearchCandidates = (salary, jobFamilyId, yearsOfExperience) => {
-    return useQuery('searchCandidates', () => fetchCandidates(salary, jobFamilyId, yearsOfExperience));
+const useSearchCandidates = (salaryExpectation, jobFamilyId, yearsOfExperience) => {
+    return useQuery('searchCandidates', () => fetchCandidates(salaryExpectation, jobFamilyId, yearsOfExperience));
 };
 
 export default useSearchCandidates;
