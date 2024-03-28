@@ -20,23 +20,26 @@ import JobFamilyAutocomplete from '../components/JobFamilyAutocomplete';
 
 import SnackbarNotification from '../components/SnackbarNotification';
 import { useAuth } from '../helpers/userContext';
+import useMonths from '../hooks/useMonths';
+
 const CV = () => {
   //todo: fix user change
   //Current user send id, when available
-  const [id, setId] = useState(); 
+  const [id, setId] = useState();
   const [hasFetchedData, setHasFetchedData] = useState(false);
   const { logout, getUserRole, isLoggedIn } = useAuth();
-  const { data: cvData, error: cvError, isLoading: isCvLoading, isSuccess:isCvSuccess } = useGetCurrentUserCv();
-
+  const { data: cvData, error: cvError, isLoading: isCvLoading, isSuccess: isCvSuccess } = useGetCurrentUserCv();
 
   //Standard data cv
   const [yearsOfExperience, setYearsOfExperience] = useState('');
-  const [salaryExpectations, setSalaryExpectations] = useState('');
+  const [salaryExpectation, setSalaryExpectation] = useState('');
   const [education, setEducation] = useState('');
-  //const [project, setProject] = useState('');
 
-  //tsting 
-  const [projects, setProjects] = useState([{ name: '', description: '' }]);
+  //Jobs
+  const [jobs, setJobs] = useState([]);
+
+  //Projects
+  const [projects, setProjects] = useState([]);
 
   //Skills
   const { data: skills } = useSkills();
@@ -44,81 +47,103 @@ const CV = () => {
   const [selectedSkillsArray, setSelectedSkillsArray] = useState([]);
   const [availableSkills, setAvailableSkills] = useState([]);
 
+  //Months
+  const months = useMonths();
+
   //Job family
   const { data: jobFamilies } = useJobFamily();
 
-
   //mutation
   const { mutate, isError, isSuccess } = useCV();
-  const { mutate:updateCVbyID } = useUpdateCV();
+  const { mutate: updateCVbyID } = useUpdateCV();
 
-//simple way to fetch
-  useEffect( () => {
+  //simple way to fetch
+  useEffect(() => {
 
     if (cvData) {
       setCvData(cvData);
     }
-    
 
-  },[cvData])
+  }, [cvData])
 
- 
-//skills
+
+  //skills
   useEffect(() => {
     if (skills && selectedSkillsArray.length > 0) {
-      console.log("entering condition", skills.filter(skill => !selectedSkillsArray.some(selected => selected.skillId === skill.skillId)))
       setAvailableSkills(skills.filter(skill => !selectedSkillsArray.some(selected => selected.skillId === skill.skillId)));
     } else if (skills) {
-      console.log("no selected")
       setAvailableSkills(skills);
     }
   }, [skills, selectedSkillsArray]);
- 
+
   //Testing
 
+  const setCvData = (cvData) => {
 
-  const setCvData = (cvData) =>{
-
-      setId(cvData.id)
-      setYearsOfExperience(cvData.yearsOfExperience);
-      setSalaryExpectations(cvData.salaryExpectation);
-      setEducation(cvData.education);
-      setProjects(cvData.projects || [{ name: '', description: '' }]);
-      setSelectedSkillsArray(cvData.skills || []);
+    setId(cvData.id)
+    setYearsOfExperience(cvData.yearsOfExperience);
+    setSalaryExpectation(cvData.salaryExpectation);
+    setEducation(cvData.education);
+    setJobs(cvData.jobs);
+    setProjects(cvData.projects);
+    setSelectedSkillsArray(cvData.skills);
 
   }
 
-  const clearCv= () =>{
+  const clearCv = () => {
     setId('')
     setYearsOfExperience('');
-    setSalaryExpectations('');
+    setSalaryExpectation('');
     setEducation('');
-    setProjects([{ name: '', description: '' }]);
+    setJobs([]);
+    setProjects([]);
     setSelectedSkillsArray([]);
-
   }
 
   const handleRemoveSkill = (skillId) => {
-    console.log(availableSkills);
     setSelectedSkillsArray((prevArray) => prevArray.filter((skill) => skill.skillId !== skillId));
   };
 
-  const handleSendSkills = () => {
+  const addJobField = () => {
+    const newJob = {
+      startMonth: '',
+      startYear: '',
+      endMonth: '',
+      endYear: '',
+      position: '',
+      description: '',
+      jobFamily: '',
+    };
 
-    console.log('Sending skills test:', selectedSkillsArray.map((skill) => skill.skillId));
+    setJobs([...jobs, newJob]);
   };
 
+  const removeJobsField = (index) => {
+    const updatedJobs = [...jobs];
+    updatedJobs.splice(index, 1);
+    setJobs(updatedJobs);
+  };
 
   const addProjectField = () => {
-    setProjects([...projects, { name: '', description: '' }]);
+    const newProject = {
+      name: '',
+      description: '',
+      jobFamily: '',
+    };
+
+    setProjects([...projects, newProject]);
   };
 
   const removeProjectField = (index) => {
-    if (projects.length > 1) {
-      const updatedProjects = [...projects];
-      updatedProjects.splice(index, 1);
-      setProjects(updatedProjects);
-    }
+    const updatedProjects = [...projects];
+    updatedProjects.splice(index, 1);
+    setProjects(updatedProjects);
+  };
+
+  const handleJobChange = (index, field, value) => {
+    const updatedJobs = [...jobs];
+    updatedJobs[index][field] = value;
+    setJobs(updatedJobs);
   };
 
   const handleProjectChange = (index, field, value) => {
@@ -130,78 +155,50 @@ const CV = () => {
 
   const updateCV = () => {
 
-
     updateCVbyID()
-    
+
   };
-
-
-
-
-
-
-
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    //Quick fix for empty values
-    if (
-      !yearsOfExperience ||
-      !salaryExpectations ||
-      !education ||
-      projects.some(project => !project.name || !project.description || !project.jobFamily) ||
-      selectedSkillsArray.length === 0
-    ) {
-      console.log('Validation failed');
-      return;
-    }
-
-    let longSkillString = selectedSkillsArray.map(skill => skill.skillId).join(",")
-
-    const formattedProjects = projects.map(project => ({
-      name: project.name,
-      description: project.description,
-      jobFamilyId: project?.jobFamily?.id,
-      projectId:project?.projectId
-    }));
+    const formatedJobs = jobs.map(({ jobFamily, ...rest }) => ({ ...rest, jobFamilyId: jobFamily.id }))
+    const formatedProjects = projects.map(({ jobFamily, ...rest }) => ({ ...rest, jobFamilyId: jobFamily.id }))
+    const skillIds = selectedSkillsArray.map(skill => skill.skillId)
 
     const formData = {
+      id,
       yearsOfExperience,
-      salaryExpectation: salaryExpectations,
+      salaryExpectation,
       education,
-      longSkillString,
-      projects: formattedProjects,
-      id
+      skillIds,
+      jobs: formatedJobs,
+      projects: formatedProjects,
     };
 
+    console.log(formData)
 
     try {
       if (id) {
-        
+
         await updateCVbyID(formData);
       } else {
-       
+
         await mutate(formData);
       }
     } catch (error) {
-     
+
       console.error('Error:', error);
     }
- 
-
-
 
   };
 
   return (
     <div>
 
-
       <CardContainer>
         <h1>Curriculum</h1>
 
-  
         <h2>General</h2>
         <form onSubmit={handleSubmit}>
           <TextField
@@ -222,17 +219,91 @@ const CV = () => {
             margin="normal"
             required
           />
-
           <TextField
-            label="Salary Expectations"
+            label="Salary Expectation"
             type="number"
-            value={salaryExpectations}
-            onChange={(e) => setSalaryExpectations(e.target.value)}
+            value={salaryExpectation}
+            onChange={(e) => setSalaryExpectation(e.target.value)}
             fullWidth
             margin="normal"
             required
           />
 
+          <h2>Jobs</h2>
+          {jobs.map((job, index) => (
+            <Box key={index} sx={{ border: '1px solid grey', padding: 2, marginBottom: 2 }}>
+              <Box display={'flex'} gap={2}>
+                <Autocomplete
+                  fullWidth
+                  options={Object.keys(months).map(Number) || []}
+                  getOptionLabel={(option) => months[option] || ''}
+                  value={job.startMonth || null}
+                  onChange={(e, newValue) => handleJobChange(index, 'startMonth', newValue)}
+                  renderInput={(params) => <TextField {...params} label={`Select Start Month for Job ${index + 1}`} margin="normal" />}
+                />
+                <TextField
+                  fullWidth
+                  label={`Job ${index + 1} Start Year`}
+                  value={job.startYear}
+                  onChange={(e) => handleJobChange(index, 'startYear', e.target.value)}
+                  margin="normal"
+                  type="number"
+                  required
+                />
+                <Autocomplete
+                  fullWidth
+                  options={Object.keys(months).map(Number) || []}
+                  getOptionLabel={(option) => months[option] || ''}
+                  value={job.endMonth || null}
+                  isOptionEqualToValue={(option, value) => option === value}
+                  onChange={(e, newValue) => handleJobChange(index, 'endMonth', newValue)}
+                  renderInput={(params) => <TextField {...params} label={`Select End Month for Job`} margin="normal" />}
+                />
+                <TextField
+                  fullWidth
+                  label={`Job ${index + 1} End Year`}
+                  value={job.endYear}
+                  onChange={(e) => handleJobChange(index, 'endYear', e.target.value)}
+                  margin="normal"
+                  type="number"
+                  required
+                />
+              </Box>
+              <TextField
+                label={`Job ${index + 1} Position`}
+                value={job.position}
+                onChange={(e) => handleJobChange(index, 'position', e.target.value)}
+                fullWidth
+                margin="normal"
+                required
+              />
+              <TextField
+                label={`Job ${index + 1} Description`}
+                value={job.description}
+                onChange={(e) => handleJobChange(index, 'description', e.target.value)}
+                fullWidth
+                margin="normal"
+                required
+              />
+              <Autocomplete
+                options={jobFamilies || []}
+                getOptionLabel={(option) => option.name || ''}
+                value={job.jobFamily || null}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                onChange={(e, newValue) => handleJobChange(index, 'jobFamily', newValue)}
+                renderInput={(params) => <TextField {...params} label={`Select Job Family for Job ${index + 1}`} margin="normal" />}
+              />
+
+              <Button onClick={() => removeJobsField(index)} variant="outlined" color="secondary" sx={{ margin: '10px' }}>
+                {`Remove Job ${index + 1}`}
+              </Button>
+
+            </Box>
+          ))}
+
+          <Button onClick={addJobField} variant="outlined" color="primary">
+            {jobs.length ? 'Add Another Job' : 'Add A New Job'}
+          </Button>
 
           <h2>Projects</h2>
           {projects.map((project, index) => (
@@ -253,49 +324,24 @@ const CV = () => {
                 margin="normal"
                 required
               />
-               <Autocomplete
+              <Autocomplete
                 options={jobFamilies || []}
                 getOptionLabel={(option) => option.name || ''}
                 value={project.jobFamily || null}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
                 onChange={(e, newValue) => handleProjectChange(index, 'jobFamily', newValue)}
-                renderInput={(params) => <TextField {...params} label={`Select Job Family for Project`} margin="normal"/>}
+                renderInput={(params) => <TextField {...params} label={`Select Job Family for Project ${index + 1}`} margin="normal" />}
               />
 
-              {/* 
-              <JobFamilyAutocomplete 
-              onChange={(e,newValue) => handleProjectChange(index, 'jobFamily', newValue)}
-              label={`Select Job Family for Project`}
-              value={project.jobFamily || null}
-              />*/}
-
-             
-
-
-              {projects.length > 1 && (
-                <Button onClick={() => removeProjectField(index)} variant="outlined" color="secondary">
-                  Remove Project
-                </Button>
-              )}
+              <Button onClick={() => removeProjectField(index)} variant="outlined" color="secondary" sx={{ margin: '10px' }}>
+                {`Remove Project ${index + 1}`}
+              </Button>
             </Box>
           ))}
 
           <Button onClick={addProjectField} variant="outlined" color="primary">
-            Add Another Project
+            {projects.length ? 'Add Another Project' : 'Add A New Project'}
           </Button>
-
-
-
-
-          {/*  <TextField
-            label="Projects"
-            type="text"
-            value={project}
-            onChange={(e) => setProject(e.target.value)}
-            fullWidth
-            margin="normal"
-          />
-*/}
 
           <h2>Skills</h2>
           <Autocomplete
@@ -316,26 +362,23 @@ const CV = () => {
             renderInput={(params) =>
               <TextField {...params} label="Add skills" />
             }
+            sx={{ marginBottom: 2 }}
           />
 
-
-
-
-
-
-          <Box
-            mx="auto"
-            height="auto"
-            width="80%"
-            my={4}
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            gap={4}
-            p={2}
-            sx={{ border: '2px solid grey' }}
-          >
-            <div>
+          {
+            !!selectedSkillsArray.length &&
+            <Box
+              mx="auto"
+              height="auto"
+              width="80%"
+              my={4}
+              display="flex"
+              justifyContent="center"
+              flexWrap="wrap"
+              gap={.5}
+              p={2}
+              sx={{ border: '2px solid grey' }}
+            >
               {selectedSkillsArray.map((skill) => (
                 <Chip
                   key={skill.skillId}
@@ -346,21 +389,16 @@ const CV = () => {
                   color="primary"
                 />
               ))}
-            </div>
-          </Box>
-
+            </Box>
+          }
 
           <Button type="submit" variant="contained" color="primary" >
-        {id ? 'Update CV' : 'Save CV'}
-      </Button>
+            {id ? 'Update CV' : 'Save CV'}
+          </Button>
 
         </form>
 
-
-
-
       </CardContainer>
-
 
     </div>
   );
