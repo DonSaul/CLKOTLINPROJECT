@@ -10,6 +10,8 @@ import { paths } from '../router/paths';
 import { useDeleteVacancy } from '../hooks/useDeleteVacancy';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
 import { toast } from 'react-toastify';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+
 
 export default function VacancyTable({ dataFromQuery }) {
 
@@ -57,6 +59,20 @@ export default function VacancyTable({ dataFromQuery }) {
         ];
 
         if (getUserRole() === ROLES.CANDIDATE) {
+            columns.unshift({
+                accessorKey: 'viewVacancy',
+                header: 'View Vacancy',
+                Cell: ({ row }) => (
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <VisibilityIcon
+                            key="viewEye"
+                            onClick={() => navigate(`${paths.vacancies}/${row.original.id}`)}
+                            style={{ cursor: 'pointer' }} 
+                        />
+                    </div>
+                ),
+                })
+                
             columns.push({
                 id: 'applyButton',
                 header: 'Status',
@@ -115,6 +131,8 @@ export default function VacancyTable({ dataFromQuery }) {
         }
       };
 
+      const userRoleIsCandidate = () => getUserRole() === ROLES.CANDIDATE;
+
       const table = useMaterialReactTable({
         columns: columnsVacancies,
         data: vacancies,
@@ -127,7 +145,7 @@ export default function VacancyTable({ dataFromQuery }) {
         onRowSelectionChange: setRowSelection,
         state: { rowSelection },
         initialState: { columnVisibility: { vacancyId: false }, density: 'compact', },
-        enableRowActions: true,
+        enableRowActions: !userRoleIsCandidate(),
         renderRowActionMenuItems: ({ row }) => {
             const deleteMenuItem = getUserRole() === ROLES.MANAGER ? (
                 getUserIdFromToken() === row.original.manager.id &&
@@ -138,13 +156,6 @@ export default function VacancyTable({ dataFromQuery }) {
                 }}>
                     Delete
                 </MenuItem>)
-                // <MenuItem key="edit" onClick={() => {
-                //         setSelectedId(row.original.id);
-                //         console.log("selectedId",selectedId)
-                //         handleOpenDeleteModal();
-                //     }}>
-                //         Delete
-                //     </MenuItem>
             ) : null;
     
             return [
