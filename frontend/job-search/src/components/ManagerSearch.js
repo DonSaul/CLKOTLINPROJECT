@@ -14,8 +14,8 @@ import { EmojiEventsTwoTone } from '@mui/icons-material';
 export const CandidatesFilter = ({ setData }) => {
   const [yearsOfExperience, setYearsOfExperience] = useState('');
   const [jobFamily, setJobFamily] = useState('');
-  const [salary, setSalary] = useState('');
-  const { dataVacancies, refetch } = useSearchCandidates(salary, jobFamily, yearsOfExperience);
+  const [salaryExpectation, setSalaryExpectation] = useState('');
+  const { dataVacancies, refetch } = useSearchCandidates(salaryExpectation, jobFamily, yearsOfExperience);
   const { data: jobFamilies } = useJobFamily();
 
   const handleYearsOfExperienceChange = (event) => {
@@ -27,12 +27,13 @@ export const CandidatesFilter = ({ setData }) => {
   };
 
   const handleSalaryChange = (event) => {
-    setSalary(event.target.value);
+    setSalaryExpectation(event.target.value);
   };
 
   const handleApplyFilter = async () => {
     try {
-      const fetchedData = await refetch(salary, jobFamily, yearsOfExperience);
+      const fetchedData = await refetch(salaryExpectation, jobFamily, yearsOfExperience);
+      console.log(fetchedData.data)
       setData(fetchedData.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -42,7 +43,7 @@ export const CandidatesFilter = ({ setData }) => {
   const handleResetFilter = () => {
     setYearsOfExperience('');
     setJobFamily('');
-    setSalary('');
+    setSalaryExpectation('');
   };
 
   // Ejecutar la búsqueda al cargar la página
@@ -52,8 +53,9 @@ export const CandidatesFilter = ({ setData }) => {
 
   // Ejecutar la búsqueda cada vez que cambie algún filtro
   useEffect(() => {
+    console.log("cambiando")
     handleApplyFilter();
-  }, [yearsOfExperience, jobFamily, salary]);
+  }, [yearsOfExperience, jobFamily, salaryExpectation]);
 
   return (
     <div>
@@ -86,7 +88,7 @@ export const CandidatesFilter = ({ setData }) => {
             <TextField
               label={<><MonetizationOnIcon /> Salary</>}
               type="number"
-              value={salary}
+              value={salaryExpectation}
               onChange={handleSalaryChange}
               fullWidth
               margin="normal"
