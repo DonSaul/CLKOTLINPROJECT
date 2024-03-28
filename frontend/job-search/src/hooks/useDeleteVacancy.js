@@ -13,7 +13,7 @@ const deleteVacancyById = async (id, token) => {
 
   if (response.status !== 204) {
     console.log(response.body)
-    throw new Error('Failed to delete vacancy');
+    throw new Error('Failed to delete vacancy1');
   }
 };
 
@@ -24,8 +24,8 @@ export const useDeleteVacancy = () => {
     try {
       await deleteVacancyById(id, token);
     } catch (error) {
-      console.error('Error deleting vacancy:', error);
-      throw error; // Re-throw the error so the caller can handle it
+      console.error(`Error deleting vacancy: ${error.message}`);
+      throw error; 
     }
   }, [token]);
 

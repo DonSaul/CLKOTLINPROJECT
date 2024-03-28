@@ -1,11 +1,15 @@
-package com.jobsearch.dto
+package com.jobsearch.dto.override
 
+import com.jobsearch.dto.JobRequestDTO
+import com.jobsearch.dto.ProjectRequestDTO
+import com.jobsearch.entity.User
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.Positive
 
-data class CvRequestDTO(
+
+data class OverrideCvRequestDTO(
 
     @field:Positive(message = "CV must have a valid number of years of experience")
     val yearsOfExperience: Int,
@@ -23,5 +27,7 @@ data class CvRequestDTO(
     val projects: List<ProjectRequestDTO>,
 
     @field:NotEmpty(message = "CV must list at least one skill")
-    val skillIds: Set<Int>
+    val skillIds: Set<Int>,
+
+    val user:User
 )

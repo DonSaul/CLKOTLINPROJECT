@@ -6,7 +6,6 @@ export const paths = {
     register:'/register',
     recoverPassword: '/forgot-password',
     changePassword: '/change-password',
-    profile:'/profile',
     cv:'/cv',
     vacancies:'/vacancies',
     managerSearchPage:'/managerSearchPage',
@@ -19,4 +18,8 @@ export const paths = {
     createUser:'/admin/users/new',
     sendInvitation:'/users/:id/send-invitation',
     notAccess:'/no-access',
+    profiles:'/profiles',
+    candidateProfile:'/profiles/:id',
+    profile:'/profile',
+
 }

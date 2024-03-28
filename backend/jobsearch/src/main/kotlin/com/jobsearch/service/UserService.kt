@@ -1,16 +1,10 @@
 package com.jobsearch.service
 
-import com.jobsearch.dto.CandidateDTO
-import com.jobsearch.dto.NotificationTypeDTO
-import com.jobsearch.dto.UserRequestDTO
-import com.jobsearch.dto.UserResponseDTO
-import com.jobsearch.entity.Application
-import com.jobsearch.entity.Cv
-import com.jobsearch.entity.Interest
-import com.jobsearch.entity.JobFamily
-import com.jobsearch.entity.User
+import com.jobsearch.dto.*
+import com.jobsearch.entity.*
 import com.jobsearch.exception.ForbiddenException
 import com.jobsearch.exception.NotFoundException
+import com.jobsearch.mapper.CvMapper
 import com.jobsearch.repository.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -20,9 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import kotlin.NoSuchElementException
-import com.jobsearch.entity.NotificationTypeEnum
-
 
 
 @Service
@@ -35,7 +26,8 @@ class UserService @Autowired constructor(
     val cvRepository: CvRepository,
     private val notificationTypeService: NotificationTypeService,
     private val vacancyRepository: VacancyRepository,
-    private val applicationRepository: ApplicationRepository
+    private val applicationRepository: ApplicationRepository,
+    private val cvMapper: CvMapper
 ) {
     @Transactional
     fun createUser(userRequestDTO: UserRequestDTO): UserResponseDTO? {
@@ -43,7 +35,7 @@ class UserService @Autowired constructor(
         val existingUser = userRepository.findByEmail(userRequestDTO.email)
 
         if (existingUser.isPresent) {
-            return null
+            return mapToUserResponseDTO(existingUser.get())
         }
 
         val activatedNotificationTypeEnums = setOf(NotificationTypeEnum.VACANCIES, NotificationTypeEnum.INVITATIONS, NotificationTypeEnum.MESSAGES)
@@ -79,6 +71,64 @@ class UserService @Autowired constructor(
         return users.map {
             mapToUserResponseDTO(it)
         }
+    }
+
+//    @Transactional
+//    fun getAllProfiles(): List<ProfileDTO> {
+//        val users = userRepository.findAll()
+//        val profiles = mutableListOf<ProfileDTO>()
+//
+//        for (user in users) {
+//            val profileDTO = mapToProfileDTO(user)
+//            profiles.add(profileDTO)
+//        }
+//        return profiles
+//    }
+//
+//    private fun mapToProfileDTO(user: User): ProfileDTO {
+//        return ProfileDTO(user.firstName, user.lastName, user.email, user.role, user.cv)
+//    }
+
+    fun getUserProfileInfo(userId: Int): ProfileDTO {
+        val user = userRepository.findById(userId)
+            .orElseThrow { NotFoundException("No user found with id $userId") }
+        val cv =  cvRepository.findFirstByUserOrderByIdDesc(user)
+
+        return ProfileDTO(
+            firstName = user.firstName,
+            lastName = user.lastName,
+            email = user.email,
+            roleId = user.role?.id ?: -1,
+            cv = cv.let {
+                if (it != null) {
+                    cvMapper.mapToDto(it)
+                } else {
+                    null
+                }
+            }
+        )
+    }
+
+    @Transactional
+    fun updateUserProfile(userId: Int, updatedProfile: ProfileDTO): ProfileDTO {
+        val user = userRepository.findById(userId)
+            .orElseThrow { NotFoundException("No user found with id $userId") }
+        if (userId === user.id) {
+            // Update profile
+            user.apply {
+                firstName = updatedProfile.firstName
+                lastName = updatedProfile.lastName
+                email = updatedProfile.email
+            }
+        }
+
+        val updatedUserProfile = userRepository.save(user)
+        return ProfileDTO(
+            firstName = updatedUserProfile.firstName,
+            lastName = updatedUserProfile.lastName,
+            email = updatedProfile.email,
+            roleId = updatedUserProfile.role?.id ?: -1
+        )
     }
 
     @Transactional
@@ -259,3 +309,4 @@ class UserService @Autowired constructor(
     }
 
 }
+
