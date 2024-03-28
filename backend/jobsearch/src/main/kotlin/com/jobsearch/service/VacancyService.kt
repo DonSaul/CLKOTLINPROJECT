@@ -46,7 +46,7 @@ class VacancyService(
 
     @Transactional
     fun createVacancy(vacancyDto: VacancyRequestDTO): VacancyResponseDTO {
-        val selectedJobFamily = jobFamilyService.findByJobFamilyId(vacancyDto.jobFamilyId).get()
+        val selectedJobFamily = jobFamilyService.findByJobFamilyId(vacancyDto.jobFamilyId)
         val managerUser = userService.retrieveAuthenticatedUser()
         if (managerUser.role?.name != "manager") throw ForbiddenException("You are not allowed to create a new vacancy.")
         val vacancyEntity = vacancyDto.let {
@@ -63,7 +63,7 @@ class VacancyService(
         val manager = userService.retrieveAuthenticatedUser()
         if (vacancy.manager.id != manager.id ) throw ForbiddenException("You are not allowed to edit this vacancy.")
 
-        val selectedJobFamily = jobFamilyService.findByJobFamilyId(vacancyDto.jobFamilyId).get()
+        val selectedJobFamily = jobFamilyService.findByJobFamilyId(vacancyDto.jobFamilyId)
         vacancy.name = vacancyDto.name
         vacancy.companyName = vacancyDto.companyName
         vacancy.salaryExpectation = vacancyDto.salaryExpectation
@@ -92,20 +92,20 @@ class VacancyService(
     private fun mapToVacancyResponseDto(vacancy: Vacancy): VacancyResponseDTO {
         return vacancy.let {
             VacancyResponseDTO(
-                it.id!!,
-                it.name,
-                it.companyName,
-                it.salaryExpectation,
-                it.yearsOfExperience,
-                it.description,
-                it.jobFamily.let{ jobFamily -> JobFamilyDto(jobFamily.id, jobFamily.name) },
-                it.manager.let { user ->
+                id = it.id!!,
+                name = it.name,
+                companyName = it.companyName,
+                salaryExpectation = it.salaryExpectation,
+                yearsOfExperience = it.yearsOfExperience,
+                description = it.description,
+                jobFamily = it.jobFamily.let{ jobFamily -> JobFamilyDto(jobFamily.id, jobFamily.name) },
+                manager = it.manager.let { user ->
                     UserResponseDTO(
                         user.id!!,
                         user.firstName,
                         user.lastName,
                         user.email,
-                        user.role.id!!
+                        user.role?.id!!
                     )
                 }
             )

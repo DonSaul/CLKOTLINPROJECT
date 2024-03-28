@@ -5,10 +5,10 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "roles")
-class Role(
+data class Role(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int? = null,
-    @Column(nullable = false, length = 45)
+    @Column(nullable = false, length = 45, unique = true)
     var name: String
 )

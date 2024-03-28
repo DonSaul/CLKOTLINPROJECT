@@ -67,20 +67,20 @@ class VacancyServiceUnitTest {
             VacancyResponseDTO(
                 id = it.id!!,
                 name = it.name,
+                companyName = it.companyName,
                 salaryExpectation = it.salaryExpectation,
                 yearsOfExperience = it.yearsOfExperience,
+                description = it.description,
+                jobFamily = JobFamilyDto(it.jobFamily.id, it.jobFamily.name),
                 manager = it.manager.run {
                     UserResponseDTO(
                         this.id!!,
                         this.firstName,
                         this.lastName,
                         this.email,
-                        this.role.id!!
+                        this.role?.id!!
                     )
                 },
-                jobFamily = JobFamilyDto(it.jobFamily.id, it.jobFamily.name),
-                companyName = it.companyName,
-                description = it.description
             )
         }
         val VACANCY_REQUEST_DTO = VACANCY_1.let {

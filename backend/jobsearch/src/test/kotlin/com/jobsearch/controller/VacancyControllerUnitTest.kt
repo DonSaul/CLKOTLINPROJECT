@@ -37,8 +37,7 @@ class VacancyControllerUnitTest {
         lastName = "Ger",
         email= "mana@mana",
         roleId = 2,
-    )
-
+        )
     private val vacancyResponseDTO = VacancyResponseDTO(
         id = 1,
         name = "Vacancy one",

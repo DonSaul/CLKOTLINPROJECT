@@ -3,6 +3,7 @@ package com.jobsearch.service
 import com.jobsearch.dto.*
 import com.jobsearch.entity.Cv
 import com.jobsearch.entity.Project
+import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.CvRepository
 import com.jobsearch.repository.JobFamilyRepository
 import com.jobsearch.repository.SkillRepository
@@ -13,7 +14,8 @@ import org.springframework.stereotype.Service
 class CvService(
     private val cvRepository: CvRepository,
     private val skillRepository: SkillRepository,
-    private val jobFamilyRepository: JobFamilyRepository) {
+    private val jobFamilyRepository: JobFamilyRepository,
+    private val userService: UserService) {
 
     @Transactional
     fun createCv(cvDTO: CvRequestDTO): CvResponseDTO {
@@ -25,7 +27,8 @@ class CvService(
                 salaryExpectation = it.salaryExpectation,
                 education = it.education,
                 projects = mutableSetOf(),
-                skills = mutableSetOf()
+                skills = mutableSetOf(),
+                user = userService.retrieveAuthenticatedUser()
             )
         }
 
@@ -36,9 +39,9 @@ class CvService(
             jobFamily?.let {
                 cv.projects?.add(
                     Project(
+                        cv = cv,
                         name = projectDTO.name,
                         description = projectDTO.description,
-                        cv = cv,
                         jobFamily = it
                     )
                 )
@@ -57,33 +60,42 @@ class CvService(
 
         val newCv = cvRepository.save(cv)
 
-        return mapToCvResponseDTO(newCv)
+        return mapToCvDTO(newCv)
     }
 
 
     fun retrieveCv(cvId: Int): CvResponseDTO {
         val cv = cvRepository.findById(cvId)
-            .orElseThrow { NoSuchElementException("No CV found with id $cvId") }
+            .orElseThrow { NotFoundException("No CV found with id $cvId") }
 
-        return mapToCvResponseDTO(cv)
+        return mapToCvDTO(cv)
     }
 
     fun retrieveAllCvs(): List<CvResponseDTO> {
         val cvs = cvRepository.findAll()
 
-        return cvs.map { mapToCvResponseDTO(it) }
+        return cvs.map { mapToCvDTO(it) }
     }
 
     @Transactional
     fun updateCv(cvId: Int, cvDTO: CvRequestDTO): CvResponseDTO {
         val cv = cvRepository.findById(cvId)
-            .orElseThrow { NoSuchElementException("No CV found with id $cvId") }
+            .orElseThrow { NotFoundException("No CV found with id $cvId") }
 
-        cv.yearsOfExperience = cvDTO.yearsOfExperience
-        cv.salaryExpectation = cvDTO.salaryExpectation
-        cv.education = cvDTO.education
+        val authenticatedUser = userService.retrieveAuthenticatedUser()
+        if (cv.user != authenticatedUser) {
+            throw IllegalAccessException("You are not authorized to edit this CV")
+        }
+
+        // Updating attributes
+        cv.apply {
+            yearsOfExperience = cvDTO.yearsOfExperience
+            salaryExpectation = cvDTO.salaryExpectation
+            education = cvDTO.education
+        }
 
         // Updating projects
+
         // Removing projects from the CV that are not in the request
         cv.projects?.removeIf { project -> !cvDTO.projects.any { it.projectId == project.projectId } }
 
@@ -96,7 +108,7 @@ class CvService(
                     name = dto.name
                     description = dto.description
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
-                        .orElseThrow { NoSuchElementException("No JobFamily found with id ${dto.jobFamilyId}") }
+                        .orElseThrow { NotFoundException("No JobFamily found with id ${dto.jobFamilyId}") }
                 }
             } else {
                 // If project doesn't exist, a new one is created and added to the CV
@@ -105,7 +117,7 @@ class CvService(
                     name = dto.name,
                     description = dto.description,
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
-                        .orElseThrow { NoSuchElementException("No JobFamily found with id ${dto.jobFamilyId}") }
+                        .orElseThrow { NotFoundException("No JobFamily found with id ${dto.jobFamilyId}") }
                 )
                 cv.projects?.add(newProject)
             }
@@ -127,20 +139,38 @@ class CvService(
 
         val updatedCv = cvRepository.save(cv)
 
-        return mapToCvResponseDTO(updatedCv)
+        return mapToCvDTO(updatedCv)
     }
 
 
     fun deleteCv(cvId: Int): String {
         val cv = cvRepository.findById(cvId)
-            .orElseThrow { NoSuchElementException("No CV found with id $cvId") }
+            .orElseThrow { NotFoundException("No CV found with id $cvId") }
 
         cvRepository.delete(cv)
 
         return "Cv deleted successfully"
     }
 
-    private fun mapToCvResponseDTO(cv: Cv): CvResponseDTO {
+    fun retrieveAllMyAccountsCvs(): List<CvResponseDTO> {
+        val cvs = cvRepository.findByUser(userService.retrieveAuthenticatedUser())
+
+        return cvs.map { mapToCvDTO(it) }
+    }
+
+    fun retrieveMyAccountsCv(cvId: Int): CvResponseDTO {
+        val cv = cvRepository.findByUserAndId(userService.retrieveAuthenticatedUser(), cvId)
+
+        return mapToCvDTO(cv)
+    }
+
+    fun retrieveMyAccountsLastCv(): CvResponseDTO {
+        val cv = cvRepository.findFirstByUserOrderByIdDesc(userService.retrieveAuthenticatedUser())
+
+        return mapToCvDTO(cv)
+    }
+
+    private fun mapToCvDTO(cv: Cv): CvResponseDTO {
         return CvResponseDTO(
             id = cv.id!!,
             yearsOfExperience = cv.yearsOfExperience,
@@ -167,3 +197,4 @@ class CvService(
     }
 
 }
+

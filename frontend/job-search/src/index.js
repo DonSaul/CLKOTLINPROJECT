@@ -6,16 +6,20 @@ import reportWebVitals from './reportWebVitals';
 import { queryClient } from './helpers/queryClient';
 import { QueryClientProvider } from 'react-query';
 
+import { AuthProvider } from './helpers/userContext';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 
   //todo: add user context and query provider
   <React.StrictMode>
-   
+   <AuthProvider>
     <QueryClientProvider client={queryClient}>
       <App />
     </QueryClientProvider>
-    
+
+  
+    </AuthProvider>
     
     
   </React.StrictMode>

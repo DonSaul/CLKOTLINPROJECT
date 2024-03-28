@@ -1,10 +1,13 @@
 import { useMutation, useQuery } from 'react-query';
 import { ENDPOINTS } from '../helpers/endpoints';
-
+import { AUTH_TOKEN_NAME } from '../helpers/constants';
 const fetchUser = async (token) => {
+  let token = localStorage.getItem(AUTH_TOKEN_NAME);
+
     const response = await fetch(ENDPOINTS.users, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
       },
     });
   

@@ -1,7 +1,7 @@
 import { useMutation } from  'react-query';
 import { useQuery } from 'react-query';
 import { ENDPOINTS } from "../helpers/endpoints";
-
+import { toast } from 'react-toastify';
 
 const addUser = async (data) => {
   const res = await fetch(ENDPOINTS.register, {
@@ -16,7 +16,15 @@ const addUser = async (data) => {
 export const useRegister = () => {
     return useMutation(addUser, {
       onSuccess: (res) => {
+        
         console.log("onSuccess res:",res);
+        if (res.status==403){
+          toast.error("You are not allowed to do that");
+        }else if(res.status==400){
+          toast.error("You are not allowed to do that");
+        } else {
+          toast.success("Account created!, you can now login to your account");
+        }
       },
   
       onMutate: async (data) => {
@@ -25,8 +33,9 @@ export const useRegister = () => {
         
       },
       onError: (_err, data, context) => {
+        toast.error("Error creating account!");
         console.log("Error on mutation",_err);
         console.log("Error data:",data);
       },
     });
-  };
+  }; 

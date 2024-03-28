@@ -9,20 +9,24 @@ import { useEffect } from 'react';
 import Button from '@mui/material/Button';
 import SimpleContainer from '../components/SimpleContainer';
 import CardContainer from '../components/CardContainer';
-import { useCV } from '../hooks/useCV';
+import { useCV, useUpdateCV } from '../hooks/useCV';
 import { Box } from '@mui/material';
 import { Typography } from '@mui/material';
 import useJobFamily from '../hooks/useJobFamily';
 import { useGetCurrentUserCv } from '../hooks/useCV';
+
 import IdTester from '../components/IdTester';
+import JobFamilyAutocomplete from '../components/JobFamilyAutocomplete';
 
 import SnackbarNotification from '../components/SnackbarNotification';
+import { useAuth } from '../helpers/userContext';
 const CV = () => {
-
+  //todo: fix user change
   //Current user send id, when available
-  const [id, setId] = useState(10); 
+  const [id, setId] = useState(); 
   const [hasFetchedData, setHasFetchedData] = useState(false);
-  const { data: cvData, error: cvError, isLoading: isCvLoading } = useGetCurrentUserCv(id);
+  const { logout, getUserRole, isLoggedIn } = useAuth();
+  const { data: cvData, error: cvError, isLoading: isCvLoading, isSuccess:isCvSuccess } = useGetCurrentUserCv();
 
 
   //Standard data cv
@@ -46,29 +50,20 @@ const CV = () => {
 
   //mutation
   const { mutate, isError, isSuccess } = useCV();
+  const { mutate:updateCVbyID } = useUpdateCV();
 
+//simple way to fetch
+  useEffect( () => {
 
-  //Notification test
-  // const [snackbarOpen, setSnackbarOpen] = useState(false);
-  // const [snackbarMessage, setSnackbarMessage] = useState('');
-  //  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-
-
-
-
-  //Fill with the user data
-  useEffect(() => {
-    // Set initial state based on cvData when available
     if (cvData) {
-      setYearsOfExperience(cvData.yearsOfExperience);
-      setSalaryExpectations(cvData.salaryExpectation);
-      setEducation(cvData.education);
-      setProjects(cvData.projects || [{ name: '', description: '' }]);
-     
-      setSelectedSkillsArray(cvData.skills || []);
+      setCvData(cvData);
     }
-  }, [cvData,hasFetchedData]);
+    
 
+  },[cvData])
+
+ 
+//skills
   useEffect(() => {
     if (skills && selectedSkillsArray.length > 0) {
       console.log("entering condition", skills.filter(skill => !selectedSkillsArray.some(selected => selected.skillId === skill.skillId)))
@@ -78,10 +73,30 @@ const CV = () => {
       setAvailableSkills(skills);
     }
   }, [skills, selectedSkillsArray]);
-
-
-
+ 
   //Testing
+
+
+  const setCvData = (cvData) =>{
+
+      setId(cvData.id)
+      setYearsOfExperience(cvData.yearsOfExperience);
+      setSalaryExpectations(cvData.salaryExpectation);
+      setEducation(cvData.education);
+      setProjects(cvData.projects || [{ name: '', description: '' }]);
+      setSelectedSkillsArray(cvData.skills || []);
+
+  }
+
+  const clearCv= () =>{
+    setId('')
+    setYearsOfExperience('');
+    setSalaryExpectations('');
+    setEducation('');
+    setProjects([{ name: '', description: '' }]);
+    setSelectedSkillsArray([]);
+
+  }
 
   const handleRemoveSkill = (skillId) => {
     console.log(availableSkills);
@@ -112,9 +127,14 @@ const CV = () => {
     setProjects(updatedProjects);
   };
 
-  const handleSnackbarClose = () => {
-    //setSnackbarOpen(false);
+
+  const updateCV = () => {
+
+
+    updateCVbyID()
+    
   };
+
 
 
 
@@ -137,15 +157,7 @@ const CV = () => {
       return;
     }
 
-
-
-    console.log('Form submitted:', { yearsOfExperience, salaryExpectations, education, projects });
-    console.log("skills", selectedSkillsArray);
-
     let longSkillString = selectedSkillsArray.map(skill => skill.skillId).join(",")
-    console.log("Skill long string: ", longSkillString);
-
-    console.log("projects",projects);
 
     const formattedProjects = projects.map(project => ({
       name: project.name,
@@ -159,24 +171,24 @@ const CV = () => {
       salaryExpectation: salaryExpectations,
       education,
       longSkillString,
-      projects: formattedProjects
+      projects: formattedProjects,
+      id
     };
 
+
     try {
-      await mutate(formData);
-      //console.log('success');
-      //setSnackbarMessage('CV saved successfully!');
-      //setSnackbarSeverity('success');
-      //setSnackbarOpen(true);
-      // redirect?
+      if (id) {
+        
+        await updateCVbyID(formData);
+      } else {
+       
+        await mutate(formData);
+      }
     } catch (error) {
-
-      //console.log('Failed to submit CV:', error);
-      //setSnackbarMessage('Failed to save CV');
-      //setSnackbarSeverity('error');
-      //setSnackbarOpen(true);
+     
+      console.error('Error:', error);
     }
-
+ 
 
 
 
@@ -189,11 +201,7 @@ const CV = () => {
       <CardContainer>
         <h1>Curriculum</h1>
 
-        <IdTester
-        defaultId={id}
-        setId={setId}
-      />
-
+  
         <h2>General</h2>
         <form onSubmit={handleSubmit}>
           <TextField
@@ -217,7 +225,7 @@ const CV = () => {
 
           <TextField
             label="Salary Expectations"
-            type="text"
+            type="number"
             value={salaryExpectations}
             onChange={(e) => setSalaryExpectations(e.target.value)}
             fullWidth
@@ -245,14 +253,24 @@ const CV = () => {
                 margin="normal"
                 required
               />
-              <Autocomplete
+               <Autocomplete
                 options={jobFamilies || []}
                 getOptionLabel={(option) => option.name || ''}
                 value={project.jobFamily || null}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
                 onChange={(e, newValue) => handleProjectChange(index, 'jobFamily', newValue)}
-                renderInput={(params) => <TextField {...params} label={`Select Job Family for Project`} />}
+                renderInput={(params) => <TextField {...params} label={`Select Job Family for Project`} margin="normal"/>}
               />
+
+              {/* 
+              <JobFamilyAutocomplete 
+              onChange={(e,newValue) => handleProjectChange(index, 'jobFamily', newValue)}
+              label={`Select Job Family for Project`}
+              value={project.jobFamily || null}
+              />*/}
+
+             
+
 
               {projects.length > 1 && (
                 <Button onClick={() => removeProjectField(index)} variant="outlined" color="secondary">
@@ -263,7 +281,7 @@ const CV = () => {
           ))}
 
           <Button onClick={addProjectField} variant="outlined" color="primary">
-            Add Project
+            Add Another Project
           </Button>
 
 
@@ -332,9 +350,9 @@ const CV = () => {
           </Box>
 
 
-          <Button type="submit" variant="contained" color="primary">
-            Save CV
-          </Button>
+          <Button type="submit" variant="contained" color="primary" >
+        {id ? 'Update CV' : 'Save CV'}
+      </Button>
 
         </form>
 
@@ -343,17 +361,6 @@ const CV = () => {
 
       </CardContainer>
 
-      {/*
-
-  <SnackbarNotification
-        open={snackbarOpen}
-        message={snackbarMessage}
-        onClose={handleSnackbarClose}
-        severity={snackbarSeverity}
-      />
-
-
-*/}
 
     </div>
   );
