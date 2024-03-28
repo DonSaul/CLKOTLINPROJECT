@@ -8,10 +8,12 @@ import java.time.LocalDateTime
 import com.jobsearch.entity.NotificationType
 import com.jobsearch.entity.NotificationTypeEnum
 import com.jobsearch.entity.User
+import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.NotificationTypeRepository
 import com.jobsearch.repository.UserRepository
 import com.jobsearch.repository.VacancyRepository
 import org.springframework.data.repository.findByIdOrNull
+import java.util.concurrent.CompletableFuture
 
 @Service
 class NotificationService(
@@ -46,6 +48,7 @@ class NotificationService(
             println("User ${recipient.email} has notifications deactivated. Notification was not sent.")
         }
     }
+
     fun retrieveAllNotifications(): List<Notification> {
         return notificationRepository.findAll()
     }
@@ -54,6 +57,7 @@ class NotificationService(
         val notification = createNotification(notificationDTO)
         sendEmailNotification(notification)
     }
+
 
     private fun createNotification(notificationDTO: NotificationDTO): Notification {
         val typeNotification: NotificationType = notificationTypeRepository.findById(notificationDTO.type)
@@ -64,9 +68,6 @@ class NotificationService(
         //Can be null
         val senderNotification = notificationDTO.sender?.let { userRepository.findByIdOrNull(it) }
         val vacancyNotification = notificationDTO.vacancy?.let { vacancyRepository.findByIdOrNull(it) }
-
-        val recipientDTO = userService.mapToUserResponseDTO(recipientNotification)
-        val senderDTO = senderNotification?.let { userService.mapToUserResponseDTO(it) }
 
         val notificationToSave = Notification(
             type = typeNotification,
@@ -95,10 +96,24 @@ class NotificationService(
         notification.sentDateTime = LocalDateTime.now()
         notificationRepository.save(notification)
     }
-    fun getNotificationsByRecipientId(recipientId: Int): List<NotificationDTO> {
-        val notifications = notificationRepository.getNotificationsByRecipientId(recipientId)
-        return notifications.map { mapToDto(it) }
+    fun getNotificationsByRecipientUsername(email: String): List<Notification> {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
+        val notifications = notificationRepository.getNotificationsByRecipientId(user.id!!)
+            .filter { it.type.id != NotificationTypeEnum.FORGOT_PASSWORD.id }
+
+
+        return notifications.map { mapToNotification(it) }
     }
+    fun findLatestMessageNotification(senderId: Int, recipientId: Int): NotificationDTO {
+        val typeId = NotificationTypeEnum.MESSAGES.id
+        val latestNotification = notificationRepository.findFirstBySenderIdAndRecipientIdAndTypeIdOrderBySentDateTimeDesc(senderId, recipientId, typeId)
+            .orElseThrow { NotFoundException("No latest notification found") }
+
+        return mapToDto(latestNotification)
+    }
+
+
     fun mapToDto(notification: Notification): NotificationDTO {
         return notification.let {
             NotificationDTO(
@@ -110,15 +125,44 @@ class NotificationService(
                 sentDateTime = it.sentDateTime,
                 sent = it.sent,
                 sender = it.sender?.id,
-                vacancy = it.vacancy?.id
+                vacancy = it.vacancy?.id,
+                read = it.read
             )
         }
     }
+    fun markNotificationAsRead(notificationId: Int) {
+        val notification = notificationRepository.findById(notificationId)
+            .orElseThrow { NoSuchElementException("Notification not found with ID: $notificationId") }
+        notification.read = true
+        notificationRepository.save(notification)
+    }
+    fun mapToNotification(notification: Notification): Notification {
+        //sender
+        val senderId = notification.sender?.id
+            ?: throw NoSuchElementException("Sender id is null for notification id ${notification.id}")
 
-    fun findLatestMessageNotification(senderId: Int, recipientId: Int): NotificationDTO {
-        val typeId = NotificationTypeEnum.MESSAGES.id
-        val latestNotification = notificationRepository.findFirstBySenderIdAndRecipientIdAndTypeIdOrderBySentDateTimeDesc(senderId, recipientId, typeId)
-            .orElseThrow { NoSuchElementException("No latest notification found") }
-        return mapToDto(latestNotification)
+        val sender = userRepository.findById(senderId)
+            .map { it.copy(password = null.toString()) }
+            .orElseThrow { NoSuchElementException("Could not find any user with the id $senderId") }
+
+        //recipient
+        val recipientId = notification.recipient.id
+            ?: throw NoSuchElementException("Recipient id is null for notification id ${notification.id}")
+        val recipient = userRepository.findById(recipientId)
+            .map { it.copy(password = null.toString()) }
+            .orElseThrow { NoSuchElementException("Could not find any user with the id $recipientId") }
+
+        return Notification(
+            id = notification.id,
+            type = notification.type,
+            recipient = recipient,
+            subject = notification.subject,
+            content = notification.content,
+            sentDateTime = notification.sentDateTime,
+            sent = notification.sent,
+            sender = sender,
+            vacancy = notification.vacancy,
+            read = notification.read
+        )
     }
 }

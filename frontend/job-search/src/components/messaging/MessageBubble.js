@@ -8,7 +8,7 @@ import { useAuth } from '../../helpers/userContext';
 const MessageBubble = ({ data }) => {
     const { date, userName, message, sender: {firstName,lastName,email} ,receiver} = data;
     const { getUserEmail } = useAuth();
-    //console.log("message bubble",data);
+
 
 
     const formattedDate = new Date(date).toLocaleString('en-US', {
@@ -21,7 +21,7 @@ const MessageBubble = ({ data }) => {
     });
 
     const isCurrentUser = () => {
-        //console.log("what is user:",userName,"what is email :",getUserEmail(),"firsname:",firstName,"last name",lastName );
+        
         return email === getUserEmail();
     }
 

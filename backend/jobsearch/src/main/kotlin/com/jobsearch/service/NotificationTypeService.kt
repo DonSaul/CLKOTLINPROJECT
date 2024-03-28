@@ -26,4 +26,11 @@ class NotificationTypeService(private val notificationTypeRepository: Notificati
         return notificationTypes.map { type -> NotificationType(type.id, type.type) }
     }
 
+    fun findByIdAndReturnsEntity(id: Int): NotificationType? {
+        val notificationType = notificationTypeRepository.findById(id)
+            .orElseThrow { NoSuchElementException("No notification type found with id $id") }
+        return NotificationType(notificationType.id, notificationType.type)
+    }
+
+
 }

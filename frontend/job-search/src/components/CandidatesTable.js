@@ -1,32 +1,43 @@
-import { useMemo, useState, useEffect } from 'react';
-import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import Button from '@mui/material/Button';
+import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
+import { useEffect, useMemo, useState } from 'react';
 // import { useApplyVacancy } from '../hooks/useApplyVacancy';
-import { useSendInvitation } from '../hooks/useSendInvitation';
-import { useGetCurrentUserCv } from '../hooks/useCV';
+import { MenuItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { ROLES } from '../helpers/constants';
 import { useAuth } from '../helpers/userContext';
-import { MenuItem } from '@mui/material';
+import { useSendInvitation } from '../hooks/useSendInvitation';
 import { paths } from '../router/paths';
-import { PersonalInvitation } from './PersonalInvitation';
+// import { PersonalInvitation } from './PersonalInvitation';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
-export default function CandidatesTable({ dataFromQuery,onRowSelectionChange }) {
+export default function CandidatesTable({ dataFromQuery, onRowSelectionChange, fromVacancyView }) {
 
 
-    const {getUserRole} = useAuth();
-    const {mutate:sendInvitation, isError, isSuccess}=useSendInvitation();  //remove
-
+    const { getUserRole } = useAuth();
+    const { mutate: sendInvitation, isError, isSuccess } = useSendInvitation();
     const navigate = useNavigate();
-
     const columnsCandidates = useMemo(
         () => [
-            {
+             {
+                accessorKey: 'viewProfile',
+                header: 'View Profile',
+                Cell: ({ row }) => (
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <VisibilityIcon
+                            key="viewEye"
+                            onClick={() => navigate(`${paths.profiles}/${row.original.id}`)}
+                            style={{ cursor: 'pointer' }} 
+                        />
+                    </div>
+                ),
+                },
+                {
                 accessorKey: 'jobFamilies',
                 header: 'Categories',
                 Cell: ({ row }) => (
                     <div>
-                        {row.original.jobFamilies.map((jobFamily) => (
+                        {row.original.jobFamilies?.map((jobFamily) => (
                             <div key={jobFamily.id}>{jobFamily.name}</div>
                         ))}
                     </div>
@@ -51,16 +62,17 @@ export default function CandidatesTable({ dataFromQuery,onRowSelectionChange }) 
             },
             {
                 accessorKey: 'salaryExpectation',
-                header: 'Salary',
+                header: 'Salary Expectation',
             },
-
         {
-            id: 'sendButton', 
+            id: 'sendButton',
             header: 'Status',
             Cell: ({ row }) => (
-                <Button variant="contained" color="primary" onClick={() => handleInvite(row.original)} disabled={getUserRole()!==ROLES.MANAGER}>
+                 row.original.aplicationStatus
+                ? row.original.aplicationStatus
+                : (<Button variant="contained" color="primary" onClick={() => handleInvite(row.original)} disabled={getUserRole()!==ROLES.MANAGER}>
                     Invite
-                </Button>
+                </Button>)
             ),
           },
         ],
@@ -71,7 +83,7 @@ export default function CandidatesTable({ dataFromQuery,onRowSelectionChange }) 
     const [rowSelection, setRowSelection] = useState({});
 
     const handleRowSelectionChange = (selectedRowIds) => {
-        //console.log("selected", selectedRowIds)
+       
         setRowSelection(selectedRowIds);
         onRowSelectionChange(selectedRowIds);
     };
@@ -82,6 +94,7 @@ export default function CandidatesTable({ dataFromQuery,onRowSelectionChange }) 
 
     const handleInvite = (rowData) => {
         const candidateId = rowData.id;
+        console.log("data in row",rowData);
         console.log('Sending invitation to candidate:', candidateId);
         navigate(`${paths.sendInvitation.replace(':id', candidateId)}`);
     };
@@ -93,7 +106,8 @@ export default function CandidatesTable({ dataFromQuery,onRowSelectionChange }) 
         enableGlobalFilter: false,
         enableColumnFilters: false,
         //enableColumnOrdering: true, //enable some features
-        enableRowSelection: true,
+        enableRowSelection: fromVacancyView
+     ? false : true,
         getRowId: (originalRow) => originalRow.id,
         //onRowSelectionChange: handleRowSelectionChange,
         enableHiding: false,
@@ -111,29 +125,16 @@ export default function CandidatesTable({ dataFromQuery,onRowSelectionChange }) 
             maxSize: 400,
             minSize: 80,
             size: 150, //default size is usually 180
-          },
+        },
         state: { rowSelection }, //manage your own state, pass it back to the table (optional)
-        initialState: { columnVisibility: { vacancyId: false } },
+        initialState: { columnVisibility: { vacancyId: false }, density: 'compact', },
         //enableHiding:false
-        enableRowActions: true,
-        positionActionsColumn: 'last',
-        renderRowActionMenuItems: ({ row }) => [
-            <MenuItem key="edit" onClick={() => {
-                console.log("row", row);
-                //navigate(`${paths.vacancies}/${row.original.id}`);
-            }}>
-                Visit
-            </MenuItem>,
-            <MenuItem>
-                Send Invitation
-            </MenuItem>
-        ],
-
+        enableRowActions: false,
     });
 
     const someEventHandler = () => {
         //read the table state during an event from the table instance
-        console.log(table.getState().sorting);
+        // console.log(table.getState().sorting);
     }
 
     return (

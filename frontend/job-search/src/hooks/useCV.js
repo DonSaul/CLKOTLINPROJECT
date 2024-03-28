@@ -29,7 +29,9 @@ export const useCV = () => {
 
         if (res.status===403){
           toast.error('You are not allowed to do that'); 
-        } else{
+        } else if (res.status===400){
+          toast.error('Invalid CV Data!'); 
+        } else {
           toast.success("CV created successfully!")
         }
 
@@ -85,11 +87,11 @@ export const useCV = () => {
   };
 
   export const useGetCurrentUserCv = () => {
-    return useQuery('cv-user', fetchCVByUser);
+    return useQuery('cv-user', fetchCVByUser, {
+      refetchOnWindowFocus: false
+    });
   };
   
-
-
 
   const updateCV = async (data) => {
     let token = localStorage.getItem(AUTH_TOKEN_NAME);
@@ -115,7 +117,9 @@ export const useCV = () => {
 
         if (res.status===403){
           toast.error('You are not allowed to do that'); 
-        } else{
+        } else if (res.status===400){
+          toast.error('Invalid CV Data!'); 
+        } else {
           toast.success("CV updated successfully!")
         }
       },

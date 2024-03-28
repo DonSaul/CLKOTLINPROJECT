@@ -6,6 +6,7 @@ plugins {
 	kotlin("jvm") version "1.9.22"
 	kotlin("plugin.spring") version "1.9.22"
 	kotlin("plugin.jpa") version "1.9.22"
+	kotlin("kapt") version "1.9.22"
 }
 
 group = "com.jobsearch"
@@ -41,6 +42,7 @@ dependencies {
 	implementation("javax.xml.bind:jaxb-api:2.3.1")
 	implementation("io.jsonwebtoken:jjwt:0.9.1")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	implementation("com.h2database:h2")
 	// JAXB API dependency
 	implementation("javax.xml.bind:jaxb-api:2.3.1")
 
@@ -48,6 +50,7 @@ dependencies {
 	implementation("org.glassfish.jaxb:jaxb-runtime:2.3.1")
 
 	implementation ("io.jsonwebtoken:jjwt:0.9.1")
+	implementation("org.glassfish.jersey.core:jersey-common:3.1.5")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
@@ -55,6 +58,9 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 	testImplementation("com.h2database:h2:2.2.224")
+	kapt("org.mapstruct:mapstruct-processor:1.5.5.Final")
+	implementation("org.mapstruct:mapstruct:1.5.5.Final")
+
 }
 
 tasks.withType<KotlinCompile> {

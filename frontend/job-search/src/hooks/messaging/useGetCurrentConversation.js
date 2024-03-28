@@ -21,8 +21,10 @@ const fetchCurrentConversation = async (email) => {
   };
 
 const useGetCurrentConversation = (email) => {
+
     return useQuery('getCurrentConversation', () => fetchCurrentConversation(email),{
         manual: true,
+        enabled: false,
     });
   };
 

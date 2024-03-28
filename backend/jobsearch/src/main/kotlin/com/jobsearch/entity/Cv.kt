@@ -14,6 +14,9 @@ class Cv(
     var education: String,
 
     @OneToMany(mappedBy = "cv", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val jobs: MutableSet<Job>? = mutableSetOf(),
+
+    @OneToMany(mappedBy = "cv", cascade = [CascadeType.ALL], orphanRemoval = true)
     val projects: MutableSet<Project>? = mutableSetOf(),
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
@@ -27,7 +30,4 @@ class Cv(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     val user: User,
-
-
-
 )
