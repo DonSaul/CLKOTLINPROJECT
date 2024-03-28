@@ -1,24 +1,21 @@
 package com.jobsearch
 
-import com.jobsearch.dto.UserRequestDTO
-import com.jobsearch.dto.VacancyRequestDTO
-import com.jobsearch.entity.Cv
-import com.jobsearch.entity.User
-import com.jobsearch.entity.Vacancy
+import com.jobsearch.dto.*
+import com.jobsearch.dto.override.OverrideCvRequestDTO
+import com.jobsearch.entity.*
 import com.jobsearch.repository.CvRepository
 import com.jobsearch.repository.UserRepository
-import com.jobsearch.service.JobFamilyService
-import com.jobsearch.service.UserService
-import com.jobsearch.service.VacancyService
+import com.jobsearch.service.*
+import com.jobsearch.service.override.OverrideService
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.autoconfigure.security.SecurityProperties
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import java.time.LocalDate
 
 @SpringBootApplication
 @Configuration
@@ -35,7 +32,9 @@ class JobsearchApplication {
         vacancyService: VacancyService,
         jobFamilyService: JobFamilyService,
         userRepository: UserRepository,
-        cvRepository: CvRepository
+        cvRepository: CvRepository,
+        cvService: CvService,
+        overrideService: OverrideService
     ): CommandLineRunner {
         return CommandLineRunner {
             //Users
@@ -211,27 +210,71 @@ class JobsearchApplication {
             //Some cv here
 
             // CAn can
-            /*
+
             val candidateUser: User? = candidate.let { can ->
-                userRepository.findById(can.id!!).orElse(null)
+                userRepository.findByEmail(can.email).orElse(null)
             }
 
             val userHasCV = cvRepository.findFirstByUserOrderByIdDesc(candidateUser!!)
 
             if (userHasCV==null){
 
-                val userCV = Cv(
+                val jobRequestDTOList = listOf(
+                    JobRequestDTO(
+                        id = 1,
+                        startDate = LocalDate.of(2019, 1, 1),
+                        endDate = LocalDate.of(2022, 1, 1),
+                        position = "Software Engineer",
+                        description = "Developed web applications using React",
+                        jobFamilyId = 1
+                    ),
+                    JobRequestDTO(
+                        id = 2,
+                        startDate = LocalDate.of(2022, 2, 1),
+                        endDate = LocalDate.of(2024, 3, 1),
+                        position = "Senior Sales Expert",
+                        description = "Sold lots of stuff",
+                        jobFamilyId = 2
+                    )
+
+                )
+                val projectRequestDTOList = listOf(
+                    ProjectRequestDTO(
+                        id = 1,
+                        name = "Job Search Platform",
+                        description = "Developed a job search platform",
+                        jobFamilyId = 3
+                    ),
+                    ProjectRequestDTO(
+                        id = 2,
+                        name = "Arduno plants",
+                        description = "Plants controlled by arduino",
+                        jobFamilyId = 4
+                    )
+
+                )
+                val skillIdSet = setOf(1, 2, 3)
+
+                val cvRequest = OverrideCvRequestDTO(
                     yearsOfExperience = 5,
                     salaryExpectation = 70000,
                     education = "Licenciatura en Ingeniería Informática",
-                    user = candidateUser,
+                    jobs =jobRequestDTOList,
+                    projects = projectRequestDTOList,
+                    skillIds = skillIdSet,
+                    user=candidateUser
+
                 )
-                userCV.let { cvRepository.save(it) }
+                overrideService.createCvOverride(cvRequest)
+
+
+
+
 
 
             }
 
-            */
+
 
         }
     }
