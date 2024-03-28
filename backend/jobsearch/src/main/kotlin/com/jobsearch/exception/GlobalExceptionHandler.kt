@@ -41,6 +41,11 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
         return mapResponseEntity(ex)
     }
 
+    @ExceptionHandler(UserNotFoundException::class)
+    fun handleUserNotFoundException(ex: ForbiddenException): ResponseEntity<ErrorResponse>{
+        return mapResponseEntity(ex, HttpStatus.NOT_FOUND)
+    }
+
     /**
      * Maps the exception to a standar response.
      *

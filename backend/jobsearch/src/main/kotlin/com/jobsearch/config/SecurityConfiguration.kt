@@ -1,5 +1,6 @@
 package com.jobsearch.config
 
+import com.jobsearch.exception.UserNotFoundException
 import com.jobsearch.jwt.JwtAuthenticationFilter
 import com.jobsearch.service.AuthService
 import org.springframework.beans.factory.annotation.Autowired
@@ -61,10 +62,10 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
             if (user != null) {
                 User.withUsername(user.email)
                     .password(user.password)
-                    .roles(user.role.name)
+                    .roles(user.role?.name)
                     .build()
             } else {
-                throw UsernameNotFoundException("User not found.")
+                throw UserNotFoundException("User not found.")
             }
         })
     }

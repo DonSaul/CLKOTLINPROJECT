@@ -6,3 +6,4 @@ import jakarta.ws.rs.NotFoundException
 class NotFoundException(message: String) : NotFoundException(message)
 class ForbiddenException(message: String) : ForbiddenException(message)
 class UserAlreadyExistsException(message: String) : RuntimeException(message)
+class UserNotFoundException(message: String) : NotFoundException(message)
