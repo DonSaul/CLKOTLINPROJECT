@@ -1,6 +1,7 @@
 package com.jobsearch.entity
 
 import jakarta.persistence.*
+import java.time.LocalDate
 
 @Entity
 @Table(name="job")
@@ -9,10 +10,8 @@ class Job (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Int? = null,
 
-    var startYear: Int,
-    var startMonth: Int,
-    var endYear: Int,
-    var endMonth: Int,
+    var startDate: LocalDate,
+    var endDate: LocalDate,
 
     var position: String,
     var description: String,
