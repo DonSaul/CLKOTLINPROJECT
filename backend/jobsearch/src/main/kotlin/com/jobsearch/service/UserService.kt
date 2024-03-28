@@ -117,13 +117,12 @@ class UserService @Autowired constructor(
     fun updateUserProfile(userId: Int, updatedProfile: ProfileDTO): ProfileDTO {
         val user = userRepository.findById(userId)
             .orElseThrow { NotFoundException("No user found with id $userId") }
-        if (userId === user.id) {
-            // Update profile
-            user.apply {
-                firstName = updatedProfile.firstName
-                lastName = updatedProfile.lastName
-                email = updatedProfile.email
-            }
+
+        // Update profile
+        user.apply {
+            firstName = updatedProfile.firstName
+            lastName = updatedProfile.lastName
+            email = updatedProfile.email
         }
 
         val updatedUserProfile = userRepository.save(user)

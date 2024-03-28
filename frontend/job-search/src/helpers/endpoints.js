@@ -38,6 +38,7 @@ export const ENDPOINTS = {
   invitation:createUrl("invitations"),
   candidateProfile:createUrl("profiles"),
   profile:createUrl("profiles/my-profile"),
+  updateProfile:createUrl("profiles"),
   sendMessageNotification:createUrl("conversation/sendMessageNotification"),
-  invitation:createUrl("invitations")
+ 
 };

@@ -1,4 +1,3 @@
-
 import { useParams } from 'react-router-dom';
 import { useGetCandidateProfile } from '../hooks/profile/useGetCandidateProfile';
 import { useAuth } from'../helpers/userContext';
@@ -11,7 +10,7 @@ const CandidateProfileInfo = () => {
     const { id } = useParams();
     const { data: profileData, isLoading: isLoadingProfile, isError: isErrorProfile } = useGetCandidateProfile(id);
     const { getUserRole } = useAuth();
-    const { firstName, lastName, email, cv } = profileData || {};
+    const { firstName, lastName, email, cv, roleId } = profileData || {};
     console.log(id);
     console.log(profileData);
 
@@ -32,6 +31,7 @@ const CandidateProfileInfo = () => {
                         </Typography>
                     </Box>
                     
+                    {roleId !== ROLES.CANDIDATE ? null : 
                     <Button 
                         type="button" 
                         variant="contained" 
@@ -41,11 +41,14 @@ const CandidateProfileInfo = () => {
                     >
                         Invite
                     </Button>
+                    }
+
                     <Button type="button" variant="contained" color="primary" >
                         Message
                     </Button>  
                 </Card>   
                 
+                {roleId !== ROLES.CANDIDATE ? null :
                 <Card elevation={3} sx={{ display: "inline-block", width: 400, height: '100%', borderRadius: 8, boxShadow: 8, mx: 2, py: 5 }}>
                     <Typography variant="h5" gutterBottom>
                         Information
@@ -64,16 +67,18 @@ const CandidateProfileInfo = () => {
                         </Box>
                     )}
                 </Card>
+                }
             </Box>
             
+            {roleId !== ROLES.CANDIDATE ? null :
             <Card elevation={3} sx={{ display: "inline-block", width: 828, borderRadius: 8, boxShadow: 8, mx: 10, mt:5, py: 5 }}>
                 <Typography variant="h5" gutterBottom>
                     Projects
                 </Typography>
                 {cv && ( 
-                    <Box>
+                    <Box sx={{ mx: 10 }}>
                         <TableContainer>
-                            <Table bordered>
+                            <Table>
                                 <TableHead>
                                     <TableRow>
                                         <TableCell>Name</TableCell>
@@ -95,13 +100,15 @@ const CandidateProfileInfo = () => {
                     </Box>
                 )}
             </Card>
+            }
            {/* Jobs Here */}
-           <Card elevation={3} sx={{ display: "inline-block", width: 825, borderRadius: 8, boxShadow: 8, mx: 10, mt:5, py: 5 }}>
+            {roleId !== ROLES.CANDIDATE ? null :
+            <Card elevation={3} sx={{ display: "inline-block", width: 825, borderRadius: 8, boxShadow: 8, mx: 10, mt:5, py: 5 }}>
                 <Typography variant="h5" gutterBottom>
                     Jobs
                 </Typography>
-           </Card>
-           
+            </Card>
+            }   
       </>  
     );
 };
