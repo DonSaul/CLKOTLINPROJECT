@@ -34,7 +34,7 @@ export default function CandidatesTable({ dataFromQuery, onRowSelectionChange, f
                 },
                 {
                 accessorKey: 'jobFamilies',
-                header: 'Categories',
+                header: 'Experience areas',
                 Cell: ({ row }) => (
                     <div>
                         {row.original.jobFamilies?.map((jobFamily) => (
