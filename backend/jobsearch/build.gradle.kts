@@ -6,6 +6,7 @@ plugins {
 	kotlin("jvm") version "1.9.22"
 	kotlin("plugin.spring") version "1.9.22"
 	kotlin("plugin.jpa") version "1.9.22"
+	kotlin("kapt") version "1.9.22"
 }
 
 group = "com.jobsearch"
@@ -29,12 +30,27 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-mail")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("javax.xml.bind:jaxb-api:2.3.1")
 	implementation ("io.jsonwebtoken:jjwt:0.9.1")
+	implementation("javax.servlet:javax.servlet-api:3.1.0")
+	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("javax.xml.bind:jaxb-api:2.3.1")
+	implementation("io.jsonwebtoken:jjwt:0.9.1")
+	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	implementation("com.h2database:h2")
+	// JAXB API dependency
+	implementation("javax.xml.bind:jaxb-api:2.3.1")
+
+	// JAXB reference implementation (GlassFish)
+	implementation("org.glassfish.jaxb:jaxb-runtime:2.3.1")
+
+	implementation ("io.jsonwebtoken:jjwt:0.9.1")
+	implementation("org.glassfish.jersey.core:jersey-common:3.1.5")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
@@ -42,6 +58,9 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 	testImplementation("com.h2database:h2:2.2.224")
+	kapt("org.mapstruct:mapstruct-processor:1.5.5.Final")
+	implementation("org.mapstruct:mapstruct:1.5.5.Final")
+
 }
 
 tasks.withType<KotlinCompile> {
