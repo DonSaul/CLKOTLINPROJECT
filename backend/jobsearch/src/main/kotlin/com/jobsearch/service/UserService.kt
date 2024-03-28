@@ -241,8 +241,8 @@ class UserService @Autowired constructor(
     }
 
 
-    fun findCandidatesByFilter(salary: Int?, jobFamilyId: Int?, yearsOfExperience: Int?): List<CandidateDTO> {
-        val cvs = cvRepository.findCvByFilter(salary, jobFamilyId, yearsOfExperience)
+    fun findCandidatesByFilter(salaryExpectation: Int?, jobFamilyId: Int?, yearsOfExperience: Int?): List<CandidateDTO> {
+        val cvs = cvRepository.findCvByFilter(salaryExpectation, jobFamilyId, yearsOfExperience)
 
         return cvs.map { cv -> mapToUserCandidateDTO(cv) }
     }
