@@ -24,8 +24,10 @@ export const useSendInvitation = () => {
 
             if (res.status===403) {
                 toast.error('You are not allowed to do that');
-            // } else {
-            //     toast.success("Invitation sent successfully!");
+            } else if (res.status===500) {
+              toast.warning("Candidate already invited!");                
+            } else {
+              toast.success("Invitation sent successfully!");
             }
         },
 

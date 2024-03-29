@@ -68,14 +68,19 @@ class InvitationService(
 
 
         return mapToInvitationDTO(newInvitation)
-        
-//        if (invitationAlreadySent(invitationEntity)) {
-//            throw RuntimeException("Invitation already sent to this candidate")
-//        } else {
 
-//        val newInvitation = invitationEntity.let { invitationRepository.save(it) }
-//
-//        return mapToInvitationDTO(newInvitation)
+    }
+
+    fun createMultipleInvitation(invitationDTO: InvitationDTO): InvitationDTO {
+        if (invitationDTO.candidateIds.isNullOrEmpty()) {
+            createInvitation(invitationDTO)
+        } else {
+            invitationDTO.candidateIds?.forEach {candidateId ->
+                val newInvitation = invitationDTO.copy(candidateId = candidateId)
+                createInvitation(newInvitation)
+            }
+        }
+        return invitationDTO
     }
 
     fun retrieveAllInvitations(): List<InvitationDTO> {
@@ -124,6 +129,7 @@ class InvitationService(
                 it.sent,
                 it.manager.id!!,
                 it.vacancy.id!!,
+                listOf(),
             )
         }
     }

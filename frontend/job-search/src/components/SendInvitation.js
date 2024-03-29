@@ -22,8 +22,6 @@ const SendInvitation = ({data}) => {
         }
     };
 
-  const [warning, setWarning] = useState(false);
-
   useEffect(() => {
     fetchVacanciesForManager();
   }, []);
@@ -43,22 +41,26 @@ const SendInvitation = ({data}) => {
 
     for (let i = 0; i < selectedCandidateIds.length; i++) {
       const candidateId = selectedCandidateIds[i];
-      let invitationData = {
-        candidateId,
-        subject,
-        content,
-        vacancyId,
-      };
-
+      
       console.log("Sending invitation to candidate:", candidateId);
-      console.log("submit", invitationData);
-
-      try {
-        await mutate(invitationData);
-      } catch (error) {
-        console.error("Error sending invitation:", error);
-      }
+      
     }
+
+    let invitationData = {
+      candidateId: 1,
+      subject,
+      content,
+      vacancyId,
+      candidateIds: selectedCandidateIds
+    };
+    console.log("submit", invitationData);
+
+    try {
+      await mutate(invitationData);
+    } catch (error) {
+      console.error("Error sending invitation:", error);
+    }
+
   };
 
   return (
