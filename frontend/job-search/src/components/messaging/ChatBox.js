@@ -122,9 +122,11 @@ const ChatBox = ({ data, user, userData, onSendMessage, isLoadingConversation })
                                         {chatMessages.map((message, index) => (
                                         <React.Fragment key={index}>
                                             <MessageBubble key={index} data={message} />
+                                            <div ref={messagesEndRef} />
                                         </React.Fragment>
+                                        
                                         ))}
-                                        <div ref={messagesEndRef} />
+                                       
                                         </>
                                     ) : (
                                         <p>No messages</p>

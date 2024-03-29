@@ -1,4 +1,11 @@
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+} from "@mui/material";
 
 const DeleteConfirmationModal = ({ open, onClose, onConfirm }) => {
   return (
