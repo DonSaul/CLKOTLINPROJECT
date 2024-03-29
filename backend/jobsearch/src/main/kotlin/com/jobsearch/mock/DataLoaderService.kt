@@ -97,10 +97,10 @@ class DataLoaderService (
             val skillIdSet = setOf(1, 2, 3)
 
             val cvRequest = OverrideCvRequestDTO(
-                summary = "A professional with 5 years of experience in the field",
+                summary = "Experienced IT professional with extensive expertise in managing technology infrastructures and leading projects to enhance organizational efficiency. Skilled in optimizing systems to meet business objectives.",
                 yearsOfExperience = 5,
                 salaryExpectation = 70000,
-                education = "Licenciatura en Ingeniería Informática",
+                education = "Bachelor's Degree in Computer Engineering",
                 jobs =jobRequestDTOList,
                 projects = projectRequestDTOList,
                 skillIds = skillIdSet,

@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Positive
 
 data class CvRequestDTO(
 
-    @field:Positive(message = "Summary field must not be blank")
+    @field:NotBlank(message = "Summary field must not be blank")
     val summary: String,
 
     @field:Positive(message = "CV must have a valid number of years of experience")
