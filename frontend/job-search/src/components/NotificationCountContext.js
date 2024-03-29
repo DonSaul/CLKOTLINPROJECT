@@ -1,5 +1,5 @@
 // NotificationCountContext.js
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState } from "react";
 
 const NotificationCountContext = createContext();
 
@@ -7,11 +7,11 @@ export const NotificationCountProvider = ({ children }) => {
   const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
 
   const increaseNotificationCount = () => {
-    setUnreadNotificationsCount(prevCount => prevCount + 1);
+    setUnreadNotificationsCount((prevCount) => prevCount + 1);
   };
 
   const decreaseNotificationCount = () => {
-    setUnreadNotificationsCount(prevCount => prevCount - 1);
+    setUnreadNotificationsCount((prevCount) => prevCount - 1);
   };
 
   const resetNotificationCount = () => {

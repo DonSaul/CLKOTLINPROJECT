@@ -1,4 +1,3 @@
-
 import { useParams } from 'react-router-dom';
 import { useGetCandidateProfile } from '../hooks/profile/useGetCandidateProfile';
 import { useAuth } from'../helpers/userContext';
@@ -11,7 +10,7 @@ const CandidateProfileInfo = () => {
     const { id } = useParams();
     const { data: profileData, isLoading: isLoadingProfile, isError: isErrorProfile } = useGetCandidateProfile(id);
     const { getUserRole } = useAuth();
-    const { firstName, lastName, email, cv } = profileData || {};
+    const { firstName, lastName, email, cv, roleId } = profileData || {};
     console.log(id);
     console.log(profileData);
 
@@ -19,7 +18,7 @@ const CandidateProfileInfo = () => {
         <>
             <h3>Profile</h3>
             <Box sx={{ mt:5 }}>
-                <Card elevation={3} sx={{ display: "inline-block", width: 400, borderRadius: 8, boxShadow: 8, mx: 2, py: 5 }}>
+                <Card elevation={3} sx={{ display: "inline-block", width: 400, height: 250, borderRadius: 8, boxShadow: 8, mx: 2, py: 5 }}>
                     <Box sx={{ width: 100, height:100, mx: 18 }}>
                         <UserAvatar user={{ firstName, lastName, email }}></UserAvatar>
                     </Box>
@@ -32,6 +31,7 @@ const CandidateProfileInfo = () => {
                         </Typography>
                     </Box>
                     
+                    {roleId !== ROLES.CANDIDATE ? null : 
                     <Button 
                         type="button" 
                         variant="contained" 
@@ -41,16 +41,19 @@ const CandidateProfileInfo = () => {
                     >
                         Invite
                     </Button>
+                    }
+
                     <Button type="button" variant="contained" color="primary" >
                         Message
                     </Button>  
                 </Card>   
                 
-                <Card elevation={3} sx={{ display: "inline-block", width: 400, height: '100%', borderRadius: 8, boxShadow: 8, mx: 2, py: 5 }}>
+                {roleId !== ROLES.CANDIDATE ? null :
+                <Card elevation={3} sx={{ display: "inline-block", width: 400, height: 250, borderRadius: 8, boxShadow: 8, mx: 2, py: 5 }}>
                     <Typography variant="h5" gutterBottom>
                         Information
                     </Typography>
-                    {cv && ( 
+                    {cv !== null ? ( 
                         <Box sx={{ p: 3, textAlign:'left', mx: 3 }}>
                             <Typography variant="h6" gutterBottom>
                                 Years of Experience: {cv.yearsOfExperience}
@@ -62,23 +65,25 @@ const CandidateProfileInfo = () => {
                                 Education: {cv.education}
                             </Typography>
                         </Box>
-                    )}
+                    ) : "No curriculum available"}
                 </Card>
+                }
             </Box>
             
-            <Card elevation={3} sx={{ display: "inline-block", width: 828, borderRadius: 8, boxShadow: 8, mx: 10, mt:5, py: 5 }}>
+            {roleId !== ROLES.CANDIDATE ? null :
+            <Card elevation={3} sx={{ display: "inline-block", width: 835, borderRadius: 8, boxShadow: 8, mx: 10, mt:5, py: 5 }}>
                 <Typography variant="h5" gutterBottom>
                     Projects
                 </Typography>
-                {cv && ( 
-                    <Box>
+                {cv?.projects.length ?  ( 
+                    <Box sx={{ mx: 10 }}>
                         <TableContainer>
-                            <Table bordered>
+                            <Table>
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>Name</TableCell>
-                                        <TableCell>Description</TableCell>
-                                        <TableCell>Job Family</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold' }}>Name</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold' }}>Description</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold' }}>Job Family</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -93,15 +98,45 @@ const CandidateProfileInfo = () => {
                             </Table>
                         </TableContainer>
                     </Box>
-                )}
+                ) : "No projects available"} 
             </Card>
-           {/* Jobs Here */}
-           <Card elevation={3} sx={{ display: "inline-block", width: 825, borderRadius: 8, boxShadow: 8, mx: 10, mt:5, py: 5 }}>
+            }
+           
+            {roleId !== ROLES.CANDIDATE ? null :
+            <Card elevation={3} sx={{ display: "inline-block", width: 835, borderRadius: 8, boxShadow: 8, mx: 10, my:5, py: 5 }}>
                 <Typography variant="h5" gutterBottom>
                     Jobs
                 </Typography>
-           </Card>
-           
+                {cv?.jobs.length ? ( 
+                    <Box sx={{ mx: 10 }}>
+                        <TableContainer>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell sx={{ fontWeight: 'bold' }}>Start Date</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold' }}>End Date</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold' }}>Position</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold' }}>Description</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold' }}>Job Family</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {cv.jobs.map(job => (
+                                        <TableRow key={job.jobsId}>
+                                            <TableCell>{job.startDate}</TableCell>
+                                            <TableCell>{job.endDate}</TableCell>
+                                            <TableCell>{job.position}</TableCell>
+                                            <TableCell>{job.description}</TableCell>
+                                            <TableCell>{job.jobFamily.name}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Box>
+                ) : "No jobs available"}
+            </Card>
+            }   
       </>  
     );
 };

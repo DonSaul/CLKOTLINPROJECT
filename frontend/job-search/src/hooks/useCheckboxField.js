@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 export const useCheckboxField = (initialValue) => {
   const [value, setValue] = useState(initialValue);
@@ -9,4 +9,3 @@ export const useCheckboxField = (initialValue) => {
 
   return [value, handleCheckboxChange];
 };
-
