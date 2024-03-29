@@ -180,8 +180,7 @@ class JobsearchApplication {
                     description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
                     jobFamilyId = 6
                 ),
-
-                )
+            )
 
             for (vacancyDto in vacancyDTOs) {
                 val selectedJobFamily = jobFamilyService.findByJobFamilyId(vacancyDto.jobFamilyId)
@@ -215,7 +214,7 @@ class JobsearchApplication {
 
             val userHasCV = cvRepository.findFirstByUserOrderByIdDesc(candidateUser!!)
 
-            if (userHasCV==null){
+            if (userHasCV == null) {
 
                 val jobRequestDTOList = listOf(
                     JobRequestDTO(
@@ -257,17 +256,16 @@ class JobsearchApplication {
                     yearsOfExperience = 5,
                     salaryExpectation = 70000,
                     education = "Licenciatura en Ingeniería Informática",
-                    jobs =jobRequestDTOList,
+                    jobs = jobRequestDTOList,
                     projects = projectRequestDTOList,
                     skillIds = skillIdSet,
-                    user=candidateUser
+                    user = candidateUser
 
                 )
                 overrideService.createCvOverride(cvRequest)
 
 
             }
-
 
 
         }
