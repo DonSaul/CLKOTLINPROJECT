@@ -30,6 +30,7 @@ class CvService(
         val cv = cvDTO.let {
             Cv(
                 id = null,
+                summary = it.summary,
                 yearsOfExperience = it.yearsOfExperience,
                 salaryExpectation = it.salaryExpectation,
                 education = it.education,
@@ -142,6 +143,7 @@ class CvService(
                 existingJob.apply {
                     startDate = dto.startDate
                     endDate = dto.endDate
+                    company = dto.company
                     position = dto.position
                     description = dto.description
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
