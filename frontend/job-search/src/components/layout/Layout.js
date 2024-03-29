@@ -5,7 +5,7 @@ import MainToolbar from "../MainToolbar";
 import Footer from "./Footer";
 
 const Layout = ({ children }) => {
-  const [contentMinHeight, setContentMinHeight] = useState("71vh");
+  const [contentMinHeight, setContentMinHeight] = useState("71.5vh");
   const [marginBottomContent, setMarginBottomContent] = useState("5vh");
 
   return (
