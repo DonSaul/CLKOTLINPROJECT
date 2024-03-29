@@ -118,15 +118,17 @@ class UserService @Autowired constructor(
         user.apply {
             firstName = updatedProfile.firstName
             lastName = updatedProfile.lastName
-            email = updatedProfile.email
+            email= user.email
         }
 
         val updatedUserProfile = userRepository.save(user)
         return ProfileDTO(
             firstName = updatedUserProfile.firstName,
             lastName = updatedUserProfile.lastName,
-            email = updatedProfile.email,
-            roleId = updatedUserProfile.role?.id ?: -1
+            email = user.email,
+            roleId = updatedUserProfile.role?.id ?: -1,
+
+
         )
     }
 

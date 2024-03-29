@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import { Box, Button } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Modal from '@mui/material/Modal';
-import { useUpdateCurrentProfile } from '../hooks/profile/useUpdateCurrentProfile';
+import { useCurrentUserProfile } from '../hooks/profile/useCurrentUserProfile';
+import { useAuth } from '../helpers/userContext';
+import { useUpdateProfileInfo } from '../hooks/profile/useCurrentUserProfile';
 
 const style = {
   position: 'absolute',
@@ -17,45 +19,57 @@ const style = {
   p: 4,
 };
 
-const InvitationModal = ({profileData}) => {
-    const { mutate } = useUpdateCurrentProfile();
+const ProfileModal = ({mutate, profileData}) => {
+    // const { updateUserProfile, profileData, isLoading, isError } = useCurrentUserProfile();
+    const { getUserIdFromToken } = useAuth();
+   
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
+    
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const id = getUserIdFromToken(); 
+
+    console.log("ID", id)
     
     useEffect(() => {
         if (profileData) {
             setFirstName(profileData.firstName || '');
             setLastName(profileData.lastName || '');
-            setEmail(profileData.email || '');
+            
         }
     }, [profileData]);
 
-    
     console.log("data!", profileData)
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
+            if (!id) {
+                throw new Error('User ID not available')
+            }
+
             const updatedProfileData = {
+                id,
                 firstName,
                 lastName,
-                email,
+               
             };
-            await mutate(profileData.id, updatedProfileData); // Pass the user ID and updated profile data
-            handleClose(); // Close the modal after successful update
+
+            console.log("updated", updatedProfileData)
+            mutate(updatedProfileData);
+            // await updateUserProfile(id, updatedProfileData)
+            handleClose();
         } catch (error) {
-            console.error('Error updating user information:', error);
+            console.error("Error updating user profile", error)
         }
-    }
+    };
 
     return (
         <div>
             <Button 
-                sx={{mt: 2}}
+                sx={{mb: 2}}
                 variant="contained" 
                 color="primary" 
                 onClick={handleOpen}
@@ -86,14 +100,6 @@ const InvitationModal = ({profileData}) => {
                     margin="normal"        
                 /> 
 
-                <TextField
-                    id="outlined-multiline-static"
-                    label="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    fullWidth
-                    margin="normal"  
-                />
 
                 <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
                     Send
@@ -103,7 +109,7 @@ const InvitationModal = ({profileData}) => {
             </Box>
             </Modal>
         </div>
-  );
+    );
 }
 
-export default InvitationModal;       
+export default ProfileModal;       
