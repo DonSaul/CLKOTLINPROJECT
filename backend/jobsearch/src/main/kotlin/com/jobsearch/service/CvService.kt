@@ -50,6 +50,7 @@ class CvService(
                         cv = cv,
                         startDate = jobDTO.startDate,
                         endDate = jobDTO.endDate,
+                        company = jobDTO.company,
                         position = jobDTO.position,
                         description = jobDTO.description,
                         jobFamily = it
@@ -154,6 +155,7 @@ class CvService(
                     startDate = dto.startDate,
                     endDate = dto.endDate,
                     position = dto.position,
+                    company = dto.company,
                     description = dto.description,
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
                         .orElseThrow { NotFoundException("No Job Family found with id ${dto.jobFamilyId}") }
