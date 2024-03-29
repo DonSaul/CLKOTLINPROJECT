@@ -22,8 +22,7 @@ class UserService @Autowired constructor(
     private val roleRepository: RoleRepository,
     private val passwordEncoder: PasswordEncoder,
     private val notificationTypeRepository: NotificationTypeRepository,
-    private val interestService: InterestService,
-    val cvRepository: CvRepository,
+    private val cvRepository: CvRepository,
     private val notificationTypeService: NotificationTypeService,
     private val vacancyRepository: VacancyRepository,
     private val applicationRepository: ApplicationRepository,
@@ -38,10 +37,8 @@ class UserService @Autowired constructor(
             return mapToUserResponseDTO(existingUser.get())
         }
 
-        val activatedNotificationTypeEnums =
-            setOf(NotificationTypeEnum.VACANCIES, NotificationTypeEnum.INVITATIONS, NotificationTypeEnum.MESSAGES)
-        val notificationTypes =
-            activatedNotificationTypeEnums.map { notificationTypeService.findByIdAndReturnsEntity(it.id) }.toSet()
+        val activatedNotificationTypeEnums = setOf(NotificationTypeEnum.VACANCIES, NotificationTypeEnum.INVITATIONS, NotificationTypeEnum.MESSAGES)
+        val notificationTypes = activatedNotificationTypeEnums.map{notificationTypeService.findByIdAndReturnsEntity(it.id)}.toSet()
 
         val encodedPassword = passwordEncoder.encode(userRequestDTO.password)
         val roleId = userRequestDTO.roleId ?: 1
@@ -51,7 +48,7 @@ class UserService @Autowired constructor(
             password = encodedPassword,
             email = userRequestDTO.email,
             role = roleRepository.findById(roleId).get(),
-            activatedNotificationTypes = notificationTypes,
+            activatedNotificationTypes = notificationTypes ,
             resetPasswordToken = null
         )
 
@@ -94,7 +91,7 @@ class UserService @Autowired constructor(
     fun getUserProfileInfo(userId: Int): ProfileDTO {
         val user = userRepository.findById(userId)
             .orElseThrow { NotFoundException("No user found with id $userId") }
-        val cv = cvRepository.findFirstByUserOrderByIdDesc(user)
+        val cv =  cvRepository.findFirstByUserOrderByIdDesc(user)
 
         return ProfileDTO(
             firstName = user.firstName,
@@ -115,21 +112,22 @@ class UserService @Autowired constructor(
     fun updateUserProfile(userId: Int, updatedProfile: ProfileDTO): ProfileDTO {
         val user = userRepository.findById(userId)
             .orElseThrow { NotFoundException("No user found with id $userId") }
-        if (userId === user.id) {
-            // Update profile
-            user.apply {
-                firstName = updatedProfile.firstName
-                lastName = updatedProfile.lastName
-                email = updatedProfile.email
-            }
+
+        // Update profile
+        user.apply {
+            firstName = updatedProfile.firstName
+            lastName = updatedProfile.lastName
+            email= user.email
         }
 
         val updatedUserProfile = userRepository.save(user)
         return ProfileDTO(
             firstName = updatedUserProfile.firstName,
             lastName = updatedUserProfile.lastName,
-            email = updatedProfile.email,
-            roleId = updatedUserProfile.role?.id ?: -1
+            email = user.email,
+            roleId = updatedUserProfile.role?.id ?: -1,
+
+
         )
     }
 
@@ -240,12 +238,17 @@ class UserService @Autowired constructor(
     }
 
 
+    fun findCandidatesByFilter(salaryExpectation: Int?, jobFamilyId: Int?, yearsOfExperience: Int?): List<CandidateDTO> {
+        val cvs = cvRepository.findCvByFilter(salaryExpectation, jobFamilyId, yearsOfExperience)
+
+        return cvs.map { cv -> mapToUserCandidateDTO(cv) }
+    }
+
     fun getUserNotificationStatus(email: String): Boolean {
         val user = userRepository.findByEmail(email)
             .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
         return user.notificationActivated
     }
-
     fun getActivatedNotificationTypes(email: String): List<NotificationTypeDTO> {
         val user = userRepository.findByEmail(email)
             .orElseThrow { NoSuchElementException("Could not find any user with the email $email") }
@@ -257,25 +260,14 @@ class UserService @Autowired constructor(
                 id = notificationType?.id!!,
                 type = notificationType.type,
 
-                )
+            )
         }
         return activatedNotificationTypeDTOs
     }
 
-    fun findCandidatesByFilter(salary: Int?, jobFamilyId: Int?, yearsOfExperience: Int?): List<CandidateDTO> {
-        val cvs = cvRepository.findCvByFilter(salary, yearsOfExperience)
 
-        return cvs.mapNotNull { cv ->
-            val jobFamilies = cv.user.id?.let { interestService.getJobFamilyByUserId(it) }
-            if (jobFamilyId == null || jobFamilies?.any { it.id == jobFamilyId } == true) {
-                mapToUserCandidateDTO(cv, jobFamilies)
-            } else {
-                null
-            }
-        }
-    }
-
-    fun mapToUserCandidateDTO(cvEntity: Cv, jobFamilies: List<JobFamily>?): CandidateDTO {
+    fun mapToUserCandidateDTO(cvEntity: Cv): CandidateDTO {
+        val jobFamilies = getUserJobFamilies(cvEntity)
         return CandidateDTO(
             cvEntity.user.id!!,
             cvEntity.user.firstName,
@@ -283,20 +275,19 @@ class UserService @Autowired constructor(
             cvEntity.user.email,
             cvEntity.yearsOfExperience,
             cvEntity.salaryExpectation,
-            jobFamilies ?: emptyList()
+            jobFamilies
         )
     }
-
     fun findCandidatesByVacancyApplication(vacancyId: Int): List<CandidateDTO> {
         val vacancy = vacancyRepository.findById(vacancyId)
             .orElseThrow { NotFoundException("No vacancy found with id $vacancyId") }
         val user = retrieveAuthenticatedUser()
         if (vacancy.manager != user) throw ForbiddenException("You are not authorized to perform this action")
         val applications = applicationRepository.findByVacancy(vacancy)
-        return applications.map { mapToUserCandidateDTOAplication(it) }
+        return applications.map { mapToUserCandidateDTOApplication(it) }
     }
 
-    fun mapToUserCandidateDTOAplication(application: Application): CandidateDTO {
+    fun mapToUserCandidateDTOApplication(application: Application): CandidateDTO {
         return application.let {
             CandidateDTO(
                 it.candidate.id!!,
@@ -305,11 +296,17 @@ class UserService @Autowired constructor(
                 it.candidate.email,
                 it.cv.yearsOfExperience,
                 it.cv.salaryExpectation,
-                it.cv.user.id?.let { cvUserId -> interestService.getJobFamilyByUserId(cvUserId) },
+                getUserJobFamilies(it.cv),
                 it.applicationStatus.name
             )
         }
     }
 
+    fun getUserJobFamilies(cvEntity: Cv): List<JobFamily> {
+        val jobFamiliesSorted = (cvEntity.jobs?.map { it.jobFamily }?.toSet() ?: emptySet()) +
+                (cvEntity.projects?.map { it.jobFamily }?.toSet() ?: emptySet())
+
+        return jobFamiliesSorted.sortedBy { it.name }.toList()
+    }
 }
 

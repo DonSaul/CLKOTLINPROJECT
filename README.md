@@ -98,7 +98,7 @@ potential.
 
 _______________________________________________
 
-## *documentation*
+## *Documentation*
 
 ## Table of Contents
 
@@ -135,6 +135,7 @@ Ensure you have the following installed:
 | PostgreSQL          | [Add Dependency PostgreSQL Driver](https://start.spring.io/)  |         |
 | JWT(Json web token) |                                                               | 0.9.1   |
 | JVM                 |                                                               | 1.9.22  |
+| Docker              | [Docker download](https://www.docker.com/)                    |         |
 
 ### Initial Setup and Configuration
 
@@ -142,6 +143,11 @@ Ensure you have the following installed:
 2. Install dependencies. [follow the Prerequisites step](#prerequisites)
 3. Configure application properties.
 4. Run the application.
+
+### Setting up the docker database
+
+1. Clone the repository git clone `https://github.com/EdgarAraya/docker-postgres`
+2. Follow the instructions from the README.md in the repository
 
 --------------------------------------------------------
 
@@ -337,12 +343,25 @@ The frontend and backend of JobSearch communicate via HTTP requests using the RE
 with the frontend user interface, requests are sent to the backend to perform operations such as logging in, registering
 a user, searching for vacancies, creating CVs, etc.
 
-This communication occurs through files such as paths.js, **RequireAuth.js**, and **router.js**, where endpoints and
+This communication occurs through files in the hooks folder, as well with files like paths.js, **RequireAuth.js**, **router.js**,  where endpoints and
 authentication mechanisms are defined and utilized. The backend processes these requests and returns corresponding
 responses, which the frontend utilizes to update the user interface and display information to the user. The
 communication between the frontend and backend is based on a set of RESTful endpoints defined in the backend, which the
 frontend utilizes to perform various operations.
+
 --------------------------------------------------------
+### Basic frontend layout
+
+The frontend layout is structured around three primary elements: the toolbar, the content area, and the footer. Navigation primarily occurs through the toolbar located at the top of the page. 
+
+- **Toolbar**: The toolbar dynamically adjusts based on the user's role. If the user is not logged in, only the login and register tabs are visible. Once logged in, additional navigation options become available, customized based on the user's role.
+
+- **Content Area**: The content area adapts dynamically based on the page the user is visiting. It displays relevant information, forms, or interactive elements corresponding to the selected navigation option.
+
+- **Footer**: The footer section provides additional information, links, or acknowledgments relevant to the application.
+
+This layout design ensures a user-friendly experience by providing intuitive navigation and context-aware content presentation.
+
 
 ### Frontend Helper Files
 
@@ -359,6 +378,7 @@ the application. Here's an overview:
 
 These helper files play a crucial role in managing authentication, API communication, and user context within the
 frontend application.
+
 --------------------------------------------------------
 
 ### Router Files
@@ -374,6 +394,28 @@ breakdown:
 
 These router files ensure proper navigation and access control within the frontend application, enhancing overall user
 experience and security.
+
+--------------------------------------------------------
+
+### Hooks
+
+In our project, we utilize React Query for handling data fetching, caching, and synchronization. React Query provides a powerful solution for managing server state in React applications.
+
+React Query hooks, such as useQuery and useMutation, allow us to easily fetch and mutate data from our backend API endpoints. These hooks handle caching, automatic refetching, and error handling, providing a seamless data fetching experience for our users.
+
+- Hooks Folder: The React Query hooks are primarily used in components that require data fetching or mutation capabilities. They are located in the /hooks directory of our project.
+
+Some examples of these hooks:
+
+| Hook            | Function                                                     |
+|-----------------|--------------------------------------------------------------|
+| useLogin        | Handles user authentication and login functionality.          |
+| useRegister     | Manages user registration process.                            |
+| useGetVacancies | Fetches vacancies data from the backend API.                 |
+
+
+By leveraging React Query, we ensure efficient and optimized data fetching, resulting in improved performance and user experience in our frontend application.
+
 --------------------------------------------------------
 
 ### ApplicationController
@@ -392,3 +434,20 @@ This controller handles requests related to applications in the backend of the a
 
 - All endpoints are protected with authorization.
 - Users with the 'manager' role can access endpoints to update and delete applications.
+
+
+### ConversationController
+
+This controller handles requests related to the messaging in the backend of the application.
+
+#### Endpoints
+
+| HTTP Method | URL                        | Description                           | Input Parameters                        | Response Codes                                                                                                        |
+|-------------|----------------------------|---------------------------------------|-----------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| POST        | `/api/v1/conversation/send-message`      | Sends a message to another user.            | `ChatMessageRequestDTO` Object                 | `200 OK`: If the message is sent successfully                             |
+| GET         | `/api/v1/conversation/user/all` | Retrieves the conversations for the current user  | -                      | `200 OK`: If the conversations are retrieved.
+| GET         | `/api/v1/conversation/messages`      | Retrieves all the messages of the current conversation of the user | email:String                                     | `200 OK`: If applications are retrieved successfully.<br>Other possible error codes.                                  |
+
+- All endpoints are protected with authorization.
+
+  
