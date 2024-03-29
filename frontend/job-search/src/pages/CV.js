@@ -29,6 +29,7 @@ const CV = () => {
   } = useGetCurrentUserCv();
 
   //Standard data cv
+  const [summary, setSummary] = useState("");
   const [yearsOfExperience, setYearsOfExperience] = useState("");
   const [salaryExpectation, setSalaryExpectation] = useState("");
   const [education, setEducation] = useState("");
@@ -77,6 +78,7 @@ const CV = () => {
 
   const setCvData = (cvData) => {
     setId(cvData.id);
+    setSummary(cvData.summary);
     setYearsOfExperience(cvData.yearsOfExperience);
     setSalaryExpectation(cvData.salaryExpectation);
     setEducation(cvData.education);
@@ -103,6 +105,7 @@ const CV = () => {
     const newJob = {
       startDate: dayjs(),
       endDate: dayjs(),
+      company: "",
       position: "",
       description: "",
       jobFamily: "",
@@ -167,6 +170,7 @@ const CV = () => {
 
     const formData = {
       id,
+      summary,
       yearsOfExperience,
       salaryExpectation,
       education,
@@ -199,6 +203,18 @@ const CV = () => {
 
             <h2>General</h2>
             <form onSubmit={handleSubmit}>
+              <TextField
+                multiline
+                minRows="2"
+                maxRows="3"
+                label="Summary"
+                type="text"
+                value={summary}
+                onChange={(e) => setSummary(e.target.value)}
+                fullWidth
+                margin="normal"
+                required
+              />
               <TextField
                 label="Years of Experience"
                 type="number"
@@ -269,6 +285,16 @@ const CV = () => {
                       </LocalizationProvider>
                     </Box>
                   </Box>
+                  <TextField
+                    label={`Job ${index + 1} Company`}
+                    value={job.company}
+                    onChange={(e) =>
+                      handleJobChange(index, "company", e.target.value)
+                    }
+                    fullWidth
+                    margin="normal"
+                    required
+                  />
                   <TextField
                     label={`Job ${index + 1} Position`}
                     value={job.position}
