@@ -39,5 +39,5 @@ export const ENDPOINTS = {
   candidateProfile: createUrl("profiles"),
   profile: createUrl("profiles/my-profile"),
   sendMessageNotification: createUrl("conversation/sendMessageNotification"),
-  invitation: createUrl("invitations"),
+  updateProfile: createUrl("profiles"),
 };
