@@ -22,8 +22,7 @@ class UserService @Autowired constructor(
     private val roleRepository: RoleRepository,
     private val passwordEncoder: PasswordEncoder,
     private val notificationTypeRepository: NotificationTypeRepository,
-    private val interestService: InterestService,
-    val cvRepository: CvRepository,
+    private val cvRepository: CvRepository,
     private val notificationTypeService: NotificationTypeService,
     private val vacancyRepository: VacancyRepository,
     private val applicationRepository: ApplicationRepository,
@@ -239,17 +238,10 @@ class UserService @Autowired constructor(
     }
 
 
-    fun findCandidatesByFilter(salary: Int?, jobFamilyId: Int?, yearsOfExperience: Int?): List<CandidateDTO> {
-        val cvs = cvRepository.findCvByFilter(salary, yearsOfExperience)
+    fun findCandidatesByFilter(salaryExpectation: Int?, jobFamilyId: Int?, yearsOfExperience: Int?): List<CandidateDTO> {
+        val cvs = cvRepository.findCvByFilter(salaryExpectation, jobFamilyId, yearsOfExperience)
 
-        return cvs.mapNotNull { cv ->
-            val jobFamilies = cv.user.id?.let { interestService.getJobFamilyByUserId(it) }
-            if (jobFamilyId == null || jobFamilies?.any { it.id == jobFamilyId } == true) {
-                mapToUserCandidateDTO(cv, jobFamilies)
-            } else {
-                null
-            }
-        }
+        return cvs.map { cv -> mapToUserCandidateDTO(cv) }
     }
 
     fun getUserNotificationStatus(email: String): Boolean {
@@ -274,7 +266,8 @@ class UserService @Autowired constructor(
     }
 
 
-    fun mapToUserCandidateDTO(cvEntity: Cv, jobFamilies: List<JobFamily>?): CandidateDTO {
+    fun mapToUserCandidateDTO(cvEntity: Cv): CandidateDTO {
+        val jobFamilies = getUserJobFamilies(cvEntity)
         return CandidateDTO(
             cvEntity.user.id!!,
             cvEntity.user.firstName,
@@ -282,7 +275,7 @@ class UserService @Autowired constructor(
             cvEntity.user.email,
             cvEntity.yearsOfExperience,
             cvEntity.salaryExpectation,
-            jobFamilies ?: emptyList()
+            jobFamilies
         )
     }
     fun findCandidatesByVacancyApplication(vacancyId: Int): List<CandidateDTO> {
@@ -291,10 +284,10 @@ class UserService @Autowired constructor(
         val user = retrieveAuthenticatedUser()
         if (vacancy.manager != user) throw ForbiddenException("You are not authorized to perform this action")
         val applications = applicationRepository.findByVacancy(vacancy)
-        return applications.map { mapToUserCandidateDTOAplication(it) }
+        return applications.map { mapToUserCandidateDTOApplication(it) }
     }
 
-    fun mapToUserCandidateDTOAplication(application: Application): CandidateDTO {
+    fun mapToUserCandidateDTOApplication(application: Application): CandidateDTO {
         return application.let {
             CandidateDTO(
                 it.candidate.id!!,
@@ -303,11 +296,17 @@ class UserService @Autowired constructor(
                 it.candidate.email,
                 it.cv.yearsOfExperience,
                 it.cv.salaryExpectation,
-                it.cv.user.id?.let { cvUserId -> interestService.getJobFamilyByUserId(cvUserId) },
+                getUserJobFamilies(it.cv),
                 it.applicationStatus.name
             )
         }
     }
 
+    fun getUserJobFamilies(cvEntity: Cv): List<JobFamily> {
+        val jobFamiliesSorted = (cvEntity.jobs?.map { it.jobFamily }?.toSet() ?: emptySet()) +
+                (cvEntity.projects?.map { it.jobFamily }?.toSet() ?: emptySet())
+
+        return jobFamiliesSorted.sortedBy { it.name }.toList()
+    }
 }
 

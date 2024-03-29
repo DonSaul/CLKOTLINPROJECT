@@ -125,7 +125,13 @@ class CvService(
 
         // Updating jobs
         // Removing jobs from the CV that are not in the request
-        cv.jobs?.removeIf { job -> !cvDTO.jobs.any { it.id == job.id } }
+        cv.jobs?.removeIf { job ->
+            val isJobInDTO = cvDTO.jobs.any { it.id == job.id }
+            if (!isJobInDTO) {
+                interestService.deleteInterestByUserIdAndJobFamilyId(job.jobFamily.id!!, cv.user.id!!)
+            }
+            !isJobInDTO
+        }
 
         cvDTO.jobs.forEach { dto ->
             val existingJob = cv.jobs?.find { it.id == dto.id }
@@ -139,6 +145,7 @@ class CvService(
                     description = dto.description
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
                         .orElseThrow { NotFoundException("No Job Family found with id ${dto.jobFamilyId}") }
+                    interestService.updateInterest(dto.jobFamilyId, cv.user.id!!)
                 }
             } else {
                 // If job doesn't exist, a new one is created and added to the CV
@@ -151,13 +158,20 @@ class CvService(
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
                         .orElseThrow { NotFoundException("No Job Family found with id ${dto.jobFamilyId}") }
                 )
+                interestService.createInterest(newJob.jobFamily.id!!, cv.user.id!!)
                 cv.jobs?.add(newJob)
             }
         }
 
         // Updating projects
         // Removing projects from the CV that are not in the request
-        cv.projects?.removeIf { project -> !cvDTO.projects.any { it.id == project.id } }
+        cv.projects?.removeIf { project ->
+            val isProjectInDTO = cvDTO.projects.any { it.id == project.id }
+            if (!isProjectInDTO) {
+                interestService.deleteInterestByUserIdAndJobFamilyId(project.jobFamily.id!!, cv.user.id!!)
+            }
+            !isProjectInDTO
+        }
 
         cvDTO.projects.forEach { dto ->
             val existingProject = cv.projects?.find { it.id == dto.id }
@@ -168,7 +182,8 @@ class CvService(
                     name = dto.name
                     description = dto.description
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
-                        .orElseThrow { NotFoundException("No Job Family found with id ${dto.jobFamilyId}") }
+                        .orElseThrow { NotFoundException("No JobFamily found with id ${dto.jobFamilyId}") }
+                    interestService.updateInterest(dto.jobFamilyId, cv.user.id!!)
                 }
             } else {
                 // If project doesn't exist, a new one is created and added to the CV
@@ -177,8 +192,9 @@ class CvService(
                     name = dto.name,
                     description = dto.description,
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
-                        .orElseThrow { NotFoundException("No Job Family found with id ${dto.jobFamilyId}") }
+                        .orElseThrow { NotFoundException("No JobFamily found with id ${dto.jobFamilyId}") }
                 )
+                interestService.createInterest(newProject.jobFamily.id!!, cv.user.id!!)
                 cv.projects?.add(newProject)
             }
         }
@@ -204,7 +220,6 @@ class CvService(
 
         return cvMapper.mapToDto(updatedCv)
     }
-
     fun deleteCv(cvId: Int): String {
         val cv = cvRepository.findById(cvId)
             .orElseThrow { NotFoundException("No CV found with id $cvId") }
