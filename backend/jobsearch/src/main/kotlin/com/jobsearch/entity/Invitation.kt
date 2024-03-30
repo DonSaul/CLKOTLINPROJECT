@@ -11,7 +11,7 @@ data class Invitation(
     val id: Int?,
 
     // Receiver
-    @ManyToOne(fetch = FetchType.LAZY)  //or ManyToMany?
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "candidate_id")
     val candidate: User,
 
