@@ -4,11 +4,12 @@ import jakarta.persistence.*
 
 
 @Entity
-@Table(name="cvs")
+@Table(name = "cvs")
 class Cv(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int? = null,
+    var summary: String,
     var yearsOfExperience: Int,
     var salaryExpectation: Int,
     var education: String,
@@ -29,5 +30,5 @@ class Cv(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    val user: User
+    val user: User,
 )

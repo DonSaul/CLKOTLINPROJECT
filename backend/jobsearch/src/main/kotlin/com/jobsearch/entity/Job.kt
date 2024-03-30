@@ -13,7 +13,9 @@ class Job (
     var startDate: LocalDate,
     var endDate: LocalDate,
 
+    var company: String,
     var position: String,
+    @Column(columnDefinition = "TEXT")
     var description: String,
 
     @ManyToOne(fetch = FetchType.LAZY)

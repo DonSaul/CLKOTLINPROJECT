@@ -29,6 +29,7 @@ class CvService(
         val cv = cvDTO.let {
             Cv(
                 id = null,
+                summary = it.summary,
                 yearsOfExperience = it.yearsOfExperience,
                 salaryExpectation = it.salaryExpectation,
                 education = it.education,
@@ -41,32 +42,37 @@ class CvService(
 
         // Adding jobs to CV
         cvDTO.jobs.forEach { jobDTO ->
+            val jobFamily = jobFamilyRepository.findById(jobDTO.jobFamilyId).orElse(null)
 
-            cv.jobs?.add(
-                Job(
-                    cv = cv,
-                    startDate = jobDTO.startDate,
-                    endDate = jobDTO.endDate,
-                    position = jobDTO.position,
-                    description = jobDTO.description,
-                    jobFamily = jobFamilyRepository.findById(jobDTO.jobFamilyId)
-                        .orElseThrow { NotFoundException("No Job Family found with id ${jobDTO.jobFamilyId}") }
+            jobFamily?.let {
+                cv.jobs?.add(
+                    Job(
+                        cv = cv,
+                        startDate = jobDTO.startDate,
+                        endDate = jobDTO.endDate,
+                        company = jobDTO.company,
+                        position = jobDTO.position,
+                        description = jobDTO.description,
+                        jobFamily = it
+                    )
                 )
-            )
+            }
         }
 
         // Adding projects to CV
         cvDTO.projects.forEach { projectDTO ->
+            val jobFamily = jobFamilyRepository.findById(projectDTO.jobFamilyId).orElse(null)
 
-            cv.projects?.add(
-                Project(
-                    cv = cv,
-                    name = projectDTO.name,
-                    description = projectDTO.description,
-                    jobFamily = jobFamilyRepository.findById(projectDTO.jobFamilyId)
-                        .orElseThrow { NotFoundException("No Job Family found with id ${projectDTO.jobFamilyId}") }
+            jobFamily?.let {
+                cv.projects?.add(
+                    Project(
+                        cv = cv,
+                        name = projectDTO.name,
+                        description = projectDTO.description,
+                        jobFamily = it
+                    )
                 )
-            )
+            }
         }
 
         // Adding skills to CV
@@ -112,6 +118,7 @@ class CvService(
 
         // Updating basic attributes
         cv.apply {
+            summary = cvDTO.summary
             yearsOfExperience = cvDTO.yearsOfExperience
             salaryExpectation = cvDTO.salaryExpectation
             education = cvDTO.education
@@ -129,6 +136,7 @@ class CvService(
                 existingJob.apply {
                     startDate = dto.startDate
                     endDate = dto.endDate
+                    company = dto.company
                     position = dto.position
                     description = dto.description
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
@@ -141,6 +149,7 @@ class CvService(
                     startDate = dto.startDate,
                     endDate = dto.endDate,
                     position = dto.position,
+                    company = dto.company,
                     description = dto.description,
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
                         .orElseThrow { NotFoundException("No Job Family found with id ${dto.jobFamilyId}") }
@@ -162,7 +171,7 @@ class CvService(
                     name = dto.name
                     description = dto.description
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
-                        .orElseThrow { NotFoundException("No Job Family found with id ${dto.jobFamilyId}") }
+                        .orElseThrow { NotFoundException("No JobFamily found with id ${dto.jobFamilyId}") }
                 }
             } else {
                 // If project doesn't exist, a new one is created and added to the CV
@@ -171,7 +180,7 @@ class CvService(
                     name = dto.name,
                     description = dto.description,
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
-                        .orElseThrow { NotFoundException("No Job Family found with id ${dto.jobFamilyId}") }
+                        .orElseThrow { NotFoundException("No JobFamily found with id ${dto.jobFamilyId}") }
                 )
                 cv.projects?.add(newProject)
             }
@@ -198,7 +207,6 @@ class CvService(
 
         return cvMapper.mapToDto(updatedCv)
     }
-
     fun deleteCv(cvId: Int): String {
         val cv = cvRepository.findById(cvId)
             .orElseThrow { NotFoundException("No CV found with id $cvId") }
