@@ -34,7 +34,7 @@ class ConversationService(
         private val notificationService: NotificationService
 ) {
 
-    //testing
+    //lock
     object ConversationLockManager {
         private val conversationLocks = ConcurrentHashMap<Pair<String, String>, ReentrantLock>()
 
@@ -87,7 +87,7 @@ class ConversationService(
 
         val existingConversation = findExistingConversation(currentUser, receiver)
 
-        val conversation = existingConversation ?: createConversationLock(currentUser, receiver)
+        val conversation = existingConversation ?: createConversation(currentUser, receiver)
 
         val chatMessage = ChatMessage(
             sender = currentUser,
