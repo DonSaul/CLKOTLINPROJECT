@@ -16,7 +16,6 @@ const sendMessage = async (data) => {
   });
 
   if (res.ok) {
-    // If message sending is successful, send a notification
     await sendNotification(data.receiverUserName);
   }
 
@@ -47,8 +46,6 @@ export const useSendMessage = () => {
       if (res.status === 403) {
         toast.error("You are not allowed to send messages");
       } else {
-        console.log("Message sent successfully!");
-        // Handle success as needed
       }
     },
     onError: (_err) => {
