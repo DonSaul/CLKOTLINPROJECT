@@ -14,7 +14,7 @@ data class CvRequestDTO(
     val summary: String,
 
     // candidate could not have years of experience, min can be 0
-    @field:Range(min = 0, max = 99, message = "CV must have a valid number of years of experience between 0 and 40")
+    @field:Range(min = 0, max = 99, message = "CV must have a valid number of years of experience between 0 and 99")
     val yearsOfExperience: Int,
 
     @field:Positive(message = "CV must have a valid salary expectation")
