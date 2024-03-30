@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { Grid } from "@mui/material";
 import MainToolbar from "../MainToolbar";
+import { Box } from "@mui/material";
 
 import Footer from "./Footer";
 
 const Layout = ({ children }) => {
-  const [contentMinHeight, setContentMinHeight] = useState("71.5vh");
+  const [contentMinHeight, setContentMinHeight] = useState("60vh"); //71.5
   const [marginBottomContent, setMarginBottomContent] = useState("5vh");
 
   return (
     <Grid
       container
       direction="column"
-      style={
-        {
-          // minHeight: '1vh'
-        }
-      }
+      style={{
+        minHeight: "100vh",
+      }}
     >
       {/* Toolbar */}
       <Grid item>
