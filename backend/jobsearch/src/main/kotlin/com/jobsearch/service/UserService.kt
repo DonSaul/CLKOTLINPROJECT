@@ -92,6 +92,7 @@ class UserService @Autowired constructor(
         val user = userRepository.findById(userId)
             .orElseThrow { NotFoundException("No user found with id $userId") }
         val cv =  cvRepository.findFirstByUserOrderByIdDesc(user)
+            .orElseThrow { NotFoundException("No CV found for this user") }
 
         return ProfileDTO(
             firstName = user.firstName,
