@@ -41,6 +41,7 @@ const RoutesConfig = () => {
       <Route element={<RequireAuth />}>
         <Route path={paths.notifications} element={<Notifications />} />
         <Route path={paths.messaging} element={<Messaging />} />
+        <Route path={paths.messagingUser} element={<Messaging />} />
         <Route path={paths.profile} element={<Profile />} />
         <Route path={paths.vacancies} element={<Vacancies />} />
         <Route path={paths.vacancyDetails} element={<VacancyView />} />

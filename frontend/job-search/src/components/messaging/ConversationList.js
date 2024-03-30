@@ -2,27 +2,21 @@ import * as React from "react";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Divider from "@mui/material/Divider";
-import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../helpers/userContext";
 import UserAvatar from "../avatar/UserAvatar";
-import { useEffect } from "react";
 
 const ConversationsList = ({
   conversations,
   onSelectConversation,
   onSetUserData,
+  selectedConversation,
 }) => {
   const { getUserEmail } = useAuth();
   const [formattedConversations, setFormattedConversations] = useState();
-  const [selectedConversationIndex, setSelectedConversationIndex] =
-    useState(null);
-
   const handleConversationClick = (index) => {
-    setSelectedConversationIndex(index);
     const selectedConversation = formattedConversations[index];
     if (selectedConversation?.email) {
       onSelectConversation(selectedConversation.email);
@@ -30,13 +24,6 @@ const ConversationsList = ({
     } else {
       console.error("Can't select this conversation");
     }
-  };
-
-  const truncateText = (text, maxLength) => {
-    if (text && text.length > maxLength) {
-      return text.substring(0, maxLength) + "...";
-    }
-    return text;
   };
 
   const formatConversation = (conversation) => {
@@ -79,7 +66,14 @@ const ConversationsList = ({
 
   useEffect(() => {
     if (conversations) {
+      console.log("conversations", conversations);
       setFormattedConversations(conversations.map(formatConversation));
+    }
+  }, [conversations]);
+
+  useEffect(() => {
+    if (conversations) {
+      console.log("conversations", conversations);
     }
   }, [conversations]);
 
@@ -95,7 +89,7 @@ const ConversationsList = ({
               onClick={() => handleConversationClick(index)}
               sx={{
                 ":hover": { bgcolor: "#f0f0f0" },
-                ...(selectedConversationIndex === index && {
+                ...(selectedConversation === conversation.email && {
                   bgcolor: "#e1f5fe",
                 }),
               }}
@@ -103,7 +97,13 @@ const ConversationsList = ({
               <ListItemAvatar>
                 <UserAvatar user={conversation.user}></UserAvatar>
               </ListItemAvatar>
-              <div>
+              <div
+                style={{
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  width: "auto",
+                }}
+              >
                 <Typography
                   sx={{ display: "inline" }}
                   component="span"
@@ -114,25 +114,25 @@ const ConversationsList = ({
                     <b>You</b>
                   ) : (
                     <b>
-                      {truncateText(
-                        `${conversation.senderName} ${conversation.senderLastName}`,
-                        15
-                      )}
+                      {conversation.senderName} {conversation.senderLastName}
                     </b>
                   )}
                 </Typography>
                 {" — "}
-                <Typography
-                  sx={{
-                    display: "inline",
-                    maxWidth: "10px",
-                    textOverflow: "ellipsis",
-                    overflow: "hidden",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {truncateText(conversation.topMessage, 19)}
-                </Typography>
+                <div>
+                  <Typography
+                    noWrap
+                    sx={{
+                      display: "inline",
+                      // maxWidth: "10px",
+                      // textOverflow: "ellipsis",
+                      // overflow: "hidden",
+                      //  whiteSpace: "nowrap",
+                    }}
+                  >
+                    {conversation.topMessage}
+                  </Typography>
+                </div>
               </div>
             </ListItem>
             {index < conversations.length - 1 && (

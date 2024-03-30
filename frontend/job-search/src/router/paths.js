@@ -20,4 +20,5 @@ export const paths = {
   profiles: "/profiles",
   candidateProfile: "/profiles/:id",
   profile: "/profile",
+  messagingUser: "messaging/:id",
 };

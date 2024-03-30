@@ -10,7 +10,7 @@ import useGetUsers from "../hooks/messaging/useGetUsers";
 import { useEffect } from "react";
 import useGetConversations from "../hooks/messaging/useGetConversations";
 import useGetCurrentConversation from "../hooks/messaging/useGetCurrentConversation";
-import { CircularProgress } from "@mui/material";
+import { useParams } from "react-router-dom";
 const theme = createTheme({
   palette: {
     primary: {
@@ -25,11 +25,12 @@ const theme = createTheme({
 });
 
 const Messaging = () => {
+  const { id } = useParams();
   const [selectedConversation, setSelectedConversation] = useState();
-  const { getUserEmail, getUserFirstName, getUserLastName } = useAuth();
+  const { getUserEmail } = useAuth();
   const [selectedUserChat, setSelectedUserChat] = useState();
 
-  const { data: userList } = useGetUsers();
+  const { data: userList, isSuccess: isSuccessUserList } = useGetUsers();
   const { data: userConversations, refetch: fetchAllConversations } =
     useGetConversations();
   const {
@@ -55,7 +56,15 @@ const Messaging = () => {
     }
   }, [selectedConversation, fetchConversation]);
 
-  //just to refetch conversation list and current
+  useEffect(() => {
+    if (id && filteredUserList) {
+      let user = filteredUserList.find((user) => user.id == id);
+      if (user) {
+        setSelectedConversation(user.email);
+        setSelectedUserChat(user);
+      }
+    }
+  }, [filteredUserList, id, isSuccessUserList]);
 
   useEffect(() => {
     let interval;
@@ -106,6 +115,7 @@ const Messaging = () => {
                 conversations={userConversations}
                 onSelectConversation={setSelectedConversation}
                 onSetUserData={setSelectedUserChat}
+                selectedConversation={selectedConversation}
               ></ConversationsList>
             </Box>
           </Grid>
