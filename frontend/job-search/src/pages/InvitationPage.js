@@ -9,7 +9,6 @@ const InvitationPage = () => {
             <CardContainer>
                 <PersonalInvitation />
             </CardContainer>
-            
         </div>
     );
 };

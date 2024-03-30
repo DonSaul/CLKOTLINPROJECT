@@ -1,10 +1,8 @@
-
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getVacancyByManager } from "../hooks/useGetVacancyByManager";
 import { useSendInvitation } from "../hooks/useSendInvitation";
-import CardContainer from "./CardContainer";
-import { Select, MenuItem, Button, TextField } from "@mui/material";
+import { MenuItem, Button, TextField } from "@mui/material";
 
 export const PersonalInvitation = ({data}) => {
     console.log("data", data)
@@ -60,8 +58,8 @@ export const PersonalInvitation = ({data}) => {
                     onChange={(e) => setSubject(e.target.value)}
                     fullWidth
                     margin="normal"
+                    inputProps={{ maxLength: 100 }}
                     required
-                    
                 />
 
                 <TextField
@@ -73,6 +71,7 @@ export const PersonalInvitation = ({data}) => {
                     fullWidth
                     margin="normal"
                     rows={4}
+                    inputProps={{ maxLength: 100 }}
                     required
                 />
 
@@ -91,6 +90,7 @@ export const PersonalInvitation = ({data}) => {
                         </MenuItem>
                     ))}
                 </TextField> 
+                
                 <Button type="submit" variant="contained" color="primary" >
                     Send
                 </Button>

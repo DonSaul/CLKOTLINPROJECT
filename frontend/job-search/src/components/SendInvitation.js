@@ -43,7 +43,6 @@ const SendInvitation = ({data}) => {
       const candidateId = selectedCandidateIds[i];
       
       console.log("Sending invitation to candidate:", candidateId);
-      
     }
 
     let invitationData = {
@@ -60,7 +59,6 @@ const SendInvitation = ({data}) => {
     } catch (error) {
       console.error("Error sending invitation:", error);
     }
-
   };
 
   return (
@@ -73,6 +71,7 @@ const SendInvitation = ({data}) => {
           onChange={(e) => setSubject(e.target.value)}
           fullWidth
           margin="normal"
+          inputProps={{ maxLength: 100 }}
           required
         />
 
@@ -85,6 +84,7 @@ const SendInvitation = ({data}) => {
           fullWidth
           margin="normal"
           rows={4}
+          inputProps={{ maxLength: 100 }}
           required
         />
 
@@ -103,10 +103,10 @@ const SendInvitation = ({data}) => {
             </MenuItem>
           ))}
         </TextField>
+        
         <Button type="submit" variant="contained" color="primary" mt={2}>
           Send
         </Button>
-        
       </form>
     </>
   );
