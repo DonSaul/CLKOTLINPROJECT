@@ -20,62 +20,67 @@ class CvController(
     @ResponseStatus(HttpStatus.CREATED)
     fun createCv(@RequestBody @Valid cvRequestDTO: CvRequestDTO): ResponseEntity<StandardResponse<CvResponseDTO>> {
         val responseEntity = cvService.createCv(cvRequestDTO)
-        val status = HttpStatus.CREATED
-        val body = StandardResponse(
-            status = status.value(),
-            data = responseEntity
-        )
-        return ResponseEntity
-            .status(status)
-            .body(body)
+        return mapResponseEntity(responseEntity, HttpStatus.CREATED)
     }
 
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     fun retrieveCv(@PathVariable("id") cvId: Int): ResponseEntity<StandardResponse<CvResponseDTO>> {
         val responseEntity = cvService.retrieveCv(cvId)
-        val status = HttpStatus.OK
-        val body = StandardResponse(
-            status = status.value(),
-            data = responseEntity
-        )
-        return ResponseEntity
-            .status(status)
-            .body(body)
+        return mapResponseEntity(responseEntity)
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     fun retrieveAllCvs(): ResponseEntity<StandardResponse<List<CvResponseDTO>>> {
         val responseEntityList = cvService.retrieveAllCvs()
-        val status = HttpStatus.OK
-        val body = StandardResponse(
-            status = status.value(),
-            data = responseEntityList
-        )
-        return ResponseEntity
-            .status(status)
-            .body(body)
+        return mapResponseEntity(responseEntityList)
     }
 
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     fun updateCv(@PathVariable("id") cvId: Int, @Valid @RequestBody cvRequestDTO: CvRequestDTO): ResponseEntity<StandardResponse<CvResponseDTO>> {
         val responseEntity = cvService.updateCv(cvId, cvRequestDTO)
-        val status = HttpStatus.OK
-        val body = StandardResponse(
-            status = status.value(),
-            data = responseEntity
-        )
-        return ResponseEntity
-            .status(status)
-            .body(body)
+        return mapResponseEntity(responseEntity)
     }
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteCv(@PathVariable("id") vacancyId: Int): String {
         return cvService.deleteCv(vacancyId)
+    }
+
+    private fun <T> mapResponseEntity(
+        dataBody: T,
+        status: HttpStatus = HttpStatus.OK
+    ): ResponseEntity<StandardResponse<T>> {
+        val bodyContent = StandardResponse(
+            status = status.value(),
+            data = dataBody,
+            message = status.reasonPhrase
+        )
+        return ResponseEntity
+            .status(status)
+            .body(bodyContent)
+    }
+
+    private fun <T> mapResponseEntity(
+        dataBody: List<T>,
+        status: HttpStatus = HttpStatus.OK
+    ): ResponseEntity<StandardResponse<List<T>>> {
+        val responseStatus = if (dataBody.isEmpty()) {
+            HttpStatus.NOT_FOUND
+        } else {
+            status
+        }
+        val bodyContent = StandardResponse(
+            status = responseStatus.value(),
+            data = dataBody,
+            message = responseStatus.reasonPhrase
+        )
+        return ResponseEntity
+            .status(responseStatus)
+            .body(bodyContent)
     }
 
 }
