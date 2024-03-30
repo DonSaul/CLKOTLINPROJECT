@@ -9,6 +9,7 @@ class Cv(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int? = null,
+    var summary: String,
     var yearsOfExperience: Int,
     var salaryExpectation: Int,
     var education: String,

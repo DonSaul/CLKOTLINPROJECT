@@ -12,6 +12,8 @@ data class JobResponseDTO(
     @JsonFormat(pattern = "yyyy-MM-dd")
     val endDate: LocalDate,
 
+    val company: String,
+
     val position: String,
 
     val description: String,

@@ -20,6 +20,11 @@ import java.time.ZoneOffset
 import java.util.*
 import kotlin.NoSuchElementException
 
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.locks.ReentrantLock
+
+
+
 @Service
 class ConversationService(
         private val chatMessageRepository: ChatMessageRepository,
@@ -28,6 +33,37 @@ class ConversationService(
         private val conversationRepository: ConversationRepository,
         private val notificationService: NotificationService
 ) {
+
+    //testing
+    object ConversationLockManager {
+        private val conversationLocks = ConcurrentHashMap<Pair<String, String>, ReentrantLock>()
+
+        fun getLock(user1Email: String, user2Email: String): ReentrantLock {
+            val pair = if (user1Email < user2Email) Pair(user1Email, user2Email) else Pair(user2Email, user1Email)
+            return conversationLocks.computeIfAbsent(pair) { ReentrantLock() }
+        }
+    }
+    private fun createConversationLock(user1: User, user2: User): Conversation {
+        val lock = ConversationLockManager.getLock(user1.email, user2.email)
+        lock.lock()
+        try {
+
+            val existingConversation = findExistingConversation(user1, user2)
+            if (existingConversation != null) {
+                return existingConversation
+            }
+
+            val conversation = Conversation(user1 = user1, user2 = user2)
+            return conversationRepository.save(conversation)
+
+        } finally {
+            lock.unlock()
+        }
+    }
+
+
+    //end testing
+
     fun getAllConversationsForCurrentUser():List<ConversationResponseDTO> {
         val currentUser = userService.retrieveAuthenticatedUser()
 
@@ -49,10 +85,9 @@ class ConversationService(
         val receiver = userRepository.findByEmail(chatMessageRequestDTO.receiverUserName)
             .orElseThrow { NoSuchElementException("No user found with email ${chatMessageRequestDTO.receiverUserName}") }
 
-        val existingConversation = conversationRepository.findByUser1AndUser2(currentUser, receiver)
-            ?: conversationRepository.findByUser1AndUser2(receiver, currentUser)
+        val existingConversation = findExistingConversation(currentUser, receiver)
 
-        val conversation = existingConversation ?: createConversation(currentUser, receiver)
+        val conversation = existingConversation ?: createConversationLock(currentUser, receiver)
 
         val chatMessage = ChatMessage(
             sender = currentUser,
@@ -65,9 +100,12 @@ class ConversationService(
         val newChatMessage = chatMessageRepository.save(chatMessage)
 
 
-
-
         return mapToChatMessageDTO(newChatMessage)
+    }
+
+    private fun findExistingConversation(user1: User, user2: User): Conversation? {
+        return conversationRepository.findByUser1AndUser2(user1, user2)
+            ?: conversationRepository.findByUser1AndUser2(user2, user1)
     }
     @Transactional
     fun sendMessageNotification(email: String) {
@@ -118,6 +156,8 @@ class ConversationService(
 
     private fun createConversation(user1: User, user2: User): Conversation {
         val newConversation = Conversation(user1 = user1, user2 = user2)
+        val conversation=conversationRepository.save(newConversation)
+
         val notificationDTO = NotificationDTO(
             type = NotificationTypeEnum.MESSAGES.id,
             recipient = user2.id!!,
@@ -128,7 +168,7 @@ class ConversationService(
         )
         notificationService.triggerNotification(notificationDTO)
 
-        return conversationRepository.save(newConversation)
+        return conversation
     }
 
     private fun mapToChatMessageDTO(chatMessage: ChatMessage): ChatMessageDTO {

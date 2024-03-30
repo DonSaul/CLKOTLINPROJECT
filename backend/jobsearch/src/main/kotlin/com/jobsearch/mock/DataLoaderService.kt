@@ -1,6 +1,9 @@
 package com.jobsearch.mock
 
-import com.jobsearch.dto.*
+import com.jobsearch.dto.JobRequestDTO
+import com.jobsearch.dto.ProjectRequestDTO
+import com.jobsearch.dto.UserResponseDTO
+import com.jobsearch.dto.VacancyRequestDTO
 import com.jobsearch.dto.override.OverrideCvRequestDTO
 import com.jobsearch.entity.User
 import com.jobsearch.entity.Vacancy
@@ -60,6 +63,7 @@ class DataLoaderService (
                     id = 1,
                     startDate = LocalDate.of(2019, 1, 1),
                     endDate = LocalDate.of(2022, 1, 1),
+                    company = "Softserve",
                     position = "Software Engineer",
                     description = "Developed web applications using React",
                     jobFamilyId = 1
@@ -68,6 +72,7 @@ class DataLoaderService (
                     id = 2,
                     startDate = LocalDate.of(2022, 2, 1),
                     endDate = LocalDate.of(2024, 3, 1),
+                    company = "Starplus Consultants",
                     position = "Senior Sales Expert",
                     description = "Sold lots of stuff",
                     jobFamilyId = 2
@@ -83,7 +88,7 @@ class DataLoaderService (
                 ),
                 ProjectRequestDTO(
                     id = 2,
-                    name = "Arduno plants",
+                    name = "Arduino plants",
                     description = "Plants controlled by arduino",
                     jobFamilyId = 4
                 )
@@ -92,9 +97,10 @@ class DataLoaderService (
             val skillIdSet = setOf(1, 2, 3)
 
             val cvRequest = OverrideCvRequestDTO(
+                summary = "Experienced IT professional with extensive expertise in managing technology infrastructures and leading projects to enhance organizational efficiency. Skilled in optimizing systems to meet business objectives.",
                 yearsOfExperience = 5,
                 salaryExpectation = 70000,
-                education = "Licenciatura en Ingeniería Informática",
+                education = "Bachelor's Degree in Computer Engineering",
                 jobs =jobRequestDTOList,
                 projects = projectRequestDTOList,
                 skillIds = skillIdSet,

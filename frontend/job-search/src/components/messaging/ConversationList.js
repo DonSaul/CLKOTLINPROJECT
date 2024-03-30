@@ -1,20 +1,25 @@
-import * as React from 'react';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import Divider from '@mui/material/Divider';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
-import { useState } from 'react';
-import { useAuth } from '../../helpers/userContext';
-import UserAvatar from '../UserAvatar';
-import { useEffect } from 'react';
+import * as React from "react";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import Divider from "@mui/material/Divider";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import Avatar from "@mui/material/Avatar";
+import Typography from "@mui/material/Typography";
+import { useState } from "react";
+import { useAuth } from "../../helpers/userContext";
+import UserAvatar from "../avatar/UserAvatar";
+import { useEffect } from "react";
 
-const ConversationsList = ({ conversations, onSelectConversation, onSetUserData }) => {
+const ConversationsList = ({
+  conversations,
+  onSelectConversation,
+  onSetUserData,
+}) => {
   const { getUserEmail } = useAuth();
   const [formattedConversations, setFormattedConversations] = useState();
-  const [selectedConversationIndex, setSelectedConversationIndex] = useState(null);
+  const [selectedConversationIndex, setSelectedConversationIndex] =
+    useState(null);
 
   const handleConversationClick = (index) => {
     setSelectedConversationIndex(index);
@@ -29,7 +34,7 @@ const ConversationsList = ({ conversations, onSelectConversation, onSetUserData 
 
   const truncateText = (text, maxLength) => {
     if (text && text.length > maxLength) {
-      return text.substring(0, maxLength) + '...';
+      return text.substring(0, maxLength) + "...";
     }
     return text;
   };
@@ -61,10 +66,14 @@ const ConversationsList = ({ conversations, onSelectConversation, onSetUserData 
       lastName: lastName,
       email: email,
       user: user,
-      senderName: sender?.email === getUserEmail() ? sender?.firstName : sender?.firstName,
-      senderLastName: sender?.email === getUserEmail() ? sender?.firstName : sender?.lastName,
+      senderName:
+        sender?.email === getUserEmail()
+          ? sender?.firstName
+          : sender?.firstName,
+      senderLastName:
+        sender?.email === getUserEmail() ? sender?.firstName : sender?.lastName,
       roleId: user.role.id,
-      senderEmail: sender?.email
+      senderEmail: sender?.email,
     };
   };
 
@@ -75,47 +84,62 @@ const ConversationsList = ({ conversations, onSelectConversation, onSetUserData 
   }, [conversations]);
 
   return (
-    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+    <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
       <Typography>Conversations</Typography>
-      {formattedConversations && formattedConversations.map((conversation, index) => (
-        <React.Fragment key={index}>
-          <ListItem
-            alignItems="flex-start"
-            button
-            onClick={() => handleConversationClick(index)}
-            sx={{
-              ':hover': { bgcolor: '#f0f0f0' },
-              ...(selectedConversationIndex === index && { bgcolor: '#e1f5fe' }),
-            }}
-          >
-            <ListItemAvatar>
-              <UserAvatar user={conversation.user}></UserAvatar>
-            </ListItemAvatar>
-            <div>
-              <Typography sx={{ display: 'inline' }} component="span" variant="body2" color="text.primary">
-                {conversation.senderEmail === getUserEmail() ? (
-                  <b>You</b>
-                ) : (
-                  <b>{truncateText(`${conversation.senderName} ${conversation.senderLastName}`, 15)}</b>
-                )}
-              </Typography>
-              {' — '}
-              <Typography
-                sx={{
-                  display: 'inline',
-                  maxWidth: '10px',
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {truncateText(conversation.topMessage, 19)}
-              </Typography>
-            </div>
-          </ListItem>
-          {index < conversations.length - 1 && <Divider variant="fullwidth" component="li" />}
-        </React.Fragment>
-      ))}
+      {formattedConversations &&
+        formattedConversations.map((conversation, index) => (
+          <React.Fragment key={index}>
+            <ListItem
+              alignItems="flex-start"
+              button
+              onClick={() => handleConversationClick(index)}
+              sx={{
+                ":hover": { bgcolor: "#f0f0f0" },
+                ...(selectedConversationIndex === index && {
+                  bgcolor: "#e1f5fe",
+                }),
+              }}
+            >
+              <ListItemAvatar>
+                <UserAvatar user={conversation.user}></UserAvatar>
+              </ListItemAvatar>
+              <div>
+                <Typography
+                  sx={{ display: "inline" }}
+                  component="span"
+                  variant="body2"
+                  color="text.primary"
+                >
+                  {conversation.senderEmail === getUserEmail() ? (
+                    <b>You</b>
+                  ) : (
+                    <b>
+                      {truncateText(
+                        `${conversation.senderName} ${conversation.senderLastName}`,
+                        15
+                      )}
+                    </b>
+                  )}
+                </Typography>
+                {" — "}
+                <Typography
+                  sx={{
+                    display: "inline",
+                    maxWidth: "10px",
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {truncateText(conversation.topMessage, 19)}
+                </Typography>
+              </div>
+            </ListItem>
+            {index < conversations.length - 1 && (
+              <Divider variant="fullwidth" component="li" />
+            )}
+          </React.Fragment>
+        ))}
       {!formattedConversations && <>No users Available</>}
     </List>
   );

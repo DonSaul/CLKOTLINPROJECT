@@ -216,103 +216,158 @@ Organized architecture for separation of concerns, such as:
 
 Robust security measures:
 
-| Atribute         | Implementation                                                            |
-|------------------|---------------------------------------------------------------------------|
-| Authentication   | implementation("io.jsonwebtoken:jjwt:0.9.1")                              |
-| Authorization    | implementation ("io.jsonwebtoken:jjwt:0.9.1")                             |
-| Encryption       | implementation("org.springframework.boot:spring-boot-starter-security")   |
-| Input validation | implementation("org.springframework.boot:spring-boot-starter-validation") |
-
-### Advanced Functionalities
-
-### Search Candidates from Manager entity
-
-![VdeosinttuloHechoconClipchamp-ezgif com-video-to-gif-converter](https://github.com/jamirou/Personal_Schedule/assets/48457084/98542f4e-6334-43ef-9c3e-3e6c4fdd013f)
-The **CandidateController** is responsible for handling requests related to candidate search.
-
-#### Endpoints
-
-| Endpoint                    | Description                                        | HTTP Method | Query Parameters                                                                                                                                                                  | Response                                                                                                                                                                                                   |
-|-----------------------------|----------------------------------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `/api/v1/candidates/search` | Searches for candidates based on provided filters. | GET         | `salary` (optional): Candidate's expected salary. <br> `jobFamilyId` (optional): Candidate's job family ID. <br> `yearsOfExperience` (optional): Candidate's years of experience. | - HTTP Status Code: <br>   - 200 (OK): Candidates matching the criteria found. <br>   - 204 (No Content): No candidates matching the criteria found. <br> - Response Body: List of `CandidateDTO` objects. |
+- Authentication
+- Authorization
+- Encryption
+- Input validation
 
 #### Related Classes
 
-- `CandidateDTO`: DTO representing candidate details.
-- `UserService`: Service providing logic for candidate search.
+1. ### Work Order Filtering
 
-The `UserService` handles operations related to users and candidates.
+Advanced filtering options for job seekers.
 
-#### Main Methods
+2. ### Search Technician By Name
 
-| Method                  | Description                                         | Parameters                                                                                                                                                                        | Return                                                       |
-|-------------------------|-----------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------|
-| `searchCandidates`      | Searches for candidates based on provided criteria. | `salary` (optional): Candidate's expected salary. <br> `jobFamilyId` (optional): Candidate's job family ID. <br> `yearsOfExperience` (optional): Candidate's years of experience. | List of `CandidateDTO` objects matching the search criteria. |
-| `mapToUserCandidateDTO` | Maps a `Cv` object to a `CandidateDTO` object.      | `cvEntity`: Cv entity to be mapped. <br> `jobFamilies`: List of job families associated with the candidate.                                                                       | `CandidateDTO` object with candidate information.            |
+Functionality to search for technicians.
 
-#### Related Classes
+3. ### Report Generation
 
-- `Cv`: Entity representing user's curriculum.
-- `JobFamily`: Entity representing a job family.
-- `CvRepository`: Repository for accessing curriculum data.
+Analytics and decision-making reports.
+
+4. ### Testing
+
+Comprehensive testing suite.
+
+5. ### Login
+#### Authentication and Security Documentation
+
+This document outlines the authentication and security mechanisms implemented in the JobSearch web application.
+
+### Overview
 
 The `CandidateDTO` represents the details of a candidate.
 
-#### Attributes
+### AuthService 
 
-- `id`: Candidate's identifier.
-- `firstName`: Candidate's first name.
-- `lastName`: Candidate's last name.
-- `email`: Candidate's email address.
-- `yearsOfExperience`: Candidate's years of experience.
-- `salaryExpectation`: Candidate's expected salary.
-- `jobFamilies`: List of job families associated with the candidate.
+The `AuthService` class handles user authentication and registration.
 
---------------------------------------------------------
+Check the class:
 
-### Authentication and Security
+```kotlin
+@Service
+class AuthService(
+   private val userRepository: UserRepository,
+   val userService: UserService,
+) : UserDetailsService {
+   @Autowired
+   private lateinit var passwordEncoder: PasswordEncoder
+   @Autowired
+   private lateinit var jwtProvider: JwtProvider
+   fun register(userDto: UserDTO) {
+      userService.createUser(userDto)
+   }
+}
+```
+### JwtProvider
+The JwtProvider class generates and validates JWT tokens.
+```kotlin
+@Component
+class JwtProvider {
+   @Value("\${jwt.secret}")
+   private val jwtSecret: String? = null
 
-The authentication process involves user registration, login, and token generation using JSON Web Tokens (JWT). Security
-measures include password encryption, token validation, and authorization for accessing protected resources.
+   @Value("\${jwt.expiration}")
+   private val jwtExpiration: Int? = null
 
-#### Security Features
+   fun generateJwtToken(userDetails: UserDetails): String {
+      val claims = Jwts.claims().setSubject(userDetails.username)
+      claims["roles"] = userDetails.authorities
+      return Jwts.builder()
+         .setClaims(claims)
+         .setIssuedAt(Date())
+         .setExpiration(Date(System.currentTimeMillis() + jwtExpiration!! * 1000))
+         .signWith(SignatureAlgorithm.HS512, jwtSecret)
+         .compact()
+   }
+   //we also implement validateJwtToken for the validation and getUserNameFromJwtToken 
+   //get the name based on the token
+}
+```
 
-- **Password Encryption**: Encrypts user passwords using a password encoder for enhanced security.
-- **Token-Based Authentication**: Utilizes JWT tokens for authentication, ensuring a stateless and secure authentication
-  mechanism.
-- **Token Validation**: Validates JWT tokens to maintain authenticity and prevent tampering.
-- **Authorization**: Restricts access to protected resources based on user roles and permissions.
+### JwtAuthenticationFilter
+The JwtAuthenticationFilter intercepts HTTP requests and validates JWT tokens.
+```kotlin
+@Component
+class JwtAuthenticationFilter(
+    private val jwtProvider: JwtProvider,
+    private val userDetailsService: UserDetailsService,
+    private val userRepository: UserRepository,
+) : OncePerRequestFilter() {
+    // Method for filtering and validating JWT tokens in HTTP requests
+}
+```
+### AuthInterceptor
+The AuthInterceptor class intercepts HTTP requests and extracts JWT tokens.
+```kotlin
+@Component
+class AuthInterceptor : HandlerInterceptor {
+    // Method for extracting JWT tokens from HTTP requests
+}
+```
 
-#### Implementation Details
+### AuthController
+The AuthController class handles user registration and authentication endpoints.
+```kotlin
+@RestController
+@RequestMapping("/api/v1/auth")
+class AuthController(private val authService: AuthService) {
+    // Methods for registering and authenticating users
+}
+```
+
+### SecurityConfig
+The SecurityConfig class configures security settings and filters for HTTP requests.
+```kotlin
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
+class SecurityConfig(private val userDetailsService: UserDetailsService) {
+    // Configuration for security filters and authentication manager
+}
+```
+### WebConfig
+The WebConfig class configures CORS settings for HTTP requests.
+```kotlin
+@Configuration
+@EnableWebMvc
+class WebConfig() : WebMvcConfigurer {
+    // Configuration for Cross-Origin Resource Sharing (CORS)
+}
+```
+
+### Security Features
+
+- **Password Encryption**: User passwords are encrypted using a password encoder to enhance security.
+- **Token-Based Authentication**: JWT tokens are used for authentication, providing a stateless and secure authentication mechanism.
+- **Token Validation**: JWT tokens are validated to ensure their authenticity and prevent tampering.
+- **Authorization**: Access to protected resources is restricted based on user roles and permissions.
+
+### Implementation Details
 
 - **User Registration**: Users can register for an account using the `/api/v1/auth/register` endpoint.
-- **User Authentication**: Users can authenticate using their credentials (username and password) via
-  the `/api/v1/auth/login` endpoint.
-- **Token Generation**: Upon successful authentication, a JWT token is generated and returned to the client for
-  subsequent requests.
-- **Token Validation**: Validates JWT tokens before granting access to protected resources, ensuring integrity.
-- **User Role-Based Access Control**: Access to different endpoints is restricted based on user roles (e.g., candidate,
-  manager, administrator).
+- **User Authentication**: Users can authenticate using their credentials (username and password) via the `/api/v1/auth/login` endpoint.
+- **Token Generation**: Upon successful authentication, a JWT token is generated and returned to the client for subsequent requests.
+- **Token Validation**: JWT tokens are validated before granting access to protected resources, ensuring their integrity.
+- **User Role-Based Access Control**: Access to different endpoints is restricted based on user roles (e.g., candidate, manager, administrator).
 
-### Summary Table
 
-| Component               | Description                                                 |
-|-------------------------|-------------------------------------------------------------|
-| AuthService             | Handles user authentication and registration.               |
-| JwtProvider             | Generates and validates JWT tokens.                         |
-| JwtAuthenticationFilter | Intercepts HTTP requests and validates JWT tokens.          |
-| AuthInterceptor         | Intercepts HTTP requests and extracts JWT tokens.           |
-| AuthController          | Manages user registration and authentication endpoints.     |
-| SecurityConfig          | Configures security settings and filters for HTTP requests. |
-| WebConfig               | Configures CORS settings for HTTP requests.                 |
 
---------------------------------------------------------
 
-### Data Query
 
-The project utilizes PostgreSQL as the database management system (DBMS) for efficient data storage and retrieval.
+6. ### Data Query
 
-### Database Schema
+Efficient database querying.
 
 The following tables are part of the database schema:
 
@@ -433,6 +488,9 @@ This controller handles requests related to applications in the backend of the a
 | PUT         | `/api/v1/application/{id}` | Updates the status of an application. | Application ID, `ApplicationDTO` Object | `200 OK`: If the application is updated successfully.<br>Other possible error codes.                                  |
 | DELETE      | `/api/v1/application/{id}` | Deletes an application.               | Application ID                          | `204 No Content`: If the application is deleted successfully.<br>Other possible error codes.                          |
 
+# CLKOTLINPROJECT
+# here will be the docs
+=======
 - All endpoints are protected with authorization.
 - Users with the 'manager' role can access endpoints to update and delete applications.
 
@@ -450,5 +508,3 @@ This controller handles requests related to the messaging in the backend of the 
 | GET         | `/api/v1/conversation/messages`      | Retrieves all the messages of the current conversation of the user | email:String                                     | `200 OK`: If applications are retrieved successfully.<br>Other possible error codes.                                  |
 
 - All endpoints are protected with authorization.
-
-  

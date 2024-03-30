@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import { deepOrange } from "@mui/material/colors";
-import { useAuth } from "../helpers/userContext";
+import { useAuth } from "../../helpers/userContext";
 import { Tooltip } from "@mui/material";
-const UserAvatar = ({ user }) => {
-  const { getUserEmail, getUserFirstName, getUserLastName } = useAuth();
+import { avatarBoxShadow, avatarProfileTextSize } from "./avatarConstants";
 
+const UserAvatar = ({ user, avatarSize, borderStyle }) => {
+  const { getUserEmail, getUserFirstName, getUserLastName } = useAuth();
+  const [defaultAvatarSize, setDefaultAvatarSize] = useState("35px");
+  const [defaultTextSize, setDefaultTextSize] = useState("0.9rem");
+  const [defaultBorder, setDefaultBorder] = useState("");
   const capitalizeFirstLetter = (str) => {
     return str?.charAt(0).toUpperCase();
   };
@@ -31,7 +35,6 @@ const UserAvatar = ({ user }) => {
     if (user) {
       return user;
     } else {
-      //console.log("WHAT IS WRONG WITH EMAIL",getUserEmail())
       return {
         email: getUserEmail(),
         firstName: getUserFirstName(),
@@ -42,6 +45,10 @@ const UserAvatar = ({ user }) => {
 
   const userData = getUserData();
   const hasName = userData?.firstName || userData?.lastName;
+
+  const textSize = avatarSize ? avatarProfileTextSize : defaultTextSize;
+  const boxShadow = borderStyle ? avatarBoxShadow : undefined;
+
   return (
     <>
       {userData && (
@@ -53,13 +60,21 @@ const UserAvatar = ({ user }) => {
           }
         >
           <Avatar
-            sx={{ bgcolor: stringToColour(userData?.email || userData?.email) }}
+            sx={{
+              bgcolor: stringToColour(userData?.email || userData?.email),
+              height: avatarSize || defaultAvatarSize,
+              width: avatarSize || defaultAvatarSize,
+              border: borderStyle || defaultBorder,
+              boxShadow: boxShadow,
+            }}
           >
-            {hasName
-              ? `${capitalizeFirstLetter(
-                  userData.firstName
-                )}${capitalizeFirstLetter(userData.lastName)}`
-              : ":("}
+            <span style={{ fontSize: textSize }}>
+              {hasName
+                ? `${capitalizeFirstLetter(
+                    userData.firstName
+                  )}${capitalizeFirstLetter(userData.lastName)}`
+                : ":("}
+            </span>
           </Avatar>
         </Tooltip>
       )}

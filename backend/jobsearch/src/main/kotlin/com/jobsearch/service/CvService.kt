@@ -30,6 +30,7 @@ class CvService(
         val cv = cvDTO.let {
             Cv(
                 id = null,
+                summary = it.summary,
                 yearsOfExperience = it.yearsOfExperience,
                 salaryExpectation = it.salaryExpectation,
                 education = it.education,
@@ -50,6 +51,7 @@ class CvService(
                         cv = cv,
                         startDate = jobDTO.startDate,
                         endDate = jobDTO.endDate,
+                        company = jobDTO.company,
                         position = jobDTO.position,
                         description = jobDTO.description,
                         jobFamily = it
@@ -118,6 +120,7 @@ class CvService(
 
         // Updating basic attributes
         cv.apply {
+            summary = cvDTO.summary
             yearsOfExperience = cvDTO.yearsOfExperience
             salaryExpectation = cvDTO.salaryExpectation
             education = cvDTO.education
@@ -141,6 +144,7 @@ class CvService(
                 existingJob.apply {
                     startDate = dto.startDate
                     endDate = dto.endDate
+                    company = dto.company
                     position = dto.position
                     description = dto.description
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
@@ -154,6 +158,7 @@ class CvService(
                     startDate = dto.startDate,
                     endDate = dto.endDate,
                     position = dto.position,
+                    company = dto.company,
                     description = dto.description,
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
                         .orElseThrow { NotFoundException("No Job Family found with id ${dto.jobFamilyId}") }

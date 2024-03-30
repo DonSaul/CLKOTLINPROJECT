@@ -10,6 +10,9 @@ data class JobRequestDTO(
     val startDate: LocalDate,
     val endDate: LocalDate,
 
+    @field:NotBlank(message = "Job company must not be blank")
+    val company: String,
+
     @field:NotBlank(message = "Job position must not be blank")
     val position: String,
 

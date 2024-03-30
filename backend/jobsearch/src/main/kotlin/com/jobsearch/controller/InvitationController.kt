@@ -11,7 +11,7 @@ class InvitationController(val invitationService: InvitationService) {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createInvitation(@RequestBody invitationDTO: InvitationDTO): InvitationDTO {
-        return invitationService.createInvitation(invitationDTO)
+        return invitationService.createMultipleInvitation(invitationDTO)
     }
 
     @GetMapping
