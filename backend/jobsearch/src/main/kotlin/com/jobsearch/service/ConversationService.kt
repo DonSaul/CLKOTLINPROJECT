@@ -1,28 +1,21 @@
 package com.jobsearch.service
 
-import com.jobsearch.dto.ChatMessageDTO
-import com.jobsearch.dto.ChatMessageRequestDTO
-import com.jobsearch.dto.ConversationResponseDTO
-import com.jobsearch.dto.NotificationDTO
-import com.jobsearch.entity.ChatMessage
-import com.jobsearch.entity.Conversation
-import com.jobsearch.entity.NotificationTypeEnum
-import com.jobsearch.entity.User
+import com.jobsearch.dto.*
+import com.jobsearch.entity.*
+import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.ChatMessageRepository
 import com.jobsearch.repository.ConversationRepository
+import com.jobsearch.repository.ConversationTokenRepository
 import com.jobsearch.repository.UserRepository
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.NoSuchElementException
-
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.locks.ReentrantLock
-
 
 
 @Service
@@ -31,7 +24,8 @@ class ConversationService(
         private val userService: UserService,
         private val userRepository: UserRepository,
         private val conversationRepository: ConversationRepository,
-        private val notificationService: NotificationService
+        private val notificationService: NotificationService,
+        private val conversationTokenRepository: ConversationTokenRepository
 ) {
 
     //lock
@@ -112,13 +106,32 @@ class ConversationService(
         val sender = userService.retrieveAuthenticatedUser()
         val receiver = userRepository.findByEmail(email)
             .orElseThrow { NoSuchElementException("No user found with email $email") }
+
+        val conversation = conversationRepository.findByUser1AndUser2(sender, receiver);
+
+        val conversationToken = ConversationToken(
+            user = receiver,
+            conversation = conversation!!
+        )
+
+        val savedConversationToken = conversationTokenRepository.save(conversationToken)
+        val token = savedConversationToken.token
+
+        val chatUrl = "http://localhost:3000/messaging?token=${token}"
+
         try {
             if (!isNotificationThrottled(sender.id!!, receiver.id!!)) {
                 val notificationDTO = NotificationDTO(
                     type = NotificationTypeEnum.MESSAGES.id,
                     recipient = receiver.id,
                     subject = "New Message",
-                    content = "There is a new message sent by: ${receiver.email}",
+                    content = """
+                        You have a new message sent by: ${sender.email}
+                        <br>
+                        Please check the message at: $chatUrl
+                        <br>
+                        Sent at: ${LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}
+                        """.trimIndent(),
                     sender = sender.id,
                     vacancy = null
                 )
@@ -152,6 +165,20 @@ class ConversationService(
 
         return conversationMessages
 
+    }
+
+    fun getConversationIdByToken(token: String) : ConversationIdDTO {
+        val conversationToken = conversationTokenRepository.findByToken(token)
+
+        val authenticatedUser = userService.retrieveAuthenticatedUser()
+
+        if (conversationToken.user != authenticatedUser) {
+            throw IllegalAccessException("You cannot access this conversation")
+        }
+
+        val conversationId = ConversationIdDTO(conversationToken.conversation.id!!)
+
+        return conversationId
     }
 
     private fun createConversation(user1: User, user2: User): Conversation {
@@ -194,8 +221,12 @@ class ConversationService(
         return diffSeconds < minTimeBetweenNotifications
     }
     private fun getLastNotificationTime(senderId: Int, receiverId: Int): Int {
-        val lastNotification = notificationService.findLatestMessageNotification(senderId, receiverId)
-        return lastNotification.sentDateTime.toEpochSecond(ZoneOffset.UTC).toInt()
+        return try {
+            val lastNotification = notificationService.findLatestMessageNotification(senderId, receiverId)
+            lastNotification.sentDateTime.toEpochSecond(ZoneOffset.UTC).toInt()
+        } catch (e: NotFoundException) {
+            0
+        }
     }
 
 }

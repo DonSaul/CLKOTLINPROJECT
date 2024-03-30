@@ -4,11 +4,11 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.PastOrPresent
 import java.time.*
 
-class InvitationDTO(
+data class InvitationDTO(
     val id: Int?,
 
     // Receiver
-    val candidateId: Int?,
+    var candidateId: Int?,
 
     // Invitation details
     @get:NotBlank(message = "Subject must not be blank")
@@ -21,5 +21,6 @@ class InvitationDTO(
     // Sender
     val managerId: Int?,
     val vacancyId: Int? = null,
+    val candidateIds: List<Int>?,
 )
 

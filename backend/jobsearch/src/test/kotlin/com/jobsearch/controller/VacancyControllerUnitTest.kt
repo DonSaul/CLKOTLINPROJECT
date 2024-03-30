@@ -5,6 +5,7 @@ import com.jobsearch.dto.JobFamilyDto
 import com.jobsearch.dto.UserResponseDTO
 import com.jobsearch.dto.VacancyRequestDTO
 import com.jobsearch.dto.VacancyResponseDTO
+import com.jobsearch.response.StandardResponse
 import com.jobsearch.service.VacancyService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

@@ -6,10 +6,9 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../helpers/userContext";
 import UserAvatar from "../avatar/UserAvatar";
-import { useEffect } from "react";
 
 const ConversationsList = ({
   conversations,
@@ -19,15 +18,14 @@ const ConversationsList = ({
 }) => {
   const { getUserEmail } = useAuth();
   const [formattedConversations, setFormattedConversations] = useState();
-  const [selectedConversationIndex, setSelectedConversationIndex] =
-    useState(null);
+  const initialSelectionHandled = useRef(false);
 
   const handleConversationClick = (index) => {
-    //setSelectedConversationIndex(index);
     const selectedConversation = formattedConversations[index];
     if (selectedConversation?.email) {
       onSelectConversation(selectedConversation.email);
       onSetUserData(selectedConversation);
+      initialSelectionHandled.current = true;
     } else {
       console.error("Can't select this conversation");
     }

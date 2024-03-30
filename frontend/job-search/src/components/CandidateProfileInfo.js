@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import { useGetCandidateProfile } from "../hooks/profile/useGetCandidateProfile";
 import { useAuth } from "../helpers/userContext";
 import { ROLES } from "../helpers/constants";
@@ -11,6 +12,7 @@ import {
   TableContainer,
   TableBody,
 } from "@mui/material";
+import { paths } from "../router/paths";
 import { useState } from "react";
 import ProfileAvatar from "./avatar/ProfileAvatar";
 
@@ -23,9 +25,16 @@ const CandidateProfileInfo = () => {
   } = useGetCandidateProfile(id);
   const { getUserRole } = useAuth();
   const { firstName, lastName, email, cv, roleId } = profileData || {};
+  const navigate = useNavigate();
 
   const [avatarSize, setAvatarSize] = useState("500px");
   console.log("avatarr size prifle", avatarSize);
+
+  const handleInvite = (id) => { 
+    const candidateId = id;
+    console.log("Sending invitation to candidate:", candidateId);
+    navigate(`${paths.sendInvitation.replace(":id", candidateId)}`);
+  }; 
 
   return (
     <>
@@ -36,7 +45,7 @@ const CandidateProfileInfo = () => {
           sx={{
             display: "inline-block",
             width: 400,
-            height: 250,
+            height: 250, 
             borderRadius: 8,
             boxShadow: 8,
             mx: 2,
@@ -66,6 +75,7 @@ const CandidateProfileInfo = () => {
               type="button"
               variant="contained"
               color="primary"
+              onClick={() => handleInvite(id)}
               disabled={getUserRole() !== ROLES.MANAGER}
               sx={{ mx: 1 }}
             >
