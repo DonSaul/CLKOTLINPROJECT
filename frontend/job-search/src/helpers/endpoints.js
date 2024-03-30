@@ -40,4 +40,5 @@ export const ENDPOINTS = {
   profile: createUrl("profiles/my-profile"),
   sendMessageNotification: createUrl("conversation/sendMessageNotification"),
   updateProfile: createUrl("profiles"),
+  getUserPdf: createUrl("pdf"),
 };
