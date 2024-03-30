@@ -1,5 +1,4 @@
 import React from "react";
-import Avatar from "@mui/material/Avatar";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -8,10 +7,8 @@ import { useAuth } from "../../helpers/userContext";
 const MessageBubble = ({ data }) => {
   const {
     date,
-    userName,
     message,
     sender: { firstName, lastName, email },
-    receiver,
   } = data;
   const { getUserEmail } = useAuth();
 

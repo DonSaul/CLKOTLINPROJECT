@@ -17,9 +17,6 @@ const ChatBox = ({
   isLoadingConversation,
 }) => {
   const { getUserEmail, getUserFirstName, getUserLastName } = useAuth();
-
-  const messages = data?.data || [];
-
   const [chatMessages, setChatMessages] = useState([]);
   const chatContainerRef = useRef();
 
