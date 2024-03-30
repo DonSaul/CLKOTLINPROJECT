@@ -230,7 +230,8 @@ class CvService(
 
     fun retrieveMyAccountsLastCv(): CvResponseDTO {
         val cv = cvRepository.findFirstByUserOrderByIdDesc(userService.retrieveAuthenticatedUser())
+            .orElseThrow { NotFoundException("No CV found for this user") }
 
-        return cvMapper.mapToDto(cv!!)
+        return cvMapper.mapToDto(cv)
     }
 }
