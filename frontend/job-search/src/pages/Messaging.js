@@ -77,15 +77,24 @@ const Messaging = () => {
     return () => clearInterval(interval);
   }, [fetchConversation, selectedConversation]);
 
+  const [boxHeight, setBoxHeight] = useState(600);
+  const [gridContainerHeight, setGridContainerHeight] = useState(600);
+
   return (
     <ThemeProvider theme={theme}>
       <CardContainer>
-        <Grid container spacing={3}>
+        <Grid
+          container
+          spacing={3}
+          sx={{
+            height: gridContainerHeight,
+          }}
+        >
           <Grid item xs={3}>
             <Box
               sx={{
                 width: "100%",
-                height: 600,
+                height: boxHeight,
                 borderRadius: 1,
                 bgcolor: "#F4F4F4",
                 //'&:hover': {
@@ -104,7 +113,7 @@ const Messaging = () => {
             <Box
               sx={{
                 width: "100%",
-                height: 600,
+                height: boxHeight,
                 borderRadius: 1,
                 bgcolor: "#FAF9F6",
                 "&:hover": {
@@ -124,7 +133,7 @@ const Messaging = () => {
             <Box
               sx={{
                 width: "100%",
-                height: 600,
+                height: boxHeight,
                 borderRadius: 1,
                 bgcolor: "#F4F4F4",
                 // '&:hover': {
