@@ -29,6 +29,7 @@ class OverrideService(
         val cv = cvDTO.let {
             Cv(
                 id = null,
+                summary = it.summary,
                 yearsOfExperience = it.yearsOfExperience,
                 salaryExpectation = it.salaryExpectation,
                 education = it.education,
@@ -48,6 +49,7 @@ class OverrideService(
                     startDate = jobDTO.startDate,
                     endDate = jobDTO.endDate,
                     position = jobDTO.position,
+                    company = jobDTO.company,
                     description = jobDTO.description,
                     jobFamily = jobFamilyRepository.findById(jobDTO.jobFamilyId)
                         .orElseThrow { NotFoundException("No Job Family found with id ${jobDTO.jobFamilyId}") }
@@ -87,6 +89,7 @@ class OverrideService(
     private fun mapToCvDTO(cv: Cv): CvResponseDTO {
         return CvResponseDTO(
             id = cv.id!!,
+            summary = cv.summary,
             yearsOfExperience = cv.yearsOfExperience,
             salaryExpectation = cv.salaryExpectation,
             education = cv.education,
@@ -95,6 +98,7 @@ class OverrideService(
                     id = job.id!!,
                     startDate = job.startDate,
                     endDate = job.endDate,
+                    company = job.company,
                     position = job.position,
                     description = job.description,
                     jobFamily = JobFamilyDto(

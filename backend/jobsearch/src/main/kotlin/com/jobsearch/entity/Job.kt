@@ -13,6 +13,7 @@ class Job (
     var startDate: LocalDate,
     var endDate: LocalDate,
 
+    var company: String,
     var position: String,
     var description: String,
 
