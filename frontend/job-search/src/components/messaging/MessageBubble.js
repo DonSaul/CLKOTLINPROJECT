@@ -8,7 +8,7 @@ const MessageBubble = ({ data }) => {
   const {
     date,
     message,
-    sender: { firstName, lastName, email },
+    sender: { firstName, lastName, email, role: { id: roleId } = {} },
   } = data;
   const { getUserEmail } = useAuth();
 
@@ -32,7 +32,10 @@ const MessageBubble = ({ data }) => {
       alignItems="flex-end"
       mb={2}
     >
-      <UserAvatar user={{ firstName, lastName, email }}></UserAvatar>
+      <UserAvatar
+        user={{ firstName, lastName, email, roleId }}
+        enableRoleBorder={true}
+      ></UserAvatar>
       <Paper
         elevation={3}
         sx={{

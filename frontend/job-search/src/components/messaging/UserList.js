@@ -6,11 +6,12 @@ import ListItemText from "@mui/material/ListItemText";
 import UserAvatar from "../avatar/UserAvatar";
 import { Typography } from "@mui/material";
 import { truncateText } from "../../helpers/funHelpers";
+import { getRoleString } from "../../helpers/constants";
 
 export default function UserList({ users, onSelectUser, onSetUserData }) {
-  const handleUserSelect = (value) => () => {
-    onSelectUser(value?.email);
-    onSetUserData(value);
+  const handleUserSelect = (user) => () => {
+    onSelectUser(user?.email);
+    onSetUserData(user);
   };
 
   return (
@@ -21,20 +22,20 @@ export default function UserList({ users, onSelectUser, onSetUserData }) {
       <Typography>Users</Typography>
 
       {users &&
-        users.map((value) => {
-          const labelId = `icon-list-label-${value.id}`;
+        users.map((user) => {
+          const labelId = `icon-list-label-${user.id}`;
           return (
-            <ListItem key={value.id} disablePadding>
+            <ListItem key={user.id} disablePadding>
               <ListItemButton
                 sx={{ display: "flex", gap: "7px" }}
-                onClick={handleUserSelect(value)}
+                onClick={handleUserSelect(user)}
               >
-                <UserAvatar user={value}></UserAvatar>
+                <UserAvatar user={user} enableRoleBorder={true}></UserAvatar>
 
                 <ListItemText
                   id={labelId}
                   primary={truncateText(
-                    `${value.firstName} ${value.lastName}`,
+                    `${user.firstName} ${user.lastName} `,
                     20
                   )}
                 />

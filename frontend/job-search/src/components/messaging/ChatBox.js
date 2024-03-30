@@ -16,7 +16,8 @@ const ChatBox = ({
   onSendMessage,
   isLoadingConversation,
 }) => {
-  const { getUserEmail, getUserFirstName, getUserLastName } = useAuth();
+  const { getUserEmail, getUserFirstName, getUserLastName, getUserRole } =
+    useAuth();
   const [chatMessages, setChatMessages] = useState([]);
   const chatContainerRef = useRef();
 
@@ -55,6 +56,7 @@ const ChatBox = ({
           firstName: getUserFirstName(),
           lastName: getUserLastName(),
           email: getUserEmail(),
+          roleId: getUserRole(),
         },
       },
     ]);
@@ -84,7 +86,7 @@ const ChatBox = ({
         >
           {userData ? (
             <>
-              <UserAvatar user={userData}></UserAvatar>
+              <UserAvatar user={userData} enableRoleBorder={true}></UserAvatar>
               <Box
                 ml={2}
                 sx={{

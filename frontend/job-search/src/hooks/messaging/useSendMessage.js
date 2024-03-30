@@ -24,7 +24,6 @@ const sendMessage = async (data) => {
 
 const sendNotification = async (receiverUserName) => {
   let token = localStorage.getItem(AUTH_TOKEN_NAME);
-  console.log(receiverUserName);
   const res = await fetch(
     `${ENDPOINTS.sendMessageNotification}/${receiverUserName}`,
     {

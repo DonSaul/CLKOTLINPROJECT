@@ -66,14 +66,7 @@ const ConversationsList = ({
 
   useEffect(() => {
     if (conversations) {
-      console.log("conversations", conversations);
       setFormattedConversations(conversations.map(formatConversation));
-    }
-  }, [conversations]);
-
-  useEffect(() => {
-    if (conversations) {
-      console.log("conversations", conversations);
     }
   }, [conversations]);
 
@@ -95,7 +88,15 @@ const ConversationsList = ({
               }}
             >
               <ListItemAvatar>
-                <UserAvatar user={conversation.user}></UserAvatar>
+                <UserAvatar
+                  user={{
+                    firstName: conversation.firstName,
+                    lastName: conversation.lastName,
+                    email: conversation.email,
+                    roleId: conversation.roleId,
+                  }}
+                  enableRoleBorder={true}
+                ></UserAvatar>
               </ListItemAvatar>
               <div
                 style={{
@@ -124,10 +125,6 @@ const ConversationsList = ({
                     noWrap
                     sx={{
                       display: "inline",
-                      // maxWidth: "10px",
-                      // textOverflow: "ellipsis",
-                      // overflow: "hidden",
-                      //  whiteSpace: "nowrap",
                     }}
                   >
                     {conversation.topMessage}
