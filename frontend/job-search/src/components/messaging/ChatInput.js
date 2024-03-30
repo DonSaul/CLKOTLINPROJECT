@@ -16,6 +16,12 @@ const ChatInput = ({ onSendMessage }) => {
     }
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleSend();
+    }
+  };
+
   return (
     <>
       <Box
@@ -38,6 +44,7 @@ const ChatInput = ({ onSendMessage }) => {
           variant="outlined"
           fullWidth
           inputProps={{ maxLength: 100 }}
+          onKeyDown={handleKeyDown}
         />
         <Button
           onClick={handleSend}

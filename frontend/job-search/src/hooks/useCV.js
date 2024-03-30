@@ -81,6 +81,7 @@ const fetchCVByUser = async () => {
 export const useGetCurrentUserCv = () => {
   return useQuery("cv-user", fetchCVByUser, {
     refetchOnWindowFocus: false,
+    retry: false,
   });
 };
 
