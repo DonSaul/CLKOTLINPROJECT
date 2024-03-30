@@ -120,6 +120,7 @@ class CvService(
 
         // Updating basic attributes
         cv.apply {
+            summary = cvDTO.summary
             yearsOfExperience = cvDTO.yearsOfExperience
             salaryExpectation = cvDTO.salaryExpectation
             education = cvDTO.education
