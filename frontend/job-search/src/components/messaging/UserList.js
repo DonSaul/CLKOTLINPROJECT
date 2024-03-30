@@ -3,20 +3,15 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-import Avatar from "@mui/material/Avatar";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import UserAvatar from "../avatar/UserAvatar";
 import { Typography } from "@mui/material";
 import { truncateText } from "../../helpers/funHelpers";
+import { getRoleString } from "../../helpers/constants";
 
 export default function UserList({ users, onSelectUser, onSetUserData }) {
-  const handleUserSelect = (value) => () => {
-    //console.log("im in the list",users)
-    //console.log(`User ${value?.email} clicked`);
-    //console.log("user data in list",value);
-
-    onSelectUser(value?.email);
-    onSetUserData(value);
+  const handleUserSelect = (user) => () => {
+    onSelectUser(user?.email);
+    onSetUserData(user);
   };
 
   return (
@@ -27,17 +22,20 @@ export default function UserList({ users, onSelectUser, onSetUserData }) {
       <Typography>Users</Typography>
 
       {users &&
-        users.map((value) => {
-          const labelId = `icon-list-label-${value.id}`;
+        users.map((user) => {
+          const labelId = `icon-list-label-${user.id}`;
           return (
-            <ListItem key={value.id} disablePadding>
-              <ListItemButton onClick={handleUserSelect(value)}>
-                <UserAvatar user={value}></UserAvatar>
+            <ListItem key={user.id} disablePadding>
+              <ListItemButton
+                sx={{ display: "flex", gap: "7px" }}
+                onClick={handleUserSelect(user)}
+              >
+                <UserAvatar user={user} enableRoleBorder={true}></UserAvatar>
 
                 <ListItemText
                   id={labelId}
                   primary={truncateText(
-                    `${value.firstName} ${value.lastName}`,
+                    `${user.firstName} ${user.lastName} `,
                     20
                   )}
                 />

@@ -168,7 +168,7 @@ export default function MainToolbar() {
                   <Tab
                     key="myProfile"
                     label="My profile"
-                    icon={<UserAvatar></UserAvatar>}
+                    icon={<UserAvatar borderSize="0px"></UserAvatar>}
                     component={Link}
                     to={paths.profile}
                   />,

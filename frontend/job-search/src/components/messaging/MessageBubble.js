@@ -1,5 +1,4 @@
 import React from "react";
-import Avatar from "@mui/material/Avatar";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -8,10 +7,8 @@ import { useAuth } from "../../helpers/userContext";
 const MessageBubble = ({ data }) => {
   const {
     date,
-    userName,
     message,
-    sender: { firstName, lastName, email },
-    receiver,
+    sender: { firstName, lastName, email, role: { id: roleId } = {} },
   } = data;
   const { getUserEmail } = useAuth();
 
@@ -35,7 +32,10 @@ const MessageBubble = ({ data }) => {
       alignItems="flex-end"
       mb={2}
     >
-      <UserAvatar user={{ firstName, lastName, email }}></UserAvatar>
+      <UserAvatar
+        user={{ firstName, lastName, email, roleId }}
+        enableRoleBorder={true}
+      ></UserAvatar>
       <Paper
         elevation={3}
         sx={{

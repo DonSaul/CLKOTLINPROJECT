@@ -1,22 +1,32 @@
 import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
-import { deepOrange } from "@mui/material/colors";
 import { useAuth } from "../../helpers/userContext";
 import { Tooltip } from "@mui/material";
 import { avatarBoxShadow, avatarProfileTextSize } from "./avatarConstants";
+import { ROLES } from "../../helpers/constants";
+import { avatarManagerBorderStyle } from "./avatarConstants";
+import { Badge } from "@mui/base";
+const UserAvatar = ({
+  user,
+  avatarSize,
+  borderStyle,
+  enableRoleBorder,
+  borderSize,
+}) => {
+  const { getUserEmail, getUserFirstName, getUserLastName, getUserRole } =
+    useAuth();
 
-const UserAvatar = ({ user, avatarSize, borderStyle }) => {
-  const { getUserEmail, getUserFirstName, getUserLastName } = useAuth();
   const [defaultAvatarSize, setDefaultAvatarSize] = useState("35px");
   const [defaultTextSize, setDefaultTextSize] = useState("0.9rem");
-  const [defaultBorder, setDefaultBorder] = useState("");
+  const [defaultBorder, setDefaultBorder] = useState(
+    `solid ${borderSize ? borderSize : 4}px transparent`
+  );
   const capitalizeFirstLetter = (str) => {
     return str?.charAt(0).toUpperCase();
   };
 
   const stringToColour = (str) => {
     if (!str) {
-      console.log("no color for you");
       return "#FFA500";
     }
     let hash = 0;
@@ -39,6 +49,7 @@ const UserAvatar = ({ user, avatarSize, borderStyle }) => {
         email: getUserEmail(),
         firstName: getUserFirstName(),
         lastName: getUserLastName(),
+        roleId: getUserRole(),
       };
     }
   };
@@ -49,13 +60,25 @@ const UserAvatar = ({ user, avatarSize, borderStyle }) => {
   const textSize = avatarSize ? avatarProfileTextSize : defaultTextSize;
   const boxShadow = borderStyle ? avatarBoxShadow : undefined;
 
+  const getBorderStyle = () => {
+    if (enableRoleBorder && userData?.roleId === ROLES.MANAGER) {
+      return avatarManagerBorderStyle;
+    }
+    if (borderStyle) {
+      return borderStyle;
+    }
+    return defaultBorder;
+  };
+
+  const finalBorderStyle = getBorderStyle();
+
   return (
     <>
       {userData && (
         <Tooltip
           title={
             userData
-              ? `${userData.firstName} ${userData.lastName} (${userData.email})`
+              ? `${userData.firstName} ${userData.lastName} Role:${userData.roleId} (${userData.email})`
               : "No data"
           }
         >
@@ -64,7 +87,7 @@ const UserAvatar = ({ user, avatarSize, borderStyle }) => {
               bgcolor: stringToColour(userData?.email || userData?.email),
               height: avatarSize || defaultAvatarSize,
               width: avatarSize || defaultAvatarSize,
-              border: borderStyle || defaultBorder,
+              border: finalBorderStyle,
               boxShadow: boxShadow,
             }}
           >

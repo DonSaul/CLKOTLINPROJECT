@@ -15,6 +15,7 @@ class Job (
 
     var company: String,
     var position: String,
+    @Column(columnDefinition = "TEXT")
     var description: String,
 
     @ManyToOne(fetch = FetchType.LAZY)

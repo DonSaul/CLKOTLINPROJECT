@@ -8,21 +8,19 @@ import com.jobsearch.entity.ChatMessage
 import com.jobsearch.entity.Conversation
 import com.jobsearch.entity.NotificationTypeEnum
 import com.jobsearch.entity.User
+import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.ChatMessageRepository
 import com.jobsearch.repository.ConversationRepository
 import com.jobsearch.repository.UserRepository
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.NoSuchElementException
-
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.locks.ReentrantLock
-
 
 
 @Service
@@ -34,7 +32,7 @@ class ConversationService(
         private val notificationService: NotificationService
 ) {
 
-    //testing
+    //lock
     object ConversationLockManager {
         private val conversationLocks = ConcurrentHashMap<Pair<String, String>, ReentrantLock>()
 
@@ -87,7 +85,7 @@ class ConversationService(
 
         val existingConversation = findExistingConversation(currentUser, receiver)
 
-        val conversation = existingConversation ?: createConversationLock(currentUser, receiver)
+        val conversation = existingConversation ?: createConversation(currentUser, receiver)
 
         val chatMessage = ChatMessage(
             sender = currentUser,
@@ -112,13 +110,23 @@ class ConversationService(
         val sender = userService.retrieveAuthenticatedUser()
         val receiver = userRepository.findByEmail(email)
             .orElseThrow { NoSuchElementException("No user found with email $email") }
+
+        val chatUrl = "http://localhost:3000/messaging/${sender.id}"
+        val sentAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+
         try {
             if (!isNotificationThrottled(sender.id!!, receiver.id!!)) {
                 val notificationDTO = NotificationDTO(
                     type = NotificationTypeEnum.MESSAGES.id,
                     recipient = receiver.id,
                     subject = "New Message",
-                    content = "There is a new message sent by: ${receiver.email}",
+                    content = """
+                        You have a new message sent by: ${sender.email}
+                        <br>
+                        Please check the message at: $chatUrl
+                        <br>
+                        Sent at: $sentAt
+                        """.trimIndent(),
                     sender = sender.id,
                     vacancy = null
                 )
@@ -194,8 +202,12 @@ class ConversationService(
         return diffSeconds < minTimeBetweenNotifications
     }
     private fun getLastNotificationTime(senderId: Int, receiverId: Int): Int {
-        val lastNotification = notificationService.findLatestMessageNotification(senderId, receiverId)
-        return lastNotification.sentDateTime.toEpochSecond(ZoneOffset.UTC).toInt()
+        return try {
+            val lastNotification = notificationService.findLatestMessageNotification(senderId, receiverId)
+            lastNotification.sentDateTime.toEpochSecond(ZoneOffset.UTC).toInt()
+        } catch (e: NotFoundException) {
+            0
+        }
     }
 
 }

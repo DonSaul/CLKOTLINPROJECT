@@ -16,7 +16,6 @@ const sendMessage = async (data) => {
   });
 
   if (res.ok) {
-    // If message sending is successful, send a notification
     await sendNotification(data.receiverUserName);
   }
 
@@ -25,7 +24,6 @@ const sendMessage = async (data) => {
 
 const sendNotification = async (receiverUserName) => {
   let token = localStorage.getItem(AUTH_TOKEN_NAME);
-  console.log(receiverUserName);
   const res = await fetch(
     `${ENDPOINTS.sendMessageNotification}/${receiverUserName}`,
     {
@@ -47,8 +45,6 @@ export const useSendMessage = () => {
       if (res.status === 403) {
         toast.error("You are not allowed to send messages");
       } else {
-        console.log("Message sent successfully!");
-        // Handle success as needed
       }
     },
     onError: (_err) => {

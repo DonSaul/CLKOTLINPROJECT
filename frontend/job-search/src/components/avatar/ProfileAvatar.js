@@ -3,6 +3,7 @@ import { avatarSizeProfile } from "./avatarConstants";
 import UserAvatar from "./UserAvatar";
 import { Box } from "@mui/material";
 import { avatarBorderStyle } from "./avatarConstants";
+
 const ProfileAvatar = ({ user }) => {
   return (
     <>

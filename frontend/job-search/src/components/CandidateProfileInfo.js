@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { useGetCandidateProfile } from "../hooks/profile/useGetCandidateProfile";
+import { useGetUserPdf } from "../hooks/useGetPdf";
 import { useAuth } from "../helpers/userContext";
 import { ROLES } from "../helpers/constants";
 import { Box, Typography, Card, Button } from "@mui/material";
@@ -26,15 +27,37 @@ const CandidateProfileInfo = () => {
   const { getUserRole } = useAuth();
   const { firstName, lastName, email, cv, roleId } = profileData || {};
   const navigate = useNavigate();
-
   const [avatarSize, setAvatarSize] = useState("500px");
-  console.log("avatarr size prifle", avatarSize);
 
   const handleInvite = (id) => { 
     const candidateId = id;
     console.log("Sending invitation to candidate:", candidateId);
     navigate(`${paths.sendInvitation.replace(":id", candidateId)}`);
   }; 
+
+  const ProfilePdfButton = () => {
+    const { pdf, isLoading: isLoadingPdf, isError: isErrorPdf } = useGetUserPdf(id);
+
+    const handleGetPdf = () => { 
+      if (pdf) {
+        const pdfUrl = URL.createObjectURL(pdf);
+        window.open(pdfUrl, '_blank');
+      }
+    }; 
+
+    return (
+      <Button
+        type="button"
+        variant="contained"
+        color="primary"
+        onClick={handleGetPdf}
+        disabled={getUserRole() !== ROLES.MANAGER || isLoadingPdf || isErrorPdf}
+        sx={{ mx: 1 }}
+      >
+        View CV on PDF
+      </Button>
+    );
+  };
 
   return (
     <>
@@ -71,16 +94,19 @@ const CandidateProfileInfo = () => {
           </Box>
 
           {roleId !== ROLES.CANDIDATE ? null : (
-            <Button
-              type="button"
-              variant="contained"
-              color="primary"
-              onClick={() => handleInvite(id)}
-              disabled={getUserRole() !== ROLES.MANAGER}
-              sx={{ mx: 1 }}
-            >
-              Invite
-            </Button>
+            <>
+              <Button
+                type="button"
+                variant="contained"
+                color="primary"
+                onClick={() => handleInvite(id)}
+                disabled={getUserRole() !== ROLES.MANAGER}
+                sx={{ mx: 1 }}
+              >
+                Invite
+              </Button>
+              <ProfilePdfButton />
+            </>
           )}
 
           <Button type="button" variant="contained" color="primary">

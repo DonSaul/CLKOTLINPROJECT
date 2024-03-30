@@ -49,6 +49,10 @@ dependencies {
 	// JAXB reference implementation (GlassFish)
 	implementation("org.glassfish.jaxb:jaxb-runtime:2.3.1")
 
+	// https://mvnrepository.com/artifact/com.itextpdf/itext7-core
+	implementation("com.itextpdf:itext7-core:8.0.3")
+
+
 	implementation ("io.jsonwebtoken:jjwt:0.9.1")
 	implementation("org.glassfish.jersey.core:jersey-common:3.1.5")
 	compileOnly("org.projectlombok:lombok")

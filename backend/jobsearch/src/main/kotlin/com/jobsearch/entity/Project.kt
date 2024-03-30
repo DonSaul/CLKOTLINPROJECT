@@ -9,6 +9,7 @@ data class Project (
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         var id: Int? = null,
         var name: String,
+        @Column(columnDefinition = "TEXT")
         var description: String,
 
         @ManyToOne(fetch = FetchType.LAZY)
