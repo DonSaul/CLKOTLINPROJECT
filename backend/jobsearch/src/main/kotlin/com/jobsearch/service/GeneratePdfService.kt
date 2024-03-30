@@ -55,6 +55,11 @@ class GeneratePdfService(
             setFontSize(15f)
             setMarginBottom(10f)
         }
+        val education = Paragraph("Education: ${cv.education}").apply {
+            setTextAlignment(TextAlignment.LEFT)
+            setFontSize(15f)
+            setMarginBottom(10f)
+        }
         val summary = Paragraph(cv.summary).apply {
             setMarginBottom(10f)
             setTextAlignment(TextAlignment.JUSTIFIED)
@@ -66,6 +71,7 @@ class GeneratePdfService(
         document.add(title)
         document.add(email)
         document.add(summary)
+        document.add(education)
         document.add(skillsRow)
         document.add(Paragraph("Job experience:").apply { setFontSize(15f); setMarginTop(15f) })
         for (card in jobsCardList) {
