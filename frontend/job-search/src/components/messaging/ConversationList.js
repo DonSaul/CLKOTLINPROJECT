@@ -6,27 +6,30 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../helpers/userContext";
 import UserAvatar from "../avatar/UserAvatar";
-import { useEffect } from "react";
 
 const ConversationsList = ({
   conversations,
   onSelectConversation,
   onSetUserData,
+  selectedConversationId,
+  setSelectedConversationId
 }) => {
   const { getUserEmail } = useAuth();
   const [formattedConversations, setFormattedConversations] = useState();
-  const [selectedConversationIndex, setSelectedConversationIndex] =
-    useState(null);
+  const initialSelectionHandled = useRef(false);
 
-  const handleConversationClick = (index) => {
-    setSelectedConversationIndex(index);
-    const selectedConversation = formattedConversations[index];
+  const handleConversationClick = (conversationId) => {
+
+    setSelectedConversationId(conversationId);
+    const selectedConversation = formattedConversations.find(c => c.id === conversationId);
+
     if (selectedConversation?.email) {
       onSelectConversation(selectedConversation.email);
       onSetUserData(selectedConversation);
+      initialSelectionHandled.current = true;
     } else {
       console.error("Can't select this conversation");
     }
@@ -83,6 +86,12 @@ const ConversationsList = ({
     }
   }, [conversations]);
 
+  useEffect(() => {
+    if (selectedConversationId && formattedConversations && !initialSelectionHandled.current) {
+      handleConversationClick(selectedConversationId);
+    }
+  }, [selectedConversationId, formattedConversations]);
+
   return (
     <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
       <Typography>Conversations</Typography>
@@ -92,10 +101,10 @@ const ConversationsList = ({
             <ListItem
               alignItems="flex-start"
               button
-              onClick={() => handleConversationClick(index)}
+              onClick={() => handleConversationClick(conversation.id)}
               sx={{
                 ":hover": { bgcolor: "#f0f0f0" },
-                ...(selectedConversationIndex === index && {
+                ...(selectedConversationId === conversation.id && {
                   bgcolor: "#e1f5fe",
                 }),
               }}
