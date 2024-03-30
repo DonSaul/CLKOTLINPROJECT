@@ -32,7 +32,7 @@ class GeneratePdfService(
 
         val user = userRepository.findById(userId).get()
         val authUser = userService.retrieveAuthenticatedUser()
-        if (authUser.role!!.name != "manager" || user != authUser) throw ForbiddenException("Only managers can generate candidates pdfs")
+        if (authUser.role!!.name != "manager") throw ForbiddenException("Only managers can generate candidates pdfs")
 
         val cv = cvRepository.findByUser(user).last()
 
@@ -47,6 +47,9 @@ class GeneratePdfService(
             setFontSize(15f)
             setMarginBottom(10f)
         }
+        val summary = Paragraph(cv.summary).apply {
+            setMarginBottom(10f)
+        }
 
         val skillString = cv.skills!!.joinToString { it.name }
         val jobsCardList = createJobsDiv(cv.jobs!!.toList())
@@ -54,6 +57,7 @@ class GeneratePdfService(
 
         document.add(title)
         document.add(email)
+        document.add(summary)
         document.add(Paragraph("Skills: $skillString"))
         document.add(Paragraph("Job experience:"))
         for (card in jobsCardList) {
