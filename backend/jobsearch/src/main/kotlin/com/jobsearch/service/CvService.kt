@@ -224,6 +224,7 @@ class CvService(
 
     fun retrieveMyAccountsCv(cvId: Int): CvResponseDTO {
         val cv = cvRepository.findByUserAndId(userService.retrieveAuthenticatedUser(), cvId)
+            .orElseThrow { NotFoundException("No CV found with id $cvId") }
 
         return cvMapper.mapToDto(cv)
     }

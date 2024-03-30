@@ -9,7 +9,7 @@ import java.util.*
 interface CvRepository : JpaRepository<Cv, Int> {
     fun findByUser(user: User): List<Cv>
 
-    fun findByUserAndId(user: User, id: Int): Cv
+    fun findByUserAndId(user: User, id: Int): Optional<Cv>
 
     fun findFirstByUserOrderByIdDesc(user: User): Optional<Cv>
 
