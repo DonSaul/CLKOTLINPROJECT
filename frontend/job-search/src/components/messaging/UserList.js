@@ -31,7 +31,7 @@ export default function UserList({ users, onSelectUser, onSetUserData }) {
           const labelId = `icon-list-label-${value.id}`;
           return (
             <ListItem key={value.id} disablePadding>
-              <ListItemButton onClick={handleUserSelect(value)}>
+              <ListItemButton sx={{display: 'flex', gap: '7px'}} onClick={handleUserSelect(value)}>
                 <UserAvatar user={value}></UserAvatar>
 
                 <ListItemText

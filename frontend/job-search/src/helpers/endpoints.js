@@ -34,6 +34,7 @@ export const ENDPOINTS = {
   getUsers: createUrl("users/all"),
   getConversations: createUrl("conversation/user/all"),
   getCurrentConversationMessages: createUrl("conversation/messages"),
+  getConversationIdByToken: createUrl("conversation/get-conversation-id-by-token"),
   sendMessage: createUrl("conversation/send-message"),
   invitation: createUrl("invitations"),
   candidateProfile: createUrl("profiles"),
