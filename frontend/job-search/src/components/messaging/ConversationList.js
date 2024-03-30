@@ -18,14 +18,11 @@ const ConversationsList = ({
 }) => {
   const { getUserEmail } = useAuth();
   const [formattedConversations, setFormattedConversations] = useState();
-  const initialSelectionHandled = useRef(false);
-
   const handleConversationClick = (index) => {
     const selectedConversation = formattedConversations[index];
     if (selectedConversation?.email) {
       onSelectConversation(selectedConversation.email);
       onSetUserData(selectedConversation);
-      initialSelectionHandled.current = true;
     } else {
       console.error("Can't select this conversation");
     }
