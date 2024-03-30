@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 
 const style = {
@@ -27,7 +26,8 @@ const InvitationModal = ({children, data}) => {
   return (
     <div>
       <Button 
-        mt={2} variant="contained" 
+        sx={{ mt: 2, ms: 0 }}
+        variant="contained" 
         color="primary" 
         onClick={handleOpen}
         disabled={dataIsSelected ? false : true}

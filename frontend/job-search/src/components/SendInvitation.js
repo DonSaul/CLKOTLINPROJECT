@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSendInvitation } from "../hooks/useSendInvitation";
-import { MenuItem, Button, TextField, Typography } from "@mui/material";
+import { MenuItem, Button, TextField } from "@mui/material";
 import { getVacancyByManager } from "../hooks/useGetVacancyByManager";
 
 const SendInvitation = ({data}) => {
@@ -11,7 +11,7 @@ const SendInvitation = ({data}) => {
     const [content, setContent] = useState('');
     const [vacancyId, setVacancyId] = useState('');
     const [vacancies, setVacancies] = useState([]);
-
+  
     // Get vacancies available for logged-in manager
     const fetchVacanciesForManager = async () => {
         try {
@@ -99,7 +99,7 @@ const SendInvitation = ({data}) => {
         >
           {vacancies.map((vacancy) => (
             <MenuItem key={vacancy.id} value={vacancy.id}>
-              {vacancy.name} - {vacancy.jobFamilyName}
+              {vacancy.name} - {vacancy.jobFamily.name}
             </MenuItem>
           ))}
         </TextField>

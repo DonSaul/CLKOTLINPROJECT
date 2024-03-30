@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { getVacancyByManager } from "../hooks/useGetVacancyByManager";
 import { useSendInvitation } from "../hooks/useSendInvitation";
 import CardContainer from "./CardContainer";
-import { Select, MenuItem, Button, TextField, FormControl, InputLabel } from "@mui/material";
+import { Select, MenuItem, Button, TextField } from "@mui/material";
 
 export const PersonalInvitation = ({data}) => {
     console.log("data", data)
@@ -87,7 +87,7 @@ export const PersonalInvitation = ({data}) => {
                 >
                     {vacancies.map((vacancy) => (
                         <MenuItem key={vacancy.id} value={vacancy.id}>
-                            {vacancy.name} - {vacancy.jobFamilyName}
+                            {vacancy.name} - {vacancy.jobFamily.name}
                         </MenuItem>
                     ))}
                 </TextField> 
