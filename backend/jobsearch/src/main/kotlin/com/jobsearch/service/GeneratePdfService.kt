@@ -15,10 +15,7 @@ import com.itextpdf.layout.element.Div
 import com.itextpdf.layout.element.Image
 import com.itextpdf.layout.element.Paragraph
 import com.itextpdf.layout.properties.HorizontalAlignment
-import com.jobsearch.entity.Cv
-import com.jobsearch.entity.Job
-import com.jobsearch.entity.Project
-import com.jobsearch.entity.Skill
+import com.jobsearch.entity.*
 import com.jobsearch.exception.ForbiddenException
 import com.jobsearch.repository.CvRepository
 import com.jobsearch.repository.UserRepository
@@ -32,12 +29,10 @@ class GeneratePdfService(
     private val userRepository: UserRepository,
     private val userService: UserService
 ) {
-
-
     fun getUserCv(userId: Int): ByteArray {
         val user = userRepository.findById(userId).get()
         val authUser = userService.retrieveAuthenticatedUser()
-        if (authUser.role!!.name != "manager") throw ForbiddenException("Only managers can generate candidates pdfs")
+        if (authUser.role!!.id != RoleEnum.MANAGER.id) throw ForbiddenException("Only managers can generate candidates pdfs")
         val cv = cvRepository.findByUser(user).last()
         return generateCV(cv)
     }
@@ -64,7 +59,6 @@ class GeneratePdfService(
             setMarginBottom(10f)
             setTextAlignment(TextAlignment.JUSTIFIED)
         }
-
         val skillsRow = createSkillsRow(cv.skills!!)
         val jobsCardList = createJobCards(cv.jobs!!.toList().sortedBy { it.startDate }.reversed())
         val projectCardList = createProjectDivs(cv.projects!!.toList().sortedBy { it.id })
