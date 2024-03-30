@@ -2,7 +2,6 @@ package com.jobsearch.controller
 
 import com.jobsearch.dto.ChatMessageDTO
 import com.jobsearch.dto.ChatMessageRequestDTO
-import com.jobsearch.dto.ConversationIdDTO
 import com.jobsearch.dto.ConversationResponseDTO
 import com.jobsearch.entity.ChatMessage
 import com.jobsearch.repository.UserRepository
@@ -42,12 +41,4 @@ class ConversationController (
         val messages= conversationService.getCurrentConversationWithUser(email)
         return ResponseEntity(messages,HttpStatus.OK)
     }
-
-    @GetMapping("/get-conversation-id-by-token")
-    fun getConversationIdByToken(@RequestParam token: String): ResponseEntity<ConversationIdDTO>  {
-        val conversationId = conversationService.getConversationIdByToken(token)
-        return ResponseEntity(conversationId, HttpStatus.OK)
-    }
 }
-
-

@@ -1,11 +1,16 @@
 package com.jobsearch.service
 
-import com.jobsearch.dto.*
-import com.jobsearch.entity.*
+import com.jobsearch.dto.ChatMessageDTO
+import com.jobsearch.dto.ChatMessageRequestDTO
+import com.jobsearch.dto.ConversationResponseDTO
+import com.jobsearch.dto.NotificationDTO
+import com.jobsearch.entity.ChatMessage
+import com.jobsearch.entity.Conversation
+import com.jobsearch.entity.NotificationTypeEnum
+import com.jobsearch.entity.User
 import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.ChatMessageRepository
 import com.jobsearch.repository.ConversationRepository
-import com.jobsearch.repository.ConversationTokenRepository
 import com.jobsearch.repository.UserRepository
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
@@ -24,8 +29,7 @@ class ConversationService(
         private val userService: UserService,
         private val userRepository: UserRepository,
         private val conversationRepository: ConversationRepository,
-        private val notificationService: NotificationService,
-        private val conversationTokenRepository: ConversationTokenRepository
+        private val notificationService: NotificationService
 ) {
 
     //lock
@@ -107,17 +111,8 @@ class ConversationService(
         val receiver = userRepository.findByEmail(email)
             .orElseThrow { NoSuchElementException("No user found with email $email") }
 
-        val conversation = conversationRepository.findByUser1AndUser2(sender, receiver);
-
-        val conversationToken = ConversationToken(
-            user = receiver,
-            conversation = conversation!!
-        )
-
-        val savedConversationToken = conversationTokenRepository.save(conversationToken)
-        val token = savedConversationToken.token
-
-        val chatUrl = "http://localhost:3000/messaging?token=${token}"
+        val chatUrl = "http://localhost:3000/messaging/${sender.id}"
+        val sentAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 
         try {
             if (!isNotificationThrottled(sender.id!!, receiver.id!!)) {
@@ -130,7 +125,7 @@ class ConversationService(
                         <br>
                         Please check the message at: $chatUrl
                         <br>
-                        Sent at: ${LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}
+                        Sent at: $sentAt
                         """.trimIndent(),
                     sender = sender.id,
                     vacancy = null
@@ -165,20 +160,6 @@ class ConversationService(
 
         return conversationMessages
 
-    }
-
-    fun getConversationIdByToken(token: String) : ConversationIdDTO {
-        val conversationToken = conversationTokenRepository.findByToken(token)
-
-        val authenticatedUser = userService.retrieveAuthenticatedUser()
-
-        if (conversationToken.user != authenticatedUser) {
-            throw IllegalAccessException("You cannot access this conversation")
-        }
-
-        val conversationId = ConversationIdDTO(conversationToken.conversation.id!!)
-
-        return conversationId
     }
 
     private fun createConversation(user1: User, user2: User): Conversation {
