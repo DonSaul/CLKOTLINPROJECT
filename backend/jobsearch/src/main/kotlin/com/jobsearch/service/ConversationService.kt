@@ -126,9 +126,9 @@ class ConversationService(
                     recipient = receiver.id,
                     subject = "New Message",
                     content = """
-                        There is a new message sent by: ${receiver.email}
+                        You have a new message sent by: ${sender.email}
                         <br>
-                        You can view the message at: $chatUrl
+                        Please check the message at: $chatUrl
                         <br>
                         Sent at: ${LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}
                         """.trimIndent(),
