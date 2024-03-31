@@ -15,6 +15,7 @@ import ProfileModal from "../components/ProfileModal";
 import { useAuth } from "../helpers/userContext";
 import { useUpdateProfileInfo } from "../hooks/profile/useCurrentUserProfile";
 import ProfileAvatar from "./avatar/ProfileAvatar";
+import CvPdfButton from "./CvPdfButton";
 
 const CurrentUserInfo = ({ children }) => {
   const {
@@ -25,7 +26,7 @@ const CurrentUserInfo = ({ children }) => {
   } = useCurrentUserProfile();
   const { mutate, isSuccess } = useUpdateProfileInfo();
   const { firstName, lastName, email, cv, roleId } = profileData || {};
-  const { getUserIdFromToken } = useAuth();
+  const { getUserIdFromToken, getUserRole } = useAuth();
 
   console.log(profileData);
   useEffect(() => {
@@ -89,6 +90,7 @@ const CurrentUserInfo = ({ children }) => {
             mutate={mutate}
             profileData={profileData}
           ></ProfileModal>
+          <CvPdfButton roleId={getUserRole()} />
         </Card>
 
         {roleId !== ROLES.CANDIDATE ? null : (
