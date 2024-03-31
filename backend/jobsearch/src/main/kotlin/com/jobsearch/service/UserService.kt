@@ -69,6 +69,11 @@ class UserService @Autowired constructor(
         val users = userRepository.findAll()
         return users.map {
             mapToUserResponseDTO(it)
+        }.sortedBy { user ->
+            when (user.roleId) {
+               RoleEnum.MANAGER.id -> 0
+                else -> 1
+            }
         }
     }
 
