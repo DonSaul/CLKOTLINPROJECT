@@ -10,6 +10,7 @@ import { paths } from "../router/paths";
 import { useState } from "react";
 import ProfileAvatar from "./avatar/ProfileAvatar";
 import CvPdfButton from "./CvPdfButton"; // Importar el componente aquí
+import { useGetUserPdf } from "../hooks/useGetPdf";
 
 const CandidateProfileInfo = () => {
   const { id } = useParams();
@@ -24,8 +25,6 @@ const CandidateProfileInfo = () => {
   const [avatarSize, setAvatarSize] = useState("500px");
 
   const handleInvite = () => { 
-    // const candidateId = id;
-    // console.log("Sending invitation to candidate:", candidateId);
     navigate(`${paths.sendInvitation.replace(":id", id)}`);
   }; 
 
@@ -136,9 +135,10 @@ const CandidateProfileInfo = () => {
             {cv !== null ? (
               <Box 
                 sx={{ 
-                  display: 'flex', 
-                  flexDirection: 'column', 
-                  alignItems: 'center', 
+                  // display: 'flex', 
+                  // flexDirection: 'column', 
+                  // alignItems: 'center', 
+                  // justifyContent: 'center',
                   p: 2,
                   mx: 3 
                   }}>
@@ -166,7 +166,7 @@ const CandidateProfileInfo = () => {
                     </TableBody>
                   </Table>
                 </TableContainer>
-                <Box sx={{ mt: 2, mb:1, textAlign: 'left' }}>
+                <Box sx={{ mt: 2, textAlign: 'left' }}>
                   <Typography sx={{ fontWeight: 'bold' }} variant="subtitle1" gutterBottom>
                     Summary
                   </Typography>

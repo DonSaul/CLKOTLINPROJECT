@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Box, Typography, Card } from "@mui/material";
+import { Box, Typography, Card, Button } from "@mui/material";
 import {
   TableCell,
   Table,
@@ -42,7 +42,7 @@ const CurrentUserInfo = () => {
   }, [isSuccess]);
 
   if (isLoading) {
-    return <LoadingSpinner></LoadingSpinner>;
+    return <LoadingSpinner />;
   }
 
   if (isError) {
@@ -86,10 +86,13 @@ const CurrentUserInfo = () => {
           </Box>
 
           {/* Edit info Modal */}
-          <ProfileModal
-            mutate={mutate}
-            profileData={profileData}
-          ></ProfileModal>
+          <Button>
+            <ProfileModal
+              mutate={mutate}
+              profileData={profileData}
+            >
+            </ProfileModal>
+          </Button>
           <CvPdfButton roleId={getUserRole()} />
         </Card>
 
@@ -112,9 +115,9 @@ const CurrentUserInfo = () => {
             {cv !== null ? (
               <Box 
                 sx={{ 
-                  display: 'flex', 
-                  flexDirection: 'column', 
-                  alignItems: 'center', 
+                  // display: 'flex', 
+                  // flexDirection: 'column', 
+                  // alignItems: 'center', 
                   p: 2,
                   mx: 3 
                   }}>
