@@ -13,8 +13,8 @@ data class ProjectRequestDTO (
 
         @field:NotBlank(message = "Project description must not be blank")
         @field:Size(max = 100, message = "Project description must not exceed 100 characters")
-        val description:String,
+        val description: String,
 
         @field:NotNull(message = "Project must have a job family")
-        val jobFamilyId:Int
+        val jobFamilyId: Int
 )
