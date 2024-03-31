@@ -28,6 +28,10 @@ data class Notification(
     //vacancy
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vacancy_id", referencedColumnName = "id")
-    var vacancy: Vacancy? = null
-)
+    var vacancy: Vacancy? = null,
+
+    var read: Boolean = false,
+
+
+    )
 

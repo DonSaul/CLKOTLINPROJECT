@@ -1,5 +1,4 @@
 package com.jobsearch.jwt
-
 import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.UserRepository
 import com.jobsearch.service.UserDetailsImpl
@@ -19,27 +18,25 @@ import org.springframework.web.filter.OncePerRequestFilter
 import java.util.*
 
 @Component
-class JwtProvider(
-    @Value("\${jwt.secret}")
-    private val jwtSecret: String? = null,
+class JwtProvider (
+        @Value("\${jwt.secret}")
+        private val jwtSecret: String? = null,
 
-    @Value("\${jwt.expiration}")
-    private val jwtExpiration: Int? = null,
+        @Value("\${jwt.expiration}")
+        private val jwtExpiration: Int? = null,
 
-    private val userRepository: UserRepository
-) {
+        private val userRepository:UserRepository)
+
+{
+
 
     fun generateJwtToken(userDetails: UserDetails): String {
         val claims = Jwts.claims().setSubject(userDetails.username)
         claims["roles"] = userDetails.authorities
-
-        val username = userDetails.username
-        val userEntity = userRepository.findByEmail(username).orElseThrow {
-            NotFoundException("User with email $username not found")
-        }
-        claims["first_name"] = userEntity.firstName
-        claims["last_name"] = userEntity.lastName
-
+        val user = userRepository.findByEmail(userDetails.username).orElse(null)
+        claims["first_name"] = user.firstName
+        claims["last_name"] = user.lastName
+        claims["id"] = user.id
         return Jwts.builder()
             .setClaims(claims)
             .setIssuedAt(Date())
@@ -47,7 +44,6 @@ class JwtProvider(
             .signWith(SignatureAlgorithm.HS512, jwtSecret)
             .compact()
     }
-
 
     fun validateJwtToken(token: String?): Boolean {
         Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token)
@@ -67,6 +63,7 @@ class JwtProvider(
 @Component
 class JwtAuthenticationFilter(
     private val jwtProvider: JwtProvider,
+    private val userDetailsService: UserDetailsService,
     private val userRepository: UserRepository,
 ) : OncePerRequestFilter() {
 

@@ -2,6 +2,7 @@ package com.jobsearch.service
 
 import com.jobsearch.dto.ApplicationDTO
 import com.jobsearch.entity.Application
+import com.jobsearch.entity.Vacancy
 import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.*
 import jakarta.transaction.Transactional
@@ -27,6 +28,7 @@ class ApplicationService(
         val defaultStatus = statusRepository.findById(2).get()
 
         val cv = cvRepository.findFirstByUserOrderByIdDesc(candidate)
+            .orElseThrow { NotFoundException("No CV found for this user") }
 
         val vacancy = vacancyRepository.findById(applicationDTO.vacancyId)
             .orElseThrow { NotFoundException("Vacancy not found with ID: ${applicationDTO.vacancyId}") }
@@ -101,6 +103,14 @@ class ApplicationService(
 
     }
 
+    fun retrieveApplicationByAuthenticatedCandidate(): List<Application> {
+        val candidate = userService.retrieveAuthenticatedUser()
+        return applicationRepository.findByCandidate(candidate)
+    }
+    fun retrieveApplicationByVacancy(vacancy: Vacancy): List<Application> {
+        val vacancyApplicationList = applicationRepository.findByVacancy(vacancy)
+        return vacancyApplicationList
+    }
 
     fun mapToApplicationDTO(application: Application): ApplicationDTO {
         return application.let {
@@ -115,14 +125,9 @@ class ApplicationService(
         }
     }
 
-    fun candidateAlreadyApplied(applicationEntity: Application): Boolean {
-        val candidateApplicationList = applicationRepository.findByCandidate(applicationEntity.candidate)
-        for (application in candidateApplicationList){
-            if (application.vacancy == applicationEntity.vacancy){
-                return true
-            }
-        }
-        return false
+    private fun candidateAlreadyApplied(applicationEntity: Application): Boolean {
+        val application =
+            applicationRepository.findFirstByCandidateAndVacancy(applicationEntity.candidate, applicationEntity.vacancy)
+        return application != null
     }
-
 }

@@ -1,18 +1,12 @@
-import React, { useState } from 'react';
-import CardContainer from '../components/CardContainer';
+import React, { useState } from "react";
+import CurrentUserInfo from "../components/CurrentUserInfo";
 
 const Profile = () => {
-
-
-    return (
-        <div>
-            <CardContainer width='xs'>
-
-                Profile
-            </CardContainer>
-
-        </div>
-    );
+  return (
+    <div>
+      <CurrentUserInfo />
+    </div>
+  );
 };
 
 export default Profile;

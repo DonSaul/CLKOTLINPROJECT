@@ -36,4 +36,11 @@ class NotificationController(private val notificationService: NotificationServic
         val notifications = notificationService.retrieveAllNotifications()
          return ResponseEntity(notifications, HttpStatus.OK)
     }
+
+    @Transactional
+    @PutMapping("/markAsRead/{notificationId}")
+    fun markNotificationAsRead(@PathVariable notificationId: Int): ResponseEntity<String> {
+        notificationService.markNotificationAsRead(notificationId)
+        return ResponseEntity.status(HttpStatus.OK).body("Notification marked as read")
+    }
 }

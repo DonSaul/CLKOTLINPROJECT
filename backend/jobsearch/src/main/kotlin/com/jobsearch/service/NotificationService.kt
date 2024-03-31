@@ -112,6 +112,8 @@ class NotificationService(
 
         return mapToDto(latestNotification)
     }
+
+
     fun mapToDto(notification: Notification): NotificationDTO {
         return notification.let {
             NotificationDTO(
@@ -123,9 +125,16 @@ class NotificationService(
                 sentDateTime = it.sentDateTime,
                 sent = it.sent,
                 sender = it.sender?.id,
-                vacancy = it.vacancy?.id
+                vacancy = it.vacancy?.id,
+                read = it.read
             )
         }
+    }
+    fun markNotificationAsRead(notificationId: Int) {
+        val notification = notificationRepository.findById(notificationId)
+            .orElseThrow { NoSuchElementException("Notification not found with ID: $notificationId") }
+        notification.read = true
+        notificationRepository.save(notification)
     }
     fun mapToNotification(notification: Notification): Notification {
         //sender
@@ -152,7 +161,8 @@ class NotificationService(
             sentDateTime = notification.sentDateTime,
             sent = notification.sent,
             sender = sender,
-            vacancy = notification.vacancy
+            vacancy = notification.vacancy,
+            read = notification.read
         )
     }
 }
