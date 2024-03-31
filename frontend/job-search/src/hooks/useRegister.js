@@ -21,6 +21,8 @@ export const useRegister = () => {
         toast.error("You are not allowed to do that");
       } else if (res.status === 400) {
         toast.error("You are not allowed to do that");
+      } else if (res.status === 409) {
+        toast.error("Email already exists!");
       } else {
         toast.success("Account created!, you can now login to your account");
       }

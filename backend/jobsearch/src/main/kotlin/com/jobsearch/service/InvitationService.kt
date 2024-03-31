@@ -19,14 +19,21 @@ class InvitationService(
     val userService: UserService,
     val userRepository: UserRepository,
     val vacancyRepository: VacancyRepository,
-//    val vacancyService: VacancyService,
     val notificationService: NotificationService
 ) {
     @Transactional
     fun createInvitation(invitationDTO: InvitationDTO): InvitationDTO {
+        // Check if an invitation for the same candidate and vacancy already exists
+        val alreadyInvited = invitationRepository.findByCandidateIdAndVacancyId(
+            invitationDTO.candidateId!!,
+            invitationDTO.vacancyId!!
+        )
+
+        if (alreadyInvited != null) {
+            throw RuntimeException("Invitation for this vacancy already sent to this candidate")
+        }
 
         val managerUser = userService.retrieveAuthenticatedUser()
-
 
         val vacancy = vacancyRepository.findById(invitationDTO.vacancyId!!)
             .orElseThrow { NotFoundException("Vacancy not found with ID: ${invitationDTO.vacancyId}") }
@@ -35,18 +42,23 @@ class InvitationService(
         val candidate = userRepository.findById(candidateId!!)
             .orElseThrow { NotFoundException("Candidate not found with ID: $candidateId") }
 
+        val MAX_CONTENT_LENGTH = 255
+
+        val vacancyLink = "Follow this link to view the vacancy: http://localhost:3000/vacancies/${vacancy.id}"
+        val content = "${invitationDTO.content}. $vacancyLink"
+        val truncatedContent = if (content.length > MAX_CONTENT_LENGTH) {
+            content.substring(0, MAX_CONTENT_LENGTH)
+        } else {
+            content
+        }
+
         val currentDateTime = LocalDateTime.now()
 
-//        val defaultSubject = "Default Subject"
-//        val defaultContent = "Default content"
-
         val invitationEntity = invitationDTO.let {
-            Invitation(it.id, candidate, it.subject, it.content, currentDateTime, it.sent, managerUser, vacancy)
+            Invitation(it.id, candidate, it.subject, truncatedContent, currentDateTime, it.sent, managerUser, vacancy)
         }
 
         val newInvitation = invitationRepository.save(invitationEntity)
-
-//        sendInvitation(newInvitation)
 
         // Get notification when sent
         val notificationDTO = NotificationDTO(
@@ -59,17 +71,19 @@ class InvitationService(
         )
         notificationService.triggerNotification(notificationDTO)
 
-
-
         return mapToInvitationDTO(newInvitation)
-        
-//        if (invitationAlreadySent(invitationEntity)) {
-//            throw RuntimeException("Invitation already sent to this candidate")
-//        } else {
+    }
 
-//        val newInvitation = invitationEntity.let { invitationRepository.save(it) }
-//
-//        return mapToInvitationDTO(newInvitation)
+    fun createMultipleInvitation(invitationDTO: InvitationDTO): InvitationDTO {
+        if (invitationDTO.candidateIds.isNullOrEmpty()) {
+            createInvitation(invitationDTO)
+        } else {
+            invitationDTO.candidateIds?.forEach {candidateId ->
+                val newInvitation = invitationDTO.copy(candidateId = candidateId)
+                createInvitation(newInvitation)
+            }
+        }
+        return invitationDTO
     }
 
     fun retrieveAllInvitations(): List<InvitationDTO> {
@@ -112,6 +126,7 @@ class InvitationService(
             InvitationDTO(
                 it.id,
                 it.candidate.id!!,
+                listOf(),
                 it.subject,
                 it.content,
                 it.sentDateTime,
@@ -121,25 +136,5 @@ class InvitationService(
             )
         }
     }
-
-//    fun sendInvitation(invitation: Invitation) {
-//        invitation.sent = true
-//        //invitation.sentDateTime = LocalDateTime.now()
-//
-//        invitationRepository.save(invitation)
-//    }
 }
-
-
-
-
-//    fun invitationAlreadySent(invitationEntity: Invitation): Boolean {
-//        val candidateInvitationList = invitationRepository.findById(invitationEntity.candidate.id!!)
-//        for (invitation in candidateInvitationList){
-//            if (invitation.vacancy == invitationEntity.vacancy){
-//                return true
-//            }
-//        }
-//        return false
-//    }
 

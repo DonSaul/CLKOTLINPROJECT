@@ -6,8 +6,7 @@ import { UpdateVacancy } from "../pages/UpdateVacancy";
 import CV from "../pages/CV";
 import Vacancies from "../pages/Vacancies";
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import MainToolbar from "../components/MainToolbar";
+import { Route, Routes } from "react-router-dom";
 import { CreateVacancy } from "../pages/CreateVacancy";
 import { CreateUser } from "../pages/CreateUser";
 import Home from "../pages/Home";
@@ -21,12 +20,9 @@ import { ROLES } from "../helpers/constants";
 import NotAccess from "../pages/NotAccess";
 import VacancyView from "../pages/VacancyView";
 import ManagerSearchPage from "../pages/ManagerSearchPage";
-import { SendInvite } from "../pages/SendInvite";
-import CandidateProfile from "../pages/CandidateProfile";
+import InvitationPage from "../pages/InvitationPage";
 import CandidateProfileInfo from "../components/CandidateProfileInfo";
 import ManagerVacanciesPage from "../pages/ManagerVacanciesPage";
-import Footer from "../components/layout/Footer";
-import Layout from "../components/layout/Layout";
 
 const RoutesConfig = () => {
   return (
@@ -40,6 +36,7 @@ const RoutesConfig = () => {
       <Route element={<RequireAuth />}>
         <Route path={paths.notifications} element={<Notifications />} />
         <Route path={paths.messaging} element={<Messaging />} />
+        <Route path={paths.messagingUser} element={<Messaging />} />
         <Route path={paths.profile} element={<Profile />} />
         <Route path={paths.vacancies} element={<Vacancies />} />
         <Route path={paths.vacancyDetails} element={<VacancyView />} />
@@ -56,7 +53,11 @@ const RoutesConfig = () => {
       <Route element={<RequireAuth role={ROLES.MANAGER} />}>
         <Route path={paths.createVacancy} element={<CreateVacancy />} />
         <Route path={paths.managerSearchPage} element={<ManagerSearchPage />} />
-        <Route path={paths.sendInvitation} element={<SendInvite />} />
+        <Route path={paths.sendInvitation} element={<InvitationPage />} />
+        <Route
+          path={paths.managerVacanciesPage}
+          element={<ManagerVacanciesPage />}
+        />
         <Route
           path={paths.managerVacanciesPage}
           element={<ManagerVacanciesPage />}

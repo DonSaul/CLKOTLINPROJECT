@@ -3,15 +3,11 @@ package com.jobsearch.controller
 import com.jobsearch.dto.ChatMessageDTO
 import com.jobsearch.dto.ChatMessageRequestDTO
 import com.jobsearch.dto.ConversationResponseDTO
-import com.jobsearch.dto.NotificationDTO
 import com.jobsearch.entity.ChatMessage
-import com.jobsearch.entity.Conversation
-import com.jobsearch.entity.Notification
 import com.jobsearch.repository.UserRepository
 import com.jobsearch.service.ConversationService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -46,5 +42,3 @@ class ConversationController (
         return ResponseEntity(messages,HttpStatus.OK)
     }
 }
-
-

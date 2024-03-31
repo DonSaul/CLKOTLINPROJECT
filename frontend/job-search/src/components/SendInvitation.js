@@ -1,28 +1,26 @@
 import { useEffect, useState } from "react";
 import { useSendInvitation } from "../hooks/useSendInvitation";
-import { MenuItem, Button, TextField, Typography } from "@mui/material";
-// import { getVacancyByManager } from "../hooks/useGetVacancyByManager";
+import { MenuItem, Button, TextField } from "@mui/material";
+import { getVacancyByManager } from "../hooks/useGetVacancyByManager";
 
-const SendInvitation = ({ data }) => {
-  console.log("data", data);
-
-  const { mutate } = useSendInvitation();
-  const [subject, setSubject] = useState("");
-  const [content, setContent] = useState("");
-  const [vacancyId, setVacancyId] = useState("");
-  const [vacancies, setVacancies] = useState([]);
-
-  const [warning, setWarning] = useState(false);
-
-  // Get vacancies available for logged-in manager
-  const fetchVacanciesForManager = async () => {
-    try {
-      // const managerVacancies = await getVacancyByManager();
-      // setVacancies(managerVacancies);
-    } catch (error) {
-      console.error("Error fetching vacancies for manager:", error);
-    }
-  };
+const SendInvitation = ({data}) => {
+    console.log("data", data)
+    
+    const { mutate } = useSendInvitation();
+    const [subject, setSubject] = useState('');
+    const [content, setContent] = useState('');
+    const [vacancyId, setVacancyId] = useState('');
+    const [vacancies, setVacancies] = useState([]);
+  
+    // Get vacancies available for logged-in manager
+    const fetchVacanciesForManager = async () => {
+        try {
+            const managerVacancies = await getVacancyByManager();
+            setVacancies(managerVacancies);
+        } catch (error) {
+            console.error('Error fetching vacancies for manager:', error);
+        }
+    };
 
   useEffect(() => {
     fetchVacanciesForManager();
@@ -43,22 +41,23 @@ const SendInvitation = ({ data }) => {
 
     for (let i = 0; i < selectedCandidateIds.length; i++) {
       const candidateId = selectedCandidateIds[i];
-
-      let invitationData = {
-        candidateId,
-        subject,
-        content,
-        vacancyId,
-      };
-
+      
       console.log("Sending invitation to candidate:", candidateId);
-      console.log("submit", invitationData);
+    }
 
-      try {
-        await mutate(invitationData);
-      } catch (error) {
-        console.error("Error sending invitation:", error);
-      }
+    let invitationData = {
+      candidateId: 1,
+      subject,
+      content,
+      vacancyId,
+      candidateIds: selectedCandidateIds
+    };
+    console.log("submit", invitationData);
+
+    try {
+      await mutate(invitationData);
+    } catch (error) {
+      console.error("Error sending invitation:", error);
     }
   };
 
@@ -72,6 +71,7 @@ const SendInvitation = ({ data }) => {
           onChange={(e) => setSubject(e.target.value)}
           fullWidth
           margin="normal"
+          inputProps={{ maxLength: 100 }}
           required
         />
 
@@ -84,6 +84,7 @@ const SendInvitation = ({ data }) => {
           fullWidth
           margin="normal"
           rows={4}
+          inputProps={{ maxLength: 100 }}
           required
         />
 
@@ -98,18 +99,14 @@ const SendInvitation = ({ data }) => {
         >
           {vacancies.map((vacancy) => (
             <MenuItem key={vacancy.id} value={vacancy.id}>
-              {vacancy.name} - {vacancy.jobFamilyName}
+              {vacancy.name} - {vacancy.jobFamily.name}
             </MenuItem>
           ))}
         </TextField>
+        
         <Button type="submit" variant="contained" color="primary" mt={2}>
           Send
         </Button>
-        {warning && (
-          <Typography color="error" variant="body2" mt={2}>
-            Please select at least one candidate before sending.
-          </Typography>
-        )}
       </form>
     </>
   );

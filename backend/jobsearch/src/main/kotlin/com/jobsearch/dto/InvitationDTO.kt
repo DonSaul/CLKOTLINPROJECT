@@ -1,14 +1,14 @@
 package com.jobsearch.dto
 
 import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.PastOrPresent
 import java.time.*
 
-class InvitationDTO(
+data class InvitationDTO(
     val id: Int?,
 
     // Receiver
-    val candidateId: Int?,
+    var candidateId: Int?,
+    val candidateIds: List<Int>?,
 
     // Invitation details
     @get:NotBlank(message = "Subject must not be blank")

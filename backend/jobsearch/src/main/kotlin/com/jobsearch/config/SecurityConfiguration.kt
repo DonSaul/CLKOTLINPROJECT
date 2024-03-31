@@ -56,6 +56,7 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
                     .requestMatchers("/api/v1/notifications/**").permitAll()
                     .requestMatchers("/api/v1/recoverPassword/**").permitAll()
                     .requestMatchers("api/v1/conversation/**").permitAll()
+                    .requestMatchers("api/v1/pdf").permitAll()
 
                     .anyRequest().authenticated()
             }

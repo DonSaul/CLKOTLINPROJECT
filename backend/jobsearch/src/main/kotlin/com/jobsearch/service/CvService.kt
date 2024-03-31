@@ -19,7 +19,6 @@ class CvService(
     private val skillRepository: SkillRepository,
     private val jobFamilyRepository: JobFamilyRepository,
     private val userService: UserService,
-    private val interestService: InterestService,
     private val cvMapper: CvMapper
 ) {
 
@@ -30,6 +29,7 @@ class CvService(
         val cv = cvDTO.let {
             Cv(
                 id = null,
+                summary = it.summary,
                 yearsOfExperience = it.yearsOfExperience,
                 salaryExpectation = it.salaryExpectation,
                 education = it.education,
@@ -43,13 +43,14 @@ class CvService(
         // Adding jobs to CV
         cvDTO.jobs.forEach { jobDTO ->
             val jobFamily = jobFamilyRepository.findById(jobDTO.jobFamilyId).orElse(null)
-            interestService.createInterest(jobFamily.id!!, cv.user.id!!)
+
             jobFamily?.let {
                 cv.jobs?.add(
                     Job(
                         cv = cv,
                         startDate = jobDTO.startDate,
                         endDate = jobDTO.endDate,
+                        company = jobDTO.company,
                         position = jobDTO.position,
                         description = jobDTO.description,
                         jobFamily = it
@@ -62,7 +63,6 @@ class CvService(
         cvDTO.projects.forEach { projectDTO ->
             val jobFamily = jobFamilyRepository.findById(projectDTO.jobFamilyId).orElse(null)
 
-            interestService.createInterest(jobFamily.id!!, cv.user.id!!)
             jobFamily?.let {
                 cv.projects?.add(
                     Project(
@@ -118,6 +118,7 @@ class CvService(
 
         // Updating basic attributes
         cv.apply {
+            summary = cvDTO.summary
             yearsOfExperience = cvDTO.yearsOfExperience
             salaryExpectation = cvDTO.salaryExpectation
             education = cvDTO.education
@@ -125,13 +126,7 @@ class CvService(
 
         // Updating jobs
         // Removing jobs from the CV that are not in the request
-        cv.jobs?.removeIf { job ->
-            val isJobInDTO = cvDTO.jobs.any { it.id == job.id }
-            if (!isJobInDTO) {
-                interestService.deleteInterestByUserIdAndJobFamilyId(job.jobFamily.id!!, cv.user.id!!)
-            }
-            !isJobInDTO
-        }
+        cv.jobs?.removeIf { job -> !cvDTO.jobs.any { it.id == job.id } }
 
         cvDTO.jobs.forEach { dto ->
             val existingJob = cv.jobs?.find { it.id == dto.id }
@@ -141,11 +136,11 @@ class CvService(
                 existingJob.apply {
                     startDate = dto.startDate
                     endDate = dto.endDate
+                    company = dto.company
                     position = dto.position
                     description = dto.description
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
                         .orElseThrow { NotFoundException("No Job Family found with id ${dto.jobFamilyId}") }
-                    interestService.updateInterest(dto.jobFamilyId, cv.user.id!!)
                 }
             } else {
                 // If job doesn't exist, a new one is created and added to the CV
@@ -154,24 +149,18 @@ class CvService(
                     startDate = dto.startDate,
                     endDate = dto.endDate,
                     position = dto.position,
+                    company = dto.company,
                     description = dto.description,
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
                         .orElseThrow { NotFoundException("No Job Family found with id ${dto.jobFamilyId}") }
                 )
-                interestService.createInterest(newJob.jobFamily.id!!, cv.user.id!!)
                 cv.jobs?.add(newJob)
             }
         }
 
         // Updating projects
         // Removing projects from the CV that are not in the request
-        cv.projects?.removeIf { project ->
-            val isProjectInDTO = cvDTO.projects.any { it.id == project.id }
-            if (!isProjectInDTO) {
-                interestService.deleteInterestByUserIdAndJobFamilyId(project.jobFamily.id!!, cv.user.id!!)
-            }
-            !isProjectInDTO
-        }
+        cv.projects?.removeIf { project -> !cvDTO.projects.any { it.id == project.id } }
 
         cvDTO.projects.forEach { dto ->
             val existingProject = cv.projects?.find { it.id == dto.id }
@@ -183,7 +172,6 @@ class CvService(
                     description = dto.description
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
                         .orElseThrow { NotFoundException("No JobFamily found with id ${dto.jobFamilyId}") }
-                    interestService.updateInterest(dto.jobFamilyId, cv.user.id!!)
                 }
             } else {
                 // If project doesn't exist, a new one is created and added to the CV
@@ -194,7 +182,6 @@ class CvService(
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
                         .orElseThrow { NotFoundException("No JobFamily found with id ${dto.jobFamilyId}") }
                 )
-                interestService.createInterest(newProject.jobFamily.id!!, cv.user.id!!)
                 cv.projects?.add(newProject)
             }
         }
@@ -223,7 +210,7 @@ class CvService(
     fun deleteCv(cvId: Int): String {
         val cv = cvRepository.findById(cvId)
             .orElseThrow { NotFoundException("No CV found with id $cvId") }
-        cv.projects?.forEach { project -> interestService.deleteInterestByUserIdAndJobFamilyId(project.jobFamily.id!!, cv.user.id!!) }
+
         cvRepository.delete(cv)
 
         return "CV deleted successfully"
@@ -237,13 +224,15 @@ class CvService(
 
     fun retrieveMyAccountsCv(cvId: Int): CvResponseDTO {
         val cv = cvRepository.findByUserAndId(userService.retrieveAuthenticatedUser(), cvId)
+            .orElseThrow { NotFoundException("No CV found with id $cvId") }
 
         return cvMapper.mapToDto(cv)
     }
 
     fun retrieveMyAccountsLastCv(): CvResponseDTO {
         val cv = cvRepository.findFirstByUserOrderByIdDesc(userService.retrieveAuthenticatedUser())
+            .orElseThrow { NotFoundException("No CV found for this user") }
 
-        return cvMapper.mapToDto(cv!!)
+        return cvMapper.mapToDto(cv)
     }
 }

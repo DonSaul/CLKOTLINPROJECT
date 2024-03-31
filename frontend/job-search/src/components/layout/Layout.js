@@ -1,27 +1,21 @@
-import React from "react";
-import {
-  AppBar,
-  Autocomplete,
-  Button,
-  Grid,
-  TextField,
-  Typography,
-} from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Grid } from "@mui/material";
 import MainToolbar from "../MainToolbar";
+import { Box } from "@mui/material";
 
-import { Outlet } from "react-router-dom";
 import Footer from "./Footer";
 
 const Layout = ({ children }) => {
+  const [contentMinHeight, setContentMinHeight] = useState("60vh"); //71.5
+  const [marginBottomContent, setMarginBottomContent] = useState("5vh");
+
   return (
     <Grid
       container
       direction="column"
-      style={
-        {
-          // minHeight: '1vh'
-        }
-      }
+      style={{
+        minHeight: "100vh",
+      }}
     >
       {/* Toolbar */}
       <Grid item>
@@ -29,7 +23,15 @@ const Layout = ({ children }) => {
       </Grid>
 
       {/* Content */}
-      <Grid item style={{ flexGrow: 1, marginTop: "5px", minHeight: "100vh" }}>
+      <Grid
+        item
+        style={{
+          flexGrow: 1,
+          marginTop: "5px",
+          minHeight: contentMinHeight,
+          marginBottom: marginBottomContent,
+        }}
+      >
         {children}
       </Grid>
 

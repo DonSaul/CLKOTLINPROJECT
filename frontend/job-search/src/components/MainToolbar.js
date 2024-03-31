@@ -2,38 +2,21 @@ import React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
 import { ROLES } from "../helpers/constants";
 import { useAuth } from "../helpers/userContext";
-import { toast } from "react-toastify";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import Avatar from "@mui/material/Avatar";
-import Stack from "@mui/material/Stack";
-import { deepOrange, deepPurple } from "@mui/material/colors";
-import UserAvatar from "./UserAvatar";
+import UserAvatar from "./avatar/UserAvatar";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
-import { Typography } from "@mui/material";
-import { Tooltip } from "@mui/material";
-import { Grid } from "@mui/material";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import PhoneIcon from "@mui/icons-material/Phone";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import PersonPinIcon from "@mui/icons-material/PersonPin";
 import LogoutIcon from "@mui/icons-material/Logout";
 import LoginIcon from "@mui/icons-material/Login";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ChatIcon from "@mui/icons-material/Chat";
-import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import HomeIcon from "@mui/icons-material/Home";
-import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
 import { paths } from "../router/paths";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
@@ -185,7 +168,7 @@ export default function MainToolbar() {
                   <Tab
                     key="myProfile"
                     label="My profile"
-                    icon={<UserAvatar></UserAvatar>}
+                    icon={<UserAvatar borderSize="0px"></UserAvatar>}
                     component={Link}
                     to={paths.profile}
                   />,
