@@ -43,6 +43,9 @@ dependencies {
 	implementation("io.jsonwebtoken:jjwt:0.9.1")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("com.h2database:h2")
+
+	//Handle data/time and serialization to JSON on testing
+	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.5")
 	// JAXB API dependency
 	implementation("javax.xml.bind:jaxb-api:2.3.1")
 
@@ -62,8 +65,13 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 	testImplementation("com.h2database:h2:2.2.224")
+
+
 	kapt("org.mapstruct:mapstruct-processor:1.5.5.Final")
 	implementation("org.mapstruct:mapstruct:1.5.5.Final")
+
+	//coroutine
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
 
 }
 

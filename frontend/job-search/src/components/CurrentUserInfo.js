@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Box, Typography, Card } from "@mui/material";
+import { Box, Typography, Card, Button } from "@mui/material";
 import {
   TableCell,
   Table,
@@ -15,8 +15,9 @@ import ProfileModal from "../components/ProfileModal";
 import { useAuth } from "../helpers/userContext";
 import { useUpdateProfileInfo } from "../hooks/profile/useCurrentUserProfile";
 import ProfileAvatar from "./avatar/ProfileAvatar";
+import CvPdfButton from "./CvPdfButton";
 
-const CurrentUserInfo = ({ children }) => {
+const CurrentUserInfo = () => {
   const {
     data: profileData,
     isLoading,
@@ -25,7 +26,7 @@ const CurrentUserInfo = ({ children }) => {
   } = useCurrentUserProfile();
   const { mutate, isSuccess } = useUpdateProfileInfo();
   const { firstName, lastName, email, cv, roleId } = profileData || {};
-  const { getUserIdFromToken } = useAuth();
+  const { getUserIdFromToken, getUserRole } = useAuth();
 
   console.log(profileData);
   useEffect(() => {
@@ -41,7 +42,7 @@ const CurrentUserInfo = ({ children }) => {
   }, [isSuccess]);
 
   if (isLoading) {
-    return <LoadingSpinner></LoadingSpinner>;
+    return <LoadingSpinner />;
   }
 
   if (isError) {
@@ -57,7 +58,7 @@ const CurrentUserInfo = ({ children }) => {
           sx={{
             display: "inline-block",
             width: 400,
-            height: 250,
+            height: 300,
             borderRadius: 8,
             boxShadow: 8,
             mx: 2,
@@ -69,6 +70,7 @@ const CurrentUserInfo = ({ children }) => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
+              mt:3
             }}
           >
             <ProfileAvatar user={{ firstName, lastName, email }} />
@@ -84,11 +86,14 @@ const CurrentUserInfo = ({ children }) => {
           </Box>
 
           {/* Edit info Modal */}
-          {children}
-          <ProfileModal
-            mutate={mutate}
-            profileData={profileData}
-          ></ProfileModal>
+          <Button>
+            <ProfileModal
+              mutate={mutate}
+              profileData={profileData}
+            >
+            </ProfileModal>
+          </Button>
+          <CvPdfButton roleId={getUserRole()} />
         </Card>
 
         {roleId !== ROLES.CANDIDATE ? null : (
@@ -96,8 +101,8 @@ const CurrentUserInfo = ({ children }) => {
             elevation={3}
             sx={{
               display: "inline-block",
-              width: 400,
-              height: 250,
+              width: 600,
+              height: 300,
               borderRadius: 8,
               boxShadow: 8,
               mx: 2,
@@ -108,16 +113,46 @@ const CurrentUserInfo = ({ children }) => {
               Information
             </Typography>
             {cv !== null ? (
-              <Box sx={{ p: 3, textAlign: "left", mx: 3 }}>
-                <Typography variant="h6" gutterBottom>
-                  Years of Experience: {cv.yearsOfExperience}
-                </Typography>
-                <Typography variant="h6" gutterBottom>
-                  Salary Expectation: {cv.salaryExpectation}
-                </Typography>
-                <Typography variant="h6" gutterBottom>
-                  Education: {cv.education}
-                </Typography>
+              <Box 
+                sx={{ 
+                  // display: 'flex', 
+                  // flexDirection: 'column', 
+                  // alignItems: 'center', 
+                  p: 2,
+                  mx: 3 
+                  }}>
+                <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell sx={{ border:'none', p: 0, pr:2 }}>
+                          <Typography sx={{ fontWeight: 'bold', marginBlock: 0  }}  variant="subtitle1" gutterBottom>Years of Experience</Typography>
+                        </TableCell>
+                        <TableCell sx={{ border:'none', p: 0, pr:2  }}>
+                          <Typography sx={{ fontWeight: 'bold', m: 0  }}  variant="subtitle1" gutterBottom>Salary Expectation</Typography>
+                        </TableCell>
+                        <TableCell sx={{ border:'none', p: 0, pr:2  }}>
+                          <Typography sx={{ fontWeight: 'bold', m: 0 }}  variant="subtitle1" gutterBottom>Education</Typography>
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        <TableRow>
+                          <TableCell sx={{ border:'none', p: 0 }}>{cv.yearsOfExperience}</TableCell>
+                          <TableCell sx={{ border:'none', p: 0 }}>{cv.salaryExpectation}</TableCell>
+                          <TableCell  sx={{ border:'none',  p: 0 }}>{cv.education}</TableCell>
+                        </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <Box sx={{ mt: 2, mb:1, textAlign: 'left' }}>
+                  <Typography sx={{ fontWeight: 'bold' }} variant="subtitle1" gutterBottom>
+                    Summary
+                  </Typography>
+                  <Typography variant="body1" gutterBottom>
+                    {cv.summary}
+                  </Typography>
+                </Box>
               </Box>
             ) : (
               "No curriculum available"
@@ -131,7 +166,7 @@ const CurrentUserInfo = ({ children }) => {
           elevation={3}
           sx={{
             display: "inline-block",
-            width: 835,
+            width: 1030,
             borderRadius: 8,
             boxShadow: 8,
             mx: 10,
@@ -180,7 +215,7 @@ const CurrentUserInfo = ({ children }) => {
           elevation={3}
           sx={{
             display: "inline-block",
-            width: 835,
+            width: 1030,
             borderRadius: 8,
             boxShadow: 8,
             mx: 10,
@@ -204,10 +239,10 @@ const CurrentUserInfo = ({ children }) => {
                         End Date
                       </TableCell>
                       <TableCell sx={{ fontWeight: "bold" }}>
-                        Position
+                        Company
                       </TableCell>
                       <TableCell sx={{ fontWeight: "bold" }}>
-                        Description
+                        Position
                       </TableCell>
                       <TableCell sx={{ fontWeight: "bold" }}>
                         Job Family
@@ -219,8 +254,8 @@ const CurrentUserInfo = ({ children }) => {
                       <TableRow key={job.jobsId}>
                         <TableCell>{job.startDate}</TableCell>
                         <TableCell>{job.endDate}</TableCell>
+                        <TableCell>{job.company}</TableCell>
                         <TableCell>{job.position}</TableCell>
-                        <TableCell>{job.description}</TableCell>
                         <TableCell>{job.jobFamily.name}</TableCell>
                       </TableRow>
                     ))}

@@ -5,7 +5,7 @@ import { Tooltip } from "@mui/material";
 import { avatarBoxShadow, avatarProfileTextSize } from "./avatarConstants";
 import { ROLES } from "../../helpers/constants";
 import { avatarManagerBorderStyle } from "./avatarConstants";
-import { Badge } from "@mui/base";
+import { getRoleString } from "../../helpers/constants";
 const UserAvatar = ({
   user,
   avatarSize,
@@ -78,7 +78,9 @@ const UserAvatar = ({
         <Tooltip
           title={
             userData
-              ? `${userData.firstName} ${userData.lastName} Role:${userData.roleId} (${userData.email})`
+              ? `${getRoleString(userData?.roleId)} ${userData.firstName} ${
+                  userData.lastName
+                } (${userData.email})`
               : "No data"
           }
         >

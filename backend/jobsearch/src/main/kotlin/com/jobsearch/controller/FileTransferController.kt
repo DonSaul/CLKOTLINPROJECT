@@ -21,4 +21,13 @@ class FileTransferController(private val generatePdfService: GeneratePdfService)
             .contentType(MediaType.APPLICATION_PDF)
             .body(pdfBytes)
     }
+
+    @GetMapping(produces = [MediaType.APPLICATION_PDF_VALUE])
+    fun getPdf(): ResponseEntity<ByteArray> {
+        val pdfBytes = generatePdfService.getAuthUserCv()
+
+        return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_PDF)
+            .body(pdfBytes)
+    }
 }

@@ -40,7 +40,7 @@ class JobsearchApplication {
 
     ): CommandLineRunner {
         return CommandLineRunner {
-            //Users
+            //Classic Users
             val userRequestDTO = UserRequestDTO(
                 firstName = "Managerio",
                 lastName = "Mangolio",
@@ -76,6 +76,22 @@ class JobsearchApplication {
 
             // Can can will have a CV
             dataLoaderService.createHardCvForCandidate(candidate)
+
+            //Add some more candidates
+            val createdCandidates=dataLoaderService.createHardCandidates()
+
+            //some new managers
+            val createdManagers=dataLoaderService.createHardManagers()
+
+
+
+            //load some cvs for the candidates
+
+            createdCandidates.forEach {
+                dataLoaderService.createRandomCvForCandidateBySeed(it,it.id)
+            }
+
+
 
 
 

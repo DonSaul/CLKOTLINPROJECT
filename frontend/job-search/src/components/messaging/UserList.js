@@ -7,6 +7,8 @@ import UserAvatar from "../avatar/UserAvatar";
 import { Typography } from "@mui/material";
 import { truncateText } from "../../helpers/funHelpers";
 import { getRoleString } from "../../helpers/constants";
+import Box from "@mui/material/Box";
+import { messagingPageHeight } from "./messagingHelper";
 
 export default function UserList({ users, onSelectUser, onSetUserData }) {
   const handleUserSelect = (user) => () => {
@@ -15,34 +17,36 @@ export default function UserList({ users, onSelectUser, onSetUserData }) {
   };
 
   return (
-    <List
-      dense
-      sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
-    >
-      <Typography>Users</Typography>
+    <Box sx={{ maxHeight: messagingPageHeight, overflowY: "auto" }}>
+      <List
+        dense
+        sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
+      >
+        <Typography>Users</Typography>
 
-      {users &&
-        users.map((user) => {
-          const labelId = `icon-list-label-${user.id}`;
-          return (
-            <ListItem key={user.id} disablePadding>
-              <ListItemButton
-                sx={{ display: "flex", gap: "7px" }}
-                onClick={handleUserSelect(user)}
-              >
-                <UserAvatar user={user} enableRoleBorder={true}></UserAvatar>
+        {users &&
+          users.map((user) => {
+            const labelId = `icon-list-label-${user.id}`;
+            return (
+              <ListItem key={user.id} disablePadding>
+                <ListItemButton
+                  sx={{ display: "flex", gap: "7px" }}
+                  onClick={handleUserSelect(user)}
+                >
+                  <UserAvatar user={user} enableRoleBorder={true}></UserAvatar>
 
-                <ListItemText
-                  id={labelId}
-                  primary={truncateText(
-                    `${user.firstName} ${user.lastName} `,
-                    20
-                  )}
-                />
-              </ListItemButton>
-            </ListItem>
-          );
-        })}
-    </List>
+                  <ListItemText
+                    id={labelId}
+                    primary={truncateText(
+                      `${user.firstName} ${user.lastName} `,
+                      20
+                    )}
+                  />
+                </ListItemButton>
+              </ListItem>
+            );
+          })}
+      </List>
+    </Box>
   );
 }

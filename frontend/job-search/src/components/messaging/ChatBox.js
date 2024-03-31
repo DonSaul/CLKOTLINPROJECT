@@ -9,13 +9,8 @@ import { Typography } from "@mui/material";
 import { getRoleString } from "../../helpers/constants";
 import { truncateText } from "../../helpers/funHelpers";
 import LoadingSpinner from "../LoadingSpinner";
-const ChatBox = ({
-  data,
-  user,
-  userData,
-  onSendMessage,
-  isLoadingConversation,
-}) => {
+import { messagingPageHeight } from "./messagingHelper";
+const ChatBox = ({ data, user, userData, isLoadingConversation }) => {
   const { getUserEmail, getUserFirstName, getUserLastName, getUserRole } =
     useAuth();
   const [chatMessages, setChatMessages] = useState([]);
@@ -25,12 +20,18 @@ const ChatBox = ({
 
   const messagesEndRef = useRef(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  const messagesContainer = useRef(null);
 
-  useLayoutEffect(() => {
-    scrollToBottom();
+  useEffect(() => {
+    const chatContainer = chatContainerRef.current;
+    const lastMessage = messagesEndRef.current;
+    if (chatContainer && lastMessage) {
+      const scrollPosition = lastMessage.offsetTop - chatContainer.offsetTop;
+      chatContainer.scrollTo({
+        top: scrollPosition,
+        behavior: "smooth",
+      });
+    }
   }, [chatMessages]);
 
   useEffect(() => {
@@ -56,7 +57,7 @@ const ChatBox = ({
           firstName: getUserFirstName(),
           lastName: getUserLastName(),
           email: getUserEmail(),
-          roleId: getUserRole(),
+          role: { id: getUserRole() },
         },
       },
     ]);
@@ -114,7 +115,7 @@ const ChatBox = ({
         <Box
           ref={chatContainerRef}
           sx={{
-            maxHeight: "500px",
+            maxHeight: messagingPageHeight,
             overflowY: "auto",
             position: "relative",
             bgcolor: "#E5E4E2",
@@ -129,12 +130,14 @@ const ChatBox = ({
                 <>
                   {chatMessages?.length > 0 ? (
                     <>
+                      <div ref={messagesContainer} />
                       {chatMessages.map((message, index) => (
                         <React.Fragment key={index}>
                           <MessageBubble key={index} data={message} />
-                          <div ref={messagesEndRef} />
                         </React.Fragment>
                       ))}
+                      <div />
+                      <div ref={messagesEndRef} />
                     </>
                   ) : (
                     <p>No messages</p>
@@ -144,16 +147,7 @@ const ChatBox = ({
             </>
           )}
         </Box>
-        <Box
-          sx={
-            {
-              //position: 'sticky',
-              //bottom: 0,
-              //backgroundColor: 'white',
-              //bgcolor: 'yellow'
-            }
-          }
-        >
+        <Box sx={{}}>
           {userData && <ChatInput onSendMessage={handleSendMessage} />}
         </Box>
       </Box>

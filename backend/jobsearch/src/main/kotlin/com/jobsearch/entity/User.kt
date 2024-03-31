@@ -21,7 +21,7 @@ data class User(
     @Column(name = "notification_activated", nullable = false)
     var notificationActivated: Boolean = true,
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "user_notification_type",
         joinColumns = [JoinColumn(name = "user_id")],

@@ -69,6 +69,11 @@ class UserService @Autowired constructor(
         val users = userRepository.findAll()
         return users.map {
             mapToUserResponseDTO(it)
+        }.sortedBy { user ->
+            when (user.roleId) {
+               RoleEnum.MANAGER.id -> 0
+                else -> 1
+            }
         }
     }
 
@@ -91,7 +96,7 @@ class UserService @Autowired constructor(
     fun getUserProfileInfo(userId: Int): ProfileDTO {
         val user = userRepository.findById(userId)
             .orElseThrow { NotFoundException("No user found with id $userId") }
-        val cv =  cvRepository.findFirstByUserOrderByIdDesc(user)
+        val cv = cvRepository.findFirstByUserOrderByIdDesc(user).orElse(null)
 
         return ProfileDTO(
             firstName = user.firstName,
