@@ -125,24 +125,62 @@ class DataLoaderService (
 
     }
 
+    fun createHardManagers(){
+
+        val managerList = createManagerDTOs()
+        managerList.forEach {
+            userService.createUser(it)
+        }
+
+    }
+
+    fun createManagerDTOs():List<UserRequestDTO>{
+        val userRequestDTOList = listOf(
+            UserRequestDTO(
+                firstName = "Rodrigo",
+                lastName = "Johnson",
+                email = "rodrigo@example.com",
+                password = "a123",
+                roleId = 2
+            ),
+            UserRequestDTO(
+                firstName = "Esteban",
+                lastName = "Smith",
+                email = "esteban@example.com",
+                password = "a123",
+                roleId = 2
+            ),
+            UserRequestDTO(
+                firstName = "Michelle",
+                lastName = "Williams",
+                email = "michelle@example.com",
+                password = "a123",
+                roleId = 2
+            ),
+
+        )
+
+        return userRequestDTOList
+
+
+    }
 
 
 
 
-
-fun createCandidateDTOs():List<UserRequestDTO> {
-    val userRequestDTOList = listOf(
+    fun createCandidateDTOs():List<UserRequestDTO> {
+        val userRequestDTOList = listOf(
         UserRequestDTO(
             firstName = "Branden",
             lastName = "Banks",
-            email = "branden@jobsearch.com",
+            email = "branden@example.com",
             password = "a123",
             roleId = 1
         ),
         UserRequestDTO(
             firstName = "Nathalia",
             lastName = "Norton",
-            email = "nathalia@jobsearch.com",
+            email = "nathalia@example.com",
             password = "a123",
             roleId = 1
         ),
@@ -166,7 +204,22 @@ fun createCandidateDTOs():List<UserRequestDTO> {
             email = "kendal@example.com",
             password = "a123",
             roleId = 1
-        )
+        ),
+        UserRequestDTO(
+            firstName = "Jadon",
+            lastName = "Conway",
+            email = "jadon@example.com",
+            password = "a123",
+            roleId = 1
+        ),
+        UserRequestDTO(
+            firstName = "Gianna",
+            lastName = "Chandler",
+            email = "gianna@example.com",
+            password = "a123",
+            roleId = 1
+        ),
+
     )
     return userRequestDTOList
 }

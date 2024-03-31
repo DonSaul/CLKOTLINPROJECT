@@ -40,7 +40,7 @@ class JobsearchApplication {
 
     ): CommandLineRunner {
         return CommandLineRunner {
-            //Users
+            //Classic Users
             val userRequestDTO = UserRequestDTO(
                 firstName = "Managerio",
                 lastName = "Mangolio",
@@ -79,6 +79,9 @@ class JobsearchApplication {
 
             //Add some more candidates
             dataLoaderService.createHardCandidates()
+
+            //some new managers
+            dataLoaderService.createHardManagers()
 
 
 
