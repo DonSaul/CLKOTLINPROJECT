@@ -7,6 +7,8 @@ import Typography from "@mui/material/Typography";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../helpers/userContext";
 import UserAvatar from "../avatar/UserAvatar";
+import { Box } from "@mui/material";
+import { messagingPageHeight } from "./messagingHelper";
 
 const ConversationsList = ({
   conversations,
@@ -71,74 +73,76 @@ const ConversationsList = ({
   }, [conversations]);
 
   return (
-    <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
-      <Typography>Conversations</Typography>
-      {formattedConversations &&
-        formattedConversations.map((conversation, index) => (
-          <React.Fragment key={index}>
-            <ListItem
-              alignItems="flex-start"
-              button
-              onClick={() => handleConversationClick(index)}
-              sx={{
-                ":hover": { bgcolor: "#f0f0f0" },
-                ...(selectedConversation === conversation.email && {
-                  bgcolor: "#e1f5fe",
-                }),
-              }}
-            >
-              <ListItemAvatar>
-                <UserAvatar
-                  user={{
-                    firstName: conversation.firstName,
-                    lastName: conversation.lastName,
-                    email: conversation.email,
-                    roleId: conversation.roleId,
-                  }}
-                  enableRoleBorder={true}
-                ></UserAvatar>
-              </ListItemAvatar>
-              <div
-                style={{
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  width: "auto",
+    <Box sx={{ maxHeight: messagingPageHeight, overflowY: "auto" }}>
+      <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
+        <Typography>Conversations</Typography>
+        {formattedConversations &&
+          formattedConversations.map((conversation, index) => (
+            <React.Fragment key={index}>
+              <ListItem
+                alignItems="flex-start"
+                button
+                onClick={() => handleConversationClick(index)}
+                sx={{
+                  ":hover": { bgcolor: "#f0f0f0" },
+                  ...(selectedConversation === conversation.email && {
+                    bgcolor: "#e1f5fe",
+                  }),
                 }}
               >
-                <Typography
-                  sx={{ display: "inline" }}
-                  component="span"
-                  variant="body2"
-                  color="text.primary"
-                >
-                  {conversation.senderEmail === getUserEmail() ? (
-                    <b>You</b>
-                  ) : (
-                    <b>
-                      {conversation.senderName} {conversation.senderLastName}
-                    </b>
-                  )}
-                </Typography>
-                {" — "}
-                <div>
-                  <Typography
-                    noWrap
-                    sx={{
-                      display: "inline",
+                <ListItemAvatar>
+                  <UserAvatar
+                    user={{
+                      firstName: conversation.firstName,
+                      lastName: conversation.lastName,
+                      email: conversation.email,
+                      roleId: conversation.roleId,
                     }}
+                    enableRoleBorder={true}
+                  ></UserAvatar>
+                </ListItemAvatar>
+                <div
+                  style={{
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    width: "auto",
+                  }}
+                >
+                  <Typography
+                    sx={{ display: "inline" }}
+                    component="span"
+                    variant="body2"
+                    color="text.primary"
                   >
-                    {conversation.topMessage}
+                    {conversation.senderEmail === getUserEmail() ? (
+                      <b>You</b>
+                    ) : (
+                      <b>
+                        {conversation.senderName} {conversation.senderLastName}
+                      </b>
+                    )}
                   </Typography>
+                  {" — "}
+                  <div>
+                    <Typography
+                      noWrap
+                      sx={{
+                        display: "inline",
+                      }}
+                    >
+                      {conversation.topMessage}
+                    </Typography>
+                  </div>
                 </div>
-              </div>
-            </ListItem>
-            {index < conversations.length - 1 && (
-              <Divider variant="fullwidth" component="li" />
-            )}
-          </React.Fragment>
-        ))}
-      {!formattedConversations && <>No users Available</>}
-    </List>
+              </ListItem>
+              {index < conversations.length - 1 && (
+                <Divider variant="fullwidth" component="li" />
+              )}
+            </React.Fragment>
+          ))}
+        {!formattedConversations && <>No users Available</>}
+      </List>
+    </Box>
   );
 };
 

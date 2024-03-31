@@ -9,6 +9,7 @@ import { Typography } from "@mui/material";
 import { getRoleString } from "../../helpers/constants";
 import { truncateText } from "../../helpers/funHelpers";
 import LoadingSpinner from "../LoadingSpinner";
+import { messagingPageHeight } from "./messagingHelper";
 const ChatBox = ({ data, user, userData, isLoadingConversation }) => {
   const { getUserEmail, getUserFirstName, getUserLastName, getUserRole } =
     useAuth();
@@ -114,7 +115,7 @@ const ChatBox = ({ data, user, userData, isLoadingConversation }) => {
         <Box
           ref={chatContainerRef}
           sx={{
-            maxHeight: "500px",
+            maxHeight: messagingPageHeight,
             overflowY: "auto",
             position: "relative",
             bgcolor: "#E5E4E2",
