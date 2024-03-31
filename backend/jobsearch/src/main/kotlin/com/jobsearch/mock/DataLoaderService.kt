@@ -53,7 +53,7 @@ class DataLoaderService (
             userRepository.findById(can.id).orElse(null)
         }
 
-        val userHasCV = cvRepository.findFirstByUserOrderByIdDesc(candidateUser!!)
+        val userHasCV = cvRepository.findFirstByUserOrderByIdDesc(candidateUser!!).orElse(null)
 
         if (userHasCV==null){
 
