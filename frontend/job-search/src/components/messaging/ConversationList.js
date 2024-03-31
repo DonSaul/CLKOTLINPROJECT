@@ -109,30 +109,19 @@ const ConversationsList = ({
                   }}
                 >
                   <Typography
-                    sx={{ display: "inline" }}
-                    component="span"
-                    variant="body2"
+                    variant="subtitle1"
                     color="text.primary"
+                    sx={{ fontWeight: "bold" }}
                   >
-                    {conversation.senderEmail === getUserEmail() ? (
-                      <b>You</b>
-                    ) : (
-                      <b>
-                        {conversation.senderName} {conversation.senderLastName}
-                      </b>
-                    )}
+                    {conversation.firstName} {conversation.lastName}
                   </Typography>
-                  {" — "}
-                  <div>
-                    <Typography
-                      noWrap
-                      sx={{
-                        display: "inline",
-                      }}
-                    >
-                      {conversation.topMessage}
-                    </Typography>
-                  </div>
+
+                  <Typography variant="body2" color="text.primary">
+                    {conversation.senderEmail === getUserEmail()
+                      ? "You"
+                      : conversation.senderName}
+                    : {conversation.topMessage}
+                  </Typography>
                 </div>
               </ListItem>
               {index < conversations.length - 1 && (

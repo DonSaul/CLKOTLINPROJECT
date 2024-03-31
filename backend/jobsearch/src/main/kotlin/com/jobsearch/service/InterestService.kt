@@ -18,7 +18,7 @@ class InterestService(
     fun getUsersByJobFamilyId(jobFamilyId: Int): List<User> {
         val interests = interestRepository.findUsersByJobFamilyId(jobFamilyId)
 
-        val users = interests.map {it}
+        val users = interests.map { it }
 
         return users.distinct()
     }
@@ -30,8 +30,8 @@ class InterestService(
         val jobFamily = jobFamilyRepository.findById(jobFamilyId)
             .orElseThrow { NoSuchElementException("No job family found with id $jobFamilyId") }
 
-            val interest = Interest(jobFamily = jobFamily, user = user)
-            interestRepository.save(interest)
+        val interest = Interest(jobFamily = jobFamily, user = user)
+        interestRepository.save(interest)
 
     }
 
@@ -39,6 +39,7 @@ class InterestService(
     fun deleteInterestByUserIdAndJobFamilyId(jobFamilyId: Int, userId: Int) {
         interestRepository.deleteInterestsByUserIdAndJobFamilyId(userId, jobFamilyId)
     }
+
     fun updateInterest(jobFamilyId: Int, userId: Int) {
         val existingInterests = interestRepository.findInterestsByUserId(userId)
 

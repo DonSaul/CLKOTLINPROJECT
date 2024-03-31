@@ -17,6 +17,7 @@ import com.itextpdf.layout.element.Paragraph
 import com.itextpdf.layout.properties.HorizontalAlignment
 import com.jobsearch.entity.*
 import com.jobsearch.exception.ForbiddenException
+import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.CvRepository
 import com.jobsearch.repository.UserRepository
 import org.springframework.core.io.ClassPathResource
@@ -35,6 +36,13 @@ class GeneratePdfService(
         if (authUser.role!!.id != RoleEnum.MANAGER.id) throw ForbiddenException("Only managers can generate candidates pdfs")
         val cv = cvRepository.findByUser(user).last()
         return generateCV(cv)
+    }
+
+    fun getAuthUserCv(): ByteArray {
+        val authUser = userService.retrieveAuthenticatedUser()
+        val cvList = cvRepository.findByUser(authUser)
+        if (cvList.isEmpty()) throw NotFoundException("Cv not found")
+        return generateCV(cvList.last())
     }
 
     private fun generateCV(cv: Cv): ByteArray {

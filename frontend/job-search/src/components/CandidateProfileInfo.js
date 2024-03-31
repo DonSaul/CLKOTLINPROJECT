@@ -1,21 +1,15 @@
+import React from "react";
 import { useParams } from "react-router-dom";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { useGetCandidateProfile } from "../hooks/profile/useGetCandidateProfile";
-import { useGetUserPdf } from "../hooks/useGetPdf";
 import { useAuth } from "../helpers/userContext";
 import { ROLES } from "../helpers/constants";
 import { Box, Typography, Card, Button } from "@mui/material";
-import {
-  TableCell,
-  Table,
-  TableHead,
-  TableRow,
-  TableContainer,
-  TableBody,
-} from "@mui/material";
+import { TableCell, Table, TableHead, TableRow, TableContainer, TableBody } from "@mui/material";
 import { paths } from "../router/paths";
 import { useState } from "react";
 import ProfileAvatar from "./avatar/ProfileAvatar";
+import CvPdfButton from "./CvPdfButton"; // Importar el componente aquí
 
 const CandidateProfileInfo = () => {
   const { id } = useParams();
@@ -109,7 +103,7 @@ const CandidateProfileInfo = () => {
               >
                 Invite
               </Button>
-              <ProfilePdfButton />
+              <CvPdfButton id={id} roleId={getUserRole()} />
             </>
           )}
 
