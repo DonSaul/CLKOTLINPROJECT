@@ -6,9 +6,7 @@ const InvitationPage = () => {
     return (
         <div>
             <h3>Send Invitation</h3>
-            <CardContainer>
-                <PersonalInvitation />
-            </CardContainer>
+            <PersonalInvitation />
         </div>
     );
 };
