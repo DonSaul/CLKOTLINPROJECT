@@ -91,21 +91,26 @@ const CandidateProfileInfo = () => {
             </Typography>
           </Box>
 
-          {roleId !== ROLES.CANDIDATE ? null : (
+          
+          {getUserRole() === ROLES.MANAGER && (
+            <>
+            {roleId !== ROLES.CANDIDATE ? null : (
             <>
               <Button
                 type="button"
                 variant="contained"
                 color="primary"
                 onClick={() => handleInvite(id)}
-                disabled={getUserRole() !== ROLES.MANAGER}
+                disabled={roleId !== ROLES.CANDIDATE}
               >
                 Invite
               </Button>
-              <CvPdfButton id={id} roleId={getUserRole()} />
+              <CvPdfButton id={id} roleId={getUserRole()} /> 
+              </>
+              )}
             </>
           )}
-
+                
           <Button 
             type="button" 
             variant="contained"
