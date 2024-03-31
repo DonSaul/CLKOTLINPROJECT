@@ -78,10 +78,19 @@ class JobsearchApplication {
             dataLoaderService.createHardCvForCandidate(candidate)
 
             //Add some more candidates
-            dataLoaderService.createHardCandidates()
+            val createdCandidates=dataLoaderService.createHardCandidates()
 
             //some new managers
-            dataLoaderService.createHardManagers()
+            val createdManagers=dataLoaderService.createHardManagers()
+
+
+
+            //load some cvs for the candidates
+
+            createdCandidates.forEach {
+                dataLoaderService.createRandomCvForCandidateBySeed(it,it.id)
+            }
+
 
 
 
