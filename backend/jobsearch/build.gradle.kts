@@ -65,6 +65,9 @@ dependencies {
 	kapt("org.mapstruct:mapstruct-processor:1.5.5.Final")
 	implementation("org.mapstruct:mapstruct:1.5.5.Final")
 
+	//coroutine
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
+
 }
 
 tasks.withType<KotlinCompile> {

@@ -12,6 +12,9 @@ import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.ChatMessageRepository
 import com.jobsearch.repository.ConversationRepository
 import com.jobsearch.repository.UserRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -41,24 +44,57 @@ class ConversationService(
             return conversationLocks.computeIfAbsent(pair) { ReentrantLock() }
         }
     }
+
+    @Transactional
     private fun createConversationLock(user1: User, user2: User): Conversation {
         val lock = ConversationLockManager.getLock(user1.email, user2.email)
         lock.lock()
         try {
 
             val existingConversation = findExistingConversation(user1, user2)
+
             if (existingConversation != null) {
                 return existingConversation
             }
 
-            val conversation = Conversation(user1 = user1, user2 = user2)
-            return conversationRepository.save(conversation)
+            val newConversation = Conversation(user1 = user1, user2 = user2)
+            val conversation=conversationRepository.save(newConversation)
+
+            //using coroutine
+            CoroutineScope(Dispatchers.Default).launch {
+                notificationService.triggerNotification(NotificationDTO(
+                    type = NotificationTypeEnum.MESSAGES.id,
+                    recipient = user2.id!!,
+                    subject = "New Conversation",
+                    content = "There is a new conversation created by: ${user2.email} ",
+                    sender = user1.id!!,
+                    vacancy = null
+                ))
+            }
+
+            return conversation
 
         } finally {
             lock.unlock()
         }
     }
 
+    private fun createConversation(user1: User, user2: User): Conversation {
+        val newConversation = Conversation(user1 = user1, user2 = user2)
+        val conversation=conversationRepository.save(newConversation)
+
+        val notificationDTO = NotificationDTO(
+            type = NotificationTypeEnum.MESSAGES.id,
+            recipient = user2.id!!,
+            subject = "New Conversation",
+            content = "There is a new conversation created by: ${user2.email} ",
+            sender = user1.id!!,
+            vacancy = null
+        )
+        notificationService.triggerNotification(notificationDTO)
+
+        return conversation
+    }
 
     //end testing
 
@@ -85,7 +121,7 @@ class ConversationService(
 
         val existingConversation = findExistingConversation(currentUser, receiver)
 
-        val conversation = existingConversation ?: createConversation(currentUser, receiver)
+        val conversation = existingConversation ?: createConversationLock(currentUser, receiver)
 
         val chatMessage = ChatMessage(
             sender = currentUser,
@@ -96,6 +132,8 @@ class ConversationService(
         )
 
         val newChatMessage = chatMessageRepository.save(chatMessage)
+
+
 
 
         return mapToChatMessageDTO(newChatMessage)
@@ -162,22 +200,7 @@ class ConversationService(
 
     }
 
-    private fun createConversation(user1: User, user2: User): Conversation {
-        val newConversation = Conversation(user1 = user1, user2 = user2)
-        val conversation=conversationRepository.save(newConversation)
 
-        val notificationDTO = NotificationDTO(
-            type = NotificationTypeEnum.MESSAGES.id,
-            recipient = user2.id!!,
-            subject = "New Conversation",
-            content = "There is a new conversation created by: ${user2.email} ",
-            sender = user1.id!!,
-            vacancy = null
-        )
-        notificationService.triggerNotification(notificationDTO)
-
-        return conversation
-    }
 
     private fun mapToChatMessageDTO(chatMessage: ChatMessage): ChatMessageDTO {
         return ChatMessageDTO(

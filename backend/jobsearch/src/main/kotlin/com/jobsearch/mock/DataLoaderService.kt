@@ -1,15 +1,13 @@
 package com.jobsearch.mock
 
-import com.jobsearch.dto.JobRequestDTO
-import com.jobsearch.dto.ProjectRequestDTO
-import com.jobsearch.dto.UserResponseDTO
-import com.jobsearch.dto.VacancyRequestDTO
+import com.jobsearch.dto.*
 import com.jobsearch.dto.override.OverrideCvRequestDTO
 import com.jobsearch.entity.User
 import com.jobsearch.entity.Vacancy
 import com.jobsearch.repository.CvRepository
 import com.jobsearch.repository.UserRepository
 import com.jobsearch.service.JobFamilyService
+import com.jobsearch.service.UserService
 import com.jobsearch.service.VacancyService
 import com.jobsearch.service.override.OverrideService
 import org.springframework.stereotype.Service
@@ -21,7 +19,8 @@ class DataLoaderService (
     private val userRepository:UserRepository,
     private val vacancyService:VacancyService,
     private val overrideService: OverrideService,
-    private val cvRepository: CvRepository
+    private val cvRepository: CvRepository,
+    private val userService: UserService
 ) {
 
     fun createHardVacanciesForManager(manager: UserResponseDTO?) {
@@ -114,13 +113,63 @@ class DataLoaderService (
 
     }
 
+    fun createHardCandidates() {
+
+
+        val candidateList= createCandidateDTOs()
+        candidateList.forEach{
+
+            userService.createUser(it)
+        }
+
+
+    }
 
 
 
 
 
 
-
+fun createCandidateDTOs():List<UserRequestDTO> {
+    val userRequestDTOList = listOf(
+        UserRequestDTO(
+            firstName = "Branden",
+            lastName = "Banks",
+            email = "branden@jobsearch.com",
+            password = "a123",
+            roleId = 1
+        ),
+        UserRequestDTO(
+            firstName = "Nathalia",
+            lastName = "Norton",
+            email = "nathalia@jobsearch.com",
+            password = "a123",
+            roleId = 1
+        ),
+        UserRequestDTO(
+            firstName = "Alice",
+            lastName = "Smith",
+            email = "alice@example.com",
+            password = "a123",
+            roleId = 1
+        ),
+        UserRequestDTO(
+            firstName = "Bob",
+            lastName = "Johnson",
+            email = "bob@example.com",
+            password = "a123",
+            roleId = 1
+        ),
+        UserRequestDTO(
+            firstName = "Kendal",
+            lastName = "Walls",
+            email = "kendal@example.com",
+            password = "a123",
+            roleId = 1
+        )
+    )
+    return userRequestDTOList
+}
 
 
     fun createVacancyDTOs(): List<VacancyRequestDTO> {

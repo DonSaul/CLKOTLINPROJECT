@@ -77,6 +77,10 @@ class JobsearchApplication {
             // Can can will have a CV
             dataLoaderService.createHardCvForCandidate(candidate)
 
+            //Add some more candidates
+            dataLoaderService.createHardCandidates()
+
+
 
 
         }
