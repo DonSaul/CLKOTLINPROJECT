@@ -69,7 +69,6 @@ const ProfileModal = ({mutate, profileData}) => {
     return (
         <div>
             <Button 
-                sx={{mb: 2}}
                 variant="contained" 
                 color="primary" 
                 onClick={handleOpen}
