@@ -487,9 +487,6 @@ This controller handles requests related to applications in the backend of the a
 | PUT         | `/api/v1/application/{id}` | Updates the status of an application. | Application ID, `ApplicationDTO` Object | `200 OK`: If the application is updated successfully.<br>Other possible error codes.                                  |
 | DELETE      | `/api/v1/application/{id}` | Deletes an application.               | Application ID                          | `204 No Content`: If the application is deleted successfully.<br>Other possible error codes.                          |
 
-# CLKOTLINPROJECT
-# here will be the docs
-=======
 - All endpoints are protected with authorization.
 - Users with the 'manager' role can access endpoints to update and delete applications.
 
