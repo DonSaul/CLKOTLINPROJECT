@@ -73,6 +73,9 @@ dependencies {
 	//coroutine
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
 
+	implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.2.4")
+
+
 }
 
 tasks.withType<KotlinCompile> {

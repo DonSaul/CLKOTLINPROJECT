@@ -13,6 +13,8 @@ import com.jobsearch.repository.NotificationTypeRepository
 import com.jobsearch.repository.UserRepository
 import com.jobsearch.repository.VacancyRepository
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.scheduling.annotation.Async
+import org.springframework.transaction.annotation.Transactional
 import java.util.concurrent.CompletableFuture
 
 @Service
@@ -24,6 +26,7 @@ class NotificationService(
     private val notificationTypeRepository: NotificationTypeRepository,
     private val vacancyRepository: VacancyRepository
 ) {
+    @Transactional
     fun triggerNotification(notificationDTO: NotificationDTO) {
         val recipientId = notificationDTO.recipient
         val recipient = userService.retrieveUser(recipientId)
@@ -34,13 +37,7 @@ class NotificationService(
             val notificationTypeId = notificationDTO.type
 
             if (allowedNotificationTypeIds.contains(notificationTypeId)|| notificationDTO.type == NotificationTypeEnum.FORGOT_PASSWORD.id) {
-                when (notificationTypeId) {
-                    NotificationTypeEnum.VACANCIES.id -> handleNotification(notificationDTO)
-                    NotificationTypeEnum.INVITATIONS.id -> handleNotification(notificationDTO)
-                    NotificationTypeEnum.MESSAGES.id -> handleNotification(notificationDTO)
-                    NotificationTypeEnum.FORGOT_PASSWORD.id -> handleNotification(notificationDTO)
-                    else -> println("Unsupported notification type ID: $notificationTypeId")
-                }
+                handleNotification(notificationDTO)
             } else {
                 println("Notification type ID $notificationTypeId is not allowed for user ${recipient.email}. Notification was not sent.")
             }
@@ -55,7 +52,7 @@ class NotificationService(
 
     private fun handleNotification(notificationDTO: NotificationDTO) {
         val notification = createNotification(notificationDTO)
-        sendEmailNotification(notification)
+        sendEmailNotification(notification, notificationDTO.emailContent)
     }
 
 
@@ -81,9 +78,9 @@ class NotificationService(
     }
 
     //senderEmail
-    private fun sendEmailNotification(notification: Notification) {
+    private fun sendEmailNotification(notification: Notification, emailContent: String?) {
         try {
-            notification.recipient.let { emailService.sendEmail(it.email, notification.subject, notification.content) }
+            notification.recipient.let { emailService.sendEmail(it.email, notification.subject, notification.content, emailContent) }
             markNotificationAsSent(notification)
 
         } catch (e: Exception) {

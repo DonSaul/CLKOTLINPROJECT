@@ -1,5 +1,6 @@
 package com.jobsearch.entity
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 
 @Entity
@@ -21,7 +22,7 @@ data class User(
     @Column(name = "notification_activated", nullable = false)
     var notificationActivated: Boolean = true,
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "user_notification_type",
         joinColumns = [JoinColumn(name = "user_id")],
@@ -30,5 +31,9 @@ data class User(
     var activatedNotificationTypes: Set<NotificationType?> = emptySet(),
 
     @Column(name = "reset_password_token")
-    var resetPasswordToken: String? = null
+    var resetPasswordToken: String? = null,
+
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JsonIgnore
+    var cvs: MutableSet<Cv>? = mutableSetOf()
 )

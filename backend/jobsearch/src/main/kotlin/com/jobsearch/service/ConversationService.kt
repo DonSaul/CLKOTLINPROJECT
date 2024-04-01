@@ -18,9 +18,10 @@ import kotlinx.coroutines.launch
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.thymeleaf.context.Context
+import org.thymeleaf.spring6.SpringTemplateEngine
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.locks.ReentrantLock
@@ -32,7 +33,8 @@ class ConversationService(
         private val userService: UserService,
         private val userRepository: UserRepository,
         private val conversationRepository: ConversationRepository,
-        private val notificationService: NotificationService
+        private val notificationService: NotificationService,
+        private val templateEngine: SpringTemplateEngine
 ) {
 
     //lock
@@ -149,8 +151,20 @@ class ConversationService(
         val receiver = userRepository.findByEmail(email)
             .orElseThrow { NoSuchElementException("No user found with email $email") }
 
-        val chatUrl = "http://localhost:3000/messaging/${sender.id}"
-        val sentAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        // Setting html email
+        val fragmentContext = Context()
+
+        fragmentContext.setVariable("senderEmail", sender.email)
+        fragmentContext.setVariable("url", "http://localhost:3000/messaging/${sender.id}")
+
+        val fragmentHtml = templateEngine.process("messageRecievedTemplate", fragmentContext)
+
+        val templateContext = Context()
+
+        templateContext.setVariable("targetName", "${receiver.firstName} ${receiver.lastName}")
+        templateContext.setVariable("content", fragmentHtml)
+
+        val emailContent = templateEngine.process("emailTemplate", templateContext)
 
         try {
             if (!isNotificationThrottled(sender.id!!, receiver.id!!)) {
@@ -158,15 +172,10 @@ class ConversationService(
                     type = NotificationTypeEnum.MESSAGES.id,
                     recipient = receiver.id,
                     subject = "New Message",
-                    content = """
-                        You have a new message sent by: ${sender.email}
-                        <br>
-                        Please check the message at: $chatUrl
-                        <br>
-                        Sent at: $sentAt
-                        """.trimIndent(),
+                    content = "There is a new message sent by: ${receiver.email}",
                     sender = sender.id,
-                    vacancy = null
+                    vacancy = null,
+                    emailContent = emailContent
                 )
                 notificationService.triggerNotification(notificationDTO)
             }

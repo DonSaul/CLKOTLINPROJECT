@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getVacancyByManager } from "../hooks/useGetVacancyByManager";
 import { useSendInvitation } from "../hooks/useSendInvitation";
-import { MenuItem, Button, TextField } from "@mui/material";
+import { MenuItem, Button, TextField, Card } from "@mui/material";
 
 export const PersonalInvitation = ({data}) => {
     console.log("data", data)
@@ -50,6 +50,14 @@ export const PersonalInvitation = ({data}) => {
 
     return (
         <>
+        <Card elevation={3} 
+            sx={{ 
+                borderRadius: 8, 
+                boxShadow: 8,
+                width: 450,
+                p:3,
+                mx: 'auto'
+            }}>
             <form onSubmit={handleSubmit}>
                 <TextField
                     id="outlined-multiline-static"
@@ -95,7 +103,9 @@ export const PersonalInvitation = ({data}) => {
                     Send
                 </Button>
             </form>
+        </Card>
         </>
+        
     )
 }
 
