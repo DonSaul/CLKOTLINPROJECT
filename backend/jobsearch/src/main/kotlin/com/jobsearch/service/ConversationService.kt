@@ -66,13 +66,30 @@ class ConversationService(
 
             //using coroutine
             CoroutineScope(Dispatchers.Default).launch {
+
+                // Setting html email
+                val fragmentContext = Context()
+
+                fragmentContext.setVariable("senderEmail", user1.email)
+                fragmentContext.setVariable("url", "http://localhost:3000/messaging/${user1.id}")
+
+                val fragmentHtml = templateEngine.process("newConversationCreatedTemplate", fragmentContext)
+
+                val templateContext = Context()
+
+                templateContext.setVariable("targetName", "${user2.firstName} ${user2.lastName}")
+                templateContext.setVariable("content", fragmentHtml)
+
+                val emailContent = templateEngine.process("emailTemplate", templateContext)
+
                 notificationService.triggerNotification(NotificationDTO(
                     type = NotificationTypeEnum.MESSAGES.id,
                     recipient = user2.id!!,
                     subject = "New Conversation",
-                    content = "There is a new conversation created by: ${user2.email} ",
+                    content = "There is a new conversation created by: ${user1.email} ",
                     sender = user1.id!!,
-                    vacancy = null
+                    vacancy = null,
+                    emailContent = emailContent
                 ))
             }
 
@@ -191,7 +208,7 @@ class ConversationService(
                     type = NotificationTypeEnum.MESSAGES.id,
                     recipient = receiver.id,
                     subject = "New Message",
-                    content = "There is a new message sent by: ${receiver.email}",
+                    content = "There is a new message sent by: ${sender.email}",
                     sender = sender.id,
                     vacancy = null,
                     emailContent = emailContent
