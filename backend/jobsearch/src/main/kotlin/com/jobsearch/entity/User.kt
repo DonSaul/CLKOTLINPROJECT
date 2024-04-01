@@ -30,5 +30,8 @@ data class User(
     var activatedNotificationTypes: Set<NotificationType?> = emptySet(),
 
     @Column(name = "reset_password_token")
-    var resetPasswordToken: String? = null
+    var resetPasswordToken: String? = null,
+
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var cvs: MutableSet<Cv>? = mutableSetOf()
 )
