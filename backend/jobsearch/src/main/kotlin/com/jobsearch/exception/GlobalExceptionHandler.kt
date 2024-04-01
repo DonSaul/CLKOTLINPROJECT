@@ -12,32 +12,32 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
     @ExceptionHandler(IllegalArgumentException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    fun handleIllegalArgumentException(ex: IllegalArgumentException): ResponseEntity<ErrorResponse<Exception>> {
+    fun handleIllegalArgumentException(ex: IllegalArgumentException): ResponseEntity<ErrorResponse<String>> {
         return mapResponseEntity(ex, HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(UserAlreadyExistsException::class)
-    fun handleUserAlreadyExistsException(ex: UserAlreadyExistsException): ResponseEntity<ErrorResponse<Exception>>{
+    fun handleUserAlreadyExistsException(ex: UserAlreadyExistsException): ResponseEntity<ErrorResponse<String>>{
         return mapResponseEntity(ex, HttpStatus.CONFLICT)
     }
 
     @ExceptionHandler(NotFoundException::class)
-    fun handleNotFoundException(ex: NotFoundException): ResponseEntity<ErrorResponse<Exception>>{
+    fun handleNotFoundException(ex: NotFoundException): ResponseEntity<ErrorResponse<String>>{
         return mapResponseEntity(ex, HttpStatus.NOT_FOUND)
     }
 
     @ExceptionHandler(IllegalAccessException::class)
-    fun handleIllegalAccessException(ex: IllegalAccessException): ResponseEntity<ErrorResponse<Exception>>{
+    fun handleIllegalAccessException(ex: IllegalAccessException): ResponseEntity<ErrorResponse<String>>{
         return mapResponseEntity(ex, HttpStatus.FORBIDDEN)
     }
 
     @ExceptionHandler(ForbiddenException::class)
-    fun handleForbiddenException(ex: ForbiddenException): ResponseEntity<ErrorResponse<Exception>>{
+    fun handleForbiddenException(ex: ForbiddenException): ResponseEntity<ErrorResponse<String>>{
         return mapResponseEntity(ex, HttpStatus.FORBIDDEN)
     }
 
     @ExceptionHandler(Exception::class)
-    fun handleAllException(ex: Exception): ResponseEntity<ErrorResponse<Exception>>{
+    fun handleAllException(ex: Exception): ResponseEntity<ErrorResponse<String>>{
         return mapResponseEntity(ex)
     }
 
@@ -50,11 +50,11 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
      */
     private fun mapResponseEntity(
         ex: Exception,
-        status: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR): ResponseEntity<ErrorResponse<Exception>>{
+        status: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR): ResponseEntity<ErrorResponse<String>>{
 
         val bodyContent = ErrorResponse(
             status = status.value(),
-            data = ex,
+            data = ex.message,
             message = ex.message!!
         )
         return ResponseEntity
