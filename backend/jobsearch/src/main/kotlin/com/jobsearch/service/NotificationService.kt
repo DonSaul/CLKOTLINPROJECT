@@ -13,6 +13,8 @@ import com.jobsearch.repository.NotificationTypeRepository
 import com.jobsearch.repository.UserRepository
 import com.jobsearch.repository.VacancyRepository
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.scheduling.annotation.Async
+import org.springframework.transaction.annotation.Transactional
 import java.util.concurrent.CompletableFuture
 
 @Service
@@ -24,6 +26,7 @@ class NotificationService(
     private val notificationTypeRepository: NotificationTypeRepository,
     private val vacancyRepository: VacancyRepository
 ) {
+    @Transactional
     fun triggerNotification(notificationDTO: NotificationDTO) {
         val recipientId = notificationDTO.recipient
         val recipient = userService.retrieveUser(recipientId)
@@ -34,13 +37,7 @@ class NotificationService(
             val notificationTypeId = notificationDTO.type
 
             if (allowedNotificationTypeIds.contains(notificationTypeId)|| notificationDTO.type == NotificationTypeEnum.FORGOT_PASSWORD.id) {
-                when (notificationTypeId) {
-                    NotificationTypeEnum.VACANCIES.id -> handleNotification(notificationDTO)
-                    NotificationTypeEnum.INVITATIONS.id -> handleNotification(notificationDTO)
-                    NotificationTypeEnum.MESSAGES.id -> handleNotification(notificationDTO)
-                    NotificationTypeEnum.FORGOT_PASSWORD.id -> handleNotification(notificationDTO)
-                    else -> println("Unsupported notification type ID: $notificationTypeId")
-                }
+                handleNotification(notificationDTO)
             } else {
                 println("Notification type ID $notificationTypeId is not allowed for user ${recipient.email}. Notification was not sent.")
             }
