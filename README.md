@@ -117,6 +117,8 @@ _______________________________________________
    5.3. [Frontend files](#frontend-helper-files) <br>
    5.4. [Router files](#router-files) <br>
    5.5. [ApplicationController](#application-controller) <br>
+   5.6. [ConversationController](#conversation-controller) <br>
+   5.7. [ProfileController](#profile-controller) <br>
 
 --------------------------------------------------------
 
@@ -502,5 +504,20 @@ This controller handles requests related to the messaging in the backend of the 
 | POST        | `/api/v1/conversation/send-message`      | Sends a message to another user.            | `ChatMessageRequestDTO` Object                 | `200 OK`: If the message is sent successfully                             |
 | GET         | `/api/v1/conversation/user/all` | Retrieves the conversations for the current user  | -                      | `200 OK`: If the conversations are retrieved.
 | GET         | `/api/v1/conversation/messages`      | Retrieves all the messages of the current conversation of the user | email:String                                     | `200 OK`: If applications are retrieved successfully.<br>Other possible error codes.                                  |
+
+- All endpoints are protected with authorization.
+
+
+### ProfileController
+
+This controller handles requests related to the user profile in the backend of the application.
+
+#### Endpoints
+
+| HTTP Method | URL                        | Description                           | Input Parameters                        | Response Codes                                                                                                        |
+|-------------|----------------------------|---------------------------------------|-----------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| GET        | `/api/v1/profiles/my-profile`      | Retieves the current user's profile.            | `ProfileDTO`                 | `200 OK`: If profile information is retrieved successfully                             |
+| GET         | `/api/v1/profiles/{id}` | Retrieves the profile of other user  | `User ID`                      | `200 OK`: If the profile information is retrieved.
+| PUT         | `/api/v1/profiles/{id}`      | Updates the user's first name and last name | `User ID, ProfileDTO`                                     | `200 OK`: If information is updated successfully.                                 |
 
 - All endpoints are protected with authorization.

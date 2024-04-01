@@ -34,17 +34,26 @@ class GeneratePdfService(
         val user = userRepository.findById(userId).get()
         val authUser = userService.retrieveAuthenticatedUser()
         if (authUser.role!!.id != RoleEnum.MANAGER.id) throw ForbiddenException("Only managers can generate candidates pdfs")
-        val cv = cvRepository.findByUser(user).last()
-        return generateCV(cv)
+        return generateCV(retrieveUserCv(user))
     }
 
     fun getAuthUserCv(): ByteArray {
         val authUser = userService.retrieveAuthenticatedUser()
-        val cvList = cvRepository.findByUser(authUser)
-        if (cvList.isEmpty()) throw NotFoundException("Cv not found")
-        return generateCV(cvList.last())
+        return generateCV(retrieveUserCv(authUser))
     }
 
+    fun retrieveUserCv(user: User): Cv {
+        val cvList = cvRepository.findByUser(user)
+        if (cvList.isEmpty()) throw NotFoundException("Cv not found")
+        return cvList.last()
+    }
+
+    /**
+     * Generates a CV in PDF format based on the provided CV data.
+     *
+     * @param cv The CV data.
+     * @return The generated CV in PDF format as a byte array.
+     */
     private fun generateCV(cv: Cv): ByteArray {
         val outputStream = ByteArrayOutputStream()
         val writer = PdfWriter(outputStream)
@@ -74,7 +83,7 @@ class GeneratePdfService(
         }
         val skillsRow = createSkillsRow(cv.skills!!)
         val jobsCardList = createJobCards(cv.jobs!!.toList().sortedBy { it.startDate }.reversed())
-        val projectCardList = createProjectDivs(cv.projects!!.toList().sortedBy { it.id })
+        val projectCardList = createProjectCards(cv.projects!!.toList().sortedBy { it.id })
 
         document.add(title)
         document.add(email)
@@ -142,7 +151,7 @@ class GeneratePdfService(
         return cardList
     }
 
-    private fun createProjectDivs(projects: List<Project>): List<Div> {
+    private fun createProjectCards(projects: List<Project>): List<Div> {
         val cardList = MutableList(projects.size) { Div() }
         val backgroundColor = DeviceRgb(200, 200, 200)
         val opacity = 0.5f

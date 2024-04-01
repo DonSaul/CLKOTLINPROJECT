@@ -2,7 +2,9 @@ package com.jobsearch.service
 
 import com.jobsearch.dto.ApplicationDTO
 import com.jobsearch.entity.Application
+import com.jobsearch.entity.ApplicationStatus
 import com.jobsearch.entity.Vacancy
+import com.jobsearch.exception.ForbiddenException
 import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.*
 import jakarta.transaction.Transactional
@@ -25,7 +27,7 @@ class ApplicationService(
 
         val candidate = userService.retrieveAuthenticatedUser()
 
-        val defaultStatus = statusRepository.findById(2).get()
+        val defaultStatus = statusRepository.findById(ApplicationStatus.APPLIED.id).get()
 
         val cv = cvRepository.findFirstByUserOrderByIdDesc(candidate)
             .orElseThrow { NotFoundException("No CV found for this user") }
@@ -40,7 +42,7 @@ class ApplicationService(
             applicationStatus = defaultStatus
         )
         if (candidateAlreadyApplied(applicationEntity)){
-            throw RuntimeException("Candidate have already applied to this vacancy")
+            throw ForbiddenException("Candidate have already applied to this vacancy")
         } else {
             val newApplication = applicationEntity.let { applicationRepository.save(it) }
 

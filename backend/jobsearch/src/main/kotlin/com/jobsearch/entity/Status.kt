@@ -11,3 +11,8 @@ data class Status(
     @Column(unique = true)
     var name: String
 )
+
+enum class ApplicationStatus(val id: Int, val statusName: String) {
+    NOT_APPLIED(1, "Not Applied"),
+    APPLIED(2, "Applied"),
+}

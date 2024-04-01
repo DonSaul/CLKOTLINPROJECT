@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 class FileTransferController(private val generatePdfService: GeneratePdfService) {
 
     @GetMapping("/{userId}" ,produces = [MediaType.APPLICATION_PDF_VALUE])
-    fun getPdf(@PathVariable userId: Int): ResponseEntity<ByteArray> {
+    fun retrieveUserPdf(@PathVariable userId: Int): ResponseEntity<ByteArray> {
         val pdfBytes = generatePdfService.getUserCv(userId)
 
         return ResponseEntity.ok()
@@ -23,7 +23,7 @@ class FileTransferController(private val generatePdfService: GeneratePdfService)
     }
 
     @GetMapping(produces = [MediaType.APPLICATION_PDF_VALUE])
-    fun getPdf(): ResponseEntity<ByteArray> {
+    fun retrieveAuthUserPdf(): ResponseEntity<ByteArray> {
         val pdfBytes = generatePdfService.getAuthUserCv()
 
         return ResponseEntity.ok()
