@@ -116,6 +116,76 @@ class DataLoaderService (
 
     }
 
+
+    fun createHardCvForCandidateShowcase(candidate: UserResponseDTO?){
+
+        val candidateUser: User? = candidate?.let { can ->
+            userRepository.findById(can.id).orElse(null)
+        }
+
+        val userHasCV = cvRepository.findFirstByUserOrderByIdDesc(candidateUser!!).orElse(null)
+
+        if (userHasCV==null){
+
+            val jobRequestDTOList = listOf(
+                JobRequestDTO(
+                    id = 1,
+                    startDate = LocalDate.of(2019, 1, 1),
+                    endDate = LocalDate.of(2022, 1, 1),
+                    company = "Softserve",
+                    position = "Software Engineer",
+                    description = "Developed web applications using React and SpringBoot",
+                    jobFamilyId = 1
+                ),
+                JobRequestDTO(
+                    id = 2,
+                    startDate = LocalDate.of(2022, 2, 1),
+                    endDate = LocalDate.of(2024, 3, 1),
+                    company = "Google",
+                    position = "Senior Sales Expert",
+                    description = "Sold stuff worldwide",
+                    jobFamilyId = 2
+                )
+
+            )
+            val projectRequestDTOList = listOf(
+                ProjectRequestDTO(
+                    id = 1,
+                    name = "Job Search Platform",
+                    description = "Developed a job search platform for softServe",
+                    jobFamilyId = 3
+                ),
+                ProjectRequestDTO(
+                    id = 2,
+                    name = "Arduino plants",
+                    description = "Plants controlled by arduino",
+                    jobFamilyId = 4
+                )
+
+            )
+            val skillIdSet = setOf(1, 2, 3,4,5)
+
+            val cvRequest = OverrideCvRequestDTO(
+                summary = "Results-oriented software engineer with a passion for developing innovative web applications using cutting-edge technologies. Proven track record of delivering high-quality software solutions on time and within budget.",
+                yearsOfExperience = 5,
+                salaryExpectation = 50000,
+                education = "Bachelor's Degree in Computer Science",
+                jobs =jobRequestDTOList,
+                projects = projectRequestDTOList,
+                skillIds = skillIdSet,
+                user=candidateUser
+
+            )
+            overrideService.createCvOverride(cvRequest)
+
+
+        }
+
+    }
+
+
+
+
     fun createRandomCvForCandidateBySeed(candidate: UserResponseDTO?, seed: Int) {
         val candidateUser: User? = candidate?.let { can ->
             userRepository.findById(can.id).orElse(null)
