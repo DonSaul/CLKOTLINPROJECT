@@ -377,6 +377,7 @@ The following tables are part of the database schema:
 | applications       | Represents job applications submitted by candidates.               |
 | chat_messages      | Stores chat messages exchanged between users.                      |
 | conversations      | Manages conversations between users, containing multiple messages. |
+| invitations        | Stores invitations sent to candidates to apply to vacancies.       |
 | cvs                | Contains CV (curriculum vitae) information of users.               |
 | interests          | Tracks user interests in specific job families.                    |
 | job_family         | Represents different job categories or families.                   |
