@@ -3,7 +3,7 @@ package com.jobsearch.controller
 import com.jobsearch.dto.ChatMessageDTO
 import com.jobsearch.dto.ChatMessageRequestDTO
 import com.jobsearch.dto.ConversationResponseDTO
-import com.jobsearch.entity.ChatMessage
+import com.jobsearch.dto.messaging.ChatMessageResponseDTO
 import com.jobsearch.repository.UserRepository
 import com.jobsearch.service.ConversationService
 import org.springframework.http.HttpStatus
@@ -36,7 +36,7 @@ class ConversationController (
         return ResponseEntity(notificationSent,HttpStatus.OK)
     }
     @GetMapping("/messages")
-    fun getCurrentConversationMessages(@RequestParam email: String): ResponseEntity<List<ChatMessage>>
+    fun getCurrentConversationMessages(@RequestParam email: String): ResponseEntity<List<ChatMessageResponseDTO>>
     {
         val messages= conversationService.getCurrentConversationWithUser(email)
         return ResponseEntity(messages,HttpStatus.OK)
