@@ -4,6 +4,8 @@ import com.jobsearch.dto.ChatMessageDTO
 import com.jobsearch.dto.ChatMessageRequestDTO
 import com.jobsearch.dto.ConversationResponseDTO
 import com.jobsearch.dto.NotificationDTO
+import com.jobsearch.dto.messaging.ChatMessageResponseDTO
+import com.jobsearch.dto.messaging.UserMessageDTO
 import com.jobsearch.entity.ChatMessage
 import com.jobsearch.entity.Conversation
 import com.jobsearch.entity.NotificationTypeEnum
@@ -106,11 +108,26 @@ class ConversationService(
         val conversations= conversationRepository.findByUser1IdOrUser2Id(currentUser.id!!, currentUser.id)
 
         return conversations.map { conversation ->
+
+            val user1DTO = UserMessageDTO(
+                id = conversation.user1.id!!,
+                firstName = conversation.user1.firstName,
+                lastName = conversation.user1.lastName,
+                email = conversation.user1.email,
+                role = conversation.user1.role!!
+            )
+            val user2DTO = UserMessageDTO(
+                id = conversation.user2.id!!,
+                firstName = conversation.user2.firstName,
+                lastName = conversation.user2.lastName,
+                email = conversation.user2.email,
+                role = conversation.user2.role!!
+            )
             ConversationResponseDTO(
-                    id = conversation.id,
-                    user1 = conversation.user1,
-                    user2 = conversation.user2,
-                    lastMessage = conversation.getLastMessage()
+                id = conversation.id,
+                user1 = user1DTO,
+                user2 = user2DTO,
+                lastMessage = conversation.getLastMessage()
             )
         }.sortedByDescending { it.lastMessage?.date }
     }
@@ -124,6 +141,8 @@ class ConversationService(
         val existingConversation = findExistingConversation(currentUser, receiver)
 
         val conversation = existingConversation ?: createConversationLock(currentUser, receiver)
+
+
 
         val chatMessage = ChatMessage(
             sender = currentUser,
@@ -197,7 +216,7 @@ class ConversationService(
 
     }
 
-     fun getCurrentConversationWithUser(email:String) : List<ChatMessage>{
+     fun getCurrentConversationWithUser(email:String) : List<ChatMessageResponseDTO>{
         val currentUser = userService.retrieveAuthenticatedUser()
 
         val receiver = userRepository.findByEmail(email)
@@ -205,7 +224,29 @@ class ConversationService(
 
         val conversationMessages=chatMessageRepository.findMessagesByUserIds(currentUser.id!!,receiver.id!!)
 
-        return conversationMessages
+         return conversationMessages.map { chatMessage ->
+             val senderDTO = UserMessageDTO(
+                 id = chatMessage.sender.id!!,
+                 firstName = chatMessage.sender.firstName,
+                 lastName = chatMessage.sender.lastName,
+                 email = chatMessage.sender.email,
+                 role = chatMessage.sender.role!!
+             )
+             val receiverDTO = UserMessageDTO(
+                 id = chatMessage.receiver.id!!,
+                 firstName = chatMessage.receiver.firstName,
+                 lastName = chatMessage.receiver.lastName,
+                 email = chatMessage.receiver.email,
+                 role = chatMessage.receiver.role!!
+             )
+             ChatMessageResponseDTO(
+                 id = chatMessage.id!!,
+                 date = chatMessage.date,
+                 message = chatMessage.message,
+                 sender = senderDTO,
+                 receiver = receiverDTO
+             )
+         }
 
     }
 
