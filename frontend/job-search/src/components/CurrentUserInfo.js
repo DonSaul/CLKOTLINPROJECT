@@ -26,9 +26,7 @@ const CurrentUserInfo = () => {
   } = useCurrentUserProfile();
   const { mutate, isSuccess } = useUpdateProfileInfo();
   const { firstName, lastName, email, cv, roleId } = profileData || {};
-  const { getUserIdFromToken, getUserRole } = useAuth();
 
-  console.log(profileData);
   useEffect(() => {
     if (profileData) {
       console.log("My profile data:", profileData);
@@ -93,7 +91,7 @@ const CurrentUserInfo = () => {
             >
             </ProfileModal>
           </Button>
-          <CvPdfButton roleId={getUserRole()} />
+          <CvPdfButton />
         </Card>
 
         {roleId !== ROLES.CANDIDATE ? null : (

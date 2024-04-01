@@ -92,7 +92,8 @@ class NotificationControllerIntgTest {
             yearsOfExperience = 1,
             salaryExpectation = 10000,
             education = "High School",
-            user = CANDIDATE_1
+            user = CANDIDATE_1,
+            summary = "Summary 1"
         )
 
         val CV_REQUEST = CV_ENTITY.let {
@@ -102,7 +103,8 @@ class NotificationControllerIntgTest {
                 education = it.education,
                 jobs = listOf(JOB_REQUEST),
                 projects = listOf(PROJECT_REQUEST),
-                skillIds = setOf(1)
+                skillIds = setOf(1),
+                summary=it.summary
             )
         }
 
@@ -131,7 +133,8 @@ class NotificationControllerIntgTest {
             position = "Position 1",
             description = "BLABLABLA",
             cv = CV_ENTITY,
-            jobFamily = JOB_FAMILY_2
+            jobFamily = JOB_FAMILY_2,
+            company = "Company 1"
         )
 
         val JOB_REQUEST = JOB_ENTITY.let {
@@ -141,7 +144,8 @@ class NotificationControllerIntgTest {
                 endDate = it.endDate,
                 position = it.position,
                 description = it.description,
-                jobFamilyId = it.jobFamily.id!!
+                jobFamilyId = it.jobFamily.id!!,
+                company = it.company
             )
         }
 

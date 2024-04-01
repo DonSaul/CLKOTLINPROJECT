@@ -13,7 +13,6 @@ import { NOTIFICATION_TYPES } from "../helpers/constants";
 
 const Notifications = () => {
   const { getUserEmail } = useAuth();
-  console.log(getUserEmail());
   const notifications = useNotificationData(getUserEmail());
   const { notificationActivated } = useNotificationActivated(getUserEmail());
   const { notificationTypes } = useNotificationTypes(getUserEmail());

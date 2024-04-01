@@ -58,7 +58,8 @@ dependencies {
 
 	implementation ("io.jsonwebtoken:jjwt:0.9.1")
 	implementation("org.glassfish.jersey.core:jersey-common:3.1.5")
-	compileOnly("org.projectlombok:lombok")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+    compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")
