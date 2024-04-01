@@ -6,6 +6,7 @@ import com.jobsearch.entity.Role
 import com.jobsearch.entity.User
 
 import com.jobsearch.repository.UserRepository
+import com.jobsearch.repository.VacancyRepository
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -28,6 +29,9 @@ class UserControllerIntgTest {
 
     @Autowired
     lateinit var userRepository: UserRepository
+
+    @Autowired
+    lateinit var vacancyRepository: VacancyRepository
 
     @Autowired
     lateinit var objectMapper: ObjectMapper
@@ -73,10 +77,11 @@ class UserControllerIntgTest {
     @BeforeEach
     fun setUp() {
         // Delete all records from the repository
-        userRepository.deleteAll()
+//        userRepository.deleteAll()
+//        vacancyRepository.deleteAll()
 
         // Save the admin mock object
-        admin1 = userRepository.save(ADMIN_1)
+//        admin1 = userRepository.save(ADMIN_1)
 
         // Assign the user entity and user request mock objects
         userEntity = USER_ENTITY

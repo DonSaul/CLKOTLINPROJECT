@@ -19,7 +19,6 @@ import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.put
 import java.time.LocalDate
 
@@ -89,6 +88,7 @@ class NotificationControllerIntgTest {
 
         val CV_ENTITY = Cv(
             id = null,
+            summary = "blablabla",
             yearsOfExperience = 1,
             salaryExpectation = 10000,
             education = "High School",
@@ -97,6 +97,7 @@ class NotificationControllerIntgTest {
 
         val CV_REQUEST = CV_ENTITY.let {
             CvRequestDTO(
+                summary = "blablabla",
                 yearsOfExperience = it.yearsOfExperience,
                 salaryExpectation = it.salaryExpectation,
                 education = it.education,
@@ -128,6 +129,7 @@ class NotificationControllerIntgTest {
             id = null,
             startDate = LocalDate.of(2022, 2, 2),
             endDate = LocalDate.now(),
+            company = "Important Company",
             position = "Position 1",
             description = "BLABLABLA",
             cv = CV_ENTITY,
@@ -139,6 +141,7 @@ class NotificationControllerIntgTest {
                 id = null,
                 startDate = it.startDate,
                 endDate = it.endDate,
+                company = "Important Company",
                 position = it.position,
                 description = it.description,
                 jobFamilyId = it.jobFamily.id!!
@@ -198,7 +201,8 @@ class NotificationControllerIntgTest {
     @Test
     @WithMockUser(username = "candidate1@mail.com", authorities = ["candidate"])
     fun `Should create a project and job`() {
-        val response = mockMvc.put("/api/v1/cvs/${CV_ENTITY.id}") {
+        val cvId = CV_ENTITY.id
+        val response = mockMvc.put("/api/v1/cvs/{id}", cvId) {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.writeValueAsString(CV_REQUEST)
         }
