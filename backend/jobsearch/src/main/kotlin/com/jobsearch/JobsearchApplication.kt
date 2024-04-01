@@ -71,6 +71,21 @@ class JobsearchApplication {
 
             val candidate = userService.createUser(candidateRequestDTO)
 
+            //Showcase user
+            val candidateShowcaseRequestDTO = UserRequestDTO(
+                firstName = "Jamiro",
+                lastName = "Smith",
+                email = "projectlab.user@gmail.com",
+                password = "a123",
+                roleId = 1
+            )
+            //showcase email
+            val candidateShowcase = userService.createUser(candidateShowcaseRequestDTO)
+
+            dataLoaderService.createHardCvForCandidateShowcase(candidateShowcase)
+
+
+
             //Vacancies for mana@mana
             dataLoaderService.createHardVacanciesForManager(manager)
 

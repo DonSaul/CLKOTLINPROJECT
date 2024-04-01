@@ -32,29 +32,6 @@ const CandidateProfileInfo = () => {
     navigate(`${paths.messagingUser.replace(":id", id)}`)
   };
 
-  const ProfilePdfButton = () => {
-    const { pdf, isLoading: isLoadingPdf, isError: isErrorPdf } = useGetUserPdf(id);
-
-    const handleGetPdf = () => { 
-      if (pdf) {
-        const pdfUrl = URL.createObjectURL(pdf);
-        window.open(pdfUrl, '_blank');
-      }
-    }; 
-
-    return (
-      <Button
-        type="button"
-        variant="contained"
-        color="primary"
-        onClick={handleGetPdf}
-        disabled={getUserRole() !== ROLES.MANAGER || isLoadingPdf || isErrorPdf}
-        sx={{ mx: 1 }}
-      >
-        View CV on PDF
-      </Button>
-    );
-  };
 
   return (
     <>
@@ -105,7 +82,7 @@ const CandidateProfileInfo = () => {
               >
                 Invite
               </Button>
-              <CvPdfButton id={id} roleId={getUserRole()} /> 
+              <CvPdfButton id={id}/> 
               </>
               )}
             </>
