@@ -14,5 +14,6 @@ data class NotificationDTO(
     var sender: Int? = null,
     var vacancy: Int? = null,
     var read: Boolean? = false,
+    var emailContent: String? = null
 
     )
