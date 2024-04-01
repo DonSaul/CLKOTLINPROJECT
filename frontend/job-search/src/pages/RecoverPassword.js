@@ -3,7 +3,7 @@ import useRecoverPassword from "../hooks/useRecoverPassword";
 import CardContainer from "../components/CardContainer";
 
 const RecoverPassword = () => {
-  const { email, setEmail, message, handleSubmit } = useRecoverPassword();
+  const { email, setEmail, message, handleSubmit, error } = useRecoverPassword();
 
   return (
     <CardContainer width="xs">
@@ -32,7 +32,13 @@ const RecoverPassword = () => {
             Reset Password
           </Button>
         </form>
-        {message && (
+        
+        {error && (
+          <Typography variant="body1" style={{ marginTop: "10px", color: "red" }}>
+            {error.message}
+          </Typography>
+        )}
+        {!error && message && (
           <Typography variant="body1" style={{ marginTop: "10px" }}>
             {message}
           </Typography>

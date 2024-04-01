@@ -119,6 +119,7 @@ _______________________________________________
    5.5. [ApplicationController](#application-controller) <br>
    5.6. [ConversationController](#conversation-controller) <br>
    5.7. [ProfileController](#profile-controller) <br>
+   5.8. [InvitationController](#invitation-controller) <br>
 
 --------------------------------------------------------
 
@@ -379,6 +380,7 @@ The following tables are part of the database schema:
 | applications       | Represents job applications submitted by candidates.               |
 | chat_messages      | Stores chat messages exchanged between users.                      |
 | conversations      | Manages conversations between users, containing multiple messages. |
+| invitations        | Stores invitations sent to candidates to apply to vacancies.       |
 | cvs                | Contains CV (curriculum vitae) information of users.               |
 | interests          | Tracks user interests in specific job families.                    |
 | job_family         | Represents different job categories or families.                   |
@@ -521,3 +523,17 @@ This controller handles requests related to the user profile in the backend of t
 | PUT         | `/api/v1/profiles/{id}`      | Updates the user's first name and last name | `User ID, ProfileDTO`                                     | `200 OK`: If information is updated successfully.                                 |
 
 - All endpoints are protected with authorization.
+
+
+### InvitationController
+
+This controller handles requests related to the invitations in the backend of the application.
+
+#### Endpoints
+
+| HTTP Method | URL                        | Description                           | Input Parameters                        | Response Codes                                                                                                        |
+|-------------|----------------------------|---------------------------------------|-----------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| POST       | `/api/v1/invitations`      | Sends an invitation from current manager to a candidate.            | `InvitationDTO`                 | `201 CREATED`: If the initation is created successfully                             |
+
+- All endpoints are protected with authorization.
+- Users with the 'manager' role can access endpoints to send invitations.
