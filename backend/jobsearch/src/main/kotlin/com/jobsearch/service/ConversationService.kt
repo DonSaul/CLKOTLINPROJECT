@@ -4,6 +4,8 @@ import com.jobsearch.dto.ChatMessageDTO
 import com.jobsearch.dto.ChatMessageRequestDTO
 import com.jobsearch.dto.ConversationResponseDTO
 import com.jobsearch.dto.NotificationDTO
+import com.jobsearch.dto.messaging.ChatMessageResponseDTO
+import com.jobsearch.dto.messaging.UserMessageDTO
 import com.jobsearch.entity.ChatMessage
 import com.jobsearch.entity.Conversation
 import com.jobsearch.entity.NotificationTypeEnum
@@ -18,9 +20,10 @@ import kotlinx.coroutines.launch
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.thymeleaf.context.Context
+import org.thymeleaf.spring6.SpringTemplateEngine
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.locks.ReentrantLock
@@ -32,7 +35,8 @@ class ConversationService(
         private val userService: UserService,
         private val userRepository: UserRepository,
         private val conversationRepository: ConversationRepository,
-        private val notificationService: NotificationService
+        private val notificationService: NotificationService,
+        private val templateEngine: SpringTemplateEngine
 ) {
 
     //lock
@@ -104,11 +108,26 @@ class ConversationService(
         val conversations= conversationRepository.findByUser1IdOrUser2Id(currentUser.id!!, currentUser.id)
 
         return conversations.map { conversation ->
+
+            val user1DTO = UserMessageDTO(
+                id = conversation.user1.id!!,
+                firstName = conversation.user1.firstName,
+                lastName = conversation.user1.lastName,
+                email = conversation.user1.email,
+                role = conversation.user1.role!!
+            )
+            val user2DTO = UserMessageDTO(
+                id = conversation.user2.id!!,
+                firstName = conversation.user2.firstName,
+                lastName = conversation.user2.lastName,
+                email = conversation.user2.email,
+                role = conversation.user2.role!!
+            )
             ConversationResponseDTO(
-                    id = conversation.id,
-                    user1 = conversation.user1,
-                    user2 = conversation.user2,
-                    lastMessage = conversation.getLastMessage()
+                id = conversation.id,
+                user1 = user1DTO,
+                user2 = user2DTO,
+                lastMessage = conversation.getLastMessage()
             )
         }.sortedByDescending { it.lastMessage?.date }
     }
@@ -122,6 +141,8 @@ class ConversationService(
         val existingConversation = findExistingConversation(currentUser, receiver)
 
         val conversation = existingConversation ?: createConversationLock(currentUser, receiver)
+
+
 
         val chatMessage = ChatMessage(
             sender = currentUser,
@@ -149,8 +170,20 @@ class ConversationService(
         val receiver = userRepository.findByEmail(email)
             .orElseThrow { NoSuchElementException("No user found with email $email") }
 
-        val chatUrl = "http://localhost:3000/messaging/${sender.id}"
-        val sentAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        // Setting html email
+        val fragmentContext = Context()
+
+        fragmentContext.setVariable("senderEmail", sender.email)
+        fragmentContext.setVariable("url", "http://localhost:3000/messaging/${sender.id}")
+
+        val fragmentHtml = templateEngine.process("messageRecievedTemplate", fragmentContext)
+
+        val templateContext = Context()
+
+        templateContext.setVariable("targetName", "${receiver.firstName} ${receiver.lastName}")
+        templateContext.setVariable("content", fragmentHtml)
+
+        val emailContent = templateEngine.process("emailTemplate", templateContext)
 
         try {
             if (!isNotificationThrottled(sender.id!!, receiver.id!!)) {
@@ -158,15 +191,10 @@ class ConversationService(
                     type = NotificationTypeEnum.MESSAGES.id,
                     recipient = receiver.id,
                     subject = "New Message",
-                    content = """
-                        You have a new message sent by: ${sender.email}
-                        <br>
-                        Please check the message at: $chatUrl
-                        <br>
-                        Sent at: $sentAt
-                        """.trimIndent(),
+                    content = "There is a new message sent by: ${receiver.email}",
                     sender = sender.id,
-                    vacancy = null
+                    vacancy = null,
+                    emailContent = emailContent
                 )
                 notificationService.triggerNotification(notificationDTO)
             }
@@ -188,7 +216,7 @@ class ConversationService(
 
     }
 
-     fun getCurrentConversationWithUser(email:String) : List<ChatMessage>{
+     fun getCurrentConversationWithUser(email:String) : List<ChatMessageResponseDTO>{
         val currentUser = userService.retrieveAuthenticatedUser()
 
         val receiver = userRepository.findByEmail(email)
@@ -196,7 +224,29 @@ class ConversationService(
 
         val conversationMessages=chatMessageRepository.findMessagesByUserIds(currentUser.id!!,receiver.id!!)
 
-        return conversationMessages
+         return conversationMessages.map { chatMessage ->
+             val senderDTO = UserMessageDTO(
+                 id = chatMessage.sender.id!!,
+                 firstName = chatMessage.sender.firstName,
+                 lastName = chatMessage.sender.lastName,
+                 email = chatMessage.sender.email,
+                 role = chatMessage.sender.role!!
+             )
+             val receiverDTO = UserMessageDTO(
+                 id = chatMessage.receiver.id!!,
+                 firstName = chatMessage.receiver.firstName,
+                 lastName = chatMessage.receiver.lastName,
+                 email = chatMessage.receiver.email,
+                 role = chatMessage.receiver.role!!
+             )
+             ChatMessageResponseDTO(
+                 id = chatMessage.id!!,
+                 date = chatMessage.date,
+                 message = chatMessage.message,
+                 sender = senderDTO,
+                 receiver = receiverDTO
+             )
+         }
 
     }
 

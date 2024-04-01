@@ -34,26 +34,14 @@ class VacancyController(
         @RequestParam(required = false) jobFamilyId: Int?,
         @RequestParam(required = false) yearsOfExperience: Int?
     ): ResponseEntity<StandardResponse<List<VacancyResponseDTO>>>  {
-        val responseEntityList = vacancyService.findVacanciesByFilter(salary, jobFamilyId, yearsOfExperience)
-        val status = HttpStatus.OK
-//        if (responseEntityList.isEmpty()) {
-//            status = HttpStatus.NO_CONTENT
-//        }
-        val body = StandardResponse(
-            status = status.value(),
-            data = responseEntityList
-        )
-        return ResponseEntity
-            .status(status)
-            .body(body)
         val dataBodyList = vacancyService.findVacanciesByFilter(salary, jobFamilyId, yearsOfExperience)
         return mapResponseEntity(dataBodyList)
     }
 
     @GetMapping("/my-vacancies")
     fun retrieveVacancyByManager(): ResponseEntity<StandardResponse<List<VacancyResponseDTO>>>  {
-        val dataBodylist = vacancyService.retrieveVacancyByManager()
-        return mapResponseEntity(dataBodylist)
+        val dataBodyList = vacancyService.retrieveVacancyByManager()
+        return mapResponseEntity(dataBodyList)
     }
     @PostMapping
     fun createVacancy(@RequestBody @Valid vacancyDto: VacancyRequestDTO): ResponseEntity<StandardResponse<VacancyResponseDTO>> {
@@ -85,7 +73,29 @@ class VacancyController(
         dataBody: T,
         status: HttpStatus = HttpStatus.OK
     ): ResponseEntity<StandardResponse<T>> {
-        val responseStatus = if (dataBody is List<*> && dataBody.isEmpty()) {
+        val bodyContent = StandardResponse(
+            status = status.value(),
+            data = dataBody,
+            message = status.reasonPhrase
+        )
+        return ResponseEntity
+            .status(status)
+            .body(bodyContent)
+    }
+
+    /**
+     * Maps a response entity with the provided list data body and status.
+     * Returns a ResponseEntity of StandardResponse.
+     *
+     * @param dataBody The data body list to be included in the response.
+     * @param status The HTTP status code (default is HttpStatus.OK).
+     * @return ResponseEntity<StandardResponse<List<T>>> The mapped response entity.
+     */
+    private fun <T> mapResponseEntity(
+        dataBody: List<T>,
+        status: HttpStatus = HttpStatus.OK
+    ): ResponseEntity<StandardResponse<List<T>>> {
+        val responseStatus = if (dataBody.isEmpty()) {
             HttpStatus.NOT_FOUND
         } else {
             status

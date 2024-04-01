@@ -1,0 +1,10 @@
+<div>
+    <p class="card__body-message">
+        We hope this message finds you well. We are pleased to inform you that you have been invited by <span class="bold" th:text="${senderEmail}">defaultSenderEmail@gmail.com</span> to the new job vacancy <span class="bold" th:text="${vacancy}">defaultVacancy</span>.
+    </p>
+    <div class="button__container">
+        <a class="button" th:href="${url}" target="_blank">
+            Click here to view the vacancy
+        </a>
+    </div>
+</div>
