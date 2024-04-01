@@ -1,19 +1,18 @@
 package com.jobsearch.service
 
-import com.jobsearch.dto.NotificationDTO
+import com.jobsearch.dto.*
 import com.jobsearch.entity.NotificationTypeEnum
-import com.jobsearch.dto.JobFamilyDto
-import com.jobsearch.dto.UserResponseDTO
-import com.jobsearch.dto.VacancyRequestDTO
-import com.jobsearch.dto.VacancyResponseDTO
 import com.jobsearch.entity.RoleEnum
 import com.jobsearch.entity.Vacancy
 import com.jobsearch.exception.ForbiddenException
 import com.jobsearch.exception.NotFoundException
 import com.jobsearch.repository.ApplicationRepository
+import com.jobsearch.repository.UserRepository
 import com.jobsearch.repository.VacancyRepository
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
+import org.thymeleaf.context.Context
+import org.thymeleaf.spring6.SpringTemplateEngine
 import kotlin.jvm.optionals.getOrElse
 
 @Service
@@ -23,8 +22,9 @@ class VacancyService(
     val jobFamilyService: JobFamilyService,
     val userService: UserService,
     val notificationService: NotificationService,
-    val interestService: InterestService,
     val applicationService: ApplicationService,
+    val userRepository: UserRepository,
+    private val templateEngine: SpringTemplateEngine
 ) {
     fun retrieveVacancy(vacancyId: Int): VacancyResponseDTO {
         val vacancy = vacancyRepository.findById(vacancyId)
@@ -69,15 +69,33 @@ class VacancyService(
         return mapToVacancyResponseDto(newVacancy)
     }
     fun notificateUsers(newVacancy: Vacancy){
-        val users = newVacancy.jobFamily.id!!.let { interestService.getUsersByJobFamilyId(it) }
+        val users = newVacancy.jobFamily.id!!.let { userRepository.findUsersByJobFamily(it) }
+
         users.forEach { user ->
+
+            // Setting html email
+            val fragmentContext = Context()
+
+            fragmentContext.setVariable("vacancy", "\"${newVacancy.name} - ${newVacancy.jobFamily.name}\"")
+            fragmentContext.setVariable("url", "http://localhost:3000/vacancies/${newVacancy.id}")
+
+            val fragmentHtml = templateEngine.process("newVacancyCreatedTemplate", fragmentContext)
+
+            val templateContext = Context()
+
+            templateContext.setVariable("targetName", "${user.firstName} ${user.lastName}")
+            templateContext.setVariable("content", fragmentHtml)
+
+            val emailContent = templateEngine.process("emailTemplate", templateContext)
+
             val notificationDTO = NotificationDTO(
                 type = NotificationTypeEnum.VACANCIES.id,
                 recipient = user.id!!,
                 subject = "New Vacancy Available",
                 content = "A new vacancy matching your interests is available: ${newVacancy.name}",
                 sender = newVacancy.manager.id!!,
-                vacancy = newVacancy.id!!
+                vacancy = newVacancy.id!!,
+                emailContent = emailContent
             )
             notificationService.triggerNotification(notificationDTO)
         }

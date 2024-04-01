@@ -52,7 +52,7 @@ class NotificationService(
 
     private fun handleNotification(notificationDTO: NotificationDTO) {
         val notification = createNotification(notificationDTO)
-        sendEmailNotification(notification)
+        sendEmailNotification(notification, notificationDTO.emailContent)
     }
 
 
@@ -78,9 +78,9 @@ class NotificationService(
     }
 
     //senderEmail
-    private fun sendEmailNotification(notification: Notification) {
+    private fun sendEmailNotification(notification: Notification, emailContent: String?) {
         try {
-            notification.recipient.let { emailService.sendEmail(it.email, notification.subject, notification.content) }
+            notification.recipient.let { emailService.sendEmail(it.email, notification.subject, notification.content, emailContent) }
             markNotificationAsSent(notification)
 
         } catch (e: Exception) {
