@@ -11,6 +11,7 @@ import { useState } from "react";
 import ProfileAvatar from "./avatar/ProfileAvatar";
 import CvPdfButton from "./CvPdfButton"; // Importar el componente aquí
 import { useGetUserPdf } from "../hooks/useGetPdf";
+import LoadingSpinner from "./LoadingSpinner";
 
 const CandidateProfileInfo = () => {
   const { id } = useParams();
@@ -24,6 +25,14 @@ const CandidateProfileInfo = () => {
   const navigate = useNavigate();
   const [avatarSize, setAvatarSize] = useState("500px");
 
+  if (isLoadingProfile) {
+    return <LoadingSpinner />;
+  }
+
+  if (isErrorProfile) {
+    return <div>Error fetching profile</div>;
+  }
+
   const handleInvite = () => { 
     navigate(`${paths.sendInvitation.replace(":id", id)}`);
   }; 
@@ -31,7 +40,6 @@ const CandidateProfileInfo = () => {
   const handleSend = () => {
     navigate(`${paths.messagingUser.replace(":id", id)}`)
   };
-
 
   return (
     <>
@@ -68,7 +76,6 @@ const CandidateProfileInfo = () => {
             </Typography>
           </Box>
 
-          
           {getUserRole() === ROLES.MANAGER && (
             <>
             {roleId !== ROLES.CANDIDATE ? null : (
@@ -117,10 +124,6 @@ const CandidateProfileInfo = () => {
             {cv !== null ? (
               <Box 
                 sx={{ 
-                  // display: 'flex', 
-                  // flexDirection: 'column', 
-                  // alignItems: 'center', 
-                  // justifyContent: 'center',
                   p: 2,
                   mx: 3 
                   }}>
@@ -178,55 +181,6 @@ const CandidateProfileInfo = () => {
           }}
         >
           <Typography variant="h5" gutterBottom>
-            Projects
-          </Typography>
-          {cv?.projects.length ? (
-            <Box sx={{ mx: 10 }}>
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: "bold" }}>Name</TableCell>
-                      <TableCell sx={{ fontWeight: "bold" }}>
-                        Description
-                      </TableCell>
-                      <TableCell sx={{ fontWeight: "bold" }}>
-                        Job Family
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {cv.projects.map((project) => (
-                      <TableRow key={project.projectId}>
-                        <TableCell>{project.name}</TableCell>
-                        <TableCell>{project.description}</TableCell>
-                        <TableCell>{project.jobFamily.name}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Box>
-          ) : (
-            "No projects available"
-          )}
-        </Card>
-      )}
-
-      {roleId !== ROLES.CANDIDATE ? null : (
-        <Card
-          elevation={3}
-          sx={{
-            display: "inline-block",
-            width: 1030,
-            borderRadius: 8,
-            boxShadow: 8,
-            mx: 10,
-            my: 5,
-            py: 5,
-          }}
-        >
-          <Typography variant="h5" gutterBottom>
             Jobs
           </Typography>
           {cv?.jobs.length ? (
@@ -271,6 +225,55 @@ const CandidateProfileInfo = () => {
           )}
         </Card>
       )}
+
+      {roleId !== ROLES.CANDIDATE ? null : (
+        <Card
+          elevation={3}
+          sx={{
+            display: "inline-block",
+            width: 1030,
+            borderRadius: 8,
+            boxShadow: 8,
+            mx: 10,
+            my: 5,
+            py: 5,
+          }}
+        >
+          <Typography variant="h5" gutterBottom>
+            Projects
+          </Typography>
+          {cv?.projects.length ? (
+            <Box sx={{ mx: 10 }}>
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: "bold" }}>Name</TableCell>
+                      <TableCell sx={{ fontWeight: "bold" }}>
+                        Description
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: "bold" }}>
+                        Job Family
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {cv.projects.map((project) => (
+                      <TableRow key={project.projectId}>
+                        <TableCell>{project.name}</TableCell>
+                        <TableCell>{project.description}</TableCell>
+                        <TableCell>{project.jobFamily.name}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
+          ) : (
+            "No projects available"
+          )}
+        </Card>
+      )}  
     </>
   );
 };

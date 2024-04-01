@@ -36,7 +36,6 @@ const  fetchMyProfileInfo = async () => {
     const updateUserProfile = async (data) => {
         let token = localStorage.getItem(AUTH_TOKEN_NAME);
       
-      
         const res = await fetch(`${ENDPOINTS.updateProfile}/${data.id}`, {
           method: 'PUT',
           headers: {
@@ -66,7 +65,6 @@ const  fetchMyProfileInfo = async () => {
       
           onMutate: async (data) => {
             console.log("onMutate data:",data);
-            
             
           },
           onError: (_err, data, context) => {
