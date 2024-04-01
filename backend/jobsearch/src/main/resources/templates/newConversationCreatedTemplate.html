@@ -1,0 +1,10 @@
+<div>
+    <p class="card__body-message">
+        We hope this message finds you well. You are receiving this notification because user <span class="bold" th:text="${senderEmail}">defaultSenderEmail@gmail.com</span> has created a new conversation with you.
+    </p>
+    <div class="button__container">
+        <a class="button" th:href="${url}" target="_blank">
+            Click here to see the new conversation
+        </a>
+    </div>
+</div>

@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { TextField } from "@mui/material";
 import { Box } from "@mui/material";
 import { Button } from "@mui/material";
 const ChatInput = ({ onSendMessage }) => {
   const [message, setMessage] = useState("");
+
+  const inputRef = useRef(null);
 
   const handleChange = (event) => {
     setMessage(event.target.value);
@@ -21,6 +23,12 @@ const ChatInput = ({ onSendMessage }) => {
       handleSend();
     }
   };
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  });
 
   return (
     <>
@@ -45,6 +53,8 @@ const ChatInput = ({ onSendMessage }) => {
           fullWidth
           inputProps={{ maxLength: 100 }}
           onKeyDown={handleKeyDown}
+          //autoFocus
+          inputRef={inputRef}
         />
         <Button
           onClick={handleSend}

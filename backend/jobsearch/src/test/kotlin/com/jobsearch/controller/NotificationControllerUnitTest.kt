@@ -72,31 +72,41 @@ class NotificationControllerUnitTest {
     fun `Should retrieve all notifications and return status 200`() {
         `when`(notificationService.retrieveAllNotifications()).thenReturn(listOf(notification))
 
-        //when - action or the behaviour that we are going test
-        mockMvc.get("/api/v1/notifications/all")
-
+        // when - action or the behaviour that we are going test
+        val result = mockMvc.get("/api/v1/notifications/all")
             .andExpect {
                 status { isOk() }
                 content { contentType(MediaType.APPLICATION_JSON) }
                 content { objectMapper.writeValueAsString(listOf(notification)) }
             }
-            .andReturn().response.contentAsString
+            .andReturn()
+
+        val contentAsString = result.response.contentAsString
+        println("Response Content: $contentAsString")
+
         verify(notificationService).retrieveAllNotifications()
     }
+
 
     @Test
     fun `Should retrieve all notifications by recipient`() {
         `when`(notificationService.getNotificationsByRecipientUsername(recipient.email)).thenReturn(listOf(notification))
         val recipientEmail = recipient.email
-        //GET request
-        mockMvc.get("/api/v1/notifications/recipient/{email}", recipientEmail)
 
-            //then - verify the output
+        // GET request
+        val result = mockMvc.get("/api/v1/notifications/recipient/{email}", recipientEmail)
+            // then - verify the output
             .andExpect {
                 status { isOk() }
                 content { contentType(MediaType.APPLICATION_JSON) }
                 content { objectMapper.writeValueAsString(listOf(notification)) }
             }
+            .andReturn()
+
+        val contentAsString = result.response.contentAsString
+        println("Response Content: $contentAsString")
+
         verify(notificationService).getNotificationsByRecipientUsername(recipientEmail)
     }
+
 }

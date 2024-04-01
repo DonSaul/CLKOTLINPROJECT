@@ -68,6 +68,7 @@ class InvitationService(
 
         fragmentContext.setVariable("senderEmail", managerUser.email)
         fragmentContext.setVariable("vacancy", "\"${vacancy.name} - ${vacancy.jobFamily.name}\"")
+        fragmentContext.setVariable("content", "\"${invitationDTO.content}\"")
         fragmentContext.setVariable("url", "http://localhost:3000/vacancies/${vacancy.id}")
 
         val fragmentHtml = templateEngine.process("invitationReceivedTemplate", fragmentContext)

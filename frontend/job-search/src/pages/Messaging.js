@@ -30,7 +30,11 @@ const Messaging = () => {
   const { getUserEmail } = useAuth();
   const [selectedUserChat, setSelectedUserChat] = useState();
 
-  const { data: userList, isSuccess: isSuccessUserList } = useGetUsers();
+  const {
+    data: userList,
+    isSuccess: isSuccessUserList,
+    isLoading: isLoadingUserList,
+  } = useGetUsers();
   const { data: userConversations, refetch: fetchAllConversations } =
     useGetConversations();
   const {
@@ -155,6 +159,7 @@ const Messaging = () => {
                 users={filteredUserList}
                 onSelectUser={setSelectedConversation}
                 onSetUserData={setSelectedUserChat}
+                isLoadingUserList={isLoadingUserList}
               ></UserList>
             </Box>
           </Grid>
