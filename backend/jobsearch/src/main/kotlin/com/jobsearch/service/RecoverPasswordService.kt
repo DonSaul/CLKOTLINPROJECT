@@ -27,8 +27,7 @@ class RecoverPasswordService @Autowired constructor(
 
     @Value("\${token.expiration.minutes}")
     private val expirationMinutes: Long = 5
-    fun sendRecoverPassword(email: String){
-
+    fun sendRecoverPassword(email: String) {
         try {
             val user = userRepository.findByEmail(email)
                 .orElseThrow { NoSuchElementException("No user found with email $email") }
@@ -60,11 +59,12 @@ class RecoverPasswordService @Autowired constructor(
             )
 
             notificationService.triggerNotification(notificationDTO)
+        } catch (e: NoSuchElementException) {
+            throw RuntimeException("Failed to send email notification: ${e.message}")
         } catch (e: Exception) {
-            println("Failed to send email notification: ${e.message}")
+            throw RuntimeException("Failed to send email notification: ${e.message}")
         }
     }
-
     fun changePassword(token: String, newPassword: String) {
         if (expirableToken.isExpired(token)) {
             throw RuntimeException("The provided token has expired")
