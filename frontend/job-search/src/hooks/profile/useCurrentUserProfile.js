@@ -33,44 +33,6 @@ const  fetchMyProfileInfo = async () => {
         );
     }
     
-
-    // const updateProfileMutation = useMutation(async (updatedProfileData) => {
-        
-    //     try {
-    //         const response = await fetch(`${ENDPOINTS.updateProfile}/${id}`, {
-    //             method: 'PUT',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 'Authorization': `Bearer ${token}`,
-    //             },
-    //             body: JSON.stringify(updatedProfileData),
-    //         });
-            
-    //         if (!response.ok) {
-    //             throw new Error('Failed to update user profile');
-    //         }
-
-    //         const data = await response.json();
-    //         return data;
-
-    //     } catch (error) {
-    //         throw error;
-    //     }
-    // });
-
-    // const updateUserProfile = async (userId, updatedProfileData) => {
-    //     try {
-    //         const requestData = {
-    //             ...updatedProfileData,
-    //             id: userId
-    //         }
-    //         await updateProfileMutation.mutateAsync(requestData);
-    //     } catch (error) {
-    //         console.error('Error updating user profile:', error);
-    //         throw error;
-    //     }
-    // };
-
     const updateUserProfile = async (data) => {
         let token = localStorage.getItem(AUTH_TOKEN_NAME);
       
@@ -96,9 +58,9 @@ const  fetchMyProfileInfo = async () => {
             if (res.status===403){
               toast.error('You are not allowed to do that'); 
             } else if (res.status===400){
-              toast.error('Invalid CV Data!'); 
+              toast.error('Invalid profile data!'); 
             } else {
-              toast.success("CV updated successfully!")
+              toast.success("Profile updated successfully!")
             }
           },
       
@@ -108,7 +70,7 @@ const  fetchMyProfileInfo = async () => {
             
           },
           onError: (_err, data, context) => {
-            toast.error('Error updating CV!'); 
+            toast.error('Error updating profile!'); 
             console.log("Error on mutation",_err);
             console.log("Error data:",data);
           },
