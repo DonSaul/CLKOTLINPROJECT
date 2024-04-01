@@ -21,7 +21,7 @@ data class User(
     @Column(name = "notification_activated", nullable = false)
     var notificationActivated: Boolean = true,
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "user_notification_type",
         joinColumns = [JoinColumn(name = "user_id")],
@@ -31,7 +31,7 @@ data class User(
 
     @Column(name = "reset_password_token")
     var resetPasswordToken: String? = null,
-
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var cvs: MutableSet<Cv>? = mutableSetOf()
+//
+//    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+//    var cvs: MutableSet<Cv>? = mutableSetOf()
 )
