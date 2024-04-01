@@ -2,10 +2,12 @@ import React from "react";
 import { Button } from "@mui/material";
 import { useGetUserPdf } from "../hooks/useGetPdf";
 import { ROLES } from "../helpers/constants";
+import { useAuth } from "../helpers/userContext";
 
-const CvPdfButton = ({ id, roleId }) => {
+const CvPdfButton = ({ id }) => {
+  const { getUserRole } = useAuth();
   const { pdf, isLoading: isLoadingPdf, isError: isErrorPdf } =
-    useGetUserPdf(roleId === ROLES.CANDIDATE ? null : id);
+    useGetUserPdf(getUserRole === ROLES.CANDIDATE ? null : id);
 
   const handleGetPdf = () => {
     if (pdf) {

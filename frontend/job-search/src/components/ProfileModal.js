@@ -25,7 +25,7 @@ const ProfileModal = ({mutate, profileData}) => {
    
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    
+        
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -41,8 +41,6 @@ const ProfileModal = ({mutate, profileData}) => {
         }
     }, [profileData]);
 
-    console.log("data!", profileData)
-
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
@@ -54,7 +52,6 @@ const ProfileModal = ({mutate, profileData}) => {
                 id,
                 firstName,
                 lastName,
-               
             };
 
             console.log("updated", updatedProfileData)
@@ -69,10 +66,10 @@ const ProfileModal = ({mutate, profileData}) => {
     return (
         <div>
             <Button 
-                sx={{mb: 2}}
                 variant="contained" 
                 color="primary" 
                 onClick={handleOpen}
+                position="absolute"
             >Edit</Button>
             <Modal
                 open={open}
@@ -89,6 +86,7 @@ const ProfileModal = ({mutate, profileData}) => {
                     onChange={(e) => setFirstName(e.target.value)}
                     fullWidth
                     margin="normal"
+                    inputProps={{ maxLength: 100 }}
                 />
     
                 <TextField
@@ -97,12 +95,12 @@ const ProfileModal = ({mutate, profileData}) => {
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}                  
                     fullWidth
-                    margin="normal"        
+                    margin="normal"   
+                    inputProps={{ maxLength: 100 }}
                 /> 
 
-
                 <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-                    Send
+                    Save
                 </Button> 
 
             </form>

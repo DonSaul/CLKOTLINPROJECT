@@ -28,7 +28,7 @@ class Cv(
     )
     val skills: MutableSet<Skill>? = mutableSetOf(),
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.REMOVE])
     @JoinColumn(name = "user_id")
     val user: User,
 )

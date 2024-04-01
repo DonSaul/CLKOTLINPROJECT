@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- displays site properly based on user's device -->
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <title>JobSearch</title>
+
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap");
+
+        body {
+          font-family: "Karla", sans-serif;
+          font-weight: 400;
+          font-size: 16px;
+          line-height: 26px;
+          letter-spacing: -0.2px;
+        }
+
+        .heading-primary {
+          font-weight: 700;
+          font-size: 24px;
+          line-height: 28px;
+          letter-spacing: -0.3px;
+          color: hsl(0deg, 0%, 0%);
+          margin-bottom: 24px;
+        }
+
+        .heading-primary span {
+          text-transform: capitalize;
+        }
+
+        *,
+        *::before,
+        *::after {
+          padding: 0;
+          margin: 0;
+          box-sizing: inherit;
+        }
+
+        html {
+          box-sizing: border-box;
+        }
+
+        .card {
+          max-width: 570px;
+          background-color: hsl(0, 0%, 96%);
+          border-radius: 8px;
+          overflow: hidden;
+          margin: 0 auto;
+        }
+
+        .card__header {
+          background-color: hsl(0deg, 0%, 0%);
+          padding: 24px;
+        }
+
+        .card__header-logo {
+          text-align: center;
+          line-height: 17px;
+        }
+
+        .card__header-logo-name {
+          display: block;
+          font-weight: 700;
+          font-size: 37px;
+          line-height: 37px;
+          letter-spacing: -0.4px;
+          color: hsl(0deg, 0%, 100%);
+        }
+
+        .card__header-logo-slogan {
+          display: block;
+          color: hsl(0deg, 0%, 50%);
+        }
+
+        .card__body {
+          padding: 37px;
+        }
+
+        .card__body-message {
+          text-align: justify;
+          margin-bottom: 27px;
+        }
+
+        .card__body-message .bold {
+          color: hsl(0deg, 0%, 0%);
+          font-weight: 700;
+        }
+
+        .card__body .button__container {
+          text-align: center;
+          margin-bottom: 27px;
+        }
+
+        .card__body .button {
+          text-decoration: none;
+          font-weight: 700;
+          background-color: hsl(0deg, 0%, 0%);
+          color: white;
+          padding: 20px;
+          border-radius: 5px;
+          display: inline-block;
+        }
+
+        .card__body-signature {
+          color: hsl(0deg, 0%, 50%);
+          display: block;
+          text-align: center;
+          font-weight: 700;
+          line-height: 20px;
+        }
+
+        .card__footer {
+          background-color: hsl(0deg, 0%, 0%);
+          padding: 37px;
+          color: hsl(0deg, 0%, 50%);
+        }
+
+        .card__footer p {
+          text-align: justify;
+          margin-bottom: 24px;
+        }
+
+        .card__footer span {
+          display: block;
+          text-align: center;
+        }
+
+        /*# sourceMappingURL=style.css.map */
+    </style>
+
+</head>
+
+<body>
+
+<main>
+    <div class="card">
+        <header class="card__header">
+            <div class="card__header-logo">
+                <span class="card__header-logo-name">JobSearch</span>
+                <span class="card__header-logo-slogan">Find the perfect job</span>
+            </div>
+        </header>
+        <section class="card__body">
+            <h1 class="heading-primary">Hello, <span th:text="${targetName}">User Name</span> 😀!</h1>
+
+            <div th:utext="${content}"></div>
+
+            <span class="card__body-signature">Best regards, <br> The JobSearch Team</span>
+        </section>
+
+        <footer class="card__footer">
+            <p>
+                Do not reply to this message. This address does not accept emails, so you will not receive a response. As part
+                of our service, we send this email with essential information about your JobSearch account, your recent
+                purchase, booking, or subscription to one of our services. At JobSearch, we respect and protect your privacy
+                in accordance with our Privacy Policy. If you have questions, please visit the Help Center.
+            </p>
+
+            <span>
+          © Copyright 2024 JobSearch. All rights reserved.
+        </span>
+        </footer>
+
+    </div>
+</main>
+
+</body>
+
+</html>

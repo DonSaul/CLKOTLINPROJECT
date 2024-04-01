@@ -10,6 +10,8 @@ import com.jobsearch.repository.UserRepository
 import com.jobsearch.repository.VacancyRepository
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
+import org.thymeleaf.context.Context
+import org.thymeleaf.spring6.SpringTemplateEngine
 import java.time.LocalDateTime
 
 
@@ -19,7 +21,8 @@ class InvitationService(
     val userService: UserService,
     val userRepository: UserRepository,
     val vacancyRepository: VacancyRepository,
-    val notificationService: NotificationService
+    val notificationService: NotificationService,
+    val templateEngine: SpringTemplateEngine
 ) {
     @Transactional
     fun createInvitation(invitationDTO: InvitationDTO): InvitationDTO {
@@ -60,6 +63,22 @@ class InvitationService(
 
         val newInvitation = invitationRepository.save(invitationEntity)
 
+        // Setting html email
+        val fragmentContext = Context()
+
+        fragmentContext.setVariable("senderEmail", managerUser.email)
+        fragmentContext.setVariable("vacancy", "\"${vacancy.name} - ${vacancy.jobFamily.name}\"")
+        fragmentContext.setVariable("url", "http://localhost:3000/vacancies/${vacancy.id}")
+
+        val fragmentHtml = templateEngine.process("invitationReceivedTemplate", fragmentContext)
+
+        val templateContext = Context()
+
+        templateContext.setVariable("targetName", "${candidate.firstName} ${candidate.lastName}")
+        templateContext.setVariable("content", fragmentHtml)
+
+        val emailContent = templateEngine.process("emailTemplate", templateContext)
+
         // Get notification when sent
         val notificationDTO = NotificationDTO(
             type = NotificationTypeEnum.INVITATIONS.id,
@@ -68,6 +87,7 @@ class InvitationService(
             content = newInvitation.content,
             sender = newInvitation.manager.id,
             vacancy = newInvitation.vacancy.id,
+            emailContent = emailContent
         )
         notificationService.triggerNotification(notificationDTO)
 

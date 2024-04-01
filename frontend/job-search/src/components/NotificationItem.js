@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 
 import { ENDPOINTS } from "../helpers/endpoints";
+import { AUTH_TOKEN_NAME } from "../helpers/constants";
 import { Typography, Checkbox, Button } from "@mui/material";
 
 const NotificationItem = ({ notification, onNotificationRead, isRead }) => {
   const [markingAsRead, setMarkingAsRead] = useState(false);
+  let token = localStorage.getItem(AUTH_TOKEN_NAME);
 
   const handleMarkAsRead = async () => {
     setMarkingAsRead(true);
@@ -15,6 +17,7 @@ const NotificationItem = ({ notification, onNotificationRead, isRead }) => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
         }
       );
