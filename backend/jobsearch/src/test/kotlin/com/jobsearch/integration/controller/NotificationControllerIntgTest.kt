@@ -88,7 +88,6 @@ class NotificationControllerIntgTest {
 
         val CV_ENTITY = Cv(
             id = null,
-            summary = "blablabla",
             yearsOfExperience = 1,
             salaryExpectation = 10000,
             education = "High School",
@@ -98,7 +97,6 @@ class NotificationControllerIntgTest {
 
         val CV_REQUEST = CV_ENTITY.let {
             CvRequestDTO(
-                summary = "blablabla",
                 yearsOfExperience = it.yearsOfExperience,
                 salaryExpectation = it.salaryExpectation,
                 education = it.education,
@@ -131,7 +129,6 @@ class NotificationControllerIntgTest {
             id = null,
             startDate = LocalDate.of(2022, 2, 2),
             endDate = LocalDate.now(),
-            company = "Important Company",
             position = "Position 1",
             description = "BLABLABLA",
             cv = CV_ENTITY,
@@ -144,7 +141,6 @@ class NotificationControllerIntgTest {
                 id = null,
                 startDate = it.startDate,
                 endDate = it.endDate,
-                company = "Important Company",
                 position = it.position,
                 description = it.description,
                 jobFamilyId = it.jobFamily.id!!,
