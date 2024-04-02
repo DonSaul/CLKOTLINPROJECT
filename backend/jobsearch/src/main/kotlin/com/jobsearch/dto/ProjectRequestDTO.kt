@@ -2,13 +2,19 @@ package com.jobsearch.dto
 
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Size
 
 data class ProjectRequestDTO (
-        val projectId:Int,
-        @get:NotBlank(message = "Project name must not be blank")
-        val name:String,
-        @get:NotBlank(message = "Project description must not be blank")
+        val id: Int?,
+
+        @field:NotBlank(message = "Project name must not be blank")
+        @field:Size(max = 100, message = "Project name must not exceed 100 characters")
+        val name: String,
+
+        @field:NotBlank(message = "Project description must not be blank")
+        @field:Size(max = 100, message = "Project description must not exceed 100 characters")
         val description:String,
-        @get:NotNull(message = "Project must have a job family")
+
+        @field:NotNull(message = "Project must have a job family")
         val jobFamilyId:Int
 )

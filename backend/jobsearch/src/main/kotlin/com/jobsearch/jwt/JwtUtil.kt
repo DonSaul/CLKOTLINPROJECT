@@ -36,6 +36,7 @@ class JwtProvider (
         val user = userRepository.findByEmail(userDetails.username).orElse(null)
         claims["first_name"] = user.firstName
         claims["last_name"] = user.lastName
+        claims["id"] = user.id
         return Jwts.builder()
             .setClaims(claims)
             .setIssuedAt(Date())

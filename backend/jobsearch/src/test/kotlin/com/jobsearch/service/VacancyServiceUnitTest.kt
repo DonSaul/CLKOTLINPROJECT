@@ -1,5 +1,7 @@
 package com.jobsearch.service
 
+import com.jobsearch.dto.JobFamilyDto
+import com.jobsearch.dto.UserResponseDTO
 import com.jobsearch.dto.VacancyRequestDTO
 import com.jobsearch.dto.VacancyResponseDTO
 import com.jobsearch.entity.JobFamily
@@ -12,12 +14,15 @@ import com.jobsearch.repository.VacancyRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.never
 import org.mockito.MockitoAnnotations
-import java.util.*
-
+import java.util.Optional
 
 class VacancyServiceUnitTest {
     @Mock
@@ -26,16 +31,13 @@ class VacancyServiceUnitTest {
     private lateinit var jobFamilyService: JobFamilyService
     @Mock
     private lateinit var userService: UserService
+    @Mock
+    private lateinit var applicationService: ApplicationService
     @InjectMocks
     private lateinit var vacancyService: VacancyService
 
-    // Will be initialized in setUp
-    lateinit var VACANCY_1: Vacancy
-    lateinit var EXPECTED_RESPONSE_DTO: VacancyResponseDTO
-    lateinit var VACANCY_REQUEST_DTO: VacancyRequestDTO
-
     companion object {
-        // Mock objects, will be initialized in setUp
+        private val managerRole = Role(2, "manager")
         val JOB_FAMILY = JobFamily(1, "Information Technology")
         val MANAGER_1 = User(
             id = 1,
@@ -43,7 +45,7 @@ class VacancyServiceUnitTest {
             lastName = "Ger",
             email = "manager@mail.com",
             password = "test123",
-            role = Role(1,"manager")
+            role = managerRole
         )
         val MANAGER_2 = User(
             id = 2,
@@ -51,7 +53,7 @@ class VacancyServiceUnitTest {
             lastName = "Ger2",
             email = "manager2@mail.com",
             password = "test123",
-            role = Role(1,"manager")
+            role = managerRole
         )
         val VACANCY_1 = Vacancy(
             id = 1,
@@ -69,16 +71,22 @@ class VacancyServiceUnitTest {
                 name = it.name,
                 salaryExpectation = it.salaryExpectation,
                 yearsOfExperience = it.yearsOfExperience,
-                managerId = it.manager.id,
-                jobFamilyId = it.jobFamily.id!!,
-                jobFamilyName = it.jobFamily.name,
+                manager = it.manager.run {
+                                         UserResponseDTO(
+                                             this.id!!,
+                                             this.firstName,
+                                             this.lastName,
+                                             this.email,
+                                             this.role!!.id!!
+                                         )
+                },
+                jobFamily = JobFamilyDto(it.jobFamily.id, it.jobFamily.name),
                 companyName = it.companyName,
                 description = it.description
             )
         }
         val VACANCY_REQUEST_DTO = VACANCY_1.let {
             VacancyRequestDTO(
-                id = null,
                 name = it.name,
                 salaryExpectation = it.salaryExpectation,
                 yearsOfExperience = it.yearsOfExperience,
@@ -89,28 +97,23 @@ class VacancyServiceUnitTest {
         }
     }
 
-
     @BeforeEach
-        fun setUp() {
-            VACANCY_1 = VacancyServiceUnitTest.VACANCY_1
-            EXPECTED_RESPONSE_DTO = VacancyServiceUnitTest.EXPECTED_RESPONSE_DTO
-            VACANCY_REQUEST_DTO = VacancyServiceUnitTest.VACANCY_REQUEST_DTO
-
-            MockitoAnnotations.openMocks(this)
-        }
+    fun setUp() {
+        MockitoAnnotations.openMocks(this)
+    }
 
     @Test
     fun `Should retrieve vacancy by id`() {
         val vacancyId = VACANCY_1.id!!
         val vacancyEntity = VACANCY_1
         val expectedResponseDTO = EXPECTED_RESPONSE_DTO
-        // Mocking behavior of vacancyRepository
         `when`(vacancyRepository.findById(vacancyId)).thenReturn(Optional.of(vacancyEntity))
         // Calling the method under test
         val result = vacancyService.retrieveVacancy(vacancyId)
-        // Verifying the result
+        // then
         Assertions.assertEquals(expectedResponseDTO, result)
-        verify(vacancyRepository, times(1)).findById(vacancyId)
+        verify(vacancyRepository).findById(vacancyId)
+        verify(vacancyRepository).findById(vacancyId)
     }
 
     @Test
@@ -122,8 +125,9 @@ class VacancyServiceUnitTest {
         Assertions.assertThrows(NotFoundException::class.java) {
             vacancyService.retrieveVacancy(vacancyId)
         }
-        verify(vacancyRepository, times(1)).findById(vacancyId)
-
+        // then
+        verify(vacancyRepository).findById(vacancyId)
+        verify(jobFamilyService, never()).findByJobFamilyId(anyInt())
     }
 
     @Test
@@ -132,14 +136,10 @@ class VacancyServiceUnitTest {
         `when`(jobFamilyService.findByJobFamilyId(VACANCY_REQUEST_DTO.jobFamilyId)).thenReturn(JOB_FAMILY)
         `when`(userService.retrieveAuthenticatedUser()).thenReturn(MANAGER_1)
         `when`(vacancyRepository.save(any())).thenReturn(VACANCY_1)
-
         // When
         val result = vacancyService.createVacancy(VACANCY_REQUEST_DTO)
-
         // Then
         Assertions.assertEquals(EXPECTED_RESPONSE_DTO, result)
-
-        // Verify mocks
         verify(jobFamilyService).findByJobFamilyId(VACANCY_REQUEST_DTO.jobFamilyId)
         verify(userService).retrieveAuthenticatedUser()
         verify(vacancyRepository).save(any())
@@ -151,15 +151,13 @@ class VacancyServiceUnitTest {
         val differentManager = MANAGER_2
         `when`(userService.retrieveAuthenticatedUser()).thenReturn(differentManager)
         `when`(vacancyRepository.findById(VACANCY_1.id!!)).thenReturn(Optional.of(VACANCY_1))
-
         // When
         Assertions.assertThrows(ForbiddenException::class.java){
             vacancyService.deleteVacancy(VACANCY_1.id!!)
         }
-
-        // Verify that the vacancyRepository delete method was not called
+        // Then
         verify(vacancyRepository, never()).delete(any())
-        verify(userService, times(1)).retrieveAuthenticatedUser()
+        verify(userService).retrieveAuthenticatedUser()
     }
 
     @Test
@@ -170,7 +168,6 @@ class VacancyServiceUnitTest {
         vacancyService.deleteVacancy(VACANCY_1.id!!)
         //then
         verify(vacancyRepository).delete(any())
-        verify(vacancyRepository, times(1)).delete(any())
-
     }
 }
+

@@ -10,4 +10,6 @@ interface ConversationRepository:JpaRepository<Conversation,Int> {
 
     fun findByUser1AndUser2(user1: User, user2: User): Conversation?
 
+
+
 }

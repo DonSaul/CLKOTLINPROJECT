@@ -13,4 +13,6 @@ interface ChatMessageRepository :JpaRepository<ChatMessage,Int>{
             "JOIN cm.conversation c " +
             "WHERE (c.user1.id = :userId1 AND c.user2.id = :userId2) OR (c.user1.id = :userId2 AND c.user2.id = :userId1)")
     fun findMessagesByUserIds(userId1: Int, userId2: Int): List<ChatMessage>
+
+
 }

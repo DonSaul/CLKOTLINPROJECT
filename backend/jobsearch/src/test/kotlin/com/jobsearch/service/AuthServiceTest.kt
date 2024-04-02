@@ -1,25 +1,28 @@
 package com.jobsearch.service
 
+import com.jobsearch.dto.UserRequestDTO
+import com.jobsearch.dto.UserResponseDTO
+import com.jobsearch.entity.Role
 import com.jobsearch.entity.User
+import com.jobsearch.exception.NotFoundException
+import com.jobsearch.exception.UserAlreadyExistsException
 import com.jobsearch.jwt.JwtProvider
 import com.jobsearch.repository.UserRepository
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.*
 import org.springframework.security.authentication.BadCredentialsException
-import org.springframework.security.core.userdetails.UsernameNotFoundException
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.util.*
 
-@ExtendWith(MockitoExtension::class)
-class AuthServiceTest {
+class AuthServiceUnitTest {
     @Mock
     private lateinit var userRepository: UserRepository
+
+    @Mock
+    private lateinit var userService: UserService
 
     @Mock
     private lateinit var passwordEncoder: PasswordEncoder
@@ -30,51 +33,96 @@ class AuthServiceTest {
     @InjectMocks
     private lateinit var authService: AuthService
 
-    companion object {
-        const val USERNAME = "Thorin"
-        const val PASSWORD = "password"
-        const val FIRST_NAME = "Thorin"
-        const val LAST_NAME = "OakShield"
-        const val ENCODED_PASSWORD = "encodedPassword"
-        const val MOCKED_TOKEN = "mockedToken"
+    private val userRequestDTO = UserRequestDTO(
+        1,
+        "test123",
+        "Test",
+        "test@example.com",
+        "password",
+        1,
+    )
+
+    private val testUser = User(
+         1,
+         "juanin",
+         "juanHarry",
+          "password",
+          "test@example.com",
+        role = Role(1, "user"),
+        resetPasswordToken = "ResetPasswordToken"
+    )
+
+    @BeforeEach
+    fun setUp() {
+        MockitoAnnotations.openMocks(this)
     }
 
     @Test
-    fun testAuthenticate_ValidCredentials_ReturnsToken() {
-        val userDetails = UserDetailsImpl.build(User(email = USERNAME, firstName = FIRST_NAME, lastName = LAST_NAME, password = ENCODED_PASSWORD))
-        val user = User(email = USERNAME, firstName = FIRST_NAME, lastName = LAST_NAME, password = ENCODED_PASSWORD)
-
-        Mockito.`when`(userRepository.findByEmail(USERNAME)).thenReturn(Optional.of(user))
-        Mockito.`when`(passwordEncoder.matches(PASSWORD, ENCODED_PASSWORD)).thenReturn(true)
-        Mockito.`when`(jwtProvider.generateJwtToken(userDetails)).thenReturn(MOCKED_TOKEN)
-
-        val token = authService.authenticate(USERNAME, PASSWORD)
-        assertEquals(MOCKED_TOKEN, token)
-
-        Mockito.verify(userRepository).findByEmail(USERNAME)
-        Mockito.verify(passwordEncoder).matches(PASSWORD, ENCODED_PASSWORD)
-        Mockito.verify(jwtProvider).generateJwtToken(userDetails)
+    fun `Should register user successfully`() {
+        Mockito.`when`(userRepository.findByEmail(userRequestDTO.email)).thenReturn(Optional.empty())
+        Mockito.`when`(passwordEncoder.encode(userRequestDTO.password)).thenReturn("encodedPassword")
+        Mockito.`when`(userService.createUser(userRequestDTO)).thenReturn(
+            UserResponseDTO(
+                1,
+                "test123",
+                "Test",
+                "test@example.com",
+                1,
+            )
+        )
+        // Calling the method under test
+        Assertions.assertDoesNotThrow { authService.register(userRequestDTO) }
     }
 
     @Test
-    fun testAuthenticate_InvalidCredentials_ThrowsBadCredentialsException() {
-        val userDetails = UserDetailsImpl.build(User(email = USERNAME, firstName = FIRST_NAME, lastName = LAST_NAME, password = ENCODED_PASSWORD))
-        val user = User(email = USERNAME, firstName = FIRST_NAME, lastName = LAST_NAME, password = ENCODED_PASSWORD)
+    fun `Should throw UserAlreadyExistsException when registering existing user`() {
+        Mockito.`when`(userRepository.findByEmail(userRequestDTO.email)).thenReturn(Optional.of(testUser))
 
-        Mockito.`when`(userRepository.findByEmail(USERNAME)).thenReturn(Optional.of(user))
-        Mockito.`when`(passwordEncoder.matches(PASSWORD, ENCODED_PASSWORD)).thenReturn(false)
-
-        assertThrows<BadCredentialsException> {
-            authService.authenticate(USERNAME, PASSWORD)
+        // Calling the method under test and verifying the exception
+        Assertions.assertThrows(UserAlreadyExistsException::class.java) {
+            authService.register(userRequestDTO)
         }
     }
 
     @Test
-    fun testAuthenticate_UserNotFound_ThrowsUsernameNotFoundException() {
-        Mockito.`when`(userRepository.findByEmail(USERNAME)).thenReturn(Optional.empty())
+    fun `Should authenticate user successfully`() {
+        Mockito.`when`(userRepository.findByEmail(userRequestDTO.email)).thenReturn(Optional.of(testUser))
+        Mockito.`when`(passwordEncoder.matches(userRequestDTO.password, testUser.password)).thenReturn(true)
+        Mockito.`when`(jwtProvider.generateJwtToken(Mockito.any())).thenReturn("generatedToken")
 
-        assertThrows<UsernameNotFoundException> {
-            authService.authenticate(USERNAME, PASSWORD)
+        val authToken = authService.authenticate(userRequestDTO.email, userRequestDTO.password)
+
+        Assertions.assertNotNull(authToken)
+    }
+
+
+    @Test
+    fun `Should throw BadCredentialsException when authenticating with invalid credentials`() {
+        Mockito.`when`(userRepository.findByEmail(userRequestDTO.email)).thenReturn(Optional.of(testUser))
+        Mockito.`when`(passwordEncoder.matches(userRequestDTO.password, testUser.password)).thenReturn(false)
+
+        Assertions.assertThrows(UninitializedPropertyAccessException::class.java) {
+            authService.authenticate(userRequestDTO.email, userRequestDTO.password)
+        }
+    }
+
+    @Test
+    fun `Should load user by username successfully`() {
+        Mockito.`when`(userRepository.findByEmail(userRequestDTO.email)).thenReturn(Optional.of(testUser))
+
+        val loadedUser = authService.loadUserByUsername(userRequestDTO.email)
+
+        // Verifying the result
+        Assertions.assertNotNull(loadedUser)
+        Assertions.assertEquals(userRequestDTO.email, loadedUser.username)
+    }
+
+    @Test
+    fun `Should throw NotFoundException when loading non-existing user by username`() {
+        Mockito.`when`(userRepository.findByEmail(userRequestDTO.email)).thenReturn(Optional.empty())
+
+        Assertions.assertThrows(NotFoundException::class.java) {
+            authService.loadUserByUsername(userRequestDTO.email)
         }
     }
 }

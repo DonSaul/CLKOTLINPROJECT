@@ -10,10 +10,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.core.token.TokenService
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
@@ -24,12 +24,8 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
 
     @Autowired
     private lateinit var authService: AuthService
-
     @Autowired
-    lateinit var passwordEncoder: PasswordEncoder
-
-    @Autowired
-    lateinit var jwtAuthenticationFilter: JwtAuthenticationFilter
+    private lateinit var jwtAuthenticationFilter: JwtAuthenticationFilter
 
     @Bean
     @Throws(Exception::class)
@@ -43,17 +39,25 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
                     .requestMatchers("/api/v1/application/**").authenticated()
                     .requestMatchers("/api/v1/cvs/**").authenticated()
                     .requestMatchers("/api/v1/skills/**").permitAll()
-                    // Vacancy endpoints
                     .requestMatchers(HttpMethod.GET, "/api/v1/vacancy").authenticated()
                     .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/**").authenticated()
                     .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/search").authenticated()
-                    .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/manage").hasAuthority("manager")
+                    .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/my-vacancies").hasAuthority("manager")
                     .requestMatchers(HttpMethod.POST, "/api/v1/vacancy").hasAuthority("manager")
                     .requestMatchers(HttpMethod.GET, "/api/v1/candidates/search").hasAuthority("manager")
+                    .requestMatchers(HttpMethod.GET, "/api/v1/candidates/vacancy/**").hasAuthority("manager")
                     .requestMatchers(HttpMethod.PUT, "/api/v1/vacancy/**").hasAuthority("manager")
                     .requestMatchers(HttpMethod.DELETE, "/api/v1/vacancy/**").hasAuthority("manager")
+//                    .requestMatchers(HttpMethod.GET, "/api/v1/vacancy/manage").hasAuthority("manager")
+                    .requestMatchers(HttpMethod.GET, "/api/v1/candidates/search").hasAuthority("manager")
                     .requestMatchers("/api/v1/job-family/**").permitAll()
                     .requestMatchers("/api/v1/application-status/**").permitAll()
+                    .requestMatchers("/api/v1/invitations/**").permitAll()
+                    .requestMatchers("/api/v1/notifications/**").permitAll()
+                    .requestMatchers("/api/v1/recoverPassword/**").permitAll()
+                    .requestMatchers("api/v1/conversation/**").permitAll()
+                    .requestMatchers("api/v1/pdf").permitAll()
+
                     .anyRequest().authenticated()
             }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)

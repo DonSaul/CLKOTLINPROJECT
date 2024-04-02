@@ -1,0 +1,11 @@
+<div>
+    <p class="card__body-message">
+        We hope this message finds you well. This is a friendly reminder to inform you that you have received a new
+        chat message on JobSearch from <span class="bold" th:text="${senderEmail}">defaultSenderEmail@gmail.com</span>.
+    </p>
+    <div class="button__container">
+        <a class="button" th:href="${url}" target="_blank">
+            Click here to reply
+        </a>
+    </div>
+</div>
