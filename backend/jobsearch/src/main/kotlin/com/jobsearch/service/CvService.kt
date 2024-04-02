@@ -1,8 +1,12 @@
 package com.jobsearch.service
 
-import com.jobsearch.dto.*
+import com.jobsearch.dto.CvRequestDTO
+import com.jobsearch.dto.CvResponseDTO
 import com.jobsearch.entity.Cv
+import com.jobsearch.entity.Job
 import com.jobsearch.entity.Project
+import com.jobsearch.exception.NotFoundException
+import com.jobsearch.mapper.CvMapper
 import com.jobsearch.repository.CvRepository
 import com.jobsearch.repository.JobFamilyRepository
 import com.jobsearch.repository.SkillRepository
@@ -13,20 +17,46 @@ import org.springframework.stereotype.Service
 class CvService(
     private val cvRepository: CvRepository,
     private val skillRepository: SkillRepository,
-    private val jobFamilyRepository: JobFamilyRepository) {
+    private val jobFamilyRepository: JobFamilyRepository,
+    private val userService: UserService,
+    private val cvMapper: CvMapper
+) {
 
     @Transactional
     fun createCv(cvDTO: CvRequestDTO): CvResponseDTO {
 
+        // Setting basic attributes
         val cv = cvDTO.let {
             Cv(
                 id = null,
+                summary = it.summary,
                 yearsOfExperience = it.yearsOfExperience,
                 salaryExpectation = it.salaryExpectation,
                 education = it.education,
+                jobs = mutableSetOf(),
                 projects = mutableSetOf(),
-                skills = mutableSetOf()
+                skills = mutableSetOf(),
+                user = userService.retrieveAuthenticatedUser()
             )
+        }
+
+        // Adding jobs to CV
+        cvDTO.jobs.forEach { jobDTO ->
+            val jobFamily = jobFamilyRepository.findById(jobDTO.jobFamilyId).orElse(null)
+
+            jobFamily?.let {
+                cv.jobs?.add(
+                    Job(
+                        cv = cv,
+                        startDate = jobDTO.startDate,
+                        endDate = jobDTO.endDate,
+                        company = jobDTO.company,
+                        position = jobDTO.position,
+                        description = jobDTO.description,
+                        jobFamily = it
+                    )
+                )
+            }
         }
 
         // Adding projects to CV
@@ -36,20 +66,20 @@ class CvService(
             jobFamily?.let {
                 cv.projects?.add(
                     Project(
+                        cv = cv,
                         name = projectDTO.name,
                         description = projectDTO.description,
-                        cv = cv,
                         jobFamily = it
                     )
                 )
             }
         }
 
-        val skillIds = cvDTO.longSkillString.split(",").map { it.toInt() }.toSet()
-
         // Adding skills to CV
-        skillIds.forEach { skillId ->
-            val skill = skillRepository.findById(skillId).orElse(null)
+        cvDTO.skillIds.forEach { skillId ->
+            val skill = skillRepository.findById(skillId)
+                .orElseThrow { NotFoundException("No Skill found with id $skillId") }
+
             skill?.let {
                 cv.skills?.add(it)
             }
@@ -57,38 +87,83 @@ class CvService(
 
         val newCv = cvRepository.save(cv)
 
-        return mapToCvResponseDTO(newCv)
+        return cvMapper.mapToDto(newCv)
     }
 
 
     fun retrieveCv(cvId: Int): CvResponseDTO {
         val cv = cvRepository.findById(cvId)
-            .orElseThrow { NoSuchElementException("No CV found with id $cvId") }
+            .orElseThrow { NotFoundException("No CV found with id $cvId") }
 
-        return mapToCvResponseDTO(cv)
+        return cvMapper.mapToDto(cv)
     }
 
     fun retrieveAllCvs(): List<CvResponseDTO> {
         val cvs = cvRepository.findAll()
 
-        return cvs.map { mapToCvResponseDTO(it) }
+        return cvs.map { cvMapper.mapToDto(it) }
     }
 
     @Transactional
     fun updateCv(cvId: Int, cvDTO: CvRequestDTO): CvResponseDTO {
         val cv = cvRepository.findById(cvId)
-            .orElseThrow { NoSuchElementException("No CV found with id $cvId") }
+            .orElseThrow { NotFoundException("No CV found with id $cvId") }
 
-        cv.yearsOfExperience = cvDTO.yearsOfExperience
-        cv.salaryExpectation = cvDTO.salaryExpectation
-        cv.education = cvDTO.education
+        val authenticatedUser = userService.retrieveAuthenticatedUser()
+
+        // Checking if user is the owner of the CV he's trying to edit
+        if (cv.user != authenticatedUser) {
+            throw IllegalAccessException("You are not authorized to edit this CV")
+        }
+
+        // Updating basic attributes
+        cv.apply {
+            summary = cvDTO.summary
+            yearsOfExperience = cvDTO.yearsOfExperience
+            salaryExpectation = cvDTO.salaryExpectation
+            education = cvDTO.education
+        }
+
+        // Updating jobs
+        // Removing jobs from the CV that are not in the request
+        cv.jobs?.removeIf { job -> !cvDTO.jobs.any { it.id == job.id } }
+
+        cvDTO.jobs.forEach { dto ->
+            val existingJob = cv.jobs?.find { it.id == dto.id }
+
+            if (existingJob != null) {
+                // If job exists, the properties are updated
+                existingJob.apply {
+                    startDate = dto.startDate
+                    endDate = dto.endDate
+                    company = dto.company
+                    position = dto.position
+                    description = dto.description
+                    jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
+                        .orElseThrow { NotFoundException("No Job Family found with id ${dto.jobFamilyId}") }
+                }
+            } else {
+                // If job doesn't exist, a new one is created and added to the CV
+                val newJob = Job(
+                    cv = cv,
+                    startDate = dto.startDate,
+                    endDate = dto.endDate,
+                    position = dto.position,
+                    company = dto.company,
+                    description = dto.description,
+                    jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
+                        .orElseThrow { NotFoundException("No Job Family found with id ${dto.jobFamilyId}") }
+                )
+                cv.jobs?.add(newJob)
+            }
+        }
 
         // Updating projects
         // Removing projects from the CV that are not in the request
-        cv.projects?.removeIf { project -> !cvDTO.projects.any { it.projectId == project.projectId } }
+        cv.projects?.removeIf { project -> !cvDTO.projects.any { it.id == project.id } }
 
         cvDTO.projects.forEach { dto ->
-            val existingProject = cv.projects?.find { it.projectId == dto.projectId }
+            val existingProject = cv.projects?.find { it.id == dto.id }
 
             if (existingProject != null) {
                 // If project exists, the properties are updated
@@ -96,7 +171,7 @@ class CvService(
                     name = dto.name
                     description = dto.description
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
-                        .orElseThrow { NoSuchElementException("No JobFamily found with id ${dto.jobFamilyId}") }
+                        .orElseThrow { NotFoundException("No JobFamily found with id ${dto.jobFamilyId}") }
                 }
             } else {
                 // If project doesn't exist, a new one is created and added to the CV
@@ -105,65 +180,59 @@ class CvService(
                     name = dto.name,
                     description = dto.description,
                     jobFamily = jobFamilyRepository.findById(dto.jobFamilyId)
-                        .orElseThrow { NoSuchElementException("No JobFamily found with id ${dto.jobFamilyId}") }
+                        .orElseThrow { NotFoundException("No JobFamily found with id ${dto.jobFamilyId}") }
                 )
                 cv.projects?.add(newProject)
             }
         }
 
         // Updating skills
-        val skillIds = cvDTO.longSkillString.split(",").map { it.toInt() }.toSet()
-
         // Getting current skills from the CV
         val currentSkillIds = cv.skills?.map { it.skillId!! }?.toSet() ?: emptySet()
 
         // Removing skills from the CV that are not in the request
-        cv.skills?.removeIf { skill -> skill.skillId !in skillIds }
+        cv.skills?.removeIf { skill -> skill.skillId !in cvDTO.skillIds }
 
         // Adding new skills to the CV
-        skillIds.filterNot { it in currentSkillIds }.forEach { id ->
-            skillRepository.findById(id).ifPresent { cv.skills?.add(it) }
+        cvDTO.skillIds.filterNot { it in currentSkillIds }.forEach { skillId ->
+            val skill = skillRepository.findById(skillId)
+                .orElseThrow { NotFoundException("No Skill found with id $skillId") }
+
+            skill?.let {
+                cv.skills?.add(it)
+            }
         }
 
         val updatedCv = cvRepository.save(cv)
 
-        return mapToCvResponseDTO(updatedCv)
+        return cvMapper.mapToDto(updatedCv)
     }
-
-
     fun deleteCv(cvId: Int): String {
         val cv = cvRepository.findById(cvId)
-            .orElseThrow { NoSuchElementException("No CV found with id $cvId") }
+            .orElseThrow { NotFoundException("No CV found with id $cvId") }
 
         cvRepository.delete(cv)
 
-        return "Cv deleted successfully"
+        return "CV deleted successfully"
     }
 
-    private fun mapToCvResponseDTO(cv: Cv): CvResponseDTO {
-        return CvResponseDTO(
-            id = cv.id!!,
-            yearsOfExperience = cv.yearsOfExperience,
-            salaryExpectation = cv.salaryExpectation,
-            education = cv.education,
-            projects = cv.projects?.map { project ->
-                ProjectResponseDTO(
-                    projectId = project.projectId!!,
-                    name = project.name,
-                    description = project.description,
-                    jobFamily = JobFamilyDto(
-                        id = project.jobFamily.id!!,
-                        name = project.jobFamily.name
-                    )
-                )
-            }?.toSet() ?: emptySet(),
-            skills = cv.skills?.map { skill ->
-                SkillDTO(
-                    skillId = skill.skillId!!,
-                    name = skill.name
-                )
-            }?.toSet() ?: emptySet()
-        )
+    fun retrieveAllMyAccountsCvs(): List<CvResponseDTO> {
+        val cvs = cvRepository.findByUser(userService.retrieveAuthenticatedUser())
+
+        return cvs.map { cvMapper.mapToDto(it) }
     }
 
+    fun retrieveMyAccountsCv(cvId: Int): CvResponseDTO {
+        val cv = cvRepository.findByUserAndId(userService.retrieveAuthenticatedUser(), cvId)
+            .orElseThrow { NotFoundException("No CV found with id $cvId") }
+
+        return cvMapper.mapToDto(cv)
+    }
+
+    fun retrieveMyAccountsLastCv(): CvResponseDTO {
+        val cv = cvRepository.findFirstByUserOrderByIdDesc(userService.retrieveAuthenticatedUser())
+            .orElseThrow { NotFoundException("No CV found for this user") }
+
+        return cvMapper.mapToDto(cv)
+    }
 }

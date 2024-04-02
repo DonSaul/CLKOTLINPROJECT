@@ -7,9 +7,10 @@ import jakarta.persistence.*
 data class Project (
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var projectId:Int?=null,
-        var name:String,
-        var description:String,
+        var id: Int? = null,
+        var name: String,
+        @Column(columnDefinition = "TEXT")
+        var description: String,
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "cv_id")

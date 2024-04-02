@@ -1,148 +1,202 @@
-import { useMemo, useState, useEffect } from 'react';
-import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
-import Button from '@mui/material/Button';
-const data = [
-    {
-      name: 'John',
-      age: 30,
-    },
-    {
-      name: 'Sara',
-      age: 25,
-    },
-  ]
+import { MenuItem } from "@mui/material";
+import Button from "@mui/material/Button";
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+} from "material-react-table";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ROLES } from "../helpers/constants";
+import { useAuth } from "../helpers/userContext";
+import { useApplyVacancy } from "../hooks/useApplyVacancy";
+import { paths } from "../router/paths";
+import { useDeleteVacancy } from "../hooks/useDeleteVacancy";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import { toast } from "react-toastify";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
-const vacancyData = [
-{
-    jobFamily: 'Cybersecurity',
-    yearsOfExperience: 3,
-    salary: 3000000,
-    vacancyId:1
-},
-{
-    jobFamily: 'Backend development',
-    yearsOfExperience: 5,
-    salary: 5000000,
-    vacancyId:2
-},
-{
-    jobFamily: 'Frontend development',
-    yearsOfExperience: 5,
-    salary: 123456,
-    vacancyId:3
-},
-{
-    jobFamily: 'Backend development',
-    yearsOfExperience: 99,
-    salary: 7891234,
-    vacancyId:4
-},
-{
-    jobFamily: 'Backend development',
-    yearsOfExperience: 50,
-    salary: 98765543,
-    vacancyId:5
-    
-},
-{
-    jobFamily: 'Backend development',
-    yearsOfExperience: 100,
-    salary: 98765543,
-    vacancyId:6
-    
-},
-]
+export default function VacancyTable({ dataFromQuery }) {
+  const { getUserRole, getUserIdFromToken } = useAuth();
+  const { mutate: applyToVacancy, isError, isSuccess } = useApplyVacancy();
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const { mutate: deleteVacancy } = useDeleteVacancy();
+  const [selectedId, setSelectedId] = useState(null);
+  const [vacancies, setVacancies] = useState(dataFromQuery);
 
-export default function VacancyTable({dataFromQuery}) {
-    const columns = useMemo(
-        () => [
-        {
-            accessorKey: 'name', //simple recommended way to define a column
-            header: 'Name',
-            muiTableHeadCellProps: { sx: { color: 'green' } }, //optional custom props
-            Cell: ({ cell }) => <span>{cell.getValue()}</span>, //optional custom cell render
-        },
-        {
-            accessorFn: (row) => row.age, //alternate way
-            id: 'age', //id required if you use accessorFn instead of accessorKey
-            header: 'Age',
-            Header: () => <i>Age</i>, //optional custom header render
-        },
-        ],
-        [],
-    );
+  const navigate = useNavigate();
 
-    const columnsVacancies = useMemo(
-        () => [
-        {
-            accessorKey: 'jobFamilyName',
-            header: 'Category',
-        },
-        {
-            accessorKey: 'name', 
-            header: 'Category',
-        },
-        {
-            accessorKey: 'yearsOfExperience',
-            header: 'Years of experience',
+  useEffect(() => {
+    setVacancies(dataFromQuery);
+  }, [dataFromQuery]);
 
-        },
-        {
-            accessorKey: 'salaryExpectation', 
-            header: 'Salary',
-        },
-        {
-            accessorKey: 'vacancyId', 
-            header: 'ID',
-            hidden: true,
-        },
-        {
-            id: 'applyButton', 
-            header: 'Status',
-            Cell: ({ row }) => (
-                <Button variant="contained" color="primary" onClick={() => handleApply(row.original)}>
-                    Apply
-                </Button>
-            ),
-          },
-        ],
-        [],
-    );
+  const columnsVacancies = useMemo(() => {
+    const columns = [
+      {
+        accessorKey: "companyName",
+        header: "Company",
+      },
+      {
+        accessorKey: "jobFamily.name",
+        header: "Category",
+      },
+      {
+        accessorKey: "name",
+        header: "Name",
+      },
+      {
+        accessorKey: "yearsOfExperience",
+        header: "Years of experience",
+      },
+      {
+        accessorKey: "salaryExpectation",
+        header: "Salary",
+      },
+      {
+        accessorKey: "vacancyId",
+        header: "ID",
+        hidden: true,
+      },
+    ];
 
-    //optionally, you can manage any/all of the table state yourself
-    const [rowSelection, setRowSelection] = useState({});
+    if (getUserRole() === ROLES.CANDIDATE) {
+      columns.unshift({
+        accessorKey: "viewVacancy",
+        header: "View Vacancy",
+        Cell: ({ row }) => (
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <VisibilityIcon
+              key="viewEye"
+              onClick={() => navigate(`${paths.vacancies}/${row.original.id}`)}
+              style={{ cursor: "pointer" }}
+            />
+          </div>
+        ),
+      });
 
-    useEffect(() => {
-        //do something when the row selection changes
-    }, [rowSelection]);
-
-    const handleApply = (rowData) => {
-        
-        console.log('Applying to vacancy:', rowData);
-      };
-
-    const table = useMaterialReactTable({
-        columns:columnsVacancies,
-        data:dataFromQuery?  dataFromQuery: vacancyData,
-        hiddenColumns:['id'],
-        enableGlobalFilter: false,
-        enableColumnFilters:false,
-        //enableColumnOrdering: true, //enable some features
-        enableRowSelection: false,
-        enableHiding:false,
-        enablePagination: true, //disable a default feature
-        onRowSelectionChange: setRowSelection, //hoist internal state to your own state (optional)
-        state: { rowSelection }, //manage your own state, pass it back to the table (optional)
-        initialState: { columnVisibility: { vacancyId: false } },
-        //enableHiding:false
-    });
-
-    const someEventHandler = () => {
-        //read the table state during an event from the table instance
-        console.log(table.getState().sorting);
+      columns.push({
+        id: "applyButton",
+        header: "Status",
+        Cell: ({ row }) =>
+          row.original.isApplied ? (
+            appliedMessage
+          ) : (
+            <div id={row.original.id}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleApply(row.original)}
+              >
+                Apply
+              </Button>
+            </div>
+          ),
+      });
     }
 
-    return (
-        <MaterialReactTable table={table} /> //other more lightweight MRT sub components also available
-    );
+    return columns;
+  }, []);
+
+  //optionally, you can manage any/all of the table state yourself
+  const [rowSelection, setRowSelection] = useState({});
+
+  useEffect(() => {
+    console.log("rowSelection", rowSelection);
+  }, [rowSelection]);
+
+  const handleApply = (rowData) => {
+    console.log("Applying to vacancy:", rowData);
+    let applicationData = {
+      vacancyId: rowData.id,
+    };
+    applyToVacancy(applicationData);
+    const buttonDiv = document.getElementById(rowData.id);
+    buttonDiv.innerHTML = appliedMessage;
+  };
+  const appliedMessage = "Applied";
+
+  const handleOpenDeleteModal = () => {
+    setOpenDeleteModal(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setOpenDeleteModal(false);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteVacancy(selectedId);
+      setVacancies(vacancies.filter((vacancy) => vacancy.id !== selectedId));
+      handleCloseDeleteModal();
+    } catch (error) {
+      toast.error("Error deleting vacancy:", error);
+    }
+  };
+
+  const userRoleIsCandidate = () => getUserRole() === ROLES.CANDIDATE;
+
+  const table = useMaterialReactTable({
+    columns: columnsVacancies,
+    data: vacancies,
+    hiddenColumns: ["id"],
+    enableGlobalFilter: false,
+    enableColumnFilters: false,
+    enableRowSelection: false,
+    enableHiding: false,
+    enablePagination: true,
+    onRowSelectionChange: setRowSelection,
+    state: { rowSelection },
+    initialState: {
+      columnVisibility: { vacancyId: false },
+      density: "compact",
+    },
+    enableRowActions: !userRoleIsCandidate(),
+    renderRowActionMenuItems: ({ row }) => {
+      const deleteMenuItem =
+        getUserRole() === ROLES.MANAGER
+          ? getUserIdFromToken() === row.original.manager.id && (
+              <MenuItem
+                key="edit"
+                onClick={() => {
+                  setSelectedId(row.original.id);
+                  console.log("selectedId", selectedId);
+                  handleOpenDeleteModal();
+                }}
+              >
+                Delete
+              </MenuItem>
+            )
+          : null;
+
+      return [
+        <MenuItem
+          key="view"
+          onClick={() => {
+            console.log("row", row);
+            navigate(`${paths.vacancies}/${row.original.id}`);
+          }}
+        >
+          View
+        </MenuItem>,
+        deleteMenuItem,
+      ];
+    },
+  });
+
+  const someEventHandler = () => {
+    //read the table state during an event from the table instance
+    console.log(table.getState().sorting);
+  };
+
+  return (
+    <>
+      <MaterialReactTable table={table} />
+      {
+        <DeleteConfirmationModal
+          open={openDeleteModal}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
+      }
+    </>
+  );
 }

@@ -1,31 +1,37 @@
-import { useMutation, useQuery } from 'react-query';
-import { ENDPOINTS } from '../helpers/endpoints';
-import { AUTH_TOKEN } from '../helpers/constants';
+import { useMutation } from "react-query";
+import { ENDPOINTS } from "../helpers/endpoints";
+import { AUTH_TOKEN_NAME } from "../helpers/constants";
+import { useAuth } from "../helpers/userContext";
+
+import { toast } from "react-toastify";
 
 const login = async (credentials) => {
   const response = await fetch(ENDPOINTS.login, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(credentials),
   });
 
   if (!response.ok) {
-    throw new Error('Login failed');
+    throw new Error("Login failed");
   }
 
-  const data = await response.json();
-  return data.token;
+  const userData = await response.json();
+  return userData;
 };
 
 export const useLogin = () => {
+  const { login: setAuthUser } = useAuth();
+
   return useMutation(login, {
-    onSuccess: (token) => {
-      localStorage.setItem(AUTH_TOKEN, token);
-      console.log('Login successful. Token:', token);
+    onSuccess: (userData) => {
+      toast.success("Login successful!");
+      localStorage.setItem(AUTH_TOKEN_NAME, userData.token);
+      setAuthUser(userData);
     },
     onError: (error) => {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
+      toast.error("Invalid username or password");
     },
   });
 };
-

@@ -1,47 +1,48 @@
 package com.jobsearch.service
 
-import com.jobsearch.dto.UserDTO
-import com.jobsearch.entity.Role
+import com.jobsearch.dto.UserRequestDTO
 import com.jobsearch.entity.User
+import com.jobsearch.exception.NotFoundException
+import com.jobsearch.exception.UserAlreadyExistsException
+import com.jobsearch.jwt.JwtProvider
 import com.jobsearch.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
 class AuthService(
     private val userRepository: UserRepository,
-    @Autowired private val passwordEncoder: PasswordEncoder
+    val userService: UserService,
 ) : UserDetailsService {
-
-    fun register(userDto: UserDTO) {
-        val user = User(
-            email = userDto.email,
-            password = passwordEncoder.encode(userDto.password),
-            roles = setOf(Role(name = "ROLE_USER"))
-        )
-        userRepository.save(user)
+    @Autowired
+    private lateinit var passwordEncoder: PasswordEncoder
+    @Autowired
+    private lateinit var jwtProvider: JwtProvider
+    fun register(userRequestDto: UserRequestDTO) {
+        if (userRepository.findByEmail(userRequestDto.email).isPresent) throw UserAlreadyExistsException("User with email ${userRequestDto.email} already on the database")
+        userService.createUser(userRequestDto)
     }
 
     fun findByUsername(username: String): User? {
-        return userRepository.findByUsername(username).orElse(null)
+        return userRepository.findByEmail(username).orElse(null)
     }
 
+    fun authenticate(username: String, password: String): String {
+        val userDetails = loadUserByUsername(username)
+        if (passwordEncoder.matches(password, userDetails.password)) {
+            return jwtProvider.generateJwtToken(userDetails)
+        } else {
+            throw BadCredentialsException("Invalid credentials.")
+        }
+    }
 
     override fun loadUserByUsername(username: String): UserDetails {
-        val user = userRepository.findByUsername(username)
-            .orElseThrow { UsernameNotFoundException("User not found.") }
-
-        val authorities = user.roles.map { SimpleGrantedAuthority(it.name) }
-
-        return org.springframework.security.core.userdetails.User
-            .withUsername(user.email)
-            .password(user.password)
-            .authorities(authorities)
-            .build()
+        val user = userRepository.findByEmail(username)
+            .orElseThrow { NotFoundException("User with email $username not found.") }
+        return UserDetailsImpl.build(user)
     }
 }

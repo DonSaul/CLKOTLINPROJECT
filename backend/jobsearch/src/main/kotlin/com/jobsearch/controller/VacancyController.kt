@@ -1,9 +1,12 @@
 package com.jobsearch.controller
 
-import com.jobsearch.dto.VacancyDto
+import com.jobsearch.dto.VacancyRequestDTO
+import com.jobsearch.dto.VacancyResponseDTO
+import com.jobsearch.response.StandardResponse
 import com.jobsearch.service.VacancyService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -13,31 +16,16 @@ import org.springframework.web.bind.annotation.*
 class VacancyController(
     val vacancyService: VacancyService
 ) {
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    fun createVacancy(@RequestBody @Valid vacancyDto: VacancyDto): VacancyDto {
-        return vacancyService.createVacancy(vacancyDto)
-    }
-
     @GetMapping("{id}")
-    fun retrieveVacancy(@PathVariable("id") vacancyId: Int): VacancyDto {
-        return vacancyService.retrieveVacancy(vacancyId)
+    fun retrieveVacancy(@PathVariable("id") vacancyId: Int): ResponseEntity<StandardResponse<VacancyResponseDTO>> {
+        val dataBody = vacancyService.retrieveVacancy(vacancyId)
+        return mapResponseEntity(dataBody)
     }
 
     @GetMapping()
-    fun retrieveAllVacancy(): List<VacancyDto> {
-        return vacancyService.retrieveAllVacancy()
-    }
-
-    @PutMapping("{id}")
-    fun updateVacancy(@PathVariable("id") vacancyId: Int, @RequestBody vacancyDto: VacancyDto): VacancyDto {
-        return vacancyService.updateVacancy(vacancyId, vacancyDto)
-    }
-
-    @DeleteMapping("{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteVacancy(@PathVariable("id") vacancyId: Int): String {
-        return vacancyService.deleteVacancy(vacancyId)
+    fun retrieveAllVacancy(): ResponseEntity<StandardResponse<List<VacancyResponseDTO>>>  {
+        val dataBodylist = vacancyService.retrieveAllVacancy()
+        return mapResponseEntity(dataBodylist)
     }
 
     @GetMapping("/search")
@@ -45,9 +33,81 @@ class VacancyController(
         @RequestParam(required = false) salary: Int?,
         @RequestParam(required = false) jobFamilyId: Int?,
         @RequestParam(required = false) yearsOfExperience: Int?
-    ): List<VacancyDto> {
-
-        return vacancyService.findVacanciesByFilter(salary, jobFamilyId, yearsOfExperience)
-
+    ): ResponseEntity<StandardResponse<List<VacancyResponseDTO>>>  {
+        val dataBodyList = vacancyService.findVacanciesByFilter(salary, jobFamilyId, yearsOfExperience)
+        return mapResponseEntity(dataBodyList)
     }
+
+    @GetMapping("/my-vacancies")
+    fun retrieveVacancyByManager(): ResponseEntity<StandardResponse<List<VacancyResponseDTO>>>  {
+        val dataBodyList = vacancyService.retrieveVacancyByManager()
+        return mapResponseEntity(dataBodyList)
+    }
+    @PostMapping
+    fun createVacancy(@RequestBody @Valid vacancyDto: VacancyRequestDTO): ResponseEntity<StandardResponse<VacancyResponseDTO>> {
+        val dataBody = vacancyService.createVacancy(vacancyDto)
+        return mapResponseEntity(dataBody, HttpStatus.CREATED)
+    }
+
+    @PutMapping("{id}")
+    fun updateVacancy(@PathVariable("id") vacancyId: Int, @Valid @RequestBody vacancyDto: VacancyRequestDTO): ResponseEntity<StandardResponse<VacancyResponseDTO>> {
+        val dataBody = vacancyService.updateVacancy(vacancyId, vacancyDto)
+        return mapResponseEntity(dataBody)
+    }
+
+    @DeleteMapping("{id}")
+    fun deleteVacancy(@PathVariable("id") vacancyId: Int): ResponseEntity<StandardResponse<Unit>> {
+        val dataBody = vacancyService.deleteVacancy(vacancyId)
+        return mapResponseEntity(dataBody, HttpStatus.NO_CONTENT)
+    }
+
+    /**
+     * Maps a response entity with the provided data body and status.
+     * Returns a ResponseEntity of StandardResponse.
+     *
+     * @param dataBody The data body to be included in the response.
+     * @param status The HTTP status code (default is HttpStatus.OK).
+     * @return ResponseEntity<StandardResponse> The mapped response entity.
+     */
+    private fun <T> mapResponseEntity(
+        dataBody: T,
+        status: HttpStatus = HttpStatus.OK
+    ): ResponseEntity<StandardResponse<T>> {
+        val bodyContent = StandardResponse(
+            status = status.value(),
+            data = dataBody,
+            message = status.reasonPhrase
+        )
+        return ResponseEntity
+            .status(status)
+            .body(bodyContent)
+    }
+
+    /**
+     * Maps a response entity with the provided list data body and status.
+     * Returns a ResponseEntity of StandardResponse.
+     *
+     * @param dataBody The data body list to be included in the response.
+     * @param status The HTTP status code (default is HttpStatus.OK).
+     * @return ResponseEntity<StandardResponse<List<T>>> The mapped response entity.
+     */
+    private fun <T> mapResponseEntity(
+        dataBody: List<T>,
+        status: HttpStatus = HttpStatus.OK
+    ): ResponseEntity<StandardResponse<List<T>>> {
+        val responseStatus = if (dataBody.isEmpty()) {
+            HttpStatus.NOT_FOUND
+        } else {
+            status
+        }
+        val bodyContent = StandardResponse(
+            status = responseStatus.value(),
+            data = dataBody,
+            message = responseStatus.reasonPhrase
+        )
+        return ResponseEntity
+            .status(responseStatus)
+            .body(bodyContent)
+    }
+
 }

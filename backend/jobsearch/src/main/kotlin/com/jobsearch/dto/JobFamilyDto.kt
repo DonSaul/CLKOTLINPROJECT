@@ -1,9 +1,9 @@
 package com.jobsearch.dto
 
-import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotEmpty
 
-class JobFamilyDto(
+data class JobFamilyDto(
     val id: Int?,
-    @get:NotBlank(message = "JobFamily.name must not be blank")
+    @get:NotEmpty(message = "Name must not be blank")
     val name: String,
 )
