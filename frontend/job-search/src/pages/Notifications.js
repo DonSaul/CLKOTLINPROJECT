@@ -24,7 +24,27 @@ const Notifications = () => {
   const [messageChecked, setMessageChecked] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [readNotifications, setReadNotifications] = useState([]);
-  const itemsPerPage = 4;
+  const itemsPerPage = 3;
+
+  useEffect(() => {
+    if (notificationActivated !== null) {
+      setInitialCheckboxValue(notificationActivated);
+      const vacancyType = notificationTypes.find(type => type.id === NOTIFICATION_TYPES.VACANCIES);
+      const invitationType = notificationTypes.find(type => type.id === NOTIFICATION_TYPES.INVITATIONS);
+      const messageType = notificationTypes.find(type => type.id === NOTIFICATION_TYPES.MESSAGES);
+      if (vacancyType) setVacancyChecked(true);
+      if (invitationType) setInvitationChecked(true);
+      if (messageType) setMessageChecked(true);
+      if (notifications.length > 0) {
+        const readNotificationIds = notifications.filter(notification => notification.read).map(notification => notification.id);
+        setReadNotifications(readNotificationIds);
+      }
+    }
+  }, [notificationActivated, notificationTypes, notifications]);
+
+  const handleDeleteNotification = (deletedNotificationId) => {
+    setReadNotifications(prevState => prevState.filter(id => id !== deletedNotificationId));
+  };
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -48,62 +68,32 @@ const Notifications = () => {
     handleCheckboxNotificationType(newValue, NOTIFICATION_TYPES.MESSAGES);
   };
 
-  useEffect(() => {
-    if (notificationActivated !== null) {
-      setInitialCheckboxValue(notificationActivated);
-      const vacancyType = notificationTypes.find(type => type.id === NOTIFICATION_TYPES.VACANCIES);
-      const invitationType = notificationTypes.find(type => type.id === NOTIFICATION_TYPES.INVITATIONS);
-      const messageType = notificationTypes.find(type => type.id === NOTIFICATION_TYPES.MESSAGES);
-      if (vacancyType) setVacancyChecked(true);
-      if (invitationType) setInvitationChecked(true);
-      if (messageType) setMessageChecked(true);
-      if (notifications.length > 0) {
-        const readNotificationIds = notifications.filter(notification => notification.read).map(notification => notification.id);
-        setReadNotifications(readNotificationIds);
-      }
-    }
-  }, [notificationActivated, notificationTypes, notifications]);
-
-  const handleDeleteNotification = (deletedNotificationId) => {
-    setReadNotifications(prevState => prevState.filter(id => id !== deletedNotificationId));
-  };
-
   const renderNotifications = () => {
     if (!notifications || notifications.length === 0) {
       return <p>No notifications found</p>;
     }
-  
+
+    // Combine unread and read notifications
     const unreadNotifications = notifications.filter(notification => !readNotifications.includes(notification.id));
-    const readNotificationsSorted = notifications.filter(notification => readNotifications.includes(notification.id));
-  
-    const unreadNotificationItems = unreadNotifications.map(notification => (
+    const combinedNotifications = [...unreadNotifications, ...notifications.filter(notification => readNotifications.includes(notification.id))];
+
+    // Calculate start and end index for pagination
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = currentPage * itemsPerPage;
+
+    // Slice notifications for the current page
+    const notificationsToShow = combinedNotifications.slice(startIndex, endIndex);
+
+    return notificationsToShow.map(notification => (
       <NotificationItem
         key={notification.id}
         notification={notification}
         onNotificationRead={() => setReadNotifications([...readNotifications, notification.id])}
         onDelete={handleDeleteNotification}
-        isRead={false}
+        isRead={readNotifications.includes(notification.id)}
       />
     ));
-  
-    const readNotificationItems = readNotificationsSorted.map(notification => (
-      <NotificationItem
-        key={notification.id}
-        notification={notification}
-        onNotificationRead={() => setReadNotifications([...readNotifications, notification.id])}
-        onDelete={handleDeleteNotification}
-        isRead={true}
-      />
-    ));
-  
-    return (
-      <>
-        {unreadNotificationItems}
-        {readNotificationItems}
-      </>
-    );
   };
-  
 
   return (
     <div>
@@ -133,7 +123,7 @@ const Notifications = () => {
           />
         </CardContainer>
       )}
-      {initialCheckboxValue ? (
+      {initialCheckboxValue && (
         <CardContainer width='sm'>
           {renderNotifications()}
           <ButtonGroup>
@@ -147,18 +137,19 @@ const Notifications = () => {
             </Button>
             <Button style={{ color: 'black' }}>{currentPage}</Button>
             <Button style={{ color: 'black' }}>of</Button>
-            <Button style={{ color: 'black' }}>{Math.ceil(notifications.length / itemsPerPage)}</Button>
+            <Button style={{ color: 'black' }}>{Math.ceil((notifications.length + readNotifications.length) / itemsPerPage)}</Button>
             <Button
               variant="contained"
               color="primary"
               onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage * itemsPerPage >= notifications.length}
+              disabled={currentPage === Math.ceil((notifications.length + readNotifications.length) / itemsPerPage)}
             >
               Next
             </Button>
           </ButtonGroup>
         </CardContainer>
-      ) : (
+      )}
+      {!initialCheckboxValue && (
         <div>
           <CardContainer width='xs'>
             <p>You need to activate the notifications</p>
