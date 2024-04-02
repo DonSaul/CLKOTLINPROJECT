@@ -30,7 +30,7 @@ const ProfileModal = ({mutate, profileData}) => {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const id = getUserIdFromToken(); 
-
+    
     console.log("ID", id)
     
     useEffect(() => {
@@ -87,6 +87,11 @@ const ProfileModal = ({mutate, profileData}) => {
                     fullWidth
                     margin="normal"
                     inputProps={{ maxLength: 100 }}
+                    required
+                    error={firstName.length < 1}
+                    helperText={
+                        firstName.length < 1 && "Minimum length is 1 character"
+                    }
                 />
     
                 <TextField
@@ -97,6 +102,11 @@ const ProfileModal = ({mutate, profileData}) => {
                     fullWidth
                     margin="normal"   
                     inputProps={{ maxLength: 100 }}
+                    required
+                    error={lastName.length < 1}
+                    helperText={
+                        lastName.length < 1 && "Minimum length is 1 character"
+                    }
                 /> 
 
                 <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
