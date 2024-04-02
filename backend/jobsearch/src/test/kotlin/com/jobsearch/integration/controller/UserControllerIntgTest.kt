@@ -77,11 +77,11 @@ class UserControllerIntgTest {
     @BeforeEach
     fun setUp() {
         // Delete all records from the repository
-//        userRepository.deleteAll()
-//        vacancyRepository.deleteAll()
+        vacancyRepository.deleteAll()
+        userRepository.deleteAll()
 
         // Save the admin mock object
-//        admin1 = userRepository.save(ADMIN_1)
+        admin1 = userRepository.save(ADMIN_1)
 
         // Assign the user entity and user request mock objects
         userEntity = USER_ENTITY
@@ -101,7 +101,6 @@ class UserControllerIntgTest {
 
         // Then the user should be created
         response
-                .andDo { print() }
                 .andExpect {
                     status { isCreated() }
                     content { contentType(MediaType.APPLICATION_JSON) }

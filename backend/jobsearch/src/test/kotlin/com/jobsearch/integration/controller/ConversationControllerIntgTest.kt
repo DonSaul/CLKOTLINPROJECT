@@ -1,8 +1,10 @@
 package com.jobsearch.integration.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.jobsearch.dto.ChatMessageDTO
 import com.jobsearch.dto.ChatMessageRequestDTO
 import com.jobsearch.dto.VacancyRequestDTO
+import com.jobsearch.dto.messaging.ChatMessageResponseDTO
 import com.jobsearch.entity.*
 import com.jobsearch.repository.ChatMessageRepository
 import com.jobsearch.repository.ConversationRepository
@@ -27,6 +29,8 @@ import java.time.LocalDate
 import java.time.ZoneOffset
 import java.util.*
 import org.hamcrest.Matchers.equalTo
+import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 
 /**
  * Integration test for ConversationController.
@@ -47,13 +51,12 @@ class ConversationControllerIntgTest {
     lateinit var conversationRepository: ConversationRepository
 
     @Autowired
-    lateinit var conversationService: ConversationService
-
-    @Autowired
     lateinit var objectMapper: ObjectMapper
 
     @Autowired
     lateinit var chatMessageRepository: ChatMessageRepository
+    @Autowired
+    lateinit var vacancyRepository: VacancyRepository
 
 
     // Will be initialized in setUp
@@ -66,7 +69,6 @@ class ConversationControllerIntgTest {
         // Mock objects, will be initialized in setUp
         private val candidateRole = Role(1, "candidate")
         private val managerRole = Role(2, "manager")
-        val JOB_FAMILY = JobFamily(1, "Information Technology")
         val MANAGER_1 = User(
             id = null,
             firstName = "Mana",
@@ -101,11 +103,14 @@ class ConversationControllerIntgTest {
             role = candidateRole
         )
 
-        val messageToSend_1 = ChatMessageRequestDTO(
+        val MESSAGE_TO_SEND_1 = ChatMessageRequestDTO(
             receiverUserName = CANDIDATE_2.email,
             message = "Hello this is a test 1"
         )
-        val messageToSend_2 = ChatMessageRequestDTO(
+
+
+
+        val MESSAGE_TO_SEND_2 = ChatMessageRequestDTO(
             receiverUserName = CANDIDATE_2.email,
             message = "Hello this is a test 2"
         )
@@ -117,7 +122,7 @@ class ConversationControllerIntgTest {
         )
 
         val CONVERSATION_BETWEEN_CANDIDATE_2_AND_MANAGER_1 = Conversation(
-            id = null,
+            id =null,
             user1 = CANDIDATE_2,
             user2 = MANAGER_1,
         )
@@ -150,7 +155,7 @@ class ConversationControllerIntgTest {
                 sender = MANAGER_1,
                 receiver = CANDIDATE_2,
                 date = Date.from(LocalDate.of(2023, 3, 1).atStartOfDay(ZoneOffset.UTC).toInstant()),
-                conversation = CONVERSATION_BETWEEN_CANDIDATE_1_AND_MANAGER_1
+                conversation = CONVERSATION_BETWEEN_CANDIDATE_2_AND_MANAGER_1
             ),
             ChatMessage(
                 id = null,
@@ -158,7 +163,7 @@ class ConversationControllerIntgTest {
                 sender = CANDIDATE_2,
                 receiver = MANAGER_1,
                 date = Date.from(LocalDate.of(2023, 4, 1).atStartOfDay(ZoneOffset.UTC).toInstant()),
-                conversation = CONVERSATION_BETWEEN_CANDIDATE_1_AND_MANAGER_1
+                conversation = CONVERSATION_BETWEEN_CANDIDATE_2_AND_MANAGER_1
             ),
             ChatMessage(
                 id = null,
@@ -166,7 +171,7 @@ class ConversationControllerIntgTest {
                 sender = CANDIDATE_2,
                 receiver = MANAGER_1,
                 date = Date.from(LocalDate.of(2023, 5, 1).atStartOfDay(ZoneOffset.UTC).toInstant()),
-                conversation = CONVERSATION_BETWEEN_CANDIDATE_1_AND_MANAGER_1
+                conversation = CONVERSATION_BETWEEN_CANDIDATE_2_AND_MANAGER_1
             )
         )
 
@@ -177,7 +182,11 @@ class ConversationControllerIntgTest {
     fun setUp() {
 
 
-        //userRepository.deleteAll()
+        //
+        chatMessageRepository.deleteAll()
+        conversationRepository.deleteAll()
+        vacancyRepository.deleteAll()
+        userRepository.deleteAll()
 
         manager1 = userRepository.save(MANAGER_1)
         manager2 = userRepository.save(MANAGER_2)
@@ -211,7 +220,6 @@ class ConversationControllerIntgTest {
 
             }
 
-
     }
 
     @Test
@@ -226,7 +234,62 @@ class ConversationControllerIntgTest {
                 (jsonPath("$", hasSize<Int>(2)))
 
             }
+    }
+
+    @Test
+    @WithMockUser(username = "candidate1@mail.com", authorities = ["candidate"])
+    fun `If current user doesn't have a conversation with another user it should return empty array of messages`() {
+        val receiverUserMail = MANAGER_2.email
+
+        val response = mockMvc.get("/api/v1/conversation/messages?email=$receiverUserMail")
+
+        response
+            .andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                (jsonPath("$", hasSize<Int>(0)))
+
+            }
 
 
     }
+
+    @Test
+    @WithMockUser(username = "candidate1@mail.com", authorities = ["candidate"])
+    fun `Current user should retrieve two messages from a conversation with two messages and return 200`() {
+
+        val receiverUserMail = MANAGER_1.email
+
+        val response = mockMvc.get("/api/v1/conversation/messages?email=$receiverUserMail")
+
+        response
+            .andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                (jsonPath("$", hasSize<Int>(2)))
+
+            }
+    }
+
+
+    @Test
+    @WithMockUser(username = "candidate1@mail.com", authorities = ["candidate"])
+    fun `If user sends a message to another user it should return 200`() {
+
+        val response = mockMvc.post("/api/v1/conversation/send-message"){
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(MESSAGE_TO_SEND_1)
+        }
+        response.andExpect {
+            status { isOk() }
+            content { contentType(MediaType.APPLICATION_JSON) }
+            jsonPath("$.senderUsername") { value(CANDIDATE_1.email) }
+            jsonPath("$.receiverUsername") { value(MESSAGE_TO_SEND_1.receiverUserName) }
+        }
+    }
+
+
+
+
+
 }

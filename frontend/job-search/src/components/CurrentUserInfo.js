@@ -12,7 +12,6 @@ import { useCurrentUserProfile } from "../hooks/profile/useCurrentUserProfile";
 import LoadingSpinner from "./LoadingSpinner";
 import { ROLES } from "../helpers/constants";
 import ProfileModal from "../components/ProfileModal";
-import { useAuth } from "../helpers/userContext";
 import { useUpdateProfileInfo } from "../hooks/profile/useCurrentUserProfile";
 import ProfileAvatar from "./avatar/ProfileAvatar";
 import CvPdfButton from "./CvPdfButton";
@@ -113,9 +112,6 @@ const CurrentUserInfo = () => {
             {cv !== null ? (
               <Box 
                 sx={{ 
-                  // display: 'flex', 
-                  // flexDirection: 'column', 
-                  // alignItems: 'center', 
                   p: 2,
                   mx: 3 
                   }}>
@@ -173,55 +169,6 @@ const CurrentUserInfo = () => {
           }}
         >
           <Typography variant="h5" gutterBottom>
-            Projects
-          </Typography>
-          {cv?.projects.length ? (
-            <Box sx={{ mx: 10 }}>
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: "bold" }}>Name</TableCell>
-                      <TableCell sx={{ fontWeight: "bold" }}>
-                        Description
-                      </TableCell>
-                      <TableCell sx={{ fontWeight: "bold" }}>
-                        Job Family
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {cv.projects.map((project) => (
-                      <TableRow key={project.projectId}>
-                        <TableCell>{project.name}</TableCell>
-                        <TableCell>{project.description}</TableCell>
-                        <TableCell>{project.jobFamily.name}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Box>
-          ) : (
-            "No projects available"
-          )}
-        </Card>
-      )}
-
-      {roleId !== ROLES.CANDIDATE ? null : (
-        <Card
-          elevation={3}
-          sx={{
-            display: "inline-block",
-            width: 1030,
-            borderRadius: 8,
-            boxShadow: 8,
-            mx: 10,
-            my: 5,
-            py: 5,
-          }}
-        >
-          <Typography variant="h5" gutterBottom>
             Jobs
           </Typography>
           {cv?.jobs.length ? (
@@ -263,6 +210,55 @@ const CurrentUserInfo = () => {
             </Box>
           ) : (
             "No jobs available"
+          )}
+        </Card>
+      )}
+
+      {roleId !== ROLES.CANDIDATE ? null : (
+        <Card
+          elevation={3}
+          sx={{
+            display: "inline-block",
+            width: 1030,
+            borderRadius: 8,
+            boxShadow: 8,
+            mx: 10,
+            my: 5,
+            py: 5,
+          }}
+        >
+          <Typography variant="h5" gutterBottom>
+            Projects
+          </Typography>
+          {cv?.projects.length ? (
+            <Box sx={{ mx: 10 }}>
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: "bold" }}>Name</TableCell>
+                      <TableCell sx={{ fontWeight: "bold" }}>
+                        Description
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: "bold" }}>
+                        Job Family
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {cv.projects.map((project) => (
+                      <TableRow key={project.projectId}>
+                        <TableCell>{project.name}</TableCell>
+                        <TableCell>{project.description}</TableCell>
+                        <TableCell>{project.jobFamily.name}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
+          ) : (
+            "No projects available"
           )}
         </Card>
       )}
