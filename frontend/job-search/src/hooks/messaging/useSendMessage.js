@@ -35,7 +35,6 @@ const sendNotification = async (receiverUserName) => {
     }
   );
 
-  console.log(res);
   return res;
 };
 
@@ -48,7 +47,7 @@ export const useSendMessage = () => {
       }
     },
     onError: (_err) => {
-      toast.error("Error sending message");
+      //toast.error("Error sending message");
       console.error("Error sending message:", _err);
     },
   });
