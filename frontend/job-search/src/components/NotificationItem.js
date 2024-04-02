@@ -26,7 +26,7 @@ const NotificationItem = ({ notification, onNotificationRead, onDelete, isRead }
         throw new Error("Failed to mark notification as read");
       }
 
-      onNotificationRead(notification.id); // Update globally
+      
     } catch (error) {
       console.error("Error marking notification as read:", error);
     } finally {
@@ -47,12 +47,12 @@ const NotificationItem = ({ notification, onNotificationRead, onDelete, isRead }
         }
       );
 
-      onDelete(notification.id);
+      
       if (!response.ok) {
         throw new Error("Failed to delete notification");
       }
 
-      onDelete(notification.id); // Update globally
+      onDelete(notification.id); 
     } catch (error) {
       console.error("Error deleting notification:", error);
     }
