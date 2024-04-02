@@ -31,7 +31,7 @@ export const useNotificationData = (email) => {
       // Set interval to fetch notifications every 1 minute (adjust as needed)
       const intervalId = setInterval(() => {
         fetchNotificationFromDatabase(email);
-      }, 10000); // 60000 milliseconds = 1 minute
+      }, 1000); // 60000 milliseconds = 1 minute
 
       // Clean up interval on unmount or when email changes
       return () => clearInterval(intervalId);

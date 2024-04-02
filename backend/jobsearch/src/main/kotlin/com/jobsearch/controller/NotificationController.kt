@@ -3,6 +3,7 @@ package com.jobsearch.controller
 
 import com.jobsearch.dto.NotificationDTO
 import com.jobsearch.entity.Notification
+import com.jobsearch.repository.NotificationRepository
 import com.jobsearch.service.NotificationService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -43,4 +44,11 @@ class NotificationController(private val notificationService: NotificationServic
         notificationService.markNotificationAsRead(notificationId)
         return ResponseEntity.status(HttpStatus.OK).body("Notification marked as read")
     }
+    @Transactional
+    @DeleteMapping("/{id}")
+    fun deleteNotification(@PathVariable id: Int): ResponseEntity<String>{
+        notificationService.deleteById(id)
+        return ResponseEntity.status(HttpStatus.OK).body("Notification deleted")
+    }
+
 }

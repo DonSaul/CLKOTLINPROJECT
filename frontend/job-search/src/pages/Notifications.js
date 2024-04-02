@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Checkbox, FormControlLabel, CircularProgress } from '@mui/material';
+import { Checkbox, FormControlLabel, Button, ButtonGroup } from '@mui/material';
 import CardContainer from '../components/CardContainer';
 import NotificationItem from '../components/NotificationItem';
 import { useAuth } from '../helpers/userContext';
-import { useNotificationData } from '../hooks/notifications/useNotificationsByEmail';
+import { useNotificationData } from '../hooks/notifications/useNotificationByEmailInterval';
 import { useNotificationUpdater } from '../hooks/notifications/useNotificationUpdater';
 import { useNotificationActivated } from '../hooks/notifications/useGetCurrentOnNotification';
 import { useNotificationTypeUpdater } from '../hooks/notifications/useNotificationTypesUpdated';
 import { useNotificationTypes } from '../hooks/notifications/useNotificationTypes';
-import { Button, ButtonGroup } from '@mui/material';
 import { NOTIFICATION_TYPES } from '../helpers/constants';
 
 const Notifications = () => {
@@ -65,36 +64,46 @@ const Notifications = () => {
     }
   }, [notificationActivated, notificationTypes, notifications]);
 
-  // Render notifications with unread ones first
+  const handleDeleteNotification = (deletedNotificationId) => {
+    setReadNotifications(prevState => prevState.filter(id => id !== deletedNotificationId));
+  };
+
   const renderNotifications = () => {
     if (!notifications || notifications.length === 0) {
       return <p>No notifications found</p>;
     }
-
+  
     const unreadNotifications = notifications.filter(notification => !readNotifications.includes(notification.id));
     const readNotificationsSorted = notifications.filter(notification => readNotifications.includes(notification.id));
-
+  
+    const unreadNotificationItems = unreadNotifications.map(notification => (
+      <NotificationItem
+        key={notification.id}
+        notification={notification}
+        onNotificationRead={() => setReadNotifications([...readNotifications, notification.id])}
+        onDelete={handleDeleteNotification}
+        isRead={false}
+      />
+    ));
+  
+    const readNotificationItems = readNotificationsSorted.map(notification => (
+      <NotificationItem
+        key={notification.id}
+        notification={notification}
+        onNotificationRead={() => setReadNotifications([...readNotifications, notification.id])}
+        onDelete={handleDeleteNotification}
+        isRead={true}
+      />
+    ));
+  
     return (
       <>
-        {unreadNotifications.map(notification => (
-          <NotificationItem
-            key={notification.id}
-            notification={notification}
-            onNotificationRead={() => setReadNotifications([...readNotifications, notification.id])}
-            isRead={false}
-          />
-        ))}
-        {readNotificationsSorted.map(notification => (
-          <NotificationItem
-            key={notification.id}
-            notification={notification}
-            onNotificationRead={() => setReadNotifications([...readNotifications, notification.id])}
-            isRead={true}
-          />
-        ))}
+        {unreadNotificationItems}
+        {readNotificationItems}
       </>
     );
   };
+  
 
   return (
     <div>
@@ -138,12 +147,12 @@ const Notifications = () => {
             </Button>
             <Button style={{ color: 'black' }}>{currentPage}</Button>
             <Button style={{ color: 'black' }}>of</Button>
-            <Button style={{ color: 'black' }}>{Math.ceil((notifications ? notifications.length : 0) / itemsPerPage)}</Button>
+            <Button style={{ color: 'black' }}>{Math.ceil(notifications.length / itemsPerPage)}</Button>
             <Button
               variant="contained"
               color="primary"
               onClick={() => handlePageChange(currentPage + 1)}
-              disabled={(notifications ? notifications.length : 0) <= currentPage * itemsPerPage}
+              disabled={currentPage * itemsPerPage >= notifications.length}
             >
               Next
             </Button>
@@ -156,7 +165,6 @@ const Notifications = () => {
           </CardContainer>
         </div>
       )}
-
     </div>
   );
 };

@@ -12,6 +12,7 @@ export const ENDPOINTS = {
   changePassword: createUrl("recoverPassword/changePassword"),
   activateNotification: createUrl("users/notification"),
   notification: createUrl("notifications/recipient"),
+  notificationGeneral: createUrl("notifications"),
   notificationIsActive: createUrl("users/notificationStatus"),
   notificationRead: createUrl("notifications/markAsRead"),
   notificationTypes: createUrl("users/activatedNotificationTypes"),

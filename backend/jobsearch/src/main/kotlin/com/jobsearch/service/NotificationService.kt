@@ -110,6 +110,12 @@ class NotificationService(
         return mapToDto(latestNotification)
     }
 
+    fun deleteById(notificationId: Int){
+        val notification = notificationRepository.findById(notificationId)
+            .orElseThrow { NotFoundException("No Notification with id $notificationId")}
+        notificationRepository.deleteById(notification.id!!)
+
+    }
 
     fun mapToDto(notification: Notification): NotificationDTO {
         return notification.let {
